@@ -1,8 +1,7 @@
 #include <Python.h>
 #include <c10/core/impl/LocalDispatchKeySet.h>
 #include <torch/csrc/Exceptions.h>
-
-#define DISPATCHKEY DispatchKey::PrivateUse1
+#include "dispatch.h"
 
 using namespace at;
 using namespace std;
