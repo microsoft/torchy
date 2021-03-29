@@ -1,3 +1,6 @@
+// Copyright (c) 2021-present The Torchy Authors.
+// Distributed under the MIT license that can be found in the LICENSE file.
+
 #include <Python.h>
 #include <c10/core/impl/LocalDispatchKeySet.h>
 #include <torch/csrc/Exceptions.h>

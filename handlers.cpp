@@ -1,11 +1,25 @@
+// Copyright (c) 2021-present The Torchy Authors.
+// Distributed under the MIT license that can be found in the LICENSE file.
+
+#undef NDEBUG
+#include "dispatch.h"
 #include <ATen/NativeFunctions.h>
 #include <ATen/Tensor.h>
+#include <c10/util/variant.h>
 #include <torch/library.h>
 #include <iostream>
-#include "dispatch.h"
+#include <map>
+
+#define MAX_TAPE_LENGTH 64
+
+#if 1
+#define DBG(x) x
+#else
+#define DBG(x)
+#endif
 
 #ifdef C10_DISABLE_TENSORIMPL_EXTENSIBILITY
-#error Cannot disable C10_DISABLE_TENSORIMPL_EXTENSIBILITY
+# error Cannot disable C10_DISABLE_TENSORIMPL_EXTENSIBILITY
 #endif
 
 using namespace at;
@@ -13,33 +27,197 @@ using namespace std;
 
 namespace {
 
-struct TorchyTensor final : public TensorImpl {
+unsigned tape_idx(const Tensor &t);
+
+
+struct TensorOp {
+  TensorImpl **tensor;
+  const char *id;
+  vector<c10::variant<const Tensor*, const c10::Scalar*>> args;
+  unsigned refs;
+
+  void incref() {
+    assert(isObservable());
+    ++refs;
+  }
+
+  void decref() {
+    assert(refs > 0);
+    --refs;
+  }
+
+  bool isObservable() const {
+    return tensor;
+  }
+
+  bool needsComputing() const {
+    return isObservable() || refs > 0;
+  }
+
+  void print(ostream &os, map<const Tensor*, unsigned> &inputs) const {
+    if (!needsComputing()) {
+      os << "[dead]";
+      return;
+    }
+
+    os << id;
+    bool first = true;
+    for (auto &arg : args) {
+      os << (first ? " " : ", ");
+      first = false;
+      if (auto t = get_if<const Tensor*>(&arg)) {
+        auto idx = tape_idx(**t);
+        if (idx != -1u) {
+          os << '%' << idx;
+        } else {
+          auto I = inputs.emplace(*t, (unsigned)inputs.size()).first;
+          os << "in<" << I->second << '>';
+        }
+      } else if (auto s = get_if<const Scalar*>(&arg)) {
+        os << **s;
+      } else {
+        assert(false);
+      }
+    }
+
+  if (refs > 0)
+    os << " [refs=" << refs << ']';
+
+  if (isObservable())
+    os << " [output]";
+  }
+};
+
+
+class Tape {
+  TensorOp ops[MAX_TAPE_LENGTH];
+  unsigned next_op = 0;
+
+  void incref(const Scalar &s) {}
+  void incref(const Tensor &t) {
+    auto idx = tape_idx(t);
+    if (idx != -1u)
+      ops[idx].incref();
+  }
+
+  template<typename A, typename... T>
+  void registerOpArgs(TensorOp &op, const A &arg, T&... args) {
+    op.args.emplace_back(&arg);
+    incref(arg);
+    registerOpArgs(op, args...);
+  }
+
+  void registerOpArgs(TensorOp &op) {}
+
+public:
+  unsigned register_tensor(TensorImpl **tensor) {
+    if (next_op == MAX_TAPE_LENGTH)
+      flush();
+
+    auto &op = ops[next_op];
+    op.tensor = tensor;
+    op.id = nullptr;
+    op.args.clear();
+    op.refs = 0;
+    return next_op++;
+  }
+
+  template<typename... T>
+  void registerOp(unsigned idx, const char *op_id, T&... args) {
+    auto &op = ops[idx];
+    op.id = op_id;
+    registerOpArgs(op, args...);
+  }
+
+  void set_unobservable(unsigned idx) {
+    auto &op = ops[idx];
+    assert(op.tensor);
+    op.tensor = nullptr;
+
+    for (auto &arg : op.args) {
+      if (auto t = get_if<const Tensor*>(&arg)) {
+        auto idx = tape_idx(**t);
+        if (idx != -1u)
+          ops[idx].decref();
+      }
+    }
+  }
+
+  void flush() {
+    DBG(cout << "Flush tape\n"; cout << *this;)
+    // TODO
+    next_op = 0;
+  }
+
+  friend ostream& operator<<(ostream &os, const Tape &t) {
+    if (t.next_op == 0)
+      return os << "empty tape";
+
+    map<const Tensor*, unsigned> inputs_map;
+    for (unsigned i = 0; i < t.next_op; ++i) {
+      os << '%' << i << " = ";
+      t.ops[i].print(os, inputs_map);
+      os << '\n';
+    }
+    return os << '\n';
+  }
+};
+
+thread_local Tape tape;
+
+
+class TorchyTensor final : public TensorImpl {
+  TensorImpl *tensor = nullptr;
+  unsigned tape_idx;
+
+  void ensure_tensor() const {
+    if (!tensor) {
+      tape.flush();
+      assert(tensor);
+    }
+  }
+
+public:
   TorchyTensor(caffe2::TypeMeta dtype, c10::Device device)
-    : TensorImpl(DISPATCHKEY, dtype, device) {}
+    : TensorImpl(DISPATCHKEY, dtype, device) {
+    tape_idx = tape.register_tensor(&tensor);
+  }
+
+  template<typename... T>
+  void registerOp(const char *op_id, const T&... args) {
+    tape.registerOp(tape_idx, op_id, args...);
+  }
+
+  unsigned getTapeIdx() const { return tape_idx; }
+
+  void release_resources() override {
+    TensorImpl::release_resources();
+    tape.set_unobservable(tape_idx);
+  }
 
   IntArrayRef sizes() const override {
-    cout << "Called TorchyTensor::sizes()" << endl;
-    return {};
+    ensure_tensor();
+    return tensor->sizes();
   }
 
   IntArrayRef strides() const override {
-    cout << "Called TorchyTensor::strides()" << endl;
-    return {};
+    ensure_tensor();
+    return tensor->strides();
   }
 
   int64_t dim() const override {
-    cout << "Called TorchyTensor::dim()" << endl;
-    return {};
+    ensure_tensor();
+    return tensor->dim();
   }
 
   bool has_storage() const override {
-    cout << "Called TorchyTensor::has_storage()" << endl;
-    return {};
+    ensure_tensor();
+    return tensor->has_storage();
   }
 
   int64_t numel() const override {
-    cout << "Called TorchyTensor::numel()" << endl;
-    return {};
+    ensure_tensor();
+    return tensor->numel();
   }
 
   const char* tensorimpl_type_name() const override {
@@ -47,45 +225,60 @@ struct TorchyTensor final : public TensorImpl {
   }
 
   void set_size(int64_t dim, int64_t new_size) override {
-    cout << "Called TorchyTensor::set_size()" << endl;
+    ensure_tensor();
+    tensor->set_size(dim, new_size);
   }
 
   void set_stride(int64_t dim, int64_t new_stride) override {
-    cout << "Called TorchyTensor::set_stride()" << endl;
+    ensure_tensor();
+    tensor->set_stride(dim, new_stride);
   }
 
   void set_storage_offset(int64_t storage_offset) override {
-    cout << "Called TorchyTensor::set_storage_offset()" << endl;
+    ensure_tensor();
+    tensor->set_storage_offset(storage_offset);
   }
 
   int64_t size(int64_t d) const override {
-    cout << "Called TorchyTensor::size()" << endl;
-    return {};
+    ensure_tensor();
+    return tensor->size(d);
   }
 
   int64_t stride(int64_t d) const override {
-    cout << "Called TorchyTensor::stride()" << endl;
-    return {};
+    ensure_tensor();
+    return tensor->stride(d);
   }
 
   c10::intrusive_ptr<TensorImpl>
   shallow_copy_and_detach(const c10::VariableVersion &version_counter,
                           bool allow_tensor_metadata_change) const override {
-    cout << "Called TorchyTensor::shallow_copy_from(1)" << endl;
+    TORCH_CHECK_NOT_IMPLEMENTED(false,
+                                "TorchyTensor::shallow_copy_and_detach(1)");
     return {};
   }
 
   c10::intrusive_ptr<TensorImpl>
   shallow_copy_and_detach(c10::VariableVersion &&version_counter,
                           bool allow_tensor_metadata_change) const override {
-    cout << "Called TorchyTensor::shallow_copy_from(2)" << endl;
+    TORCH_CHECK_NOT_IMPLEMENTED(false,
+                                "TorchyTensor::shallow_copy_and_detach(2)");
     return {};
   }
 
   void shallow_copy_from(const c10::intrusive_ptr<TensorImpl> &impl) override {
-    cout << "Called TorchyTensor::shallow_copy_from(3)" << endl;
+    TORCH_CHECK_NOT_IMPLEMENTED(false, "TorchyTensor::shallow_copy_from");
   }
 };
+
+bool is_torchy(const Tensor &t) {
+  return t.key_set().has(DISPATCHKEY);
+}
+
+unsigned tape_idx(const Tensor &t) {
+  if (is_torchy(t))
+    return ((TorchyTensor*)t.unsafeGetTensorImpl())->getTapeIdx();
+  return -1u;
+}
 
 
 Tensor abs(const Tensor &self) {
@@ -95,8 +288,9 @@ Tensor abs(const Tensor &self) {
 
 Tensor add_Tensor(const Tensor &self, const Tensor &other,
                   const Scalar &alpha) {
-  cout << "Called add.Tensor" << endl;
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device());
+  auto t = at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device());
+  ((TorchyTensor*)t.unsafeGetTensorImpl())->registerOp("add", self, other, alpha);
+  return t;
 }
 
 Tensor as_strided(const Tensor &self, IntArrayRef size, IntArrayRef stride,
