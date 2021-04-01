@@ -9,6 +9,7 @@
 #include <torch/library.h>
 #include <iostream>
 #include <map>
+#include <type_traits>
 
 // FIXME: for the interpreter
 #include <ATen/RedispatchFunctions.h>
@@ -32,13 +33,19 @@ namespace {
 
 using TorchTensorImpl = c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>;
 
+using UnionInputTys = c10::variant<
+  IntArrayRef,
+  const Scalar*,
+  const Tensor*
+>;
+
 unsigned trace_idx(const Tensor &t);
 
 
 struct TensorOp {
   TorchTensorImpl *tensor;
   const char *id;
-  vector<c10::variant<const Tensor*, const Scalar*>> args;
+  vector<UnionInputTys> args;
   unsigned refs;
   DispatchKeySet dispatch_key;
 
@@ -81,16 +88,18 @@ struct TensorOp {
         }
       } else if (auto s = get_if<const Scalar*>(&arg)) {
         os << **s;
+      } else if (auto a = get_if<IntArrayRef>(&arg)) {
+        os << *a;
       } else {
         assert(false);
       }
     }
 
   if (refs > 0)
-    os << " [refs=" << refs << ']';
+    os << " #refs=" << refs;
 
   if (isObservable())
-    os << " [output]";
+    os << " #output";
   }
 };
 
@@ -99,16 +108,36 @@ class Trace {
   TensorOp ops[MAX_TRACE_LENGTH];
   unsigned next_op = 0;
 
-  void incref(const Scalar &s) {}
+  template <typename T>
+  void incref(T t) {}
+
   void incref(const Tensor &t) {
     auto idx = trace_idx(t);
     if (idx != -1u)
       ops[idx].incref();
   }
 
+  vector<unique_ptr<unsigned char[]>> deep_copies;
+  IntArrayRef deep_copy(IntArrayRef arr) {
+    size_t size = arr.size() * sizeof(int64_t);
+    auto ptr = new unsigned char[size];
+    memcpy(ptr, arr.data(), size);
+    deep_copies.emplace_back(ptr);
+    return { (int64_t*)ptr, arr.size() };
+  }
+
+  template<typename A>
+  void registerOpArg(TensorOp &op, const A &arg) {
+    op.args.emplace_back(&arg);
+  }
+
+  void registerOpArg(TensorOp &op, IntArrayRef arg) {
+    op.args.emplace_back(deep_copy(arg));
+  }
+
   template<typename A, typename... T>
   void registerOpArgs(TensorOp &op, const A &arg, T&... args) {
-    op.args.emplace_back(&arg);
+    registerOpArg(op, arg);
     incref(arg);
     registerOpArgs(op, args...);
   }
@@ -160,11 +189,23 @@ public:
             *get<const Tensor*>(op.args[1]),
             *get<const Scalar*>(op.args[2]))
             .unsafeReleaseIntrusivePtr();
+      } else if (!strcmp(op.id, "view")) {
+        *op.tensor
+          = at::redispatch::view(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+            *get<const Tensor*>(op.args[0]), get<IntArrayRef>(op.args[1]))
+            .unsafeReleaseIntrusivePtr();
+      } else if (!strcmp(op.id, "masked_select")) {
+        *op.tensor
+          = at::redispatch::masked_select(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+            *get<const Tensor*>(op.args[0]), *get<const Tensor*>(op.args[1]))
+            .unsafeReleaseIntrusivePtr();
       } else {
         assert(0);
       }
     }
+
     next_op = 0;
+    deep_copies.clear();
   }
 
   friend ostream& operator<<(ostream &os, const Trace &t) {
@@ -206,7 +247,10 @@ template<typename... T>
   unsigned getTraceIdx() const { return trace_idx; }
 
   void release_resources() override {
-    trace.set_unobservable(trace_idx);
+    if (tensor)
+      tensor->release_resources();
+    else
+      trace.set_unobservable(trace_idx);
     TensorImpl::release_resources();
   }
 
@@ -364,18 +408,18 @@ Tensor eq_Tensor(c10::DispatchKeySet ks, const Tensor &self,
 
 Tensor masked_select(c10::DispatchKeySet ks, const Tensor &self,
                      const Tensor &mask) {
-  cout << "Called masked_select" << endl;
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks, "masked_select");
+  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
+                                               "masked_select", self, mask);
 }
 
 Tensor max(c10::DispatchKeySet ks, const Tensor &self) {
-  cout << "Called max" << endl;
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks, "max", self);
+  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
+                                               "max", self);
 }
 
 Tensor min(c10::DispatchKeySet ks, const Tensor &self) {
-  cout << "Called min" << endl;
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks, "min", self);
+  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
+                                               "min", self);
 }
 
 Tensor mul_Tensor(c10::DispatchKeySet ks, const Tensor &self,
@@ -410,8 +454,8 @@ Tensor to_device(c10::DispatchKeySet ks,
 }
 
 Tensor view(c10::DispatchKeySet ks, const Tensor &self, IntArrayRef size) {
-  cout << "Called view" << endl;
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks, "view");
+  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
+                                               "view", self, size);
 }
 
 TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
