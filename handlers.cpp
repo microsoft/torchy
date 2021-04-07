@@ -191,7 +191,7 @@ public:
   }
 
   void flush() {
-    DBG(cout << "Flush trace\n"; cout << *this;)
+    DBG(cout << "Flush trace\n" << *this;)
     for (unsigned i = 0; i < next_op; ++i) {
       auto &op = ops[i];
       if (!op.needsComputing())
@@ -270,6 +270,8 @@ public:
       } else {
         assert(0);
       }
+
+       DBG(cout << '%' << i << " = " << Tensor(*op.tensor) << endl;)
     }
 
     next_op = 0;
@@ -297,13 +299,6 @@ class TorchyTensor final : public TensorImpl {
   TorchTensorImpl tensor;
   unsigned trace_idx;
 
-  void ensure_tensor() const {
-    if (!tensor) {
-      trace.flush();
-      assert(tensor);
-    }
-  }
-
 public:
 template<typename... T>
   TorchyTensor(caffe2::TypeMeta dtype, c10::Device device, DispatchKeySet ks,
@@ -313,6 +308,13 @@ template<typename... T>
   }
 
   unsigned getTraceIdx() const { return trace_idx; }
+
+  void ensure_tensor() const {
+    if (!tensor) {
+      trace.flush();
+      assert(tensor);
+    }
+  }
 
   void release_resources() override {
     if (tensor)
@@ -397,14 +399,20 @@ template<typename... T>
   }
 };
 
-bool is_torchy(const Tensor &t) {
-  return t.key_set().has(DISPATCHKEY);
+TorchyTensor* is_torchy(const Tensor &t) {
+  return t.key_set().has(DISPATCHKEY) ? (TorchyTensor*)t.unsafeGetTensorImpl()
+                                      : nullptr;
 }
 
 unsigned trace_idx(const Tensor &t) {
-  if (is_torchy(t))
-    return ((TorchyTensor*)t.unsafeGetTensorImpl())->getTraceIdx();
+  if (auto tt = is_torchy(t))
+    return tt->getTraceIdx();
   return -1u;
+}
+
+void ensure_materialized(const Tensor &t) {
+  if (auto tt = is_torchy(t))
+    tt->ensure_tensor();
 }
 
 
@@ -413,7 +421,7 @@ Tensor abs(c10::DispatchKeySet ks, const Tensor &self) {
                                                "abs", self);
 }
 
-Tensor abs_out(c10::DispatchKeySet ks, const Tensor &self, Tensor &out) {
+Tensor& abs_out(c10::DispatchKeySet ks, const Tensor &self, Tensor &out) {
   // cant delay this without changing the TensorImpl of out
   // TODO: should we?
   return
@@ -457,8 +465,12 @@ Tensor& ceil_out(c10::DispatchKeySet ks, const Tensor &self, Tensor &out) {
 
 Tensor& copy_(c10::DispatchKeySet ks, Tensor &self, const Tensor &src,
               bool non_blocking) {
-  cout << "Called copy_" << endl;
-  return self;
+  // TODO: can be made lazy?
+  ensure_materialized(src);
+  return
+    at::redispatch::copy_(
+      ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+      self, src, non_blocking);
 }
 
 Tensor& detach_(c10::DispatchKeySet ks, Tensor &self) {
@@ -537,8 +549,11 @@ Tensor to_device(c10::DispatchKeySet ks,
                  const Tensor &self, Device device, ScalarType dtype,
                  bool non_blocking, bool copy,
                  c10::optional<MemoryFormat> memory_format) {
-  cout << "Called to.device" << endl;
-  return self;
+  ensure_materialized(self);
+  return
+    at::redispatch::to(
+      ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+      self, device, dtype, non_blocking, copy, memory_format);
 }
 
 Tensor view(c10::DispatchKeySet ks, const Tensor &self, IntArrayRef size) {
