@@ -31,6 +31,7 @@ using namespace std;
 
 namespace {
 
+class TorchyTensor;
 using TorchTensorImpl = c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>;
 
 using UnionInputTys = c10::variant<
@@ -41,10 +42,12 @@ using UnionInputTys = c10::variant<
 >;
 
 unsigned trace_idx(const Tensor &t);
+void print(ostream &os, const TorchyTensor &tt);
+void set(TorchyTensor *tt, Tensor &&t);
 
 
 struct TensorOp {
-  TorchTensorImpl *tensor;
+  TorchyTensor *tensor;
   const char *id;
   vector<UnionInputTys> args;
   unsigned refs;
@@ -163,7 +166,7 @@ class Trace {
 
 public:
   template<typename... T>
-  unsigned register_tensor(TorchTensorImpl *tensor, DispatchKeySet ks,
+  unsigned register_tensor(TorchyTensor *tensor, DispatchKeySet ks,
                            const char *op_id, T&... args) {
     if (next_op == MAX_TRACE_LENGTH)
       flush();
@@ -198,80 +201,68 @@ public:
         continue;
 
       if (!strcmp(op.id, "abs")) {
-        *op.tensor
-          = at::redispatch::abs(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]))
-            .unsafeReleaseIntrusivePtr();
+        set(op.tensor,
+          at::redispatch::abs(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+            get<Tensor>(op.args[0])));
       } else if (!strcmp(op.id, "add_Tensor")) {
-        *op.tensor
-          = at::redispatch::add(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        set(op.tensor,
+          at::redispatch::add(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
             get<Tensor>(op.args[0]),
             get<Tensor>(op.args[1]),
-            get<Scalar>(op.args[2]))
-            .unsafeReleaseIntrusivePtr();
+            get<Scalar>(op.args[2])));
       } else if (!strcmp(op.id, "as_strided")) {
-        *op.tensor
-          = at::redispatch::as_strided(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        set(op.tensor,
+          at::redispatch::as_strided(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
             get<Tensor>(op.args[0]),
             get<IntArrayRef>(op.args[1]),
             get<IntArrayRef>(op.args[2]),
-            get<c10::optional<int64_t>>(op.args[3]))
-            .unsafeReleaseIntrusivePtr();
+            get<c10::optional<int64_t>>(op.args[3])));
       } else if (!strcmp(op.id, "eq_Tensor")) {
-        *op.tensor
-          = at::redispatch::eq(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        set(op.tensor,
+          at::redispatch::eq(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
             get<Tensor>(op.args[0]),
-            get<Tensor>(op.args[1]))
-            .unsafeReleaseIntrusivePtr();
+            get<Tensor>(op.args[1])));
       } else if (!strcmp(op.id, "masked_select")) {
-        *op.tensor
-          = at::redispatch::masked_select(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]), get<Tensor>(op.args[1]))
-            .unsafeReleaseIntrusivePtr();
+        set(op.tensor,
+          at::redispatch::masked_select(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+            get<Tensor>(op.args[0]), get<Tensor>(op.args[1])));
       } else if (!strcmp(op.id, "max")) {
-        *op.tensor
-          = at::redispatch::max(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]))
-            .unsafeReleaseIntrusivePtr();
+        set(op.tensor,
+          at::redispatch::max(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+            get<Tensor>(op.args[0])));
       } else if (!strcmp(op.id, "min")) {
-        *op.tensor
-          = at::redispatch::max(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]))
-            .unsafeReleaseIntrusivePtr();
+        set(op.tensor,
+          at::redispatch::max(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+            get<Tensor>(op.args[0])));
       } else if (!strcmp(op.id, "mul_Tensor")) {
-        *op.tensor
-          = at::redispatch::mul(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        set(op.tensor,
+          at::redispatch::mul(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
             get<Tensor>(op.args[0]),
-            get<Tensor>(op.args[1]))
-            .unsafeReleaseIntrusivePtr();
+            get<Tensor>(op.args[1])));
       } else if (!strcmp(op.id, "ne_Scalar")) {
-        *op.tensor
-          = at::redispatch::ne(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        set(op.tensor,
+          at::redispatch::ne(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
             get<Tensor>(op.args[0]),
-            get<Scalar>(op.args[1]))
-            .unsafeReleaseIntrusivePtr();
+            get<Scalar>(op.args[1])));
       } else if (!strcmp(op.id, "ne_Tensor")) {
-        *op.tensor
-          = at::redispatch::ne(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        set(op.tensor,
+          at::redispatch::ne(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
             get<Tensor>(op.args[0]),
-            get<Tensor>(op.args[1]))
-            .unsafeReleaseIntrusivePtr();
+            get<Tensor>(op.args[1])));
       } else if (!strcmp(op.id, "reshape")) {
-        *op.tensor
-          = at::redispatch::reshape(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        set(op.tensor,
+          at::redispatch::reshape(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
             get<Tensor>(op.args[0]),
-            get<IntArrayRef>(op.args[1]))
-            .unsafeReleaseIntrusivePtr();
+            get<IntArrayRef>(op.args[1])));
       } else if (!strcmp(op.id, "view")) {
-        *op.tensor
-          = at::redispatch::view(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]), get<IntArrayRef>(op.args[1]))
-            .unsafeReleaseIntrusivePtr();
+        set(op.tensor,
+          at::redispatch::view(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+            get<Tensor>(op.args[0]), get<IntArrayRef>(op.args[1])));
       } else {
         assert(0);
       }
 
-       DBG(cout << '%' << i << " = " << Tensor(*op.tensor) << endl;)
+      DBG(cout << '%' << i << " = "; print(cout, *op.tensor); cout << endl;)
     }
 
     next_op = 0;
@@ -299,21 +290,43 @@ class TorchyTensor final : public TensorImpl {
   TorchTensorImpl tensor;
   unsigned trace_idx;
 
+  // TODO: not everything is virtual in TensorImpl..
+  void refresh_non_virtual() {
+    is_channels_last_ = tensor->is_strides_like_channels_last();
+    // FIXME: cant access:  is_channels_last_contiguous_
+    is_channels_last_3d_ = tensor->is_strides_like_channels_last_3d();
+    // FIXME: cant access: is_channels_last_3d_contiguous_
+    is_non_overlapping_and_dense_ = tensor->is_non_overlapping_and_dense();
+    is_wrapped_number_ = tensor->is_wrapped_number();
+  }
+
 public:
 template<typename... T>
   TorchyTensor(caffe2::TypeMeta dtype, c10::Device device, DispatchKeySet ks,
                const char *op_id, const T&... args)
     : TensorImpl(DISPATCHKEY, dtype, device) {
-    trace_idx = trace.register_tensor(&tensor, ks, op_id, args...);
+    trace_idx = trace.register_tensor(this, ks, op_id, args...);
   }
 
+  TorchyTensor(caffe2::TypeMeta dtype, c10::Device device, TorchTensorImpl & t)
+    : TensorImpl(DISPATCHKEY, dtype, device), tensor(t) {}
+
   unsigned getTraceIdx() const { return trace_idx; }
+
+  void set(Tensor &&t) {
+    tensor = t.unsafeReleaseIntrusivePtr();
+    refresh_non_virtual();
+  }
 
   void ensure_tensor() const {
     if (!tensor) {
       trace.flush();
       assert(tensor);
     }
+  }
+
+  friend ostream& operator<<(ostream &os, const TorchyTensor &tt) {
+    return os << Tensor(tt.tensor);
   }
 
   void release_resources() override {
@@ -344,9 +357,24 @@ template<typename... T>
     return tensor->has_storage();
   }
 
+  const Storage& storage() const override {
+    ensure_tensor();
+    return tensor->storage();
+  }
+
   int64_t numel() const override {
     ensure_tensor();
     return tensor->numel();
+  }
+
+  bool is_contiguous(at::MemoryFormat memory_format) const override {
+    ensure_tensor();
+    return tensor->is_contiguous(memory_format);
+  }
+
+  int64_t storage_offset() const override {
+    ensure_tensor();
+    return tensor->storage_offset();
   }
 
   const char* tensorimpl_type_name() const override {
@@ -356,11 +384,13 @@ template<typename... T>
   void set_size(int64_t dim, int64_t new_size) override {
     ensure_tensor();
     tensor->set_size(dim, new_size);
+    refresh_non_virtual();
   }
 
   void set_stride(int64_t dim, int64_t new_stride) override {
     ensure_tensor();
     tensor->set_stride(dim, new_stride);
+    refresh_non_virtual();
   }
 
   void set_storage_offset(int64_t storage_offset) override {
@@ -410,9 +440,21 @@ unsigned trace_idx(const Tensor &t) {
   return -1u;
 }
 
-void ensure_materialized(const Tensor &t) {
+void print(ostream &os, const TorchyTensor &tensor) {
+  os << tensor;
+}
+
+void set(TorchyTensor *tt, Tensor &&t) {
+  tt->set(move(t));
+}
+
+void ensure_materialized() {}
+
+template<typename... T>
+void ensure_materialized(const Tensor &t, T&... args) {
   if (auto tt = is_torchy(t))
     tt->ensure_tensor();
+  ensure_materialized(args...);
 }
 
 
@@ -448,6 +490,7 @@ Tensor& bitwise_and_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
                                const Tensor &other, Tensor &out) {
   // cant delay this without changing the TensorImpl of out
   // TODO: should we?
+  ensure_materialized(self, other, out);
   return
     at::redispatch::bitwise_and_out(
       ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
@@ -457,6 +500,7 @@ Tensor& bitwise_and_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
 Tensor& ceil_out(c10::DispatchKeySet ks, const Tensor &self, Tensor &out) {
   // cant delay this without changing the TensorImpl of out
   // TODO: should we?
+  ensure_materialized(self, out);
   return
     at::redispatch::ceil_out(
       ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
@@ -466,7 +510,7 @@ Tensor& ceil_out(c10::DispatchKeySet ks, const Tensor &self, Tensor &out) {
 Tensor& copy_(c10::DispatchKeySet ks, Tensor &self, const Tensor &src,
               bool non_blocking) {
   // TODO: can be made lazy?
-  ensure_materialized(src);
+  ensure_materialized(self, src);
   return
     at::redispatch::copy_(
       ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
@@ -474,8 +518,10 @@ Tensor& copy_(c10::DispatchKeySet ks, Tensor &self, const Tensor &src,
 }
 
 Tensor& detach_(c10::DispatchKeySet ks, Tensor &self) {
-  cout << "Called detach_" << endl;
-  return self;
+  // TODO: can be made lazy?
+  ensure_materialized(self);
+  return at::redispatch::detach_(
+           ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
 }
 
 Tensor empty_memory_format(c10::DispatchKeySet ks, IntArrayRef size,
@@ -484,9 +530,13 @@ Tensor empty_memory_format(c10::DispatchKeySet ks, IntArrayRef size,
                            c10::optional<Device> device,
                            c10::optional<bool> pin_memory,
                            c10::optional<MemoryFormat> memory_format) {
-  cout << "Called empty.memory_format" << endl;
-  return native::empty_cpu(size, dtype, layout, device, pin_memory,
-                           memory_format);
+  //cout << "Called empty.memory_format" << endl;
+  //return native::empty_cpu(size, dtype, layout, device, pin_memory,
+  //                         memory_format);
+  return
+    at::redispatch::empty(
+      ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+      size, dtype, layout, device, pin_memory, memory_format);
 }
 
 Tensor empty_strided(c10::DispatchKeySet ks, IntArrayRef size,
@@ -495,9 +545,13 @@ Tensor empty_strided(c10::DispatchKeySet ks, IntArrayRef size,
                      c10::optional<Layout> layout,
                      c10::optional<Device> device,
                      c10::optional<bool> pin_memory) {
-  cout << "Called empty_strided" << endl;
+  //cout << "Called empty_strided" << endl;
+  //return
+  //  native::empty_strided_cpu(size, stride, dtype, layout, device, pin_memory);
   return
-    native::empty_strided_cpu(size, stride, dtype, layout, device, pin_memory);
+    at::redispatch::empty_strided(
+      ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+      size, stride, dtype, layout, device, pin_memory);
 }
 
 Tensor eq_Tensor(c10::DispatchKeySet ks, const Tensor &self,
