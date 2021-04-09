@@ -200,64 +200,63 @@ public:
       if (!op.needsComputing())
         continue;
 
+      auto dispatch_key = op.dispatch_key;
+      for (auto &arg : op.args) {
+        if (auto t = get_if<Tensor>(&arg)) {
+          dispatch_key = dispatch_key | t->key_set();
+        }
+      }
+      dispatch_key
+       = dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+
       if (!strcmp(op.id, "abs")) {
         set(op.tensor,
-          at::redispatch::abs(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0])));
+            at::redispatch::abs(dispatch_key, get<Tensor>(op.args[0])));
       } else if (!strcmp(op.id, "add_Tensor")) {
         set(op.tensor,
-          at::redispatch::add(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]),
-            get<Tensor>(op.args[1]),
-            get<Scalar>(op.args[2])));
+            at::redispatch::add(dispatch_key, get<Tensor>(op.args[0]),
+                                get<Tensor>(op.args[1]),
+                                get<Scalar>(op.args[2])));
       } else if (!strcmp(op.id, "as_strided")) {
         set(op.tensor,
-          at::redispatch::as_strided(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]),
-            get<IntArrayRef>(op.args[1]),
-            get<IntArrayRef>(op.args[2]),
-            get<c10::optional<int64_t>>(op.args[3])));
+            at::redispatch::as_strided(dispatch_key,
+              get<Tensor>(op.args[0]), get<IntArrayRef>(op.args[1]),
+              get<IntArrayRef>(op.args[2]),
+              get<c10::optional<int64_t>>(op.args[3])));
       } else if (!strcmp(op.id, "eq_Tensor")) {
-        set(op.tensor,
-          at::redispatch::eq(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]),
-            get<Tensor>(op.args[1])));
+        set(op.tensor, at::redispatch::eq(dispatch_key, get<Tensor>(op.args[0]),
+                                          get<Tensor>(op.args[1])));
       } else if (!strcmp(op.id, "masked_select")) {
         set(op.tensor,
-          at::redispatch::masked_select(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]), get<Tensor>(op.args[1])));
+            at::redispatch::masked_select(dispatch_key,
+                                          get<Tensor>(op.args[0]),
+                                          get<Tensor>(op.args[1])));
       } else if (!strcmp(op.id, "max")) {
-        set(op.tensor,
-          at::redispatch::max(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0])));
+        set(op.tensor, at::redispatch::max(dispatch_key,
+                                           get<Tensor>(op.args[0])));
       } else if (!strcmp(op.id, "min")) {
-        set(op.tensor,
-          at::redispatch::max(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0])));
+        set(op.tensor, at::redispatch::min(dispatch_key,
+                                           get<Tensor>(op.args[0])));
       } else if (!strcmp(op.id, "mul_Tensor")) {
         set(op.tensor,
-          at::redispatch::mul(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]),
-            get<Tensor>(op.args[1])));
+            at::redispatch::mul(dispatch_key, get<Tensor>(op.args[0]),
+                                get<Tensor>(op.args[1])));
       } else if (!strcmp(op.id, "ne_Scalar")) {
         set(op.tensor,
-          at::redispatch::ne(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]),
-            get<Scalar>(op.args[1])));
+            at::redispatch::ne(dispatch_key, get<Tensor>(op.args[0]),
+                              get<Scalar>(op.args[1])));
       } else if (!strcmp(op.id, "ne_Tensor")) {
         set(op.tensor,
-          at::redispatch::ne(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]),
-            get<Tensor>(op.args[1])));
+          at::redispatch::ne(dispatch_key, get<Tensor>(op.args[0]),
+                             get<Tensor>(op.args[1])));
       } else if (!strcmp(op.id, "reshape")) {
         set(op.tensor,
-          at::redispatch::reshape(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]),
-            get<IntArrayRef>(op.args[1])));
+            at::redispatch::reshape(dispatch_key, get<Tensor>(op.args[0]),
+                                    get<IntArrayRef>(op.args[1])));
       } else if (!strcmp(op.id, "view")) {
         set(op.tensor,
-          at::redispatch::view(op.dispatch_key & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-            get<Tensor>(op.args[0]), get<IntArrayRef>(op.args[1])));
+            at::redispatch::view(dispatch_key, get<Tensor>(op.args[0]),
+                                get<IntArrayRef>(op.args[1])));
       } else {
         assert(0);
       }
@@ -298,6 +297,9 @@ class TorchyTensor final : public TensorImpl {
     // FIXME: cant access: is_channels_last_3d_contiguous_
     is_non_overlapping_and_dense_ = tensor->is_non_overlapping_and_dense();
     is_wrapped_number_ = tensor->is_wrapped_number();
+
+    if (tensor->has_storage())
+      storage_ = tensor->storage();
   }
 
 public:
@@ -314,7 +316,8 @@ template<typename... T>
   unsigned getTraceIdx() const { return trace_idx; }
 
   void set(Tensor &&t) {
-    tensor = t.unsafeReleaseIntrusivePtr();
+    tensor   = t.unsafeReleaseIntrusivePtr();
+    key_set_ = key_set_ | tensor->key_set();
     refresh_non_virtual();
   }
 
@@ -350,16 +353,6 @@ template<typename... T>
   int64_t dim() const override {
     ensure_tensor();
     return tensor->dim();
-  }
-
-  bool has_storage() const override {
-    ensure_tensor();
-    return tensor->has_storage();
-  }
-
-  const Storage& storage() const override {
-    ensure_tensor();
-    return tensor->storage();
   }
 
   int64_t numel() const override {
@@ -411,21 +404,19 @@ template<typename... T>
   c10::intrusive_ptr<TensorImpl>
   shallow_copy_and_detach(const c10::VariableVersion &version_counter,
                           bool allow_tensor_metadata_change) const override {
-    TORCH_CHECK_NOT_IMPLEMENTED(false,
-                                "TorchyTensor::shallow_copy_and_detach(1)");
+    assert(0 && "TorchyTensor::shallow_copy_and_detach(1)");
     return {};
   }
 
   c10::intrusive_ptr<TensorImpl>
   shallow_copy_and_detach(c10::VariableVersion &&version_counter,
                           bool allow_tensor_metadata_change) const override {
-    TORCH_CHECK_NOT_IMPLEMENTED(false,
-                                "TorchyTensor::shallow_copy_and_detach(2)");
+    assert(0 && "TorchyTensor::shallow_copy_and_detach(2)");
     return {};
   }
 
   void shallow_copy_from(const c10::intrusive_ptr<TensorImpl> &impl) override {
-    TORCH_CHECK_NOT_IMPLEMENTED(false, "TorchyTensor::shallow_copy_from");
+    assert(0 && "TorchyTensor::shallow_copy_from");
   }
 };
 
