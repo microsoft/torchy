@@ -127,6 +127,7 @@ struct TensorOp {
 class Trace {
   TensorOp ops[MAX_TRACE_LENGTH];
   unsigned next_op = 0;
+  bool flushing = false;
 
   template <typename T>
   void incref(T t) {}
@@ -165,9 +166,14 @@ class Trace {
   void registerOpArgs(TensorOp &op) {}
 
 public:
+  bool is_flushing() const {
+    return flushing;
+  }
+
   template<typename... T>
   unsigned register_tensor(TorchyTensor *tensor, DispatchKeySet ks,
                            const char *op_id, T&... args) {
+    assert(!flushing);
     if (next_op == MAX_TRACE_LENGTH)
       flush();
 
@@ -194,7 +200,10 @@ public:
   }
 
   void flush() {
+    assert(!flushing);
+    flushing = true;
     DBG(cout << "Flush trace\n" << *this;)
+
     for (unsigned i = 0; i < next_op; ++i) {
       auto &op = ops[i];
       if (!op.needsComputing())
@@ -265,6 +274,7 @@ public:
     }
 
     next_op = 0;
+    flushing = false;
     deep_copies.clear();
   }
 
@@ -457,6 +467,7 @@ Tensor abs(c10::DispatchKeySet ks, const Tensor &self) {
 Tensor& abs_out(c10::DispatchKeySet ks, const Tensor &self, Tensor &out) {
   // cant delay this without changing the TensorImpl of out
   // TODO: should we?
+  ensure_materialized(self, out);
   return
     at::redispatch::abs_out(
       ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
@@ -551,6 +562,20 @@ Tensor eq_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                                                "eq_Tensor", self, other);
 }
 
+Tensor& eq_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
+                      const Tensor &other, Tensor &out) {
+  ensure_materialized(self, other, out);
+  return at::redispatch::eq_out(
+           ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+           out, self, other);
+}
+
+Scalar _local_scalar_dense(c10::DispatchKeySet ks, const Tensor &self) {
+  ensure_materialized(self);
+  return at::redispatch::_local_scalar_dense(
+           ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
+}
+
 Tensor masked_select(c10::DispatchKeySet ks, const Tensor &self,
                      const Tensor &mask) {
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
@@ -565,6 +590,14 @@ Tensor max(c10::DispatchKeySet ks, const Tensor &self) {
 Tensor min(c10::DispatchKeySet ks, const Tensor &self) {
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
                                                "min", self);
+}
+
+Tensor& mul_out(c10::DispatchKeySet ks, const Tensor &self,
+                const Tensor &other, Tensor &out) {
+  ensure_materialized(self, other, out);
+  return at::redispatch::mul_out(
+    ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+    out, self, other);
 }
 
 Tensor mul_Tensor(c10::DispatchKeySet ks, const Tensor &self,
@@ -585,14 +618,22 @@ Tensor ne_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                                                "ne_Tensor", self, other);
 }
 
+Tensor& ne_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
+                      const Tensor &other, Tensor &out) {
+  ensure_materialized(self, other, out);
+  return
+    at::redispatch::ne_out(
+      ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+      out, self, other);
+}
+
 Tensor reshape(c10::DispatchKeySet ks, const Tensor &self, IntArrayRef shape) {
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
                                                "reshape", self, shape);
 }
 
-Tensor to_device(c10::DispatchKeySet ks,
-                 const Tensor &self, Device device, ScalarType dtype,
-                 bool non_blocking, bool copy,
+Tensor to_device(c10::DispatchKeySet ks, const Tensor &self,
+                 Device device, ScalarType dtype, bool non_blocking, bool copy,
                  c10::optional<MemoryFormat> memory_format) {
   ensure_materialized(self);
   return
@@ -618,12 +659,16 @@ TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
   m.impl("empty.memory_format", empty_memory_format); // FIXME: not called
   m.impl("empty_strided", empty_strided); // FIXME: not called
   m.impl("eq.Tensor", eq_Tensor);
+  m.impl("eq.Tensor_out", eq_Tensor_out);
+  m.impl("_local_scalar_dense", _local_scalar_dense);
   m.impl("masked_select", masked_select);
   m.impl("max", max);
   m.impl("min", min);
+  m.impl("mul.out", mul_out);
   m.impl("mul.Tensor", mul_Tensor);
   m.impl("ne.Scalar", ne_Scalar);
   m.impl("ne.Tensor", ne_Tensor);
+  m.impl("ne.Tensor_out", ne_Tensor_out);
   m.impl("reshape", reshape); // FIXME: RegisterMath
   m.impl("to.device", to_device); // FIXME: RegisterMath
   m.impl("view", view);
