@@ -7,7 +7,9 @@ WIP; don't use.
 
 Install
 -------
+```
 $ python setup.py install
+```
 
 
 Run
@@ -15,7 +17,7 @@ Run
 Torchy shouldn't require any change beyond adding a call to `torchy.enable()`.
 Example:
 
-```
+```python
 import torch
 import torchy
 
