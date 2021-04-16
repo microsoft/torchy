@@ -320,14 +320,13 @@ template<typename... T>
     trace_idx = trace.register_tensor(this, ks, op_id, args...);
   }
 
-  TorchyTensor(caffe2::TypeMeta dtype, c10::Device device, TorchTensorImpl & t)
-    : TensorImpl(DISPATCHKEY, dtype, device), tensor(t) {}
-
   unsigned getTraceIdx() const { return trace_idx; }
 
   void set(Tensor &&t) {
-    tensor   = t.unsafeReleaseIntrusivePtr();
-    key_set_ = key_set_ | tensor->key_set();
+    trace_idx  = -1u;
+    tensor     = t.unsafeReleaseIntrusivePtr();
+    key_set_   = key_set_ | tensor->key_set();
+    data_type_ = tensor->dtype();
     refresh_non_virtual();
   }
 
@@ -632,6 +631,15 @@ Tensor reshape(c10::DispatchKeySet ks, const Tensor &self, IntArrayRef shape) {
                                                "reshape", self, shape);
 }
 
+Tensor& resize_(c10::DispatchKeySet ks, Tensor &self, IntArrayRef size,
+                c10::optional<MemoryFormat> memory_format) {
+  ensure_materialized(self);
+  return
+    at::redispatch::resize_(
+      ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+      self, size, memory_format);
+}
+
 Tensor to_device(c10::DispatchKeySet ks, const Tensor &self,
                  Device device, ScalarType dtype, bool non_blocking, bool copy,
                  c10::optional<MemoryFormat> memory_format) {
@@ -670,6 +678,7 @@ TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
   m.impl("ne.Tensor", ne_Tensor);
   m.impl("ne.Tensor_out", ne_Tensor_out);
   m.impl("reshape", reshape); // FIXME: RegisterMath
+  m.impl("resize_", resize_);
   m.impl("to.device", to_device); // FIXME: RegisterMath
   m.impl("view", view);
 }
