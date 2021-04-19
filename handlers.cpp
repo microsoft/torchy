@@ -244,6 +244,9 @@ public:
       } else if (!strcmp(op.id, "gt_Scalar")) {
         set(op.tensor, at::redispatch::gt(dispatch_key, get<Tensor>(op.args[0]),
                                           get<Scalar>(op.args[1])));
+      } else if (!strcmp(op.id, "isfinite")) {
+        set(op.tensor,
+            at::redispatch::isfinite(dispatch_key, get<Tensor>(op.args[0])));
       } else if (!strcmp(op.id, "masked_select")) {
         set(op.tensor,
             at::redispatch::masked_select(dispatch_key,
@@ -472,6 +475,12 @@ void ensure_materialized(const Tensor &t, T&... args) {
 
 
 Tensor abs(c10::DispatchKeySet ks, const Tensor &self) {
+  if (trace.is_flushing()) {
+    ensure_materialized(self);
+    return
+      at::redispatch::abs(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
+  }
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
                                                "abs", self);
 }
@@ -488,6 +497,13 @@ Tensor& abs_out(c10::DispatchKeySet ks, const Tensor &self, Tensor &out) {
 
 Tensor add_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                   const Tensor &other, const Scalar &alpha) {
+  if (trace.is_flushing()) {
+    ensure_materialized(self, other);
+    return
+      at::redispatch::add(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        self, other, alpha);
+  }
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
                                                "add_Tensor", self, other,
                                                alpha);
@@ -586,6 +602,13 @@ Tensor empty_strided(c10::DispatchKeySet ks, IntArrayRef size,
 
 Tensor eq_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                  const Tensor &other) {
+  if (trace.is_flushing()) {
+    ensure_materialized(self, other);
+    return
+      at::redispatch::eq(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        self, other);
+  }
   return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool),
                                                self.device(), ks,
                                                "eq_Tensor", self, other);
@@ -601,7 +624,7 @@ Tensor& eq_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
 
 Tensor& fill__Scalar(c10::DispatchKeySet ks, Tensor &self,
                      const Scalar &value) {
-ensure_materialized(self);
+  ensure_materialized(self);
   return
     at::redispatch::fill_(
       ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
@@ -631,6 +654,18 @@ Tensor& gt_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
       out, self, other);
 }
 
+Tensor isfinite(c10::DispatchKeySet ks, const Tensor &self) {
+  if (trace.is_flushing()) {
+    ensure_materialized(self);
+    return
+      at::redispatch::isfinite(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
+  }
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool),
+                                               self.device(), ks, "isfinite",
+                                               self);
+}
+
 Scalar _local_scalar_dense(c10::DispatchKeySet ks, const Tensor &self) {
   ensure_materialized(self);
   return at::redispatch::_local_scalar_dense(
@@ -639,16 +674,35 @@ Scalar _local_scalar_dense(c10::DispatchKeySet ks, const Tensor &self) {
 
 Tensor masked_select(c10::DispatchKeySet ks, const Tensor &self,
                      const Tensor &mask) {
+  if (trace.is_flushing()) {
+    ensure_materialized(self, mask);
+    return
+      at::redispatch::masked_select(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        self, mask);
+  }
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
                                                "masked_select", self, mask);
 }
 
 Tensor max(c10::DispatchKeySet ks, const Tensor &self) {
+  if (trace.is_flushing()) {
+    ensure_materialized(self);
+    return
+      at::redispatch::max(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
+  }
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
                                                "max", self);
 }
 
 Tensor min(c10::DispatchKeySet ks, const Tensor &self) {
+  if (trace.is_flushing()) {
+    ensure_materialized(self);
+    return
+      at::redispatch::min(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
+  }
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
                                                "min", self);
 }
@@ -663,12 +717,26 @@ Tensor& mul_out(c10::DispatchKeySet ks, const Tensor &self,
 
 Tensor mul_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                   const Tensor &other) {
+  if (trace.is_flushing()) {
+    ensure_materialized(self, other);
+    return
+      at::redispatch::mul(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        self, other);
+  }
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), ks,
                                                "mul_Tensor", self, other);
 }
 
 Tensor ne_Scalar(c10::DispatchKeySet ks, const Tensor &self,
                  const Scalar &other) {
+  if (trace.is_flushing()) {
+    ensure_materialized(self);
+    return
+      at::redispatch::ne(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        self, other);
+  }
   return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool),
                                                self.device(), ks,
                                                "ne_Scalar", self, other);
@@ -676,6 +744,13 @@ Tensor ne_Scalar(c10::DispatchKeySet ks, const Tensor &self,
 
 Tensor ne_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                  const Tensor &other) {
+  if (trace.is_flushing()) {
+    ensure_materialized(self, other);
+    return
+      at::redispatch::ne(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        self, other);
+  }
   return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool),
                                                self.device(), ks,
                                                "ne_Tensor", self, other);
@@ -763,6 +838,7 @@ TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
   m.impl("fill_.Scalar", fill__Scalar);
   m.impl("gt.Scalar", gt_Scalar);
   m.impl("gt.Tensor_out", gt_Tensor_out);
+  m.impl("isfinite", isfinite);
   m.impl("_local_scalar_dense", _local_scalar_dense);
   m.impl("masked_select", masked_select);
   m.impl("max", max);
@@ -780,6 +856,7 @@ TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
 }
 
 TORCH_LIBRARY_IMPL(aten, AutogradPrivateUse1, m) {
+  m.impl("isfinite", isfinite);
   m.impl("reshape", reshape);
   m.impl("to.device", to_device);
 }
