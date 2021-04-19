@@ -1,6 +1,9 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
+// TODO: deep copy input tensors modified in place
+// TODO: lazy in-place modification for torchy tensors. copy otherwise
+
 #undef NDEBUG
 #include "dispatch.h"
 #include <ATen/NativeFunctions.h>
@@ -15,7 +18,7 @@
 #include <ATen/RedispatchFunctions.h>
 
 #define MAX_TRACE_LENGTH 64
-#define DEBUG_TRACE_RESULT 1
+#define DEBUG_TRACE_RESULT 0
 
 #if 1
 #define DBG(x) x
@@ -32,10 +35,25 @@ using namespace std;
 
 namespace {
 
+#if DEBUG_TRACE_RESULT
+void assert_eq(const TensorImpl &lhs, const TensorImpl &rhs) {
+  assert(lhs.sizes() == rhs.sizes());
+  assert(lhs.strides() == rhs.strides());
+  assert(lhs.dim() == rhs.dim());
+  assert(lhs.has_storage() == rhs.has_storage());
+  assert(lhs.numel() == rhs.numel());
+  assert(lhs.dtype() == rhs.dtype());
+  assert(lhs.storage_offset() == rhs.storage_offset());
+  if (lhs.has_storage())
+    assert(memcmp(lhs.data(), rhs.data(), lhs.itemsize() * lhs.numel()) == 0);
+}
+#endif
+
 class TorchyTensor;
 using TorchTensorImpl = c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>;
 
 using UnionInputTys = c10::variant<
+  int64_t,
   IntArrayRef,
   c10::optional<int64_t>,
   c10::optional<ScalarType>,
@@ -107,6 +125,8 @@ struct TensorOp {
         os << *s;
       } else if (auto a = get_if<IntArrayRef>(&arg)) {
         os << *a;
+      } else if (auto i = get_if<int64_t>(&arg)) {
+        os << *i;
       } else if (auto o = get_if<c10::optional<int64_t>>(&arg)) {
         if (*o)
           os << **o;
@@ -175,6 +195,10 @@ class Trace {
 public:
   bool is_flushing() const {
     return flushing;
+  }
+
+  void set_flushing(bool val) {
+    flushing = val;
   }
 
   template<typename... T>
@@ -275,6 +299,11 @@ public:
         set(op.tensor,
             at::redispatch::reshape(dispatch_key, get<Tensor>(op.args[0]),
                                     get<IntArrayRef>(op.args[1])));
+      } else if (!strcmp(op.id, "select_int")) {
+        set(op.tensor,
+            at::redispatch::select(dispatch_key, get<Tensor>(op.args[0]),
+                                   get<int64_t>(op.args[1]),
+                                   get<int64_t>(op.args[2])));
       } else if (!strcmp(op.id, "sum")) {
         set(op.tensor,
             at::redispatch::sum(dispatch_key, get<Tensor>(op.args[0]),
@@ -297,7 +326,7 @@ public:
 
   friend ostream& operator<<(ostream &os, const Trace &t) {
     if (t.next_op == 0)
-      return os << "empty trace";
+      return os << "empty trace" << endl;
 
     map<const Tensor*, unsigned> inputs_map;
     for (unsigned i = 0; i < t.next_op; ++i) {
@@ -312,9 +341,29 @@ public:
 thread_local Trace trace;
 
 
+#if DEBUG_TRACE_RESULT
+class ScopedAutoFlush {
+  bool old_val;
+public:
+  ScopedAutoFlush() : old_val(trace.is_flushing()) {
+    trace.set_flushing(true);
+  }
+
+  ~ScopedAutoFlush() {
+    trace.set_flushing(old_val);
+  }
+};
+#else
+class ScopedAutoFlush {};
+#endif
+
+
 class TorchyTensor final : public TensorImpl {
   TorchTensorImpl tensor;
   unsigned trace_idx;
+#if DEBUG_TRACE_RESULT
+  mutable bool materialized = false;
+#endif
 
   // TODO: not everything is virtual in TensorImpl..
   void refresh_non_virtual() {
@@ -353,7 +402,8 @@ template<typename... T>
 
   void set(Tensor &&t) {
 #if DEBUG_TRACE_RESULT
-    assert(tensor == t.getIntrusivePtr());
+    //cout << "SET RESULT = " << t << endl;
+    assert_eq(*tensor, *t.getIntrusivePtr());
 #endif
     trace_idx  = -1u;
     tensor     = t.unsafeReleaseIntrusivePtr();
@@ -361,10 +411,17 @@ template<typename... T>
     set_all_nonvirtual_data();
   }
 
-  void ensure_tensor() const {
+  void ensure_tensor(bool for_debugging = false) const {
+#if DEBUG_TRACE_RESULT
+    if (!materialized && !trace.is_flushing()) {
+#else
     if (!tensor) {
+#endif
       trace.flush();
       assert(tensor);
+#if DEBUG_TRACE_RESULT
+      materialized = true;
+#endif
     }
   }
 
@@ -501,6 +558,7 @@ void ensure_materialized(const Tensor &t, T&... args) {
 Tensor abs(c10::DispatchKeySet ks, const Tensor &self) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self);
     result =
       at::redispatch::abs(
@@ -524,6 +582,7 @@ Tensor add_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                   const Tensor &other, const Scalar &alpha) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self, other);
     result =
       at::redispatch::add(
@@ -539,6 +598,7 @@ Tensor as_strided(c10::DispatchKeySet ks, const Tensor &self, IntArrayRef size,
                   IntArrayRef stride, c10::optional<int64_t> storage_offset) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self);
     result =
       at::redispatch::as_strided(
@@ -629,6 +689,7 @@ Tensor eq_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                  const Tensor &other) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self, other);
     result =
       at::redispatch::eq(
@@ -661,6 +722,7 @@ Tensor gt_Scalar(c10::DispatchKeySet ks, const Tensor &self,
                  const Scalar &other) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self);
     result =
       at::redispatch::gt(
@@ -684,6 +746,7 @@ Tensor& gt_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
 Tensor isfinite(c10::DispatchKeySet ks, const Tensor &self) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self);
     result = at::redispatch::isfinite(
       ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
@@ -703,6 +766,7 @@ Tensor masked_select(c10::DispatchKeySet ks, const Tensor &self,
                      const Tensor &mask) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self, mask);
     result =
       at::redispatch::masked_select(
@@ -716,6 +780,7 @@ Tensor masked_select(c10::DispatchKeySet ks, const Tensor &self,
 Tensor max(c10::DispatchKeySet ks, const Tensor &self) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self);
     result =
       at::redispatch::max(
@@ -728,6 +793,7 @@ Tensor max(c10::DispatchKeySet ks, const Tensor &self) {
 Tensor min(c10::DispatchKeySet ks, const Tensor &self) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self);
     result =
       at::redispatch::min(
@@ -749,6 +815,7 @@ Tensor mul_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                   const Tensor &other) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self, other);
     result =
       at::redispatch::mul(
@@ -763,6 +830,7 @@ Tensor ne_Scalar(c10::DispatchKeySet ks, const Tensor &self,
                  const Scalar &other) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self);
     result =
       at::redispatch::ne(
@@ -778,6 +846,7 @@ Tensor ne_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                  const Tensor &other) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self, other);
     result =
       at::redispatch::ne(
@@ -801,6 +870,7 @@ Tensor& ne_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
 Tensor reshape(c10::DispatchKeySet ks, const Tensor &self, IntArrayRef shape) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self);
     result =
       at::redispatch::reshape(
@@ -820,10 +890,27 @@ Tensor& resize_(c10::DispatchKeySet ks, Tensor &self, IntArrayRef size,
       self, size, memory_format);
 }
 
+Tensor select_int(c10::DispatchKeySet ks, const Tensor &self, int64_t dim,
+                  int64_t index) {
+  Tensor result;
+  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
+    ensure_materialized(self);
+    result =
+      at::redispatch::select(
+         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+         self, dim, index);
+  }
+  return trace.is_flushing() ? result :
+           MK_TORCHY(self.dtype(), self.device(), "select_int", self, dim,
+                     index);
+}
+
 Tensor sum(c10::DispatchKeySet ks, const Tensor &self,
            c10::optional<ScalarType> dtype) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self);
     result =
       at::redispatch::sum(
@@ -831,7 +918,7 @@ Tensor sum(c10::DispatchKeySet ks, const Tensor &self,
          self, dtype);
   }
   auto ty = self.dtype();
-  if (ty == scalarTypeToTypeMeta(kBool))
+  if (ty == kBool)
     ty = scalarTypeToTypeMeta(kLong);
   return trace.is_flushing() ? result :
            MK_TORCHY(dtype ? scalarTypeToTypeMeta(*dtype) : ty,
@@ -851,6 +938,7 @@ Tensor to_device(c10::DispatchKeySet ks, const Tensor &self,
 Tensor view(c10::DispatchKeySet ks, const Tensor &self, IntArrayRef size) {
   Tensor result;
   if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
+    ScopedAutoFlush f;
     ensure_materialized(self);
     result =
       at::redispatch::view(
@@ -890,6 +978,7 @@ TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
   m.impl("ne.Tensor_out", ne_Tensor_out);
   m.impl("reshape", reshape); // FIXME: RegisterMath
   m.impl("resize_", resize_);
+  m.impl("select.int", select_int);
   m.impl("sum", sum);
   m.impl("to.device", to_device); // FIXME: RegisterMath
   m.impl("view", view);
