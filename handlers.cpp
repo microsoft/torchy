@@ -18,13 +18,14 @@
 #include <ATen/RedispatchFunctions.h>
 
 #define MAX_TRACE_LENGTH 64
-#define DEBUG_TRACE_RESULT 0
 
 #if 1
 #define DBG(x) x
 #else
 #define DBG(x)
 #endif
+
+#define ENTER(f) cout << "Enter " f << endl
 
 #ifdef C10_DISABLE_TENSORIMPL_EXTENSIBILITY
 # error Cannot disable C10_DISABLE_TENSORIMPL_EXTENSIBILITY
@@ -34,20 +35,6 @@ using namespace at;
 using namespace std;
 
 namespace {
-
-#if DEBUG_TRACE_RESULT
-void assert_eq(const TensorImpl &lhs, const TensorImpl &rhs) {
-  assert(lhs.sizes() == rhs.sizes());
-  assert(lhs.strides() == rhs.strides());
-  assert(lhs.dim() == rhs.dim());
-  assert(lhs.has_storage() == rhs.has_storage());
-  assert(lhs.numel() == rhs.numel());
-  assert(lhs.dtype() == rhs.dtype());
-  assert(lhs.storage_offset() == rhs.storage_offset());
-  if (lhs.has_storage())
-    assert(memcmp(lhs.data(), rhs.data(), lhs.itemsize() * lhs.numel()) == 0);
-}
-#endif
 
 class TorchyTensor;
 using TorchTensorImpl = c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>;
@@ -102,7 +89,7 @@ struct TensorOp {
     return refs > 0;
   }
 
-  void print(ostream &os, map<const Tensor*, unsigned> &inputs) const {
+  void print(ostream &os, map<const TensorImpl*, unsigned> &inputs) const {
     if (!needsComputing()) {
       os << "[dead]";
       return;
@@ -118,7 +105,8 @@ struct TensorOp {
         if (idx != -1u) {
           os << '%' << idx;
         } else {
-          auto n = inputs.emplace(t, (unsigned)inputs.size()).first->second;
+          auto n = inputs.emplace(t->unsafeGetTensorImpl(),
+                                  (unsigned)inputs.size()).first->second;
           os << "in<" << n << '>';
         }
       } else if (auto s = get_if<Scalar>(&arg)) {
@@ -161,8 +149,10 @@ class Trace {
 
   void incref(const Tensor &t) {
     auto idx = trace_idx(t);
-    if (idx != -1u)
+    if (idx != -1u) {
+      assert(idx < next_op);
       ops[idx].incref();
+    }
   }
 
   vector<unique_ptr<unsigned char[]>> deep_copies;
@@ -326,9 +316,9 @@ public:
 
   friend ostream& operator<<(ostream &os, const Trace &t) {
     if (t.next_op == 0)
-      return os << "empty trace" << endl;
+      os << "(empty)\n";
 
-    map<const Tensor*, unsigned> inputs_map;
+    map<const TensorImpl*, unsigned> inputs_map;
     for (unsigned i = 0; i < t.next_op; ++i) {
       os << '%' << i << " = ";
       t.ops[i].print(os, inputs_map);
@@ -341,87 +331,65 @@ public:
 thread_local Trace trace;
 
 
-#if DEBUG_TRACE_RESULT
 class ScopedAutoFlush {
-  bool old_val;
+  bool was_flushing;
 public:
-  ScopedAutoFlush() : old_val(trace.is_flushing()) {
-    trace.set_flushing(true);
+  ScopedAutoFlush() : was_flushing(trace.is_flushing()) {
+    if (!was_flushing) {
+      trace.flush();
+      trace.set_flushing(true);
+    }
   }
 
   ~ScopedAutoFlush() {
-    trace.set_flushing(old_val);
+    trace.set_flushing(was_flushing);
   }
 };
-#else
-class ScopedAutoFlush {};
-#endif
 
 
 class TorchyTensor final : public TensorImpl {
   TorchTensorImpl tensor;
   unsigned trace_idx;
-#if DEBUG_TRACE_RESULT
-  mutable bool materialized = false;
-#endif
 
   // TODO: not everything is virtual in TensorImpl..
   void refresh_non_virtual() {
-    is_channels_last_ = tensor->is_strides_like_channels_last();
-    // FIXME: cant access:  is_channels_last_contiguous_
-    is_channels_last_3d_ = tensor->is_strides_like_channels_last_3d();
-    // FIXME: cant access: is_channels_last_3d_contiguous_
+    storage_offset_               = tensor->storage_offset();
+    is_channels_last_             = tensor->is_strides_like_channels_last();
+    is_channels_last_3d_          = tensor->is_strides_like_channels_last_3d();
     is_non_overlapping_and_dense_ = tensor->is_non_overlapping_and_dense();
-    is_wrapped_number_ = tensor->is_wrapped_number();
-  }
+    is_wrapped_number_            = tensor->is_wrapped_number();
+    // FIXME: cant access:  is_channels_last_contiguous_
+    // FIXME: cant access: is_channels_last_3d_contiguous_
 
-  void set_all_nonvirtual_data() {
-    key_set_   = key_set_ | tensor->key_set();
-    storage_   = tensor->storage();
-    refresh_non_virtual();
-
+    assert(layout() == tensor->layout());
+    assert(data() == tensor->data());
     assert(dtype() == tensor->dtype());
+    assert(itemsize() == tensor->itemsize());
   }
 
 public:
 template<typename... T>
   TorchyTensor(caffe2::TypeMeta dtype, c10::Device device, DispatchKeySet ks,
-#if DEBUG_TRACE_RESULT
-               Tensor &result,
-#endif
                const char *op_id, const T&... args)
     : TensorImpl(DISPATCHKEY, dtype, device) {
     trace_idx = trace.register_tensor(this, ks, op_id, args...);
-#if DEBUG_TRACE_RESULT
-    tensor = result.unsafeReleaseIntrusivePtr();
-    set_all_nonvirtual_data();
-#endif
   }
 
   unsigned getTraceIdx() const { return trace_idx; }
 
   void set(Tensor &&t) {
-#if DEBUG_TRACE_RESULT
-    //cout << "SET RESULT = " << t << endl;
-    assert_eq(*tensor, *t.getIntrusivePtr());
-#endif
+    assert(!tensor);
     trace_idx  = -1u;
     tensor     = t.unsafeReleaseIntrusivePtr();
-
-    set_all_nonvirtual_data();
+    key_set_   = key_set_ | tensor->key_set();
+    storage_   = tensor->storage();
+    refresh_non_virtual();
   }
 
   void ensure_tensor(bool for_debugging = false) const {
-#if DEBUG_TRACE_RESULT
-    if (!materialized && !trace.is_flushing()) {
-#else
     if (!tensor) {
-#endif
       trace.flush();
       assert(tensor);
-#if DEBUG_TRACE_RESULT
-      materialized = true;
-#endif
     }
   }
 
@@ -486,6 +454,7 @@ template<typename... T>
   void set_storage_offset(int64_t storage_offset) override {
     ensure_tensor();
     tensor->set_storage_offset(storage_offset);
+    storage_offset_ = storage_offset;
   }
 
   int64_t size(int64_t d) const override {
@@ -518,8 +487,7 @@ template<typename... T>
 };
 
 TorchyTensor* is_torchy(const Tensor &t) {
-  return t.key_set().has(DISPATCHKEY) ? (TorchyTensor*)t.unsafeGetTensorImpl()
-                                      : nullptr;
+  return dynamic_cast<TorchyTensor*>(t.unsafeGetTensorImpl());
 }
 
 unsigned trace_idx(const Tensor &t) {
@@ -545,32 +513,34 @@ void ensure_materialized(const Tensor &t, T&... args) {
   ensure_materialized(args...);
 }
 
-#if DEBUG_TRACE_RESULT
-#define MK_TORCHY(type, device, op, ...) \
-  at::detail::make_tensor<TorchyTensor>(type, device, ks, result, op, \
-                                        __VA_ARGS__)
-#else
+void will_override(Tensor &t) {
+  // TODO: refine this to account only for unprocessed references
+  if (is_torchy(t)) {
+    if (!trace.is_flushing()) {
+      cout << "flush because on override" << endl;
+      trace.flush();
+    }
+  }
+}
+
 #define MK_TORCHY(type, device, op, ...) \
   at::detail::make_tensor<TorchyTensor>(type, device, ks, op, __VA_ARGS__)
-#endif
 
 
 Tensor abs(c10::DispatchKeySet ks, const Tensor &self) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("abs");
+  if (trace.is_flushing()) {
     ensure_materialized(self);
-    result =
+    return
       at::redispatch::abs(
         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(self.dtype(), self.device(), "abs", self);
+  return MK_TORCHY(self.dtype(), self.device(), "abs", self);
 }
 
 Tensor& abs_out(c10::DispatchKeySet ks, const Tensor &self, Tensor &out) {
-  // cant delay this without changing the TensorImpl of out
-  // TODO: should we?
+  ENTER("abs_out");
+  will_override(out);
   ensure_materialized(self, out);
   return
     at::redispatch::abs_out(
@@ -580,40 +550,36 @@ Tensor& abs_out(c10::DispatchKeySet ks, const Tensor &self, Tensor &out) {
 
 Tensor add_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                   const Tensor &other, const Scalar &alpha) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("add_Tensor");
+  if (trace.is_flushing()) {
     ensure_materialized(self, other);
-    result =
+    return
       at::redispatch::add(
         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
         self, other, alpha);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(self.dtype(), self.device(), "add_Tensor", self, other,
-                     alpha);
+  return MK_TORCHY(self.dtype(), self.device(), "add_Tensor", self, other,
+                   alpha);
 }
 
 Tensor as_strided(c10::DispatchKeySet ks, const Tensor &self, IntArrayRef size,
                   IntArrayRef stride, c10::optional<int64_t> storage_offset) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("as_strided");
+  if (trace.is_flushing()) {
     ensure_materialized(self);
-    result =
+    return
       at::redispatch::as_strided(
         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
         self, size, stride, storage_offset);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(self.dtype(), self.device(), "as_strided", self, size,
-                     stride, storage_offset);
+  return MK_TORCHY(self.dtype(), self.device(), "as_strided", self, size,
+                   stride, storage_offset);
 }
 
 Tensor& bitwise_and_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
                                const Tensor &other, Tensor &out) {
-  // cant delay this without changing the TensorImpl of out
-  // TODO: should we?
+  ENTER("bitwise_and_Tensor_out");
+  will_override(out);
   ensure_materialized(self, other, out);
   return
     at::redispatch::bitwise_and_out(
@@ -622,8 +588,8 @@ Tensor& bitwise_and_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
 }
 
 Tensor& ceil_out(c10::DispatchKeySet ks, const Tensor &self, Tensor &out) {
-  // cant delay this without changing the TensorImpl of out
-  // TODO: should we?
+  ENTER("ceil_out");
+  will_override(out);
   ensure_materialized(self, out);
   return
     at::redispatch::ceil_out(
@@ -633,7 +599,8 @@ Tensor& ceil_out(c10::DispatchKeySet ks, const Tensor &self, Tensor &out) {
 
 Tensor& copy_(c10::DispatchKeySet ks, Tensor &self, const Tensor &src,
               bool non_blocking) {
-  // TODO: can be made lazy?
+  //ENTER("copy_");
+  will_override(self);
   ensure_materialized(self, src);
   return
     at::redispatch::copy_(
@@ -642,7 +609,8 @@ Tensor& copy_(c10::DispatchKeySet ks, Tensor &self, const Tensor &src,
 }
 
 Tensor& detach_(c10::DispatchKeySet ks, Tensor &self) {
-  // TODO: can be made lazy?
+  ENTER("detach_");
+  will_override(self);
   ensure_materialized(self);
   return at::redispatch::detach_(
            ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
@@ -650,7 +618,8 @@ Tensor& detach_(c10::DispatchKeySet ks, Tensor &self) {
 
 Tensor& div_out(c10::DispatchKeySet ks, const Tensor &self, const Tensor &other,
                 Tensor &out) {
-  // TODO: can be made lazy?
+  ENTER("div_out");
+  will_override(out);
   ensure_materialized(self, other, out);
   return at::redispatch::div_out(
            ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
@@ -665,6 +634,7 @@ Tensor empty_memory_format(c10::DispatchKeySet ks, IntArrayRef size,
                            c10::optional<MemoryFormat> memory_format) {
   //return native::empty_cpu(size, dtype, layout, device, pin_memory,
   //                         memory_format);
+  ENTER("empty_memory_format");
   return
     at::redispatch::empty(
       ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
@@ -679,6 +649,7 @@ Tensor empty_strided(c10::DispatchKeySet ks, IntArrayRef size,
                      c10::optional<bool> pin_memory) {
   //return
   //  native::empty_strided_cpu(size, stride, dtype, layout, device, pin_memory);
+  ENTER("empty_strided");
   return
     at::redispatch::empty_strided(
       ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
@@ -687,22 +658,22 @@ Tensor empty_strided(c10::DispatchKeySet ks, IntArrayRef size,
 
 Tensor eq_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                  const Tensor &other) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("eq_Tensor");
+  if (trace.is_flushing()) {
     ensure_materialized(self, other);
-    result =
+    return
       at::redispatch::eq(
         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
         self, other);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(scalarTypeToTypeMeta(kBool), self.device(), "eq_Tensor",
-                     self, other);
+  return MK_TORCHY(scalarTypeToTypeMeta(kBool), self.device(), "eq_Tensor",
+                   self, other);
 }
 
 Tensor& eq_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
                       const Tensor &other, Tensor &out) {
+  ENTER("eq_Tensor_out");
+  will_override(out);
   ensure_materialized(self, other, out);
   return at::redispatch::eq_out(
            ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
@@ -711,6 +682,8 @@ Tensor& eq_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
 
 Tensor& fill__Scalar(c10::DispatchKeySet ks, Tensor &self,
                      const Scalar &value) {
+  ENTER("fill__Scalar");
+  will_override(self);
   ensure_materialized(self);
   return
     at::redispatch::fill_(
@@ -720,22 +693,22 @@ Tensor& fill__Scalar(c10::DispatchKeySet ks, Tensor &self,
 
 Tensor gt_Scalar(c10::DispatchKeySet ks, const Tensor &self,
                  const Scalar &other) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("gt_Scalar");
+  if (trace.is_flushing()) {
     ensure_materialized(self);
-    result =
+    return
       at::redispatch::gt(
         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
         self, other);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(scalarTypeToTypeMeta(kBool), self.device(), "gt_Scalar",
-                     self, other);
+  return MK_TORCHY(scalarTypeToTypeMeta(kBool), self.device(), "gt_Scalar",
+                   self, other);
 }
 
 Tensor& gt_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
                       const Tensor &other, Tensor &out) {
+  ENTER("gt_Tensor_out");
+  will_override(out);
   ensure_materialized(self, other, out);
   return
     at::redispatch::gt_out(
@@ -744,19 +717,19 @@ Tensor& gt_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
 }
 
 Tensor isfinite(c10::DispatchKeySet ks, const Tensor &self) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("isfinite");
+  if (trace.is_flushing()) {
     ensure_materialized(self);
-    result = at::redispatch::isfinite(
-      ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
+    return
+      at::redispatch::isfinite(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(scalarTypeToTypeMeta(kBool), self.device(), "isfinite",
-                     self);
+  return MK_TORCHY(scalarTypeToTypeMeta(kBool), self.device(), "isfinite",
+                   self);
 }
 
 Scalar _local_scalar_dense(c10::DispatchKeySet ks, const Tensor &self) {
+  ENTER("_local_scalar_dense");
   ensure_materialized(self);
   return at::redispatch::_local_scalar_dense(
            ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
@@ -764,47 +737,43 @@ Scalar _local_scalar_dense(c10::DispatchKeySet ks, const Tensor &self) {
 
 Tensor masked_select(c10::DispatchKeySet ks, const Tensor &self,
                      const Tensor &mask) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("masked_select");
+  if (trace.is_flushing()) {
     ensure_materialized(self, mask);
-    result =
+    return
       at::redispatch::masked_select(
         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
         self, mask);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(self.dtype(), self.device(), "masked_select", self, mask);
+  return MK_TORCHY(self.dtype(), self.device(), "masked_select", self, mask);
 }
 
 Tensor max(c10::DispatchKeySet ks, const Tensor &self) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("max");
+  if (trace.is_flushing()) {
     ensure_materialized(self);
-    result =
+    return
       at::redispatch::max(
         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(self.dtype(), self.device(), "max", self);
+  return MK_TORCHY(self.dtype(), self.device(), "max", self);
 }
 
 Tensor min(c10::DispatchKeySet ks, const Tensor &self) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("min");
+  if (trace.is_flushing()) {
     ensure_materialized(self);
-    result =
+    return
       at::redispatch::min(
         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY), self);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(self.dtype(), self.device(), "min", self);
+  return MK_TORCHY(self.dtype(), self.device(), "min", self);
 }
 
 Tensor& mul_out(c10::DispatchKeySet ks, const Tensor &self,
                 const Tensor &other, Tensor &out) {
+  ENTER("mul_out");
+  will_override(out);
   ensure_materialized(self, other, out);
   return at::redispatch::mul_out(
     ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
@@ -813,53 +782,49 @@ Tensor& mul_out(c10::DispatchKeySet ks, const Tensor &self,
 
 Tensor mul_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                   const Tensor &other) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("mul_Tensor");
+  if (trace.is_flushing()) {
     ensure_materialized(self, other);
-    result =
+    return
       at::redispatch::mul(
         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
         self, other);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(self.dtype(), self.device(), "mul_Tensor", self, other);
+  return MK_TORCHY(self.dtype(), self.device(), "mul_Tensor", self, other);
 }
 
 Tensor ne_Scalar(c10::DispatchKeySet ks, const Tensor &self,
                  const Scalar &other) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("ne_Scalar");
+  if (trace.is_flushing()) {
     ensure_materialized(self);
-    result =
+    return
       at::redispatch::ne(
         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
         self, other);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(scalarTypeToTypeMeta(kBool), self.device(), "ne_Scalar",
-                     self, other);
+  return MK_TORCHY(scalarTypeToTypeMeta(kBool), self.device(), "ne_Scalar",
+                   self, other);
 }
 
 Tensor ne_Tensor(c10::DispatchKeySet ks, const Tensor &self,
                  const Tensor &other) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("ne_Tensor");
+  if (trace.is_flushing()) {
     ensure_materialized(self, other);
-    result =
+    return
       at::redispatch::ne(
         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
         self, other);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(scalarTypeToTypeMeta(kBool), self.device(), "ne_Tensor",
-                     self, other);
+  return MK_TORCHY(scalarTypeToTypeMeta(kBool), self.device(), "ne_Tensor",
+                   self, other);
 }
 
 Tensor& ne_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
                       const Tensor &other, Tensor &out) {
+  ENTER("ne_Tensor_out");
+  will_override(out);
   ensure_materialized(self, other, out);
   return
     at::redispatch::ne_out(
@@ -868,21 +833,21 @@ Tensor& ne_Tensor_out(c10::DispatchKeySet ks, const Tensor &self,
 }
 
 Tensor reshape(c10::DispatchKeySet ks, const Tensor &self, IntArrayRef shape) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("reshape");
+  if (trace.is_flushing()) {
     ensure_materialized(self);
-    result =
+    return
       at::redispatch::reshape(
          ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
          self, shape);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(self.dtype(), self.device(), "reshape", self, shape);
+  return MK_TORCHY(self.dtype(), self.device(), "reshape", self, shape);
 }
 
 Tensor& resize_(c10::DispatchKeySet ks, Tensor &self, IntArrayRef size,
                 c10::optional<MemoryFormat> memory_format) {
+  ENTER("resize_");
+  will_override(self);
   ensure_materialized(self);
   return
     at::redispatch::resize_(
@@ -892,27 +857,23 @@ Tensor& resize_(c10::DispatchKeySet ks, Tensor &self, IntArrayRef size,
 
 Tensor select_int(c10::DispatchKeySet ks, const Tensor &self, int64_t dim,
                   int64_t index) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("select_int");
+  if (trace.is_flushing()) {
     ensure_materialized(self);
-    result =
+    return
       at::redispatch::select(
          ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
          self, dim, index);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(self.dtype(), self.device(), "select_int", self, dim,
-                     index);
+  return MK_TORCHY(self.dtype(), self.device(), "select_int", self, dim, index);
 }
 
 Tensor sum(c10::DispatchKeySet ks, const Tensor &self,
            c10::optional<ScalarType> dtype) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("sum");
+  if (trace.is_flushing()) {
     ensure_materialized(self);
-    result =
+    return
       at::redispatch::sum(
          ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
          self, dtype);
@@ -920,14 +881,14 @@ Tensor sum(c10::DispatchKeySet ks, const Tensor &self,
   auto ty = self.dtype();
   if (ty == kBool)
     ty = scalarTypeToTypeMeta(kLong);
-  return trace.is_flushing() ? result :
-           MK_TORCHY(dtype ? scalarTypeToTypeMeta(*dtype) : ty,
-                     self.device(), "sum", self, dtype);
+  return MK_TORCHY(dtype ? scalarTypeToTypeMeta(*dtype) : ty, self.device(),
+                   "sum", self, dtype);
 }
 
 Tensor to_device(c10::DispatchKeySet ks, const Tensor &self,
                  Device device, ScalarType dtype, bool non_blocking, bool copy,
                  c10::optional<MemoryFormat> memory_format) {
+  //ENTER("to_device");
   ensure_materialized(self);
   return
     at::redispatch::to(
@@ -936,17 +897,15 @@ Tensor to_device(c10::DispatchKeySet ks, const Tensor &self,
 }
 
 Tensor view(c10::DispatchKeySet ks, const Tensor &self, IntArrayRef size) {
-  Tensor result;
-  if (trace.is_flushing() || DEBUG_TRACE_RESULT) {
-    ScopedAutoFlush f;
+  ENTER("view");
+  if (trace.is_flushing()) {
     ensure_materialized(self);
-    result =
+    return
       at::redispatch::view(
          ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
          self, size);
   }
-  return trace.is_flushing() ? result :
-           MK_TORCHY(self.dtype(), self.device(), "view", self, size);
+  return MK_TORCHY(self.dtype(), self.device(), "view", self, size);
 }
 
 TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
