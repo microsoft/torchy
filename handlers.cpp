@@ -350,22 +350,7 @@ public:
 class TorchyTensor final : public TensorImpl {
   TorchTensorImpl tensor;
   unsigned trace_idx;
-
-  // TODO: not everything is virtual in TensorImpl..
-  void refresh_non_virtual() {
-    storage_offset_               = tensor->storage_offset();
-    is_channels_last_             = tensor->is_strides_like_channels_last();
-    is_channels_last_3d_          = tensor->is_strides_like_channels_last_3d();
-    is_non_overlapping_and_dense_ = tensor->is_non_overlapping_and_dense();
-    is_wrapped_number_            = tensor->is_wrapped_number();
-    // FIXME: cant access:  is_channels_last_contiguous_
-    // FIXME: cant access: is_channels_last_3d_contiguous_
-
-    assert(layout() == tensor->layout());
-    assert(data() == tensor->data());
-    assert(dtype() == tensor->dtype());
-    assert(itemsize() == tensor->itemsize());
-  }
+  bool materialized = false;
 
 public:
 template<typename... T>
@@ -378,19 +363,23 @@ template<typename... T>
   unsigned getTraceIdx() const { return trace_idx; }
 
   void set(Tensor &&t) {
-    assert(!tensor);
-    trace_idx  = -1u;
-    tensor     = t.unsafeReleaseIntrusivePtr();
-    key_set_   = key_set_ | tensor->key_set();
-    storage_   = tensor->storage();
-    refresh_non_virtual();
+    assert(!materialized && !tensor);
+    assert(dtype() == t.dtype());
+    trace_idx    = -1u;
+    materialized = true;
+    tensor       = t.unsafeReleaseIntrusivePtr();
+
+    auto my_ks = key_set_;
+    TensorImpl::shallow_copy_from(tensor);
+    key_set_ = key_set_ | my_ks;
   }
 
-  void ensure_tensor(bool for_debugging = false) const {
-    if (!tensor) {
+  void ensure_materialized() const {
+    if (!materialized) {
       trace.flush();
-      assert(tensor);
+      assert(materialized);
     }
+    assert(tensor);
   }
 
   friend ostream& operator<<(ostream &os, const TorchyTensor &tt) {
@@ -400,38 +389,38 @@ template<typename... T>
   void release_resources() override {
     if (tensor)
       tensor->release_resources();
-    else
+    if (trace_idx != -1u)
       trace.set_unobservable(trace_idx);
     TensorImpl::release_resources();
   }
 
   IntArrayRef sizes() const override {
-    ensure_tensor();
+    ensure_materialized();
     return tensor->sizes();
   }
 
   IntArrayRef strides() const override {
-    ensure_tensor();
+    ensure_materialized();
     return tensor->strides();
   }
 
   int64_t dim() const override {
-    ensure_tensor();
+    ensure_materialized();
     return tensor->dim();
   }
 
   int64_t numel() const override {
-    ensure_tensor();
+    ensure_materialized();
     return tensor->numel();
   }
 
   bool is_contiguous(at::MemoryFormat memory_format) const override {
-    ensure_tensor();
+    ensure_materialized();
     return tensor->is_contiguous(memory_format);
   }
 
   int64_t storage_offset() const override {
-    ensure_tensor();
+    ensure_materialized();
     return tensor->storage_offset();
   }
 
@@ -440,30 +429,30 @@ template<typename... T>
   }
 
   void set_size(int64_t dim, int64_t new_size) override {
-    ensure_tensor();
+    ensure_materialized();
     tensor->set_size(dim, new_size);
-    refresh_non_virtual();
+    TensorImpl::set_size(dim, new_size);
   }
 
   void set_stride(int64_t dim, int64_t new_stride) override {
-    ensure_tensor();
+    ensure_materialized();
     tensor->set_stride(dim, new_stride);
-    refresh_non_virtual();
+    TensorImpl::set_stride(dim, new_stride);
   }
 
   void set_storage_offset(int64_t storage_offset) override {
-    ensure_tensor();
+    ensure_materialized();
     tensor->set_storage_offset(storage_offset);
-    storage_offset_ = storage_offset;
+    TensorImpl::set_storage_offset(storage_offset);
   }
 
   int64_t size(int64_t d) const override {
-    ensure_tensor();
+    ensure_materialized();
     return tensor->size(d);
   }
 
   int64_t stride(int64_t d) const override {
-    ensure_tensor();
+    ensure_materialized();
     return tensor->stride(d);
   }
 
@@ -509,17 +498,15 @@ void ensure_materialized() {}
 template<typename... T>
 void ensure_materialized(const Tensor &t, T&... args) {
   if (auto tt = is_torchy(t))
-    tt->ensure_tensor();
+    tt->ensure_materialized();
   ensure_materialized(args...);
 }
 
-void will_override(Tensor &t) {
+void will_override(const Tensor &t) {
   // TODO: refine this to account only for unprocessed references
   if (is_torchy(t)) {
-    if (!trace.is_flushing()) {
-      cout << "flush because on override" << endl;
+    if (!trace.is_flushing())
       trace.flush();
-    }
   }
 }
 
@@ -844,8 +831,9 @@ Tensor reshape(c10::DispatchKeySet ks, const Tensor &self, IntArrayRef shape) {
   return MK_TORCHY(self.dtype(), self.device(), "reshape", self, shape);
 }
 
-Tensor& resize_(c10::DispatchKeySet ks, Tensor &self, IntArrayRef size,
-                c10::optional<MemoryFormat> memory_format) {
+const Tensor& resize_(c10::DispatchKeySet ks, const Tensor &self,
+                      IntArrayRef size,
+                      c10::optional<MemoryFormat> memory_format) {
   ENTER("resize_");
   will_override(self);
   ensure_materialized(self);
