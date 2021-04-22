@@ -353,11 +353,15 @@ class TorchyTensor final : public TensorImpl {
   bool materialized = false;
 
 public:
-template<typename... T>
+  template<typename... T>
   TorchyTensor(caffe2::TypeMeta dtype, c10::Device device, DispatchKeySet ks,
                const char *op_id, const T&... args)
     : TensorImpl(DISPATCHKEY, dtype, device) {
     trace_idx = trace.register_tensor(this, ks, op_id, args...);
+  }
+
+  TorchyTensor(Tensor &&t) : TensorImpl(DISPATCHKEY, t.dtype(), t.device()) {
+    set(move(t));
   }
 
   unsigned getTraceIdx() const { return trace_idx; }
@@ -623,9 +627,10 @@ Tensor empty_memory_format(c10::DispatchKeySet ks, IntArrayRef size,
   //                         memory_format);
   ENTER("empty_memory_format");
   return
-    at::redispatch::empty(
-      ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-      size, dtype, layout, device, pin_memory, memory_format);
+    at::detail::make_tensor<TorchyTensor>(
+      at::redispatch::empty(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        size, dtype, layout, device, pin_memory, memory_format));
 }
 
 Tensor empty_strided(c10::DispatchKeySet ks, IntArrayRef size,
@@ -638,9 +643,10 @@ Tensor empty_strided(c10::DispatchKeySet ks, IntArrayRef size,
   //  native::empty_strided_cpu(size, stride, dtype, layout, device, pin_memory);
   ENTER("empty_strided");
   return
-    at::redispatch::empty_strided(
-      ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-      size, stride, dtype, layout, device, pin_memory);
+    at::detail::make_tensor<TorchyTensor>(
+      at::redispatch::empty_strided(
+        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+        size, stride, dtype, layout, device, pin_memory));
 }
 
 Tensor eq_Tensor(c10::DispatchKeySet ks, const Tensor &self,
