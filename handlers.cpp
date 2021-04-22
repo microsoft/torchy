@@ -51,6 +51,8 @@ using UnionInputTys = c10::variant<
 unsigned trace_idx(const Tensor &t);
 void print(ostream &os, const TorchyTensor &tt);
 void set(TorchyTensor *tt, Tensor &&t);
+void init_update_in_place(TorchyTensor *tt);
+void end_update_in_place(TorchyTensor *tt);
 
 
 struct TensorOp {
@@ -273,10 +275,21 @@ public:
       } else if (!strcmp(op.id, "min")) {
         set(op.tensor, at::redispatch::min(dispatch_key,
                                            get<Tensor>(op.args[0])));
+      } else if (!strcmp(op.id, "mul__Tensor")) {
+        init_update_in_place(op.tensor);
+        at::redispatch::mul_(dispatch_key, get<Tensor>(op.args[0]),
+                                get<Tensor>(op.args[1]));
+        end_update_in_place(op.tensor);
       } else if (!strcmp(op.id, "mul_Tensor")) {
         set(op.tensor,
             at::redispatch::mul(dispatch_key, get<Tensor>(op.args[0]),
                                 get<Tensor>(op.args[1])));
+      } else if (!strcmp(op.id, "mul_out")) {
+        init_update_in_place(op.tensor);
+        at::redispatch::mul_out(dispatch_key, get<Tensor>(op.args[0]),
+                                get<Tensor>(op.args[1]),
+                                get<Tensor>(op.args[2]));
+        end_update_in_place(op.tensor);
       } else if (!strcmp(op.id, "ne_Scalar")) {
         set(op.tensor,
             at::redispatch::ne(dispatch_key, get<Tensor>(op.args[0]),
@@ -364,6 +377,14 @@ public:
     set(move(t));
   }
 
+  template<typename... T>
+  void addInplace(DispatchKeySet ks, const char *op_id, const T&... args) {
+    materialized = false;
+    auto idx = trace.register_tensor(this, ks, op_id, args...);
+    if (trace_idx == -1u)
+      trace_idx = idx;
+  }
+
   unsigned getTraceIdx() const { return trace_idx; }
 
   void set(Tensor &&t) {
@@ -376,6 +397,18 @@ public:
     auto my_ks = key_set_;
     TensorImpl::shallow_copy_from(tensor);
     key_set_ = key_set_ | my_ks;
+  }
+
+  void initInPlaceUpdate() {
+    // The tensor is materialized; it just has an old value
+    // which is needed to compute the in-place op. Let's pretend it's up-to-date
+    // so the getters below work.
+    assert(tensor);
+    materialized = true;
+  }
+
+  void endInPlaceUpdate() {
+    trace_idx = -1u;
   }
 
   void ensure_materialized() const {
@@ -495,6 +528,14 @@ void print(ostream &os, const TorchyTensor &tensor) {
 
 void set(TorchyTensor *tt, Tensor &&t) {
   tt->set(move(t));
+}
+
+void init_update_in_place(TorchyTensor *tt) {
+  tt->initInPlaceUpdate();
+}
+
+void end_update_in_place(TorchyTensor *tt) {
+  tt->endInPlaceUpdate();
 }
 
 void ensure_materialized() {}
@@ -763,9 +804,28 @@ Tensor min(c10::DispatchKeySet ks, const Tensor &self) {
   return MK_TORCHY(self.dtype(), self.device(), "min", self);
 }
 
+Tensor& mul__Tensor(c10::DispatchKeySet ks, Tensor &self, const Tensor &other) {
+  ENTER("mul_");
+  auto tt = is_torchy(self);
+  if (tt && !trace.is_flushing()) {
+    tt->addInplace(ks, "mul__Tensor", self, other);
+    return self;
+  }
+  will_override(self);
+  ensure_materialized(self, other);
+  return at::redispatch::mul_(
+    ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
+    self, other);
+}
+
 Tensor& mul_out(c10::DispatchKeySet ks, const Tensor &self,
                 const Tensor &other, Tensor &out) {
   ENTER("mul_out");
+  auto tt = is_torchy(out);
+  if (tt && !trace.is_flushing()) {
+    tt->addInplace(ks, "mul_out", out, self, other);
+    return out;
+  }
   will_override(out);
   ensure_materialized(self, other, out);
   return at::redispatch::mul_out(
@@ -925,6 +985,7 @@ TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
   m.impl("max", max);
   m.impl("min", min);
   m.impl("mul.out", mul_out);
+  m.impl("mul_.Tensor", mul__Tensor);
   m.impl("mul.Tensor", mul_Tensor);
   m.impl("ne.Scalar", ne_Scalar);
   m.impl("ne.Tensor", ne_Tensor);
