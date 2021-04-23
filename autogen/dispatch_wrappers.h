@@ -1,5 +1,5 @@
 
-Tensor wrap__cast_Byte(args...) {
+at::Tensor wrap__cast_Byte(const at::Tensor & self, bool non_blocking) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_cast_Byte(self, non_blocking);
@@ -7,7 +7,7 @@ Tensor wrap__cast_Byte(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CAST_BYTE, self, non_blocking);
 }
 
-Tensor wrap__cast_Char(args...) {
+at::Tensor wrap__cast_Char(const at::Tensor & self, bool non_blocking) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_cast_Char(self, non_blocking);
@@ -15,7 +15,7 @@ Tensor wrap__cast_Char(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CAST_CHAR, self, non_blocking);
 }
 
-Tensor wrap__cast_Double(args...) {
+at::Tensor wrap__cast_Double(const at::Tensor & self, bool non_blocking) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_cast_Double(self, non_blocking);
@@ -23,7 +23,7 @@ Tensor wrap__cast_Double(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CAST_DOUBLE, self, non_blocking);
 }
 
-Tensor wrap__cast_Float(args...) {
+at::Tensor wrap__cast_Float(const at::Tensor & self, bool non_blocking) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_cast_Float(self, non_blocking);
@@ -31,7 +31,7 @@ Tensor wrap__cast_Float(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CAST_FLOAT, self, non_blocking);
 }
 
-Tensor wrap__cast_Int(args...) {
+at::Tensor wrap__cast_Int(const at::Tensor & self, bool non_blocking) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_cast_Int(self, non_blocking);
@@ -39,7 +39,7 @@ Tensor wrap__cast_Int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CAST_INT, self, non_blocking);
 }
 
-Tensor wrap__cast_Long(args...) {
+at::Tensor wrap__cast_Long(const at::Tensor & self, bool non_blocking) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_cast_Long(self, non_blocking);
@@ -47,7 +47,7 @@ Tensor wrap__cast_Long(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CAST_LONG, self, non_blocking);
 }
 
-Tensor wrap__cast_Short(args...) {
+at::Tensor wrap__cast_Short(const at::Tensor & self, bool non_blocking) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_cast_Short(self, non_blocking);
@@ -55,7 +55,7 @@ Tensor wrap__cast_Short(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CAST_SHORT, self, non_blocking);
 }
 
-Tensor wrap__cast_Half(args...) {
+at::Tensor wrap__cast_Half(const at::Tensor & self, bool non_blocking) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_cast_Half(self, non_blocking);
@@ -63,7 +63,7 @@ Tensor wrap__cast_Half(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CAST_HALF, self, non_blocking);
 }
 
-Tensor wrap__fw_primal(args...) {
+at::Tensor wrap__fw_primal(const at::Tensor & self, int64_t level) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_fw_primal(self, level);
@@ -71,7 +71,7 @@ Tensor wrap__fw_primal(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__FW_PRIMAL, self, level);
 }
 
-Tensor wrap__make_dual(args...) {
+at::Tensor wrap__make_dual(const at::Tensor & primal, const at::Tensor & tangent, int64_t level) {
   if (trace.is_flushing()) {
     ensure_materialized(primal, tangent);
     return at::redispatch::_make_dual(primal, tangent, level);
@@ -79,15 +79,12 @@ Tensor wrap__make_dual(args...) {
   return MK_TORCHY(primal.dtype(), primal.device(), H__MAKE_DUAL, primal, tangent, level);
 }
 
-Tensor wrap__unpack_dual(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(dual);
-    return at::redispatch::_unpack_dual(dual, level);
-  }
-  return MK_TORCHY(dual.dtype(), dual.device(), H__UNPACK_DUAL, dual, level);
+std::tuple<at::Tensor,at::Tensor> wrap__unpack_dual(const at::Tensor & dual, int64_t level) {
+  ensure_materialized(dual);
+  return at::redispatch::_unpack_dual(dual, level);
 }
 
-Tensor wrap_rename_(args...) {
+at::Tensor & wrap_rename_(at::Tensor & self, c10::optional<at::DimnameList> names) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::rename_(self, names);
@@ -95,7 +92,7 @@ Tensor wrap_rename_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RENAME_, self, names);
 }
 
-Tensor wrap_rename(args...) {
+at::Tensor wrap_rename(const at::Tensor & self, c10::optional<at::DimnameList> names) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::rename(self, names);
@@ -103,7 +100,7 @@ Tensor wrap_rename(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RENAME, self, names);
 }
 
-Tensor wrap_align_to(args...) {
+at::Tensor wrap_align_to(const at::Tensor & self, at::DimnameList names) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::align_to(self, names);
@@ -111,7 +108,7 @@ Tensor wrap_align_to(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ALIGN_TO, self, names);
 }
 
-Tensor wrap_align_to_ellipsis_idx(args...) {
+at::Tensor wrap_align_to_ellipsis_idx(const at::Tensor & self, at::DimnameList order, int64_t ellipsis_idx) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::align_to(self, order, ellipsis_idx);
@@ -119,7 +116,7 @@ Tensor wrap_align_to_ellipsis_idx(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ALIGN_TO_ELLIPSIS_IDX, self, order, ellipsis_idx);
 }
 
-Tensor wrap_align_as(args...) {
+at::Tensor wrap_align_as(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::align_as(self, other);
@@ -127,17 +124,17 @@ Tensor wrap_align_as(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ALIGN_AS, self, other);
 }
 
-Tensor[] wrap_align_tensors(args...) {
+std::vector<at::Tensor> wrap_align_tensors(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::align_tensors(tensors);
 }
 
-void wrap__assert_async(args...) {
+void wrap__assert_async(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::_assert_async(self);
 }
 
-Tensor wrap_refine_names(args...) {
+at::Tensor wrap_refine_names(const at::Tensor & self, at::DimnameList names) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::refine_names(self, names);
@@ -145,70 +142,54 @@ Tensor wrap_refine_names(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_REFINE_NAMES, self, names);
 }
 
-bool wrap__use_cudnn_ctc_loss(args...) {
+bool wrap__use_cudnn_ctc_loss(const at::Tensor & log_probs, const at::Tensor & targets, at::IntArrayRef input_lengths, at::IntArrayRef target_lengths, int64_t blank) {
   ensure_materialized(log_probs, targets);
   return at::redispatch::_use_cudnn_ctc_loss(log_probs, targets, input_lengths, target_lengths, blank);
 }
 
-Tensor wrap__cudnn_ctc_loss(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(log_probs, targets);
-    return at::redispatch::_cudnn_ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, deterministic, zero_infinity);
-  }
-  return MK_TORCHY(log_probs.dtype(), log_probs.device(), H__CUDNN_CTC_LOSS, log_probs, targets, input_lengths, target_lengths, blank, deterministic, zero_infinity);
+std::tuple<at::Tensor,at::Tensor> wrap__cudnn_ctc_loss(const at::Tensor & log_probs, const at::Tensor & targets, at::IntArrayRef input_lengths, at::IntArrayRef target_lengths, int64_t blank, bool deterministic, bool zero_infinity) {
+  ensure_materialized(log_probs, targets);
+  return at::redispatch::_cudnn_ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, deterministic, zero_infinity);
 }
 
-bool wrap__use_cudnn_rnn_flatten_weight(args...) {
+bool wrap__use_cudnn_rnn_flatten_weight() {
   ensure_materialized();
   return at::redispatch::_use_cudnn_rnn_flatten_weight();
 }
 
-Tensor wrap__cudnn_rnn_flatten_weight(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::_cudnn_rnn_flatten_weight(weight_arr, weight_stride0, input_size, mode, hidden_size, proj_size, num_layers, batch_first, bidirectional);
-  }
-  return MK_TORCHY(None, None, H__CUDNN_RNN_FLATTEN_WEIGHT, weight_arr, weight_stride0, input_size, mode, hidden_size, proj_size, num_layers, batch_first, bidirectional);
+at::Tensor wrap__cudnn_rnn_flatten_weight(at::TensorList weight_arr, int64_t weight_stride0, int64_t input_size, int64_t mode, int64_t hidden_size, int64_t proj_size, int64_t num_layers, bool batch_first, bool bidirectional) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::_cudnn_rnn_flatten_weight(weight_arr, weight_stride0, input_size, mode, hidden_size, proj_size, num_layers, batch_first, bidirectional));
 }
 
-Tensor wrap__cudnn_rnn(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, hx);
-    return at::redispatch::_cudnn_rnn(input, weight, weight_stride0, weight_buf, hx, cx, mode, hidden_size, proj_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H__CUDNN_RNN, input, weight, weight_stride0, weight_buf, hx, cx, mode, hidden_size, proj_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap__cudnn_rnn(const at::Tensor & input, at::TensorList weight, int64_t weight_stride0, const c10::optional<at::Tensor> & weight_buf, const at::Tensor & hx, const c10::optional<at::Tensor> & cx, int64_t mode, int64_t hidden_size, int64_t proj_size, int64_t num_layers, bool batch_first, double dropout, bool train, bool bidirectional, at::IntArrayRef batch_sizes, const c10::optional<at::Tensor> & dropout_state) {
+  ensure_materialized(input, hx);
+  return at::redispatch::_cudnn_rnn(input, weight, weight_stride0, weight_buf, hx, cx, mode, hidden_size, proj_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state);
 }
 
-Tensor wrap__cudnn_rnn_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, weight_buf, hx, output, reserve);
-    return at::redispatch::_cudnn_rnn_backward(input, weight, weight_stride0, weight_buf, hx, cx, output, grad_output, grad_hy, grad_cy, mode, hidden_size, proj_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state, reserve, output_mask);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H__CUDNN_RNN_BACKWARD, input, weight, weight_stride0, weight_buf, hx, cx, output, grad_output, grad_hy, grad_cy, mode, hidden_size, proj_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state, reserve, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,std::vector<at::Tensor>> wrap__cudnn_rnn_backward(const at::Tensor & input, at::TensorList weight, int64_t weight_stride0, const at::Tensor & weight_buf, const at::Tensor & hx, const c10::optional<at::Tensor> & cx, const at::Tensor & output, const c10::optional<at::Tensor> & grad_output, const c10::optional<at::Tensor> & grad_hy, const c10::optional<at::Tensor> & grad_cy, int64_t mode, int64_t hidden_size, int64_t proj_size, int64_t num_layers, bool batch_first, double dropout, bool train, bool bidirectional, at::IntArrayRef batch_sizes, const c10::optional<at::Tensor> & dropout_state, const at::Tensor & reserve, std::array<bool,4> output_mask) {
+  ensure_materialized(input, weight_buf, hx, output, reserve);
+  return at::redispatch::_cudnn_rnn_backward(input, weight, weight_stride0, weight_buf, hx, cx, output, grad_output, grad_hy, grad_cy, mode, hidden_size, proj_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state, reserve, output_mask);
 }
 
-Tensor wrap__cudnn_init_dropout_state(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::_cudnn_init_dropout_state(dropout, train, dropout_seed, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H__CUDNN_INIT_DROPOUT_STATE, dropout, train, dropout_seed, dtype, layout, device, pin_memory);
+at::Tensor wrap__cudnn_init_dropout_state(double dropout, bool train, int64_t dropout_seed, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::_cudnn_init_dropout_state(dropout, train, dropout_seed, dtype, layout, device, pin_memory));
 }
 
-int wrap__debug_has_internal_overlap(args...) {
+int64_t wrap__debug_has_internal_overlap(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::_debug_has_internal_overlap(self);
 }
 
-Tensor wrap__fused_dropout(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::_fused_dropout(self, p, generator);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H__FUSED_DROPOUT, self, p, generator);
+std::tuple<at::Tensor,at::Tensor> wrap__fused_dropout(const at::Tensor & self, double p, c10::optional<at::Generator> generator) {
+  ensure_materialized(self);
+  return at::redispatch::_fused_dropout(self, p, generator);
 }
 
-Tensor wrap__masked_scale(args...) {
+at::Tensor wrap__masked_scale(const at::Tensor & self, const at::Tensor & mask, double scale) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mask);
     return at::redispatch::_masked_scale(self, mask, scale);
@@ -216,15 +197,12 @@ Tensor wrap__masked_scale(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__MASKED_SCALE, self, mask, scale);
 }
 
-Tensor wrap__sobol_engine_draw(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(quasi, sobolstate);
-    return at::redispatch::_sobol_engine_draw(quasi, n, sobolstate, dimension, num_generated, dtype);
-  }
-  return MK_TORCHY(quasi.dtype(), quasi.device(), H__SOBOL_ENGINE_DRAW, quasi, n, sobolstate, dimension, num_generated, dtype);
+std::tuple<at::Tensor,at::Tensor> wrap__sobol_engine_draw(const at::Tensor & quasi, int64_t n, const at::Tensor & sobolstate, int64_t dimension, int64_t num_generated, c10::optional<at::ScalarType> dtype) {
+  ensure_materialized(quasi, sobolstate);
+  return at::redispatch::_sobol_engine_draw(quasi, n, sobolstate, dimension, num_generated, dtype);
 }
 
-Tensor wrap__sobol_engine_ff_(args...) {
+at::Tensor & wrap__sobol_engine_ff_(at::Tensor & self, int64_t n, const at::Tensor & sobolstate, int64_t dimension, int64_t num_generated) {
   if (trace.is_flushing()) {
     ensure_materialized(self, sobolstate);
     return at::redispatch::_sobol_engine_ff_(self, n, sobolstate, dimension, num_generated);
@@ -232,7 +210,7 @@ Tensor wrap__sobol_engine_ff_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SOBOL_ENGINE_FF_, self, n, sobolstate, dimension, num_generated);
 }
 
-Tensor wrap__sobol_engine_scramble_(args...) {
+at::Tensor & wrap__sobol_engine_scramble_(at::Tensor & self, const at::Tensor & ltm, int64_t dimension) {
   if (trace.is_flushing()) {
     ensure_materialized(self, ltm);
     return at::redispatch::_sobol_engine_scramble_(self, ltm, dimension);
@@ -240,7 +218,7 @@ Tensor wrap__sobol_engine_scramble_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SOBOL_ENGINE_SCRAMBLE_, self, ltm, dimension);
 }
 
-Tensor wrap__sobol_engine_initialize_state_(args...) {
+at::Tensor & wrap__sobol_engine_initialize_state_(at::Tensor & self, int64_t dimension) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sobol_engine_initialize_state_(self, dimension);
@@ -248,7 +226,7 @@ Tensor wrap__sobol_engine_initialize_state_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SOBOL_ENGINE_INITIALIZE_STATE_, self, dimension);
 }
 
-Tensor wrap__reshape_from_tensor(args...) {
+at::Tensor wrap__reshape_from_tensor(const at::Tensor & self, const at::Tensor & shape) {
   if (trace.is_flushing()) {
     ensure_materialized(self, shape);
     return at::redispatch::_reshape_from_tensor(self, shape);
@@ -256,7 +234,7 @@ Tensor wrap__reshape_from_tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__RESHAPE_FROM_TENSOR, self, shape);
 }
 
-Tensor wrap__shape_as_tensor(args...) {
+at::Tensor wrap__shape_as_tensor(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_shape_as_tensor(self);
@@ -264,7 +242,7 @@ Tensor wrap__shape_as_tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SHAPE_AS_TENSOR, self);
 }
 
-Tensor wrap_dropout(args...) {
+at::Tensor wrap_dropout(const at::Tensor & input, double p, bool train) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::dropout(input, p, train);
@@ -272,7 +250,7 @@ Tensor wrap_dropout(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_DROPOUT, input, p, train);
 }
 
-Tensor wrap_dropout_(args...) {
+at::Tensor & wrap_dropout_(at::Tensor & self, double p, bool train) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::dropout_(self, p, train);
@@ -280,7 +258,7 @@ Tensor wrap_dropout_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DROPOUT_, self, p, train);
 }
 
-Tensor wrap_feature_dropout(args...) {
+at::Tensor wrap_feature_dropout(const at::Tensor & input, double p, bool train) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::feature_dropout(input, p, train);
@@ -288,7 +266,7 @@ Tensor wrap_feature_dropout(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_FEATURE_DROPOUT, input, p, train);
 }
 
-Tensor wrap_feature_dropout_(args...) {
+at::Tensor & wrap_feature_dropout_(at::Tensor & self, double p, bool train) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::feature_dropout_(self, p, train);
@@ -296,7 +274,7 @@ Tensor wrap_feature_dropout_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FEATURE_DROPOUT_, self, p, train);
 }
 
-Tensor wrap_alpha_dropout(args...) {
+at::Tensor wrap_alpha_dropout(const at::Tensor & input, double p, bool train) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::alpha_dropout(input, p, train);
@@ -304,7 +282,7 @@ Tensor wrap_alpha_dropout(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_ALPHA_DROPOUT, input, p, train);
 }
 
-Tensor wrap_alpha_dropout_(args...) {
+at::Tensor & wrap_alpha_dropout_(at::Tensor & self, double p, bool train) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::alpha_dropout_(self, p, train);
@@ -312,7 +290,7 @@ Tensor wrap_alpha_dropout_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ALPHA_DROPOUT_, self, p, train);
 }
 
-Tensor wrap_feature_alpha_dropout(args...) {
+at::Tensor wrap_feature_alpha_dropout(const at::Tensor & input, double p, bool train) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::feature_alpha_dropout(input, p, train);
@@ -320,7 +298,7 @@ Tensor wrap_feature_alpha_dropout(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_FEATURE_ALPHA_DROPOUT, input, p, train);
 }
 
-Tensor wrap_feature_alpha_dropout_(args...) {
+at::Tensor & wrap_feature_alpha_dropout_(at::Tensor & self, double p, bool train) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::feature_alpha_dropout_(self, p, train);
@@ -328,7 +306,7 @@ Tensor wrap_feature_alpha_dropout_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FEATURE_ALPHA_DROPOUT_, self, p, train);
 }
 
-Tensor wrap_abs(args...) {
+at::Tensor wrap_abs(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::abs(self);
@@ -336,7 +314,7 @@ Tensor wrap_abs(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ABS, self);
 }
 
-Tensor wrap_abs_(args...) {
+at::Tensor & wrap_abs_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::abs_(self);
@@ -344,7 +322,7 @@ Tensor wrap_abs_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ABS_, self);
 }
 
-Tensor wrap_abs_out(args...) {
+at::Tensor & wrap_abs_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::abs(out, self);
@@ -352,7 +330,7 @@ Tensor wrap_abs_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ABS_OUT, out, self);
 }
 
-Tensor wrap_absolute(args...) {
+at::Tensor wrap_absolute(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::absolute(self);
@@ -360,7 +338,7 @@ Tensor wrap_absolute(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ABSOLUTE, self);
 }
 
-Tensor wrap_absolute_(args...) {
+at::Tensor & wrap_absolute_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::absolute_(self);
@@ -368,7 +346,7 @@ Tensor wrap_absolute_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ABSOLUTE_, self);
 }
 
-Tensor wrap_absolute_out(args...) {
+at::Tensor & wrap_absolute_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::absolute(out, self);
@@ -376,7 +354,7 @@ Tensor wrap_absolute_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ABSOLUTE_OUT, out, self);
 }
 
-Tensor wrap_angle(args...) {
+at::Tensor wrap_angle(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::angle(self);
@@ -384,7 +362,7 @@ Tensor wrap_angle(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ANGLE, self);
 }
 
-Tensor wrap_angle_out(args...) {
+at::Tensor & wrap_angle_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::angle(out, self);
@@ -392,7 +370,7 @@ Tensor wrap_angle_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ANGLE_OUT, out, self);
 }
 
-Tensor wrap_view_as_real(args...) {
+at::Tensor wrap_view_as_real(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::view_as_real(self);
@@ -400,7 +378,7 @@ Tensor wrap_view_as_real(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_VIEW_AS_REAL, self);
 }
 
-Tensor wrap_view_as_complex(args...) {
+at::Tensor wrap_view_as_complex(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::view_as_complex(self);
@@ -408,7 +386,7 @@ Tensor wrap_view_as_complex(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_VIEW_AS_COMPLEX, self);
 }
 
-Tensor wrap_sgn(args...) {
+at::Tensor wrap_sgn(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sgn(self);
@@ -416,7 +394,7 @@ Tensor wrap_sgn(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SGN, self);
 }
 
-Tensor wrap_sgn_(args...) {
+at::Tensor & wrap_sgn_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sgn_(self);
@@ -424,7 +402,7 @@ Tensor wrap_sgn_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SGN_, self);
 }
 
-Tensor wrap_sgn_out(args...) {
+at::Tensor & wrap_sgn_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::sgn(out, self);
@@ -432,7 +410,7 @@ Tensor wrap_sgn_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SGN_OUT, out, self);
 }
 
-Tensor wrap_real(args...) {
+at::Tensor wrap_real(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::real(self);
@@ -440,7 +418,7 @@ Tensor wrap_real(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_REAL, self);
 }
 
-Tensor wrap_imag(args...) {
+at::Tensor wrap_imag(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::imag(self);
@@ -448,7 +426,7 @@ Tensor wrap_imag(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_IMAG, self);
 }
 
-Tensor wrap_conj(args...) {
+at::Tensor wrap_conj(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::conj(self);
@@ -456,7 +434,7 @@ Tensor wrap_conj(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CONJ, self);
 }
 
-Tensor wrap_conj_out(args...) {
+at::Tensor & wrap_conj_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::conj(out, self);
@@ -464,7 +442,7 @@ Tensor wrap_conj_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CONJ_OUT, out, self);
 }
 
-Tensor wrap__conj(args...) {
+at::Tensor wrap__conj(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_conj(self);
@@ -472,7 +450,7 @@ Tensor wrap__conj(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CONJ, self);
 }
 
-Tensor wrap_acos_out(args...) {
+at::Tensor & wrap_acos_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::acos(out, self);
@@ -480,7 +458,7 @@ Tensor wrap_acos_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ACOS_OUT, out, self);
 }
 
-Tensor wrap_arccos(args...) {
+at::Tensor wrap_arccos(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arccos(self);
@@ -488,7 +466,7 @@ Tensor wrap_arccos(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCCOS, self);
 }
 
-Tensor wrap_arccos_(args...) {
+at::Tensor & wrap_arccos_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arccos_(self);
@@ -496,7 +474,7 @@ Tensor wrap_arccos_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCCOS_, self);
 }
 
-Tensor wrap_arccos_out(args...) {
+at::Tensor & wrap_arccos_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::arccos(out, self);
@@ -504,7 +482,7 @@ Tensor wrap_arccos_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ARCCOS_OUT, out, self);
 }
 
-Tensor wrap_avg_pool1d(args...) {
+at::Tensor wrap_avg_pool1d(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::avg_pool1d(self, kernel_size, stride, padding, ceil_mode, count_include_pad);
@@ -512,7 +490,7 @@ Tensor wrap_avg_pool1d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_AVG_POOL1D, self, kernel_size, stride, padding, ceil_mode, count_include_pad);
 }
 
-Tensor wrap_adaptive_avg_pool1d(args...) {
+at::Tensor wrap_adaptive_avg_pool1d(const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::adaptive_avg_pool1d(self, output_size);
@@ -520,15 +498,12 @@ Tensor wrap_adaptive_avg_pool1d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADAPTIVE_AVG_POOL1D, self, output_size);
 }
 
-Tensor wrap_adaptive_max_pool1d(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::adaptive_max_pool1d(self, output_size);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_ADAPTIVE_MAX_POOL1D, self, output_size);
+std::tuple<at::Tensor,at::Tensor> wrap_adaptive_max_pool1d(const at::Tensor & self, at::IntArrayRef output_size) {
+  ensure_materialized(self);
+  return at::redispatch::adaptive_max_pool1d(self, output_size);
 }
 
-Tensor wrap_add_Tensor(args...) {
+at::Tensor wrap_add_Tensor(const at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::add(self, other, alpha);
@@ -536,7 +511,7 @@ Tensor wrap_add_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADD_TENSOR, self, other, alpha);
 }
 
-Tensor wrap_add__Tensor(args...) {
+at::Tensor & wrap_add__Tensor(at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::add_(self, other, alpha);
@@ -544,7 +519,7 @@ Tensor wrap_add__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADD__TENSOR, self, other, alpha);
 }
 
-Tensor wrap_add_out(args...) {
+at::Tensor & wrap_add_out(const at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::add(out, self, other, alpha);
@@ -552,7 +527,7 @@ Tensor wrap_add_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ADD_OUT, out, self, other, alpha);
 }
 
-Tensor wrap__add_relu_Tensor(args...) {
+at::Tensor wrap__add_relu_Tensor(const at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::_add_relu(self, other, alpha);
@@ -560,7 +535,7 @@ Tensor wrap__add_relu_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__ADD_RELU_TENSOR, self, other, alpha);
 }
 
-Tensor wrap__add_relu__Tensor(args...) {
+at::Tensor & wrap__add_relu__Tensor(at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::_add_relu_(self, other, alpha);
@@ -568,7 +543,7 @@ Tensor wrap__add_relu__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__ADD_RELU__TENSOR, self, other, alpha);
 }
 
-Tensor wrap__add_relu_out(args...) {
+at::Tensor & wrap__add_relu_out(const at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::_add_relu(out, self, other, alpha);
@@ -576,7 +551,7 @@ Tensor wrap__add_relu_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H__ADD_RELU_OUT, out, self, other, alpha);
 }
 
-Tensor wrap_add_Scalar(args...) {
+at::Tensor wrap_add_Scalar(const at::Tensor & self, const at::Scalar & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::add(self, other, alpha);
@@ -584,7 +559,7 @@ Tensor wrap_add_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADD_SCALAR, self, other, alpha);
 }
 
-Tensor wrap_add__Scalar(args...) {
+at::Tensor & wrap_add__Scalar(at::Tensor & self, const at::Scalar & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::add_(self, other, alpha);
@@ -592,7 +567,7 @@ Tensor wrap_add__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADD__SCALAR, self, other, alpha);
 }
 
-Tensor wrap_addmv_out(args...) {
+at::Tensor & wrap_addmv_out(const at::Tensor & self, const at::Tensor & mat, const at::Tensor & vec, const at::Scalar & beta, const at::Scalar & alpha, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, mat, vec);
     return at::redispatch::addmv(out, self, mat, vec, beta, alpha);
@@ -600,7 +575,7 @@ Tensor wrap_addmv_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ADDMV_OUT, out, self, mat, vec, beta, alpha);
 }
 
-Tensor wrap_addr(args...) {
+at::Tensor wrap_addr(const at::Tensor & self, const at::Tensor & vec1, const at::Tensor & vec2, const at::Scalar & beta, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, vec1, vec2);
     return at::redispatch::addr(self, vec1, vec2, beta, alpha);
@@ -608,7 +583,7 @@ Tensor wrap_addr(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADDR, self, vec1, vec2, beta, alpha);
 }
 
-Tensor wrap_addr_(args...) {
+at::Tensor & wrap_addr_(at::Tensor & self, const at::Tensor & vec1, const at::Tensor & vec2, const at::Scalar & beta, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, vec1, vec2);
     return at::redispatch::addr_(self, vec1, vec2, beta, alpha);
@@ -616,7 +591,7 @@ Tensor wrap_addr_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADDR_, self, vec1, vec2, beta, alpha);
 }
 
-Tensor wrap_addr_out(args...) {
+at::Tensor & wrap_addr_out(const at::Tensor & self, const at::Tensor & vec1, const at::Tensor & vec2, const at::Scalar & beta, const at::Scalar & alpha, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, vec1, vec2);
     return at::redispatch::addr(out, self, vec1, vec2, beta, alpha);
@@ -624,7 +599,7 @@ Tensor wrap_addr_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ADDR_OUT, out, self, vec1, vec2, beta, alpha);
 }
 
-Tensor wrap_affine_grid_generator(args...) {
+at::Tensor wrap_affine_grid_generator(const at::Tensor & theta, at::IntArrayRef size, bool align_corners) {
   if (trace.is_flushing()) {
     ensure_materialized(theta);
     return at::redispatch::affine_grid_generator(theta, size, align_corners);
@@ -632,7 +607,7 @@ Tensor wrap_affine_grid_generator(args...) {
   return MK_TORCHY(theta.dtype(), theta.device(), H_AFFINE_GRID_GENERATOR, theta, size, align_corners);
 }
 
-Tensor wrap_affine_grid_generator_backward(args...) {
+at::Tensor wrap_affine_grid_generator_backward(const at::Tensor & grad, at::IntArrayRef size, bool align_corners) {
   if (trace.is_flushing()) {
     ensure_materialized(grad);
     return at::redispatch::affine_grid_generator_backward(grad, size, align_corners);
@@ -640,7 +615,7 @@ Tensor wrap_affine_grid_generator_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_AFFINE_GRID_GENERATOR_BACKWARD, grad, size, align_corners);
 }
 
-Tensor wrap_all_dim(args...) {
+at::Tensor wrap_all_dim(const at::Tensor & self, int64_t dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::all(self, dim, keepdim);
@@ -648,7 +623,7 @@ Tensor wrap_all_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ALL_DIM, self, dim, keepdim);
 }
 
-Tensor wrap_all_out(args...) {
+at::Tensor & wrap_all_out(const at::Tensor & self, int64_t dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::all(out, self, dim, keepdim);
@@ -656,7 +631,7 @@ Tensor wrap_all_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ALL_OUT, out, self, dim, keepdim);
 }
 
-Tensor wrap_all_dimname(args...) {
+at::Tensor wrap_all_dimname(const at::Tensor & self, at::Dimname dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::all(self, dim, keepdim);
@@ -664,7 +639,7 @@ Tensor wrap_all_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ALL_DIMNAME, self, dim, keepdim);
 }
 
-Tensor wrap_all_dimname_out(args...) {
+at::Tensor & wrap_all_dimname_out(const at::Tensor & self, at::Dimname dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::all(out, self, dim, keepdim);
@@ -672,12 +647,12 @@ Tensor wrap_all_dimname_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ALL_DIMNAME_OUT, out, self, dim, keepdim);
 }
 
-bool wrap_allclose(args...) {
+bool wrap_allclose(const at::Tensor & self, const at::Tensor & other, double rtol, double atol, bool equal_nan) {
   ensure_materialized(self, other);
   return at::redispatch::allclose(self, other, rtol, atol, equal_nan);
 }
 
-Tensor wrap_any_dim(args...) {
+at::Tensor wrap_any_dim(const at::Tensor & self, int64_t dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::any(self, dim, keepdim);
@@ -685,7 +660,7 @@ Tensor wrap_any_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ANY_DIM, self, dim, keepdim);
 }
 
-Tensor wrap_any_out(args...) {
+at::Tensor & wrap_any_out(const at::Tensor & self, int64_t dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::any(out, self, dim, keepdim);
@@ -693,7 +668,7 @@ Tensor wrap_any_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ANY_OUT, out, self, dim, keepdim);
 }
 
-Tensor wrap_any_dimname(args...) {
+at::Tensor wrap_any_dimname(const at::Tensor & self, at::Dimname dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::any(self, dim, keepdim);
@@ -701,7 +676,7 @@ Tensor wrap_any_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ANY_DIMNAME, self, dim, keepdim);
 }
 
-Tensor wrap_any_dimname_out(args...) {
+at::Tensor & wrap_any_dimname_out(const at::Tensor & self, at::Dimname dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::any(out, self, dim, keepdim);
@@ -709,31 +684,25 @@ Tensor wrap_any_dimname_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ANY_DIMNAME_OUT, out, self, dim, keepdim);
 }
 
-Tensor wrap_arange(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::arange(end, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_ARANGE, end, dtype, layout, device, pin_memory);
+at::Tensor wrap_arange(const at::Scalar & end, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::arange(end, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_arange_start(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::arange(start, end, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_ARANGE_START, start, end, dtype, layout, device, pin_memory);
+at::Tensor wrap_arange_start(const at::Scalar & start, const at::Scalar & end, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::arange(start, end, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_arange_start_step(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::arange(start, end, step, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_ARANGE_START_STEP, start, end, step, dtype, layout, device, pin_memory);
+at::Tensor wrap_arange_start_step(const at::Scalar & start, const at::Scalar & end, const at::Scalar & step, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::arange(start, end, step, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_arange_out(args...) {
+at::Tensor & wrap_arange_out(const at::Scalar & end, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::arange(out, end);
@@ -741,7 +710,7 @@ Tensor wrap_arange_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ARANGE_OUT, out, end);
 }
 
-Tensor wrap_arange_start_out(args...) {
+at::Tensor & wrap_arange_start_out(const at::Scalar & start, const at::Scalar & end, const at::Scalar & step, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::arange(out, start, end, step);
@@ -749,7 +718,7 @@ Tensor wrap_arange_start_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ARANGE_START_OUT, out, start, end, step);
 }
 
-Tensor wrap__dim_arange(args...) {
+at::Tensor wrap__dim_arange(const at::Tensor & like, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(like);
     return at::redispatch::_dim_arange(like, dim);
@@ -757,7 +726,7 @@ Tensor wrap__dim_arange(args...) {
   return MK_TORCHY(like.dtype(), like.device(), H__DIM_ARANGE, like, dim);
 }
 
-Tensor wrap_argmax(args...) {
+at::Tensor wrap_argmax(const at::Tensor & self, c10::optional<int64_t> dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::argmax(self, dim, keepdim);
@@ -765,7 +734,7 @@ Tensor wrap_argmax(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARGMAX, self, dim, keepdim);
 }
 
-Tensor wrap_argmax_out(args...) {
+at::Tensor & wrap_argmax_out(const at::Tensor & self, c10::optional<int64_t> dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::argmax(out, self, dim, keepdim);
@@ -773,7 +742,7 @@ Tensor wrap_argmax_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ARGMAX_OUT, out, self, dim, keepdim);
 }
 
-Tensor wrap_argmin(args...) {
+at::Tensor wrap_argmin(const at::Tensor & self, c10::optional<int64_t> dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::argmin(self, dim, keepdim);
@@ -781,7 +750,7 @@ Tensor wrap_argmin(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARGMIN, self, dim, keepdim);
 }
 
-Tensor wrap_argmin_out(args...) {
+at::Tensor & wrap_argmin_out(const at::Tensor & self, c10::optional<int64_t> dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::argmin(out, self, dim, keepdim);
@@ -789,7 +758,7 @@ Tensor wrap_argmin_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ARGMIN_OUT, out, self, dim, keepdim);
 }
 
-Tensor wrap_acosh_out(args...) {
+at::Tensor & wrap_acosh_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::acosh(out, self);
@@ -797,7 +766,7 @@ Tensor wrap_acosh_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ACOSH_OUT, out, self);
 }
 
-Tensor wrap_arccosh(args...) {
+at::Tensor wrap_arccosh(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arccosh(self);
@@ -805,7 +774,7 @@ Tensor wrap_arccosh(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCCOSH, self);
 }
 
-Tensor wrap_arccosh_(args...) {
+at::Tensor & wrap_arccosh_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arccosh_(self);
@@ -813,7 +782,7 @@ Tensor wrap_arccosh_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCCOSH_, self);
 }
 
-Tensor wrap_arccosh_out(args...) {
+at::Tensor & wrap_arccosh_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::arccosh(out, self);
@@ -821,7 +790,7 @@ Tensor wrap_arccosh_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ARCCOSH_OUT, out, self);
 }
 
-Tensor wrap_asinh_out(args...) {
+at::Tensor & wrap_asinh_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::asinh(out, self);
@@ -829,7 +798,7 @@ Tensor wrap_asinh_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ASINH_OUT, out, self);
 }
 
-Tensor wrap_arcsinh(args...) {
+at::Tensor wrap_arcsinh(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arcsinh(self);
@@ -837,7 +806,7 @@ Tensor wrap_arcsinh(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCSINH, self);
 }
 
-Tensor wrap_arcsinh_(args...) {
+at::Tensor & wrap_arcsinh_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arcsinh_(self);
@@ -845,7 +814,7 @@ Tensor wrap_arcsinh_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCSINH_, self);
 }
 
-Tensor wrap_arcsinh_out(args...) {
+at::Tensor & wrap_arcsinh_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::arcsinh(out, self);
@@ -853,7 +822,7 @@ Tensor wrap_arcsinh_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ARCSINH_OUT, out, self);
 }
 
-Tensor wrap_atanh_out(args...) {
+at::Tensor & wrap_atanh_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::atanh(out, self);
@@ -861,7 +830,7 @@ Tensor wrap_atanh_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ATANH_OUT, out, self);
 }
 
-Tensor wrap_arctanh(args...) {
+at::Tensor wrap_arctanh(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arctanh(self);
@@ -869,7 +838,7 @@ Tensor wrap_arctanh(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCTANH, self);
 }
 
-Tensor wrap_arctanh_(args...) {
+at::Tensor & wrap_arctanh_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arctanh_(self);
@@ -877,7 +846,7 @@ Tensor wrap_arctanh_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCTANH_, self);
 }
 
-Tensor wrap_arctanh_out(args...) {
+at::Tensor & wrap_arctanh_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::arctanh(out, self);
@@ -885,7 +854,7 @@ Tensor wrap_arctanh_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ARCTANH_OUT, out, self);
 }
 
-Tensor wrap_as_strided(args...) {
+at::Tensor wrap_as_strided(const at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<int64_t> storage_offset) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::as_strided(self, size, stride, storage_offset);
@@ -893,7 +862,7 @@ Tensor wrap_as_strided(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_AS_STRIDED, self, size, stride, storage_offset);
 }
 
-Tensor wrap_as_strided_(args...) {
+at::Tensor & wrap_as_strided_(at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<int64_t> storage_offset) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::as_strided_(self, size, stride, storage_offset);
@@ -901,7 +870,7 @@ Tensor wrap_as_strided_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_AS_STRIDED_, self, size, stride, storage_offset);
 }
 
-Tensor wrap_asin(args...) {
+at::Tensor wrap_asin(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::asin(self);
@@ -909,7 +878,7 @@ Tensor wrap_asin(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ASIN, self);
 }
 
-Tensor wrap_asin_(args...) {
+at::Tensor & wrap_asin_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::asin_(self);
@@ -917,7 +886,7 @@ Tensor wrap_asin_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ASIN_, self);
 }
 
-Tensor wrap_asin_out(args...) {
+at::Tensor & wrap_asin_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::asin(out, self);
@@ -925,7 +894,7 @@ Tensor wrap_asin_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ASIN_OUT, out, self);
 }
 
-Tensor wrap_arcsin(args...) {
+at::Tensor wrap_arcsin(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arcsin(self);
@@ -933,7 +902,7 @@ Tensor wrap_arcsin(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCSIN, self);
 }
 
-Tensor wrap_arcsin_(args...) {
+at::Tensor & wrap_arcsin_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arcsin_(self);
@@ -941,7 +910,7 @@ Tensor wrap_arcsin_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCSIN_, self);
 }
 
-Tensor wrap_arcsin_out(args...) {
+at::Tensor & wrap_arcsin_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::arcsin(out, self);
@@ -949,7 +918,7 @@ Tensor wrap_arcsin_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ARCSIN_OUT, out, self);
 }
 
-Tensor wrap_atan_out(args...) {
+at::Tensor & wrap_atan_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::atan(out, self);
@@ -957,7 +926,7 @@ Tensor wrap_atan_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ATAN_OUT, out, self);
 }
 
-Tensor wrap_arctan(args...) {
+at::Tensor wrap_arctan(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arctan(self);
@@ -965,7 +934,7 @@ Tensor wrap_arctan(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCTAN, self);
 }
 
-Tensor wrap_arctan_(args...) {
+at::Tensor & wrap_arctan_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::arctan_(self);
@@ -973,7 +942,7 @@ Tensor wrap_arctan_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARCTAN_, self);
 }
 
-Tensor wrap_arctan_out(args...) {
+at::Tensor & wrap_arctan_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::arctan(out, self);
@@ -981,7 +950,7 @@ Tensor wrap_arctan_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ARCTAN_OUT, out, self);
 }
 
-Tensor wrap_atleast_1d(args...) {
+at::Tensor wrap_atleast_1d(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::atleast_1d(self);
@@ -989,12 +958,12 @@ Tensor wrap_atleast_1d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ATLEAST_1D, self);
 }
 
-Tensor[] wrap_atleast_1d_Sequence(args...) {
+std::vector<at::Tensor> wrap_atleast_1d_Sequence(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::atleast_1d(tensors);
 }
 
-Tensor wrap_atleast_2d(args...) {
+at::Tensor wrap_atleast_2d(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::atleast_2d(self);
@@ -1002,12 +971,12 @@ Tensor wrap_atleast_2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ATLEAST_2D, self);
 }
 
-Tensor[] wrap_atleast_2d_Sequence(args...) {
+std::vector<at::Tensor> wrap_atleast_2d_Sequence(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::atleast_2d(tensors);
 }
 
-Tensor wrap_atleast_3d(args...) {
+at::Tensor wrap_atleast_3d(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::atleast_3d(self);
@@ -1015,12 +984,12 @@ Tensor wrap_atleast_3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ATLEAST_3D, self);
 }
 
-Tensor[] wrap_atleast_3d_Sequence(args...) {
+std::vector<at::Tensor> wrap_atleast_3d_Sequence(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::atleast_3d(tensors);
 }
 
-Tensor wrap_baddbmm(args...) {
+at::Tensor wrap_baddbmm(const at::Tensor & self, const at::Tensor & batch1, const at::Tensor & batch2, const at::Scalar & beta, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, batch1, batch2);
     return at::redispatch::baddbmm(self, batch1, batch2, beta, alpha);
@@ -1028,7 +997,7 @@ Tensor wrap_baddbmm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BADDBMM, self, batch1, batch2, beta, alpha);
 }
 
-Tensor wrap_baddbmm_(args...) {
+at::Tensor & wrap_baddbmm_(at::Tensor & self, const at::Tensor & batch1, const at::Tensor & batch2, const at::Scalar & beta, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, batch1, batch2);
     return at::redispatch::baddbmm_(self, batch1, batch2, beta, alpha);
@@ -1036,7 +1005,7 @@ Tensor wrap_baddbmm_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BADDBMM_, self, batch1, batch2, beta, alpha);
 }
 
-Tensor wrap__baddbmm_mkl_(args...) {
+at::Tensor & wrap__baddbmm_mkl_(at::Tensor & self, const at::Tensor & batch1, const at::Tensor & batch2, const at::Scalar & beta, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, batch1, batch2);
     return at::redispatch::_baddbmm_mkl_(self, batch1, batch2, beta, alpha);
@@ -1044,7 +1013,7 @@ Tensor wrap__baddbmm_mkl_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__BADDBMM_MKL_, self, batch1, batch2, beta, alpha);
 }
 
-Tensor wrap_baddbmm_out(args...) {
+at::Tensor & wrap_baddbmm_out(const at::Tensor & self, const at::Tensor & batch1, const at::Tensor & batch2, const at::Scalar & beta, const at::Scalar & alpha, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, batch1, batch2);
     return at::redispatch::baddbmm(out, self, batch1, batch2, beta, alpha);
@@ -1052,23 +1021,19 @@ Tensor wrap_baddbmm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BADDBMM_OUT, out, self, batch1, batch2, beta, alpha);
 }
 
-Tensor wrap_bartlett_window(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::bartlett_window(window_length, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_BARTLETT_WINDOW, window_length, dtype, layout, device, pin_memory);
+at::Tensor wrap_bartlett_window(int64_t window_length, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::bartlett_window(window_length, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_bartlett_window_periodic(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::bartlett_window(window_length, periodic, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_BARTLETT_WINDOW_PERIODIC, window_length, periodic, dtype, layout, device, pin_memory);
+at::Tensor wrap_bartlett_window_periodic(int64_t window_length, bool periodic, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::bartlett_window(window_length, periodic, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_batch_norm(args...) {
+at::Tensor wrap_batch_norm(const at::Tensor & input, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, bool training, double momentum, double eps, bool cudnn_enabled) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::batch_norm(input, weight, bias, running_mean, running_var, training, momentum, eps, cudnn_enabled);
@@ -1076,7 +1041,7 @@ Tensor wrap_batch_norm(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_BATCH_NORM, input, weight, bias, running_mean, running_var, training, momentum, eps, cudnn_enabled);
 }
 
-Tensor wrap_quantized_batch_norm(args...) {
+at::Tensor wrap_quantized_batch_norm(const at::Tensor & input, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, const at::Tensor & mean, const at::Tensor & var, double eps, double output_scale, int64_t output_zero_point) {
   if (trace.is_flushing()) {
     ensure_materialized(input, mean, var);
     return at::redispatch::quantized_batch_norm(input, weight, bias, mean, var, eps, output_scale, output_zero_point);
@@ -1084,23 +1049,17 @@ Tensor wrap_quantized_batch_norm(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_QUANTIZED_BATCH_NORM, input, weight, bias, mean, var, eps, output_scale, output_zero_point);
 }
 
-Tensor wrap__batch_norm_impl_index(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input);
-    return at::redispatch::_batch_norm_impl_index(input, weight, bias, running_mean, running_var, training, momentum, eps, cudnn_enabled);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H__BATCH_NORM_IMPL_INDEX, input, weight, bias, running_mean, running_var, training, momentum, eps, cudnn_enabled);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor,int64_t> wrap__batch_norm_impl_index(const at::Tensor & input, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, bool training, double momentum, double eps, bool cudnn_enabled) {
+  ensure_materialized(input);
+  return at::redispatch::_batch_norm_impl_index(input, weight, bias, running_mean, running_var, training, momentum, eps, cudnn_enabled);
 }
 
-Tensor wrap__batch_norm_impl_index_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, grad_output, reservedSpace);
-    return at::redispatch::_batch_norm_impl_index_backward(impl_index, input, grad_output, weight, running_mean, running_var, save_mean, save_var_transform, train, eps, output_mask, reservedSpace);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H__BATCH_NORM_IMPL_INDEX_BACKWARD, impl_index, input, grad_output, weight, running_mean, running_var, save_mean, save_var_transform, train, eps, output_mask, reservedSpace);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap__batch_norm_impl_index_backward(int64_t impl_index, const at::Tensor & input, const at::Tensor & grad_output, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, const c10::optional<at::Tensor> & save_mean, const c10::optional<at::Tensor> & save_var_transform, bool train, double eps, std::array<bool,3> output_mask, const at::Tensor & reservedSpace) {
+  ensure_materialized(input, grad_output, reservedSpace);
+  return at::redispatch::_batch_norm_impl_index_backward(impl_index, input, grad_output, weight, running_mean, running_var, save_mean, save_var_transform, train, eps, output_mask, reservedSpace);
 }
 
-Tensor wrap_bernoulli(args...) {
+at::Tensor wrap_bernoulli(const at::Tensor & self, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bernoulli(self, generator);
@@ -1108,7 +1067,7 @@ Tensor wrap_bernoulli(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BERNOULLI, self, generator);
 }
 
-Tensor wrap_bernoulli_out(args...) {
+at::Tensor & wrap_bernoulli_out(const at::Tensor & self, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::bernoulli(out, self, generator);
@@ -1116,7 +1075,7 @@ Tensor wrap_bernoulli_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BERNOULLI_OUT, out, self, generator);
 }
 
-Tensor wrap_bernoulli__Tensor(args...) {
+at::Tensor & wrap_bernoulli__Tensor(at::Tensor & self, const at::Tensor & p, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self, p);
     return at::redispatch::bernoulli_(self, p, generator);
@@ -1124,7 +1083,7 @@ Tensor wrap_bernoulli__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BERNOULLI__TENSOR, self, p, generator);
 }
 
-Tensor wrap_bernoulli__float(args...) {
+at::Tensor & wrap_bernoulli__float(at::Tensor & self, double p, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bernoulli_(self, p, generator);
@@ -1132,7 +1091,7 @@ Tensor wrap_bernoulli__float(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BERNOULLI__FLOAT, self, p, generator);
 }
 
-Tensor wrap_bernoulli_p(args...) {
+at::Tensor wrap_bernoulli_p(const at::Tensor & self, double p, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bernoulli(self, p, generator);
@@ -1140,7 +1099,7 @@ Tensor wrap_bernoulli_p(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BERNOULLI_P, self, p, generator);
 }
 
-Tensor wrap_bilinear(args...) {
+at::Tensor wrap_bilinear(const at::Tensor & input1, const at::Tensor & input2, const at::Tensor & weight, const c10::optional<at::Tensor> & bias) {
   if (trace.is_flushing()) {
     ensure_materialized(input1, input2, weight);
     return at::redispatch::bilinear(input1, input2, weight, bias);
@@ -1148,7 +1107,7 @@ Tensor wrap_bilinear(args...) {
   return MK_TORCHY(input1.dtype(), input1.device(), H_BILINEAR, input1, input2, weight, bias);
 }
 
-Tensor wrap_binary_cross_entropy(args...) {
+at::Tensor wrap_binary_cross_entropy(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::binary_cross_entropy(self, target, weight, reduction);
@@ -1156,7 +1115,7 @@ Tensor wrap_binary_cross_entropy(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BINARY_CROSS_ENTROPY, self, target, weight, reduction);
 }
 
-Tensor wrap_binary_cross_entropy_out(args...) {
+at::Tensor & wrap_binary_cross_entropy_out(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, target);
     return at::redispatch::binary_cross_entropy(out, self, target, weight, reduction);
@@ -1164,7 +1123,7 @@ Tensor wrap_binary_cross_entropy_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BINARY_CROSS_ENTROPY_OUT, out, self, target, weight, reduction);
 }
 
-Tensor wrap_binary_cross_entropy_backward(args...) {
+at::Tensor wrap_binary_cross_entropy_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target);
     return at::redispatch::binary_cross_entropy_backward(grad_output, self, target, weight, reduction);
@@ -1172,7 +1131,7 @@ Tensor wrap_binary_cross_entropy_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_BINARY_CROSS_ENTROPY_BACKWARD, grad_output, self, target, weight, reduction);
 }
 
-Tensor wrap_binary_cross_entropy_backward_grad_input(args...) {
+at::Tensor & wrap_binary_cross_entropy_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, target);
     return at::redispatch::binary_cross_entropy_backward(grad_input, grad_output, self, target, weight, reduction);
@@ -1180,7 +1139,7 @@ Tensor wrap_binary_cross_entropy_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_BINARY_CROSS_ENTROPY_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, target, weight, reduction);
 }
 
-Tensor wrap_binary_cross_entropy_with_logits(args...) {
+at::Tensor wrap_binary_cross_entropy_with_logits(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & pos_weight, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::binary_cross_entropy_with_logits(self, target, weight, pos_weight, reduction);
@@ -1188,7 +1147,7 @@ Tensor wrap_binary_cross_entropy_with_logits(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BINARY_CROSS_ENTROPY_WITH_LOGITS, self, target, weight, pos_weight, reduction);
 }
 
-Tensor wrap_binary_cross_entropy_with_logits_backward(args...) {
+at::Tensor wrap_binary_cross_entropy_with_logits_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & pos_weight, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target);
     return at::redispatch::binary_cross_entropy_with_logits_backward(grad_output, self, target, weight, pos_weight, reduction);
@@ -1196,7 +1155,7 @@ Tensor wrap_binary_cross_entropy_with_logits_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_BINARY_CROSS_ENTROPY_WITH_LOGITS_BACKWARD, grad_output, self, target, weight, pos_weight, reduction);
 }
 
-Tensor wrap_bincount(args...) {
+at::Tensor wrap_bincount(const at::Tensor & self, const c10::optional<at::Tensor> & weights, int64_t minlength) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bincount(self, weights, minlength);
@@ -1204,7 +1163,7 @@ Tensor wrap_bincount(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BINCOUNT, self, weights, minlength);
 }
 
-Tensor wrap_bitwise_not(args...) {
+at::Tensor wrap_bitwise_not(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bitwise_not(self);
@@ -1212,7 +1171,7 @@ Tensor wrap_bitwise_not(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_NOT, self);
 }
 
-Tensor wrap_bitwise_not_(args...) {
+at::Tensor & wrap_bitwise_not_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bitwise_not_(self);
@@ -1220,7 +1179,7 @@ Tensor wrap_bitwise_not_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_NOT_, self);
 }
 
-Tensor wrap_bitwise_not_out(args...) {
+at::Tensor & wrap_bitwise_not_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::bitwise_not(out, self);
@@ -1228,7 +1187,7 @@ Tensor wrap_bitwise_not_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BITWISE_NOT_OUT, out, self);
 }
 
-Tensor wrap_copysign_out(args...) {
+at::Tensor & wrap_copysign_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::copysign(out, self, other);
@@ -1236,7 +1195,7 @@ Tensor wrap_copysign_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_COPYSIGN_OUT, out, self, other);
 }
 
-Tensor wrap_copysign_Scalar(args...) {
+at::Tensor wrap_copysign_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::copysign(self, other);
@@ -1244,7 +1203,7 @@ Tensor wrap_copysign_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_COPYSIGN_SCALAR, self, other);
 }
 
-Tensor wrap_copysign__Scalar(args...) {
+at::Tensor & wrap_copysign__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::copysign_(self, other);
@@ -1252,7 +1211,7 @@ Tensor wrap_copysign__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_COPYSIGN__SCALAR, self, other);
 }
 
-Tensor wrap_copysign_Scalar_out(args...) {
+at::Tensor & wrap_copysign_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::copysign(out, self, other);
@@ -1260,7 +1219,7 @@ Tensor wrap_copysign_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_COPYSIGN_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_logical_not(args...) {
+at::Tensor wrap_logical_not(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::logical_not(self);
@@ -1268,7 +1227,7 @@ Tensor wrap_logical_not(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGICAL_NOT, self);
 }
 
-Tensor wrap_logical_not_(args...) {
+at::Tensor & wrap_logical_not_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::logical_not_(self);
@@ -1276,7 +1235,7 @@ Tensor wrap_logical_not_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGICAL_NOT_, self);
 }
 
-Tensor wrap_logical_not_out(args...) {
+at::Tensor & wrap_logical_not_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::logical_not(out, self);
@@ -1284,7 +1243,7 @@ Tensor wrap_logical_not_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGICAL_NOT_OUT, out, self);
 }
 
-Tensor wrap_logical_xor(args...) {
+at::Tensor wrap_logical_xor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::logical_xor(self, other);
@@ -1292,7 +1251,7 @@ Tensor wrap_logical_xor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGICAL_XOR, self, other);
 }
 
-Tensor wrap_logical_xor_(args...) {
+at::Tensor & wrap_logical_xor_(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::logical_xor_(self, other);
@@ -1300,7 +1259,7 @@ Tensor wrap_logical_xor_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGICAL_XOR_, self, other);
 }
 
-Tensor wrap_logical_xor_out(args...) {
+at::Tensor & wrap_logical_xor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::logical_xor(out, self, other);
@@ -1308,7 +1267,7 @@ Tensor wrap_logical_xor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGICAL_XOR_OUT, out, self, other);
 }
 
-Tensor wrap_logical_and(args...) {
+at::Tensor wrap_logical_and(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::logical_and(self, other);
@@ -1316,7 +1275,7 @@ Tensor wrap_logical_and(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGICAL_AND, self, other);
 }
 
-Tensor wrap_logical_and_(args...) {
+at::Tensor & wrap_logical_and_(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::logical_and_(self, other);
@@ -1324,7 +1283,7 @@ Tensor wrap_logical_and_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGICAL_AND_, self, other);
 }
 
-Tensor wrap_logical_and_out(args...) {
+at::Tensor & wrap_logical_and_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::logical_and(out, self, other);
@@ -1332,7 +1291,7 @@ Tensor wrap_logical_and_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGICAL_AND_OUT, out, self, other);
 }
 
-Tensor wrap_logical_or(args...) {
+at::Tensor wrap_logical_or(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::logical_or(self, other);
@@ -1340,7 +1299,7 @@ Tensor wrap_logical_or(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGICAL_OR, self, other);
 }
 
-Tensor wrap_logical_or_(args...) {
+at::Tensor & wrap_logical_or_(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::logical_or_(self, other);
@@ -1348,7 +1307,7 @@ Tensor wrap_logical_or_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGICAL_OR_, self, other);
 }
 
-Tensor wrap_logical_or_out(args...) {
+at::Tensor & wrap_logical_or_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::logical_or(out, self, other);
@@ -1356,23 +1315,19 @@ Tensor wrap_logical_or_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGICAL_OR_OUT, out, self, other);
 }
 
-Tensor wrap_blackman_window(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::blackman_window(window_length, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_BLACKMAN_WINDOW, window_length, dtype, layout, device, pin_memory);
+at::Tensor wrap_blackman_window(int64_t window_length, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::blackman_window(window_length, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_blackman_window_periodic(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::blackman_window(window_length, periodic, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_BLACKMAN_WINDOW_PERIODIC, window_length, periodic, dtype, layout, device, pin_memory);
+at::Tensor wrap_blackman_window_periodic(int64_t window_length, bool periodic, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::blackman_window(window_length, periodic, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_bmm(args...) {
+at::Tensor wrap_bmm(const at::Tensor & self, const at::Tensor & mat2) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mat2);
     return at::redispatch::bmm(self, mat2);
@@ -1380,7 +1335,7 @@ Tensor wrap_bmm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BMM, self, mat2);
 }
 
-Tensor wrap__bmm(args...) {
+at::Tensor wrap__bmm(const at::Tensor & self, const at::Tensor & mat2, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mat2);
     return at::redispatch::_bmm(self, mat2, deterministic);
@@ -1388,7 +1343,7 @@ Tensor wrap__bmm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__BMM, self, mat2, deterministic);
 }
 
-Tensor wrap_bmm_out(args...) {
+at::Tensor & wrap_bmm_out(const at::Tensor & self, const at::Tensor & mat2, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, mat2);
     return at::redispatch::bmm(out, self, mat2);
@@ -1396,7 +1351,7 @@ Tensor wrap_bmm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BMM_OUT, out, self, mat2);
 }
 
-Tensor wrap__bmm_out(args...) {
+at::Tensor & wrap__bmm_out(const at::Tensor & self, const at::Tensor & mat2, bool deterministic, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, mat2);
     return at::redispatch::_bmm(out, self, mat2, deterministic);
@@ -1404,12 +1359,12 @@ Tensor wrap__bmm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H__BMM_OUT, out, self, mat2, deterministic);
 }
 
-Tensor[] wrap_broadcast_tensors(args...) {
+std::vector<at::Tensor> wrap_broadcast_tensors(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::broadcast_tensors(tensors);
 }
 
-Tensor wrap_broadcast_to(args...) {
+at::Tensor wrap_broadcast_to(const at::Tensor & self, at::IntArrayRef size) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::broadcast_to(self, size);
@@ -1417,15 +1372,13 @@ Tensor wrap_broadcast_to(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BROADCAST_TO, self, size);
 }
 
-Tensor wrap_cat(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::cat(tensors, dim);
-  }
-  return MK_TORCHY(None, None, H_CAT, tensors, dim);
+at::Tensor wrap_cat(at::TensorList tensors, int64_t dim) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::cat(tensors, dim));
 }
 
-Tensor wrap_cat_out(args...) {
+at::Tensor & wrap_cat_out(at::TensorList tensors, int64_t dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::cat(out, tensors, dim);
@@ -1433,15 +1386,13 @@ Tensor wrap_cat_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CAT_OUT, out, tensors, dim);
 }
 
-Tensor wrap_cat_names(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::cat(tensors, dim);
-  }
-  return MK_TORCHY(None, None, H_CAT_NAMES, tensors, dim);
+at::Tensor wrap_cat_names(at::TensorList tensors, at::Dimname dim) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::cat(tensors, dim));
 }
 
-Tensor wrap_cat_names_out(args...) {
+at::Tensor & wrap_cat_names_out(at::TensorList tensors, at::Dimname dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::cat(out, tensors, dim);
@@ -1449,15 +1400,13 @@ Tensor wrap_cat_names_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CAT_NAMES_OUT, out, tensors, dim);
 }
 
-Tensor wrap_block_diag(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::block_diag(tensors);
-  }
-  return MK_TORCHY(None, None, H_BLOCK_DIAG, tensors);
+at::Tensor wrap_block_diag(at::TensorList tensors) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::block_diag(tensors));
 }
 
-Tensor wrap_ceil(args...) {
+at::Tensor wrap_ceil(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::ceil(self);
@@ -1465,7 +1414,7 @@ Tensor wrap_ceil(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CEIL, self);
 }
 
-Tensor wrap_ceil_(args...) {
+at::Tensor & wrap_ceil_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::ceil_(self);
@@ -1473,7 +1422,7 @@ Tensor wrap_ceil_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CEIL_, self);
 }
 
-Tensor wrap_ceil_out(args...) {
+at::Tensor & wrap_ceil_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::ceil(out, self);
@@ -1481,15 +1430,13 @@ Tensor wrap_ceil_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CEIL_OUT, out, self);
 }
 
-Tensor wrap_chain_matmul(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::chain_matmul(matrices);
-  }
-  return MK_TORCHY(None, None, H_CHAIN_MATMUL, matrices);
+at::Tensor wrap_chain_matmul(at::TensorList matrices) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::chain_matmul(matrices));
 }
 
-Tensor wrap_chain_matmul_out(args...) {
+at::Tensor & wrap_chain_matmul_out(at::TensorList matrices, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::chain_matmul(out, matrices);
@@ -1497,32 +1444,32 @@ Tensor wrap_chain_matmul_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CHAIN_MATMUL_OUT, out, matrices);
 }
 
-Tensor[] wrap_unsafe_chunk(args...) {
+std::vector<at::Tensor> wrap_unsafe_chunk(const at::Tensor & self, int64_t chunks, int64_t dim) {
   ensure_materialized(self);
   return at::redispatch::unsafe_chunk(self, chunks, dim);
 }
 
-Tensor[] wrap_chunk(args...) {
+std::vector<at::Tensor> wrap_chunk(const at::Tensor & self, int64_t chunks, int64_t dim) {
   ensure_materialized(self);
   return at::redispatch::chunk(self, chunks, dim);
 }
 
-Tensor[] wrap_tensor_split_sections(args...) {
+std::vector<at::Tensor> wrap_tensor_split_sections(const at::Tensor & self, int64_t sections, int64_t dim) {
   ensure_materialized(self);
   return at::redispatch::tensor_split(self, sections, dim);
 }
 
-Tensor[] wrap_tensor_split_indices(args...) {
+std::vector<at::Tensor> wrap_tensor_split_indices(const at::Tensor & self, at::IntArrayRef indices, int64_t dim) {
   ensure_materialized(self);
   return at::redispatch::tensor_split(self, indices, dim);
 }
 
-Tensor[] wrap_tensor_split_tensor_indices_or_sections(args...) {
+std::vector<at::Tensor> wrap_tensor_split_tensor_indices_or_sections(const at::Tensor & self, const at::Tensor & tensor_indices_or_sections, int64_t dim) {
   ensure_materialized(self, tensor_indices_or_sections);
   return at::redispatch::tensor_split(self, tensor_indices_or_sections, dim);
 }
 
-Tensor wrap_clamp(args...) {
+at::Tensor wrap_clamp(const at::Tensor & self, const c10::optional<at::Scalar> & min, const c10::optional<at::Scalar> & max) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::clamp(self, min, max);
@@ -1530,7 +1477,7 @@ Tensor wrap_clamp(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CLAMP, self, min, max);
 }
 
-Tensor wrap_clamp_(args...) {
+at::Tensor & wrap_clamp_(at::Tensor & self, const c10::optional<at::Scalar> & min, const c10::optional<at::Scalar> & max) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::clamp_(self, min, max);
@@ -1538,7 +1485,7 @@ Tensor wrap_clamp_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CLAMP_, self, min, max);
 }
 
-Tensor wrap_clamp_out(args...) {
+at::Tensor & wrap_clamp_out(const at::Tensor & self, const c10::optional<at::Scalar> & min, const c10::optional<at::Scalar> & max, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::clamp(out, self, min, max);
@@ -1546,7 +1493,7 @@ Tensor wrap_clamp_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CLAMP_OUT, out, self, min, max);
 }
 
-Tensor wrap_clamp_max(args...) {
+at::Tensor wrap_clamp_max(const at::Tensor & self, const at::Scalar & max) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::clamp_max(self, max);
@@ -1554,7 +1501,7 @@ Tensor wrap_clamp_max(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CLAMP_MAX, self, max);
 }
 
-Tensor wrap_clamp_max_(args...) {
+at::Tensor & wrap_clamp_max_(at::Tensor & self, const at::Scalar & max) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::clamp_max_(self, max);
@@ -1562,7 +1509,7 @@ Tensor wrap_clamp_max_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CLAMP_MAX_, self, max);
 }
 
-Tensor wrap_clamp_max_out(args...) {
+at::Tensor & wrap_clamp_max_out(const at::Tensor & self, const at::Scalar & max, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::clamp_max(out, self, max);
@@ -1570,7 +1517,7 @@ Tensor wrap_clamp_max_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CLAMP_MAX_OUT, out, self, max);
 }
 
-Tensor wrap_clamp_min(args...) {
+at::Tensor wrap_clamp_min(const at::Tensor & self, const at::Scalar & min) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::clamp_min(self, min);
@@ -1578,7 +1525,7 @@ Tensor wrap_clamp_min(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CLAMP_MIN, self, min);
 }
 
-Tensor wrap_clamp_min_(args...) {
+at::Tensor & wrap_clamp_min_(at::Tensor & self, const at::Scalar & min) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::clamp_min_(self, min);
@@ -1586,7 +1533,7 @@ Tensor wrap_clamp_min_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CLAMP_MIN_, self, min);
 }
 
-Tensor wrap_clamp_min_out(args...) {
+at::Tensor & wrap_clamp_min_out(const at::Tensor & self, const at::Scalar & min, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::clamp_min(out, self, min);
@@ -1594,7 +1541,7 @@ Tensor wrap_clamp_min_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CLAMP_MIN_OUT, out, self, min);
 }
 
-Tensor wrap_clip(args...) {
+at::Tensor wrap_clip(const at::Tensor & self, const c10::optional<at::Scalar> & min, const c10::optional<at::Scalar> & max) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::clip(self, min, max);
@@ -1602,7 +1549,7 @@ Tensor wrap_clip(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CLIP, self, min, max);
 }
 
-Tensor wrap_clip_(args...) {
+at::Tensor & wrap_clip_(at::Tensor & self, const c10::optional<at::Scalar> & min, const c10::optional<at::Scalar> & max) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::clip_(self, min, max);
@@ -1610,7 +1557,7 @@ Tensor wrap_clip_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CLIP_, self, min, max);
 }
 
-Tensor wrap_clip_out(args...) {
+at::Tensor & wrap_clip_out(const at::Tensor & self, const c10::optional<at::Scalar> & min, const c10::optional<at::Scalar> & max, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::clip(out, self, min, max);
@@ -1618,12 +1565,12 @@ Tensor wrap_clip_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CLIP_OUT, out, self, min, max);
 }
 
-bool wrap_cudnn_is_acceptable(args...) {
+bool wrap_cudnn_is_acceptable(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::cudnn_is_acceptable(self);
 }
 
-Tensor wrap_complex(args...) {
+at::Tensor wrap_complex(const at::Tensor & real, const at::Tensor & imag) {
   if (trace.is_flushing()) {
     ensure_materialized(real, imag);
     return at::redispatch::complex(real, imag);
@@ -1631,7 +1578,7 @@ Tensor wrap_complex(args...) {
   return MK_TORCHY(real.dtype(), real.device(), H_COMPLEX, real, imag);
 }
 
-Tensor wrap_complex_out(args...) {
+at::Tensor & wrap_complex_out(const at::Tensor & real, const at::Tensor & imag, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, real, imag);
     return at::redispatch::complex(out, real, imag);
@@ -1639,7 +1586,7 @@ Tensor wrap_complex_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_COMPLEX_OUT, out, real, imag);
 }
 
-Tensor wrap_polar(args...) {
+at::Tensor wrap_polar(const at::Tensor & abs, const at::Tensor & angle) {
   if (trace.is_flushing()) {
     ensure_materialized(abs, angle);
     return at::redispatch::polar(abs, angle);
@@ -1647,7 +1594,7 @@ Tensor wrap_polar(args...) {
   return MK_TORCHY(abs.dtype(), abs.device(), H_POLAR, abs, angle);
 }
 
-Tensor wrap_polar_out(args...) {
+at::Tensor & wrap_polar_out(const at::Tensor & abs, const at::Tensor & angle, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, abs, angle);
     return at::redispatch::polar(out, abs, angle);
@@ -1655,7 +1602,7 @@ Tensor wrap_polar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_POLAR_OUT, out, abs, angle);
 }
 
-Tensor wrap_constant_pad_nd(args...) {
+at::Tensor wrap_constant_pad_nd(const at::Tensor & self, at::IntArrayRef pad, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::constant_pad_nd(self, pad, value);
@@ -1663,7 +1610,7 @@ Tensor wrap_constant_pad_nd(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CONSTANT_PAD_ND, self, pad, value);
 }
 
-Tensor wrap_convolution(args...) {
+at::Tensor wrap_convolution(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::convolution(input, weight, bias, stride, padding, dilation, transposed, output_padding, groups);
@@ -1671,7 +1618,7 @@ Tensor wrap_convolution(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_CONVOLUTION, input, weight, bias, stride, padding, dilation, transposed, output_padding, groups);
 }
 
-Tensor wrap_convolution_overrideable(args...) {
+at::Tensor wrap_convolution_overrideable(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::convolution_overrideable(input, weight, bias, stride, padding, dilation, transposed, output_padding, groups);
@@ -1679,15 +1626,12 @@ Tensor wrap_convolution_overrideable(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_CONVOLUTION_OVERRIDEABLE, input, weight, bias, stride, padding, dilation, transposed, output_padding, groups);
 }
 
-Tensor wrap_convolution_backward_overrideable(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, input, weight);
-    return at::redispatch::convolution_backward_overrideable(grad_output, input, weight, stride, padding, dilation, transposed, output_padding, groups, output_mask);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_CONVOLUTION_BACKWARD_OVERRIDEABLE, grad_output, input, weight, stride, padding, dilation, transposed, output_padding, groups, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_convolution_backward_overrideable(const at::Tensor & grad_output, const at::Tensor & input, const at::Tensor & weight, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups, std::array<bool,3> output_mask) {
+  ensure_materialized(grad_output, input, weight);
+  return at::redispatch::convolution_backward_overrideable(grad_output, input, weight, stride, padding, dilation, transposed, output_padding, groups, output_mask);
 }
 
-Tensor wrap__convolution(args...) {
+at::Tensor wrap__convolution(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups, bool benchmark, bool deterministic, bool cudnn_enabled, bool allow_tf32) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::_convolution(input, weight, bias, stride, padding, dilation, transposed, output_padding, groups, benchmark, deterministic, cudnn_enabled, allow_tf32);
@@ -1695,7 +1639,7 @@ Tensor wrap__convolution(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H__CONVOLUTION, input, weight, bias, stride, padding, dilation, transposed, output_padding, groups, benchmark, deterministic, cudnn_enabled, allow_tf32);
 }
 
-Tensor wrap__convolution_deprecated(args...) {
+at::Tensor wrap__convolution_deprecated(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups, bool benchmark, bool deterministic, bool cudnn_enabled) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::_convolution(input, weight, bias, stride, padding, dilation, transposed, output_padding, groups, benchmark, deterministic, cudnn_enabled);
@@ -1703,7 +1647,7 @@ Tensor wrap__convolution_deprecated(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H__CONVOLUTION_DEPRECATED, input, weight, bias, stride, padding, dilation, transposed, output_padding, groups, benchmark, deterministic, cudnn_enabled);
 }
 
-Tensor wrap__convolution_mode(args...) {
+at::Tensor wrap__convolution_mode(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, std::string padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::_convolution_mode(input, weight, bias, stride, padding, dilation, groups);
@@ -1711,7 +1655,7 @@ Tensor wrap__convolution_mode(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H__CONVOLUTION_MODE, input, weight, bias, stride, padding, dilation, groups);
 }
 
-Tensor wrap__convolution_nogroup(args...) {
+at::Tensor wrap__convolution_nogroup(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::_convolution_nogroup(input, weight, bias, stride, padding, dilation, transposed, output_padding);
@@ -1719,15 +1663,12 @@ Tensor wrap__convolution_nogroup(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H__CONVOLUTION_NOGROUP, input, weight, bias, stride, padding, dilation, transposed, output_padding);
 }
 
-Tensor wrap__convolution_double_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(gO, weight, self);
-    return at::redispatch::_convolution_double_backward(ggI, ggW, ggb, gO, weight, self, stride, padding, dilation, transposed, output_padding, groups, benchmark, deterministic, cudnn_enabled, allow_tf32, output_mask);
-  }
-  return MK_TORCHY(gO.dtype(), gO.device(), H__CONVOLUTION_DOUBLE_BACKWARD, ggI, ggW, ggb, gO, weight, self, stride, padding, dilation, transposed, output_padding, groups, benchmark, deterministic, cudnn_enabled, allow_tf32, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap__convolution_double_backward(const c10::optional<at::Tensor> & ggI, const c10::optional<at::Tensor> & ggW, const c10::optional<at::Tensor> & ggb, const at::Tensor & gO, const at::Tensor & weight, const at::Tensor & self, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups, bool benchmark, bool deterministic, bool cudnn_enabled, bool allow_tf32, std::array<bool,3> output_mask) {
+  ensure_materialized(gO, weight, self);
+  return at::redispatch::_convolution_double_backward(ggI, ggW, ggb, gO, weight, self, stride, padding, dilation, transposed, output_padding, groups, benchmark, deterministic, cudnn_enabled, allow_tf32, output_mask);
 }
 
-Tensor wrap_conv1d(args...) {
+at::Tensor wrap_conv1d(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::conv1d(input, weight, bias, stride, padding, dilation, groups);
@@ -1735,7 +1676,7 @@ Tensor wrap_conv1d(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_CONV1D, input, weight, bias, stride, padding, dilation, groups);
 }
 
-Tensor wrap_conv2d(args...) {
+at::Tensor wrap_conv2d(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::conv2d(input, weight, bias, stride, padding, dilation, groups);
@@ -1743,7 +1684,7 @@ Tensor wrap_conv2d(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_CONV2D, input, weight, bias, stride, padding, dilation, groups);
 }
 
-Tensor wrap_conv3d(args...) {
+at::Tensor wrap_conv3d(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::conv3d(input, weight, bias, stride, padding, dilation, groups);
@@ -1751,7 +1692,7 @@ Tensor wrap_conv3d(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_CONV3D, input, weight, bias, stride, padding, dilation, groups);
 }
 
-Tensor wrap_conv1d_padding(args...) {
+at::Tensor wrap_conv1d_padding(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, std::string padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::conv1d(input, weight, bias, stride, padding, dilation, groups);
@@ -1759,7 +1700,7 @@ Tensor wrap_conv1d_padding(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_CONV1D_PADDING, input, weight, bias, stride, padding, dilation, groups);
 }
 
-Tensor wrap_conv2d_padding(args...) {
+at::Tensor wrap_conv2d_padding(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, std::string padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::conv2d(input, weight, bias, stride, padding, dilation, groups);
@@ -1767,7 +1708,7 @@ Tensor wrap_conv2d_padding(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_CONV2D_PADDING, input, weight, bias, stride, padding, dilation, groups);
 }
 
-Tensor wrap_conv3d_padding(args...) {
+at::Tensor wrap_conv3d_padding(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, std::string padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::conv3d(input, weight, bias, stride, padding, dilation, groups);
@@ -1775,7 +1716,7 @@ Tensor wrap_conv3d_padding(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_CONV3D_PADDING, input, weight, bias, stride, padding, dilation, groups);
 }
 
-Tensor wrap_conv_tbc(args...) {
+at::Tensor wrap_conv_tbc(const at::Tensor & self, const at::Tensor & weight, const at::Tensor & bias, int64_t pad) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight, bias);
     return at::redispatch::conv_tbc(self, weight, bias, pad);
@@ -1783,15 +1724,12 @@ Tensor wrap_conv_tbc(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CONV_TBC, self, weight, bias, pad);
 }
 
-Tensor wrap_conv_tbc_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, input, weight, bias);
-    return at::redispatch::conv_tbc_backward(self, input, weight, bias, pad);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_CONV_TBC_BACKWARD, self, input, weight, bias, pad);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_conv_tbc_backward(const at::Tensor & self, const at::Tensor & input, const at::Tensor & weight, const at::Tensor & bias, int64_t pad) {
+  ensure_materialized(self, input, weight, bias);
+  return at::redispatch::conv_tbc_backward(self, input, weight, bias, pad);
 }
 
-Tensor wrap_conv_transpose1d(args...) {
+at::Tensor wrap_conv_transpose1d(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, int64_t groups, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::conv_transpose1d(input, weight, bias, stride, padding, output_padding, groups, dilation);
@@ -1799,7 +1737,7 @@ Tensor wrap_conv_transpose1d(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_CONV_TRANSPOSE1D, input, weight, bias, stride, padding, output_padding, groups, dilation);
 }
 
-Tensor wrap_conv_transpose2d_input(args...) {
+at::Tensor wrap_conv_transpose2d_input(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, int64_t groups, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::conv_transpose2d(input, weight, bias, stride, padding, output_padding, groups, dilation);
@@ -1807,7 +1745,7 @@ Tensor wrap_conv_transpose2d_input(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_CONV_TRANSPOSE2D_INPUT, input, weight, bias, stride, padding, output_padding, groups, dilation);
 }
 
-Tensor wrap_conv_transpose3d_input(args...) {
+at::Tensor wrap_conv_transpose3d_input(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, int64_t groups, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::conv_transpose3d(input, weight, bias, stride, padding, output_padding, groups, dilation);
@@ -1815,7 +1753,7 @@ Tensor wrap_conv_transpose3d_input(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_CONV_TRANSPOSE3D_INPUT, input, weight, bias, stride, padding, output_padding, groups, dilation);
 }
 
-Tensor wrap_copy_(args...) {
+at::Tensor & wrap_copy_(at::Tensor & self, const at::Tensor & src, bool non_blocking) {
   if (trace.is_flushing()) {
     ensure_materialized(self, src);
     return at::redispatch::copy_(self, src, non_blocking);
@@ -1823,7 +1761,7 @@ Tensor wrap_copy_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_COPY_, self, src, non_blocking);
 }
 
-Tensor wrap_cos_out(args...) {
+at::Tensor & wrap_cos_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::cos(out, self);
@@ -1831,7 +1769,7 @@ Tensor wrap_cos_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_COS_OUT, out, self);
 }
 
-Tensor wrap_cosh_out(args...) {
+at::Tensor & wrap_cosh_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::cosh(out, self);
@@ -1839,7 +1777,7 @@ Tensor wrap_cosh_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_COSH_OUT, out, self);
 }
 
-Tensor wrap_cosine_embedding_loss(args...) {
+at::Tensor wrap_cosine_embedding_loss(const at::Tensor & input1, const at::Tensor & input2, const at::Tensor & target, double margin, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(input1, input2, target);
     return at::redispatch::cosine_embedding_loss(input1, input2, target, margin, reduction);
@@ -1847,7 +1785,7 @@ Tensor wrap_cosine_embedding_loss(args...) {
   return MK_TORCHY(input1.dtype(), input1.device(), H_COSINE_EMBEDDING_LOSS, input1, input2, target, margin, reduction);
 }
 
-Tensor wrap_count_nonzero_dim_IntList(args...) {
+at::Tensor wrap_count_nonzero_dim_IntList(const at::Tensor & self, at::IntArrayRef dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::count_nonzero(self, dim);
@@ -1855,7 +1793,7 @@ Tensor wrap_count_nonzero_dim_IntList(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_COUNT_NONZERO_DIM_INTLIST, self, dim);
 }
 
-Tensor wrap_count_nonzero(args...) {
+at::Tensor wrap_count_nonzero(const at::Tensor & self, c10::optional<int64_t> dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::count_nonzero(self, dim);
@@ -1863,7 +1801,7 @@ Tensor wrap_count_nonzero(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_COUNT_NONZERO, self, dim);
 }
 
-Tensor wrap_cudnn_affine_grid_generator(args...) {
+at::Tensor wrap_cudnn_affine_grid_generator(const at::Tensor & theta, int64_t N, int64_t C, int64_t H, int64_t W) {
   if (trace.is_flushing()) {
     ensure_materialized(theta);
     return at::redispatch::cudnn_affine_grid_generator(theta, N, C, H, W);
@@ -1871,7 +1809,7 @@ Tensor wrap_cudnn_affine_grid_generator(args...) {
   return MK_TORCHY(theta.dtype(), theta.device(), H_CUDNN_AFFINE_GRID_GENERATOR, theta, N, C, H, W);
 }
 
-Tensor wrap_cudnn_affine_grid_generator_backward(args...) {
+at::Tensor wrap_cudnn_affine_grid_generator_backward(const at::Tensor & grad, int64_t N, int64_t C, int64_t H, int64_t W) {
   if (trace.is_flushing()) {
     ensure_materialized(grad);
     return at::redispatch::cudnn_affine_grid_generator_backward(grad, N, C, H, W);
@@ -1879,23 +1817,17 @@ Tensor wrap_cudnn_affine_grid_generator_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_CUDNN_AFFINE_GRID_GENERATOR_BACKWARD, grad, N, C, H, W);
 }
 
-Tensor wrap_cudnn_batch_norm(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, weight);
-    return at::redispatch::cudnn_batch_norm(input, weight, bias, running_mean, running_var, training, exponential_average_factor, epsilon);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_CUDNN_BATCH_NORM, input, weight, bias, running_mean, running_var, training, exponential_average_factor, epsilon);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap_cudnn_batch_norm(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, bool training, double exponential_average_factor, double epsilon) {
+  ensure_materialized(input, weight);
+  return at::redispatch::cudnn_batch_norm(input, weight, bias, running_mean, running_var, training, exponential_average_factor, epsilon);
 }
 
-Tensor wrap_cudnn_batch_norm_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, grad_output, weight, reserveSpace);
-    return at::redispatch::cudnn_batch_norm_backward(input, grad_output, weight, running_mean, running_var, save_mean, save_var, epsilon, reserveSpace);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_CUDNN_BATCH_NORM_BACKWARD, input, grad_output, weight, running_mean, running_var, save_mean, save_var, epsilon, reserveSpace);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_cudnn_batch_norm_backward(const at::Tensor & input, const at::Tensor & grad_output, const at::Tensor & weight, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, const c10::optional<at::Tensor> & save_mean, const c10::optional<at::Tensor> & save_var, double epsilon, const at::Tensor & reserveSpace) {
+  ensure_materialized(input, grad_output, weight, reserveSpace);
+  return at::redispatch::cudnn_batch_norm_backward(input, grad_output, weight, running_mean, running_var, save_mean, save_var, epsilon, reserveSpace);
 }
 
-Tensor wrap_cudnn_convolution_deprecated(args...) {
+at::Tensor wrap_cudnn_convolution_deprecated(const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::cudnn_convolution(self, weight, bias, padding, stride, dilation, groups, benchmark, deterministic);
@@ -1903,7 +1835,7 @@ Tensor wrap_cudnn_convolution_deprecated(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_CONVOLUTION_DEPRECATED, self, weight, bias, padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_cudnn_convolution_deprecated2(args...) {
+at::Tensor wrap_cudnn_convolution_deprecated2(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::cudnn_convolution(self, weight, padding, stride, dilation, groups, benchmark, deterministic);
@@ -1911,7 +1843,7 @@ Tensor wrap_cudnn_convolution_deprecated2(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_CONVOLUTION_DEPRECATED2, self, weight, padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_cudnn_convolution(args...) {
+at::Tensor wrap_cudnn_convolution(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::cudnn_convolution(self, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
@@ -1919,7 +1851,7 @@ Tensor wrap_cudnn_convolution(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_CONVOLUTION, self, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
 }
 
-Tensor wrap_cudnn_convolution_backward_input(args...) {
+at::Tensor wrap_cudnn_convolution_backward_input(at::IntArrayRef self_size, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, weight);
     return at::redispatch::cudnn_convolution_backward_input(self_size, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
@@ -1927,15 +1859,12 @@ Tensor wrap_cudnn_convolution_backward_input(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_CUDNN_CONVOLUTION_BACKWARD_INPUT, self_size, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
 }
 
-Tensor wrap_cudnn_convolution_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, grad_output, weight);
-    return at::redispatch::cudnn_convolution_backward(self, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32, output_mask);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_CONVOLUTION_BACKWARD, self, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32, output_mask);
+std::tuple<at::Tensor,at::Tensor> wrap_cudnn_convolution_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32, std::array<bool,2> output_mask) {
+  ensure_materialized(self, grad_output, weight);
+  return at::redispatch::cudnn_convolution_backward(self, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32, output_mask);
 }
 
-Tensor wrap_cudnn_convolution_backward_weight(args...) {
+at::Tensor wrap_cudnn_convolution_backward_weight(at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::cudnn_convolution_backward_weight(weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
@@ -1943,7 +1872,7 @@ Tensor wrap_cudnn_convolution_backward_weight(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_CUDNN_CONVOLUTION_BACKWARD_WEIGHT, weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
 }
 
-Tensor wrap_cudnn_convolution_transpose_deprecated(args...) {
+at::Tensor wrap_cudnn_convolution_transpose_deprecated(const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::cudnn_convolution_transpose(self, weight, bias, padding, output_padding, stride, dilation, groups, benchmark, deterministic);
@@ -1951,7 +1880,7 @@ Tensor wrap_cudnn_convolution_transpose_deprecated(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_CONVOLUTION_TRANSPOSE_DEPRECATED, self, weight, bias, padding, output_padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_cudnn_convolution_transpose_deprecated2(args...) {
+at::Tensor wrap_cudnn_convolution_transpose_deprecated2(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::cudnn_convolution_transpose(self, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic);
@@ -1959,7 +1888,7 @@ Tensor wrap_cudnn_convolution_transpose_deprecated2(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_CONVOLUTION_TRANSPOSE_DEPRECATED2, self, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_cudnn_convolution_transpose(args...) {
+at::Tensor wrap_cudnn_convolution_transpose(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::cudnn_convolution_transpose(self, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
@@ -1967,15 +1896,12 @@ Tensor wrap_cudnn_convolution_transpose(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_CONVOLUTION_TRANSPOSE, self, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
 }
 
-Tensor wrap_cudnn_convolution_transpose_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, grad_output, weight);
-    return at::redispatch::cudnn_convolution_transpose_backward(self, grad_output, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic, allow_tf32, output_mask);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_CONVOLUTION_TRANSPOSE_BACKWARD, self, grad_output, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic, allow_tf32, output_mask);
+std::tuple<at::Tensor,at::Tensor> wrap_cudnn_convolution_transpose_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32, std::array<bool,2> output_mask) {
+  ensure_materialized(self, grad_output, weight);
+  return at::redispatch::cudnn_convolution_transpose_backward(self, grad_output, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic, allow_tf32, output_mask);
 }
 
-Tensor wrap_cudnn_convolution_transpose_backward_input(args...) {
+at::Tensor wrap_cudnn_convolution_transpose_backward_input(const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, weight);
     return at::redispatch::cudnn_convolution_transpose_backward_input(grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
@@ -1983,7 +1909,7 @@ Tensor wrap_cudnn_convolution_transpose_backward_input(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_CUDNN_CONVOLUTION_TRANSPOSE_BACKWARD_INPUT, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
 }
 
-Tensor wrap_cudnn_convolution_transpose_backward_weight(args...) {
+at::Tensor wrap_cudnn_convolution_transpose_backward_weight(at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::cudnn_convolution_transpose_backward_weight(weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
@@ -1991,7 +1917,7 @@ Tensor wrap_cudnn_convolution_transpose_backward_weight(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_CUDNN_CONVOLUTION_TRANSPOSE_BACKWARD_WEIGHT, weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
 }
 
-Tensor wrap_cudnn_convolution_relu(args...) {
+at::Tensor wrap_cudnn_convolution_relu(const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::cudnn_convolution_relu(self, weight, bias, stride, padding, dilation, groups);
@@ -1999,7 +1925,7 @@ Tensor wrap_cudnn_convolution_relu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_CONVOLUTION_RELU, self, weight, bias, stride, padding, dilation, groups);
 }
 
-Tensor wrap_cudnn_convolution_add_relu(args...) {
+at::Tensor wrap_cudnn_convolution_add_relu(const at::Tensor & self, const at::Tensor & weight, const at::Tensor & z, const c10::optional<at::Scalar> & alpha, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight, z);
     return at::redispatch::cudnn_convolution_add_relu(self, weight, z, alpha, bias, stride, padding, dilation, groups);
@@ -2007,7 +1933,7 @@ Tensor wrap_cudnn_convolution_add_relu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_CONVOLUTION_ADD_RELU, self, weight, z, alpha, bias, stride, padding, dilation, groups);
 }
 
-Tensor wrap_cudnn_grid_sampler(args...) {
+at::Tensor wrap_cudnn_grid_sampler(const at::Tensor & self, const at::Tensor & grid) {
   if (trace.is_flushing()) {
     ensure_materialized(self, grid);
     return at::redispatch::cudnn_grid_sampler(self, grid);
@@ -2015,89 +1941,62 @@ Tensor wrap_cudnn_grid_sampler(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_GRID_SAMPLER, self, grid);
 }
 
-Tensor wrap_cudnn_grid_sampler_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, grid, grad_output);
-    return at::redispatch::cudnn_grid_sampler_backward(self, grid, grad_output);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_CUDNN_GRID_SAMPLER_BACKWARD, self, grid, grad_output);
+std::tuple<at::Tensor,at::Tensor> wrap_cudnn_grid_sampler_backward(const at::Tensor & self, const at::Tensor & grid, const at::Tensor & grad_output) {
+  ensure_materialized(self, grid, grad_output);
+  return at::redispatch::cudnn_grid_sampler_backward(self, grid, grad_output);
 }
 
-Tensor wrap_cummax(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::cummax(self, dim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_CUMMAX, self, dim);
+std::tuple<at::Tensor,at::Tensor> wrap_cummax(const at::Tensor & self, int64_t dim) {
+  ensure_materialized(self);
+  return at::redispatch::cummax(self, dim);
 }
 
-Tensor wrap_cummax_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::cummax(values, indices, self, dim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_CUMMAX_OUT, values, indices, self, dim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_cummax_out(const at::Tensor & self, int64_t dim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::cummax(values, indices, self, dim);
 }
 
-Tensor wrap_cummax_dimname(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::cummax(self, dim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_CUMMAX_DIMNAME, self, dim);
+std::tuple<at::Tensor,at::Tensor> wrap_cummax_dimname(const at::Tensor & self, at::Dimname dim) {
+  ensure_materialized(self);
+  return at::redispatch::cummax(self, dim);
 }
 
-Tensor wrap_cummax_dimname_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::cummax(values, indices, self, dim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_CUMMAX_DIMNAME_OUT, values, indices, self, dim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_cummax_dimname_out(const at::Tensor & self, at::Dimname dim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::cummax(values, indices, self, dim);
 }
 
-void wrap__cummax_helper(args...) {
+void wrap__cummax_helper(const at::Tensor & self, at::Tensor & values, at::Tensor & indices, int64_t dim) {
   ensure_materialized(self, values, indices);
   return at::redispatch::_cummax_helper(self, values, indices, dim);
 }
 
-Tensor wrap_cummin(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::cummin(self, dim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_CUMMIN, self, dim);
+std::tuple<at::Tensor,at::Tensor> wrap_cummin(const at::Tensor & self, int64_t dim) {
+  ensure_materialized(self);
+  return at::redispatch::cummin(self, dim);
 }
 
-Tensor wrap_cummin_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::cummin(values, indices, self, dim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_CUMMIN_OUT, values, indices, self, dim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_cummin_out(const at::Tensor & self, int64_t dim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::cummin(values, indices, self, dim);
 }
 
-Tensor wrap_cummin_dimname(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::cummin(self, dim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_CUMMIN_DIMNAME, self, dim);
+std::tuple<at::Tensor,at::Tensor> wrap_cummin_dimname(const at::Tensor & self, at::Dimname dim) {
+  ensure_materialized(self);
+  return at::redispatch::cummin(self, dim);
 }
 
-Tensor wrap_cummin_dimname_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::cummin(values, indices, self, dim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_CUMMIN_DIMNAME_OUT, values, indices, self, dim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_cummin_dimname_out(const at::Tensor & self, at::Dimname dim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::cummin(values, indices, self, dim);
 }
 
-void wrap__cummin_helper(args...) {
+void wrap__cummin_helper(const at::Tensor & self, at::Tensor & values, at::Tensor & indices, int64_t dim) {
   ensure_materialized(self, values, indices);
   return at::redispatch::_cummin_helper(self, values, indices, dim);
 }
 
-Tensor wrap_cummaxmin_backward(args...) {
+at::Tensor wrap_cummaxmin_backward(const at::Tensor & grad, const at::Tensor & input, const at::Tensor & indices, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, input, indices);
     return at::redispatch::cummaxmin_backward(grad, input, indices, dim);
@@ -2105,7 +2004,7 @@ Tensor wrap_cummaxmin_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_CUMMAXMIN_BACKWARD, grad, input, indices, dim);
 }
 
-Tensor wrap_cumprod(args...) {
+at::Tensor wrap_cumprod(const at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::cumprod(self, dim, dtype);
@@ -2113,7 +2012,7 @@ Tensor wrap_cumprod(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUMPROD, self, dim, dtype);
 }
 
-Tensor wrap_cumprod_(args...) {
+at::Tensor & wrap_cumprod_(at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::cumprod_(self, dim, dtype);
@@ -2121,7 +2020,7 @@ Tensor wrap_cumprod_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUMPROD_, self, dim, dtype);
 }
 
-Tensor wrap_cumprod_out(args...) {
+at::Tensor & wrap_cumprod_out(const at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::cumprod(out, self, dim, dtype);
@@ -2129,7 +2028,7 @@ Tensor wrap_cumprod_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CUMPROD_OUT, out, self, dim, dtype);
 }
 
-Tensor wrap_cumprod_dimname(args...) {
+at::Tensor wrap_cumprod_dimname(const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::cumprod(self, dim, dtype);
@@ -2137,7 +2036,7 @@ Tensor wrap_cumprod_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUMPROD_DIMNAME, self, dim, dtype);
 }
 
-Tensor wrap_cumprod__dimname(args...) {
+at::Tensor & wrap_cumprod__dimname(at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::cumprod_(self, dim, dtype);
@@ -2145,7 +2044,7 @@ Tensor wrap_cumprod__dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUMPROD__DIMNAME, self, dim, dtype);
 }
 
-Tensor wrap_cumprod_dimname_out(args...) {
+at::Tensor & wrap_cumprod_dimname_out(const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::cumprod(out, self, dim, dtype);
@@ -2153,7 +2052,7 @@ Tensor wrap_cumprod_dimname_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CUMPROD_DIMNAME_OUT, out, self, dim, dtype);
 }
 
-Tensor wrap_cumprod_backward(args...) {
+at::Tensor wrap_cumprod_backward(const at::Tensor & grad, const at::Tensor & input, int64_t dim, const at::Tensor & output) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, input, output);
     return at::redispatch::cumprod_backward(grad, input, dim, output);
@@ -2161,7 +2060,7 @@ Tensor wrap_cumprod_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_CUMPROD_BACKWARD, grad, input, dim, output);
 }
 
-Tensor wrap_cumsum(args...) {
+at::Tensor wrap_cumsum(const at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::cumsum(self, dim, dtype);
@@ -2169,7 +2068,7 @@ Tensor wrap_cumsum(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUMSUM, self, dim, dtype);
 }
 
-Tensor wrap_cumsum_(args...) {
+at::Tensor & wrap_cumsum_(at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::cumsum_(self, dim, dtype);
@@ -2177,7 +2076,7 @@ Tensor wrap_cumsum_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUMSUM_, self, dim, dtype);
 }
 
-Tensor wrap_cumsum_out(args...) {
+at::Tensor & wrap_cumsum_out(const at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::cumsum(out, self, dim, dtype);
@@ -2185,7 +2084,7 @@ Tensor wrap_cumsum_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CUMSUM_OUT, out, self, dim, dtype);
 }
 
-Tensor wrap_cumsum_dimname(args...) {
+at::Tensor wrap_cumsum_dimname(const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::cumsum(self, dim, dtype);
@@ -2193,7 +2092,7 @@ Tensor wrap_cumsum_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUMSUM_DIMNAME, self, dim, dtype);
 }
 
-Tensor wrap_cumsum__dimname(args...) {
+at::Tensor & wrap_cumsum__dimname(at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::cumsum_(self, dim, dtype);
@@ -2201,7 +2100,7 @@ Tensor wrap_cumsum__dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CUMSUM__DIMNAME, self, dim, dtype);
 }
 
-Tensor wrap_cumsum_dimname_out(args...) {
+at::Tensor & wrap_cumsum_dimname_out(const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::cumsum(out, self, dim, dtype);
@@ -2209,7 +2108,7 @@ Tensor wrap_cumsum_dimname_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CUMSUM_DIMNAME_OUT, out, self, dim, dtype);
 }
 
-Tensor wrap_ctc_loss_IntList(args...) {
+at::Tensor wrap_ctc_loss_IntList(const at::Tensor & log_probs, const at::Tensor & targets, at::IntArrayRef input_lengths, at::IntArrayRef target_lengths, int64_t blank, int64_t reduction, bool zero_infinity) {
   if (trace.is_flushing()) {
     ensure_materialized(log_probs, targets);
     return at::redispatch::ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, reduction, zero_infinity);
@@ -2217,7 +2116,7 @@ Tensor wrap_ctc_loss_IntList(args...) {
   return MK_TORCHY(log_probs.dtype(), log_probs.device(), H_CTC_LOSS_INTLIST, log_probs, targets, input_lengths, target_lengths, blank, reduction, zero_infinity);
 }
 
-Tensor wrap_ctc_loss_Tensor(args...) {
+at::Tensor wrap_ctc_loss_Tensor(const at::Tensor & log_probs, const at::Tensor & targets, const at::Tensor & input_lengths, const at::Tensor & target_lengths, int64_t blank, int64_t reduction, bool zero_infinity) {
   if (trace.is_flushing()) {
     ensure_materialized(log_probs, targets, input_lengths, target_lengths);
     return at::redispatch::ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, reduction, zero_infinity);
@@ -2225,15 +2124,12 @@ Tensor wrap_ctc_loss_Tensor(args...) {
   return MK_TORCHY(log_probs.dtype(), log_probs.device(), H_CTC_LOSS_TENSOR, log_probs, targets, input_lengths, target_lengths, blank, reduction, zero_infinity);
 }
 
-Tensor wrap__ctc_loss(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(log_probs, targets);
-    return at::redispatch::_ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, zero_infinity);
-  }
-  return MK_TORCHY(log_probs.dtype(), log_probs.device(), H__CTC_LOSS, log_probs, targets, input_lengths, target_lengths, blank, zero_infinity);
+std::tuple<at::Tensor,at::Tensor> wrap__ctc_loss(const at::Tensor & log_probs, const at::Tensor & targets, at::IntArrayRef input_lengths, at::IntArrayRef target_lengths, int64_t blank, bool zero_infinity) {
+  ensure_materialized(log_probs, targets);
+  return at::redispatch::_ctc_loss(log_probs, targets, input_lengths, target_lengths, blank, zero_infinity);
 }
 
-Tensor wrap__ctc_loss_backward(args...) {
+at::Tensor wrap__ctc_loss_backward(const at::Tensor & grad, const at::Tensor & log_probs, const at::Tensor & targets, at::IntArrayRef input_lengths, at::IntArrayRef target_lengths, const at::Tensor & neg_log_likelihood, const at::Tensor & log_alpha, int64_t blank, bool zero_infinity) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, log_probs, targets, neg_log_likelihood, log_alpha);
     return at::redispatch::_ctc_loss_backward(grad, log_probs, targets, input_lengths, target_lengths, neg_log_likelihood, log_alpha, blank, zero_infinity);
@@ -2241,7 +2137,7 @@ Tensor wrap__ctc_loss_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H__CTC_LOSS_BACKWARD, grad, log_probs, targets, input_lengths, target_lengths, neg_log_likelihood, log_alpha, blank, zero_infinity);
 }
 
-Tensor wrap_diag_embed(args...) {
+at::Tensor wrap_diag_embed(const at::Tensor & self, int64_t offset, int64_t dim1, int64_t dim2) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::diag_embed(self, offset, dim1, dim2);
@@ -2249,7 +2145,7 @@ Tensor wrap_diag_embed(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIAG_EMBED, self, offset, dim1, dim2);
 }
 
-Tensor wrap_diagflat(args...) {
+at::Tensor wrap_diagflat(const at::Tensor & self, int64_t offset) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::diagflat(self, offset);
@@ -2257,7 +2153,7 @@ Tensor wrap_diagflat(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIAGFLAT, self, offset);
 }
 
-Tensor wrap_diagonal(args...) {
+at::Tensor wrap_diagonal(const at::Tensor & self, int64_t offset, int64_t dim1, int64_t dim2) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::diagonal(self, offset, dim1, dim2);
@@ -2265,7 +2161,7 @@ Tensor wrap_diagonal(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIAGONAL, self, offset, dim1, dim2);
 }
 
-Tensor wrap_diagonal_Dimname(args...) {
+at::Tensor wrap_diagonal_Dimname(const at::Tensor & self, at::Dimname outdim, at::Dimname dim1, at::Dimname dim2, int64_t offset) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::diagonal(self, outdim, dim1, dim2, offset);
@@ -2273,7 +2169,7 @@ Tensor wrap_diagonal_Dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIAGONAL_DIMNAME, self, outdim, dim1, dim2, offset);
 }
 
-Tensor wrap_diagonal_backward(args...) {
+at::Tensor wrap_diagonal_backward(const at::Tensor & grad, at::IntArrayRef input_sizes, int64_t offset, int64_t dim1, int64_t dim2) {
   if (trace.is_flushing()) {
     ensure_materialized(grad);
     return at::redispatch::diagonal_backward(grad, input_sizes, offset, dim1, dim2);
@@ -2281,7 +2177,7 @@ Tensor wrap_diagonal_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_DIAGONAL_BACKWARD, grad, input_sizes, offset, dim1, dim2);
 }
 
-Tensor wrap_fill_diagonal_(args...) {
+at::Tensor & wrap_fill_diagonal_(at::Tensor & self, const at::Scalar & fill_value, bool wrap) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fill_diagonal_(self, fill_value, wrap);
@@ -2289,7 +2185,7 @@ Tensor wrap_fill_diagonal_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FILL_DIAGONAL_, self, fill_value, wrap);
 }
 
-Tensor wrap_diff(args...) {
+at::Tensor wrap_diff(const at::Tensor & self, int64_t n, int64_t dim, const c10::optional<at::Tensor> & prepend, const c10::optional<at::Tensor> & append) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::diff(self, n, dim, prepend, append);
@@ -2297,7 +2193,7 @@ Tensor wrap_diff(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIFF, self, n, dim, prepend, append);
 }
 
-Tensor wrap_diff_out(args...) {
+at::Tensor & wrap_diff_out(const at::Tensor & self, int64_t n, int64_t dim, const c10::optional<at::Tensor> & prepend, const c10::optional<at::Tensor> & append, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::diff(out, self, n, dim, prepend, append);
@@ -2305,7 +2201,7 @@ Tensor wrap_diff_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_DIFF_OUT, out, self, n, dim, prepend, append);
 }
 
-Tensor wrap_div_Tensor(args...) {
+at::Tensor wrap_div_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::div(self, other);
@@ -2313,7 +2209,7 @@ Tensor wrap_div_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIV_TENSOR, self, other);
 }
 
-Tensor wrap_div__Tensor(args...) {
+at::Tensor & wrap_div__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::div_(self, other);
@@ -2321,7 +2217,7 @@ Tensor wrap_div__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIV__TENSOR, self, other);
 }
 
-Tensor wrap_div_out(args...) {
+at::Tensor & wrap_div_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::div(out, self, other);
@@ -2329,7 +2225,7 @@ Tensor wrap_div_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_DIV_OUT, out, self, other);
 }
 
-Tensor wrap_div_out_mode(args...) {
+at::Tensor & wrap_div_out_mode(const at::Tensor & self, const at::Tensor & other, c10::optional<std::string> rounding_mode, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::div(out, self, other, rounding_mode);
@@ -2337,7 +2233,7 @@ Tensor wrap_div_out_mode(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_DIV_OUT_MODE, out, self, other, rounding_mode);
 }
 
-Tensor wrap_div_Scalar(args...) {
+at::Tensor wrap_div_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::div(self, other);
@@ -2345,7 +2241,7 @@ Tensor wrap_div_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIV_SCALAR, self, other);
 }
 
-Tensor wrap_div__Scalar(args...) {
+at::Tensor & wrap_div__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::div_(self, other);
@@ -2353,7 +2249,7 @@ Tensor wrap_div__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIV__SCALAR, self, other);
 }
 
-Tensor wrap_div_Scalar_mode(args...) {
+at::Tensor wrap_div_Scalar_mode(const at::Tensor & self, const at::Scalar & other, c10::optional<std::string> rounding_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::div(self, other, rounding_mode);
@@ -2361,7 +2257,7 @@ Tensor wrap_div_Scalar_mode(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIV_SCALAR_MODE, self, other, rounding_mode);
 }
 
-Tensor wrap_div__Scalar_mode(args...) {
+at::Tensor & wrap_div__Scalar_mode(at::Tensor & self, const at::Scalar & other, c10::optional<std::string> rounding_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::div_(self, other, rounding_mode);
@@ -2369,7 +2265,7 @@ Tensor wrap_div__Scalar_mode(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIV__SCALAR_MODE, self, other, rounding_mode);
 }
 
-Tensor wrap_divide_Tensor(args...) {
+at::Tensor wrap_divide_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::divide(self, other);
@@ -2377,7 +2273,7 @@ Tensor wrap_divide_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIVIDE_TENSOR, self, other);
 }
 
-Tensor wrap_divide__Tensor(args...) {
+at::Tensor & wrap_divide__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::divide_(self, other);
@@ -2385,7 +2281,7 @@ Tensor wrap_divide__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIVIDE__TENSOR, self, other);
 }
 
-Tensor wrap_divide_out(args...) {
+at::Tensor & wrap_divide_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::divide(out, self, other);
@@ -2393,7 +2289,7 @@ Tensor wrap_divide_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_DIVIDE_OUT, out, self, other);
 }
 
-Tensor wrap_divide_Scalar(args...) {
+at::Tensor wrap_divide_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::divide(self, other);
@@ -2401,7 +2297,7 @@ Tensor wrap_divide_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIVIDE_SCALAR, self, other);
 }
 
-Tensor wrap_divide__Scalar(args...) {
+at::Tensor & wrap_divide__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::divide_(self, other);
@@ -2409,7 +2305,7 @@ Tensor wrap_divide__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIVIDE__SCALAR, self, other);
 }
 
-Tensor wrap_divide_Tensor_mode(args...) {
+at::Tensor wrap_divide_Tensor_mode(const at::Tensor & self, const at::Tensor & other, c10::optional<std::string> rounding_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::divide(self, other, rounding_mode);
@@ -2417,7 +2313,7 @@ Tensor wrap_divide_Tensor_mode(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIVIDE_TENSOR_MODE, self, other, rounding_mode);
 }
 
-Tensor wrap_divide__Tensor_mode(args...) {
+at::Tensor & wrap_divide__Tensor_mode(at::Tensor & self, const at::Tensor & other, c10::optional<std::string> rounding_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::divide_(self, other, rounding_mode);
@@ -2425,7 +2321,7 @@ Tensor wrap_divide__Tensor_mode(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIVIDE__TENSOR_MODE, self, other, rounding_mode);
 }
 
-Tensor wrap_divide_out_mode(args...) {
+at::Tensor & wrap_divide_out_mode(const at::Tensor & self, const at::Tensor & other, c10::optional<std::string> rounding_mode, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::divide(out, self, other, rounding_mode);
@@ -2433,7 +2329,7 @@ Tensor wrap_divide_out_mode(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_DIVIDE_OUT_MODE, out, self, other, rounding_mode);
 }
 
-Tensor wrap_divide_Scalar_mode(args...) {
+at::Tensor wrap_divide_Scalar_mode(const at::Tensor & self, const at::Scalar & other, c10::optional<std::string> rounding_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::divide(self, other, rounding_mode);
@@ -2441,7 +2337,7 @@ Tensor wrap_divide_Scalar_mode(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIVIDE_SCALAR_MODE, self, other, rounding_mode);
 }
 
-Tensor wrap_divide__Scalar_mode(args...) {
+at::Tensor & wrap_divide__Scalar_mode(at::Tensor & self, const at::Scalar & other, c10::optional<std::string> rounding_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::divide_(self, other, rounding_mode);
@@ -2449,7 +2345,7 @@ Tensor wrap_divide__Scalar_mode(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIVIDE__SCALAR_MODE, self, other, rounding_mode);
 }
 
-Tensor wrap_true_divide_Tensor(args...) {
+at::Tensor wrap_true_divide_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::true_divide(self, other);
@@ -2457,7 +2353,7 @@ Tensor wrap_true_divide_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRUE_DIVIDE_TENSOR, self, other);
 }
 
-Tensor wrap_true_divide__Tensor(args...) {
+at::Tensor & wrap_true_divide__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::true_divide_(self, other);
@@ -2465,7 +2361,7 @@ Tensor wrap_true_divide__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRUE_DIVIDE__TENSOR, self, other);
 }
 
-Tensor wrap_true_divide_out(args...) {
+at::Tensor & wrap_true_divide_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::true_divide(out, self, other);
@@ -2473,7 +2369,7 @@ Tensor wrap_true_divide_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_TRUE_DIVIDE_OUT, out, self, other);
 }
 
-Tensor wrap_true_divide_Scalar(args...) {
+at::Tensor wrap_true_divide_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::true_divide(self, other);
@@ -2481,7 +2377,7 @@ Tensor wrap_true_divide_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRUE_DIVIDE_SCALAR, self, other);
 }
 
-Tensor wrap_true_divide__Scalar(args...) {
+at::Tensor & wrap_true_divide__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::true_divide_(self, other);
@@ -2489,7 +2385,7 @@ Tensor wrap_true_divide__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRUE_DIVIDE__SCALAR, self, other);
 }
 
-Tensor wrap_dot(args...) {
+at::Tensor wrap_dot(const at::Tensor & self, const at::Tensor & tensor) {
   if (trace.is_flushing()) {
     ensure_materialized(self, tensor);
     return at::redispatch::dot(self, tensor);
@@ -2497,7 +2393,7 @@ Tensor wrap_dot(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DOT, self, tensor);
 }
 
-Tensor wrap_dot_out(args...) {
+at::Tensor & wrap_dot_out(const at::Tensor & self, const at::Tensor & tensor, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, tensor);
     return at::redispatch::dot(out, self, tensor);
@@ -2505,7 +2401,7 @@ Tensor wrap_dot_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_DOT_OUT, out, self, tensor);
 }
 
-Tensor wrap_vdot(args...) {
+at::Tensor wrap_vdot(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::vdot(self, other);
@@ -2513,7 +2409,7 @@ Tensor wrap_vdot(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_VDOT, self, other);
 }
 
-Tensor wrap_vdot_out(args...) {
+at::Tensor & wrap_vdot_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::vdot(out, self, other);
@@ -2521,15 +2417,13 @@ Tensor wrap_vdot_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_VDOT_OUT, out, self, other);
 }
 
-Tensor wrap_einsum(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::einsum(equation, tensors);
-  }
-  return MK_TORCHY(None, None, H_EINSUM, equation, tensors);
+at::Tensor wrap_einsum(std::string equation, at::TensorList tensors) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::einsum(equation, tensors));
 }
 
-Tensor wrap_embedding(args...) {
+at::Tensor wrap_embedding(const at::Tensor & weight, const at::Tensor & indices, int64_t padding_idx, bool scale_grad_by_freq, bool sparse) {
   if (trace.is_flushing()) {
     ensure_materialized(weight, indices);
     return at::redispatch::embedding(weight, indices, padding_idx, scale_grad_by_freq, sparse);
@@ -2537,7 +2431,7 @@ Tensor wrap_embedding(args...) {
   return MK_TORCHY(weight.dtype(), weight.device(), H_EMBEDDING, weight, indices, padding_idx, scale_grad_by_freq, sparse);
 }
 
-Tensor wrap_embedding_backward(args...) {
+at::Tensor wrap_embedding_backward(const at::Tensor & grad, const at::Tensor & indices, int64_t num_weights, int64_t padding_idx, bool scale_grad_by_freq, bool sparse) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, indices);
     return at::redispatch::embedding_backward(grad, indices, num_weights, padding_idx, scale_grad_by_freq, sparse);
@@ -2545,7 +2439,7 @@ Tensor wrap_embedding_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_EMBEDDING_BACKWARD, grad, indices, num_weights, padding_idx, scale_grad_by_freq, sparse);
 }
 
-Tensor wrap_embedding_dense_backward(args...) {
+at::Tensor wrap_embedding_dense_backward(const at::Tensor & grad_output, const at::Tensor & indices, int64_t num_weights, int64_t padding_idx, bool scale_grad_by_freq) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, indices);
     return at::redispatch::embedding_dense_backward(grad_output, indices, num_weights, padding_idx, scale_grad_by_freq);
@@ -2553,7 +2447,7 @@ Tensor wrap_embedding_dense_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_EMBEDDING_DENSE_BACKWARD, grad_output, indices, num_weights, padding_idx, scale_grad_by_freq);
 }
 
-Tensor wrap_embedding_renorm_(args...) {
+at::Tensor & wrap_embedding_renorm_(at::Tensor & self, const at::Tensor & indices, double max_norm, double norm_type) {
   if (trace.is_flushing()) {
     ensure_materialized(self, indices);
     return at::redispatch::embedding_renorm_(self, indices, max_norm, norm_type);
@@ -2561,7 +2455,7 @@ Tensor wrap_embedding_renorm_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_EMBEDDING_RENORM_, self, indices, max_norm, norm_type);
 }
 
-Tensor wrap_embedding_sparse_backward(args...) {
+at::Tensor wrap_embedding_sparse_backward(const at::Tensor & grad, const at::Tensor & indices, int64_t num_weights, int64_t padding_idx, bool scale_grad_by_freq) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, indices);
     return at::redispatch::embedding_sparse_backward(grad, indices, num_weights, padding_idx, scale_grad_by_freq);
@@ -2569,31 +2463,23 @@ Tensor wrap_embedding_sparse_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_EMBEDDING_SPARSE_BACKWARD, grad, indices, num_weights, padding_idx, scale_grad_by_freq);
 }
 
-Tensor wrap__embedding_bag_forward_only(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(weight, indices, offsets);
-    return at::redispatch::_embedding_bag_forward_only(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset, padding_idx);
-  }
-  return MK_TORCHY(weight.dtype(), weight.device(), H__EMBEDDING_BAG_FORWARD_ONLY, weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset, padding_idx);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap__embedding_bag_forward_only(const at::Tensor & weight, const at::Tensor & indices, const at::Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const c10::optional<at::Tensor> & per_sample_weights, bool include_last_offset, int64_t padding_idx) {
+  ensure_materialized(weight, indices, offsets);
+  return at::redispatch::_embedding_bag_forward_only(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset, padding_idx);
 }
 
-Tensor wrap__rowwise_prune(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(weight, mask);
-    return at::redispatch::_rowwise_prune(weight, mask, compressed_indices_dtype);
-  }
-  return MK_TORCHY(weight.dtype(), weight.device(), H__ROWWISE_PRUNE, weight, mask, compressed_indices_dtype);
+std::tuple<at::Tensor,at::Tensor> wrap__rowwise_prune(const at::Tensor & weight, const at::Tensor & mask, at::ScalarType compressed_indices_dtype) {
+  ensure_materialized(weight, mask);
+  return at::redispatch::_rowwise_prune(weight, mask, compressed_indices_dtype);
 }
 
-Tensor wrap_row_stack(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::row_stack(tensors);
-  }
-  return MK_TORCHY(None, None, H_ROW_STACK, tensors);
+at::Tensor wrap_row_stack(at::TensorList tensors) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::row_stack(tensors));
 }
 
-Tensor wrap_row_stack_out(args...) {
+at::Tensor & wrap_row_stack_out(at::TensorList tensors, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::row_stack(out, tensors);
@@ -2601,31 +2487,22 @@ Tensor wrap_row_stack_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ROW_STACK_OUT, out, tensors);
 }
 
-Tensor wrap_embedding_bag(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(weight, indices, offsets);
-    return at::redispatch::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset);
-  }
-  return MK_TORCHY(weight.dtype(), weight.device(), H_EMBEDDING_BAG, weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap_embedding_bag(const at::Tensor & weight, const at::Tensor & indices, const at::Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const c10::optional<at::Tensor> & per_sample_weights, bool include_last_offset) {
+  ensure_materialized(weight, indices, offsets);
+  return at::redispatch::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset);
 }
 
-Tensor wrap_embedding_bag_padding_idx(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(weight, indices, offsets);
-    return at::redispatch::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset, padding_idx);
-  }
-  return MK_TORCHY(weight.dtype(), weight.device(), H_EMBEDDING_BAG_PADDING_IDX, weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset, padding_idx);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap_embedding_bag_padding_idx(const at::Tensor & weight, const at::Tensor & indices, const at::Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const c10::optional<at::Tensor> & per_sample_weights, bool include_last_offset, c10::optional<int64_t> padding_idx) {
+  ensure_materialized(weight, indices, offsets);
+  return at::redispatch::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset, padding_idx);
 }
 
-Tensor wrap__embedding_bag(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(weight, indices, offsets);
-    return at::redispatch::_embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset, padding_idx);
-  }
-  return MK_TORCHY(weight.dtype(), weight.device(), H__EMBEDDING_BAG, weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset, padding_idx);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap__embedding_bag(const at::Tensor & weight, const at::Tensor & indices, const at::Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const c10::optional<at::Tensor> & per_sample_weights, bool include_last_offset, int64_t padding_idx) {
+  ensure_materialized(weight, indices, offsets);
+  return at::redispatch::_embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset, padding_idx);
 }
 
-Tensor wrap__embedding_bag_backward(args...) {
+at::Tensor wrap__embedding_bag_backward(const at::Tensor & grad, const at::Tensor & indices, const at::Tensor & offsets, const at::Tensor & offset2bag, const at::Tensor & bag_size, const at::Tensor & maximum_indices, int64_t num_weights, bool scale_grad_by_freq, int64_t mode, bool sparse, const c10::optional<at::Tensor> & per_sample_weights, int64_t padding_idx) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, indices, offsets, offset2bag, bag_size, maximum_indices);
     return at::redispatch::_embedding_bag_backward(grad, indices, offsets, offset2bag, bag_size, maximum_indices, num_weights, scale_grad_by_freq, mode, sparse, per_sample_weights, padding_idx);
@@ -2633,7 +2510,7 @@ Tensor wrap__embedding_bag_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H__EMBEDDING_BAG_BACKWARD, grad, indices, offsets, offset2bag, bag_size, maximum_indices, num_weights, scale_grad_by_freq, mode, sparse, per_sample_weights, padding_idx);
 }
 
-Tensor wrap__embedding_bag_sparse_backward(args...) {
+at::Tensor wrap__embedding_bag_sparse_backward(const at::Tensor & grad, const at::Tensor & indices, const at::Tensor & offsets, const at::Tensor & offset2bag, const at::Tensor & bag_size, int64_t num_weights, bool scale_grad_by_freq, int64_t mode, const c10::optional<at::Tensor> & per_sample_weights, int64_t padding_idx) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, indices, offsets, offset2bag, bag_size);
     return at::redispatch::_embedding_bag_sparse_backward(grad, indices, offsets, offset2bag, bag_size, num_weights, scale_grad_by_freq, mode, per_sample_weights, padding_idx);
@@ -2641,7 +2518,7 @@ Tensor wrap__embedding_bag_sparse_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H__EMBEDDING_BAG_SPARSE_BACKWARD, grad, indices, offsets, offset2bag, bag_size, num_weights, scale_grad_by_freq, mode, per_sample_weights, padding_idx);
 }
 
-Tensor wrap__embedding_bag_dense_backward(args...) {
+at::Tensor wrap__embedding_bag_dense_backward(const at::Tensor & grad, const at::Tensor & indices, const at::Tensor & offset2bag, const at::Tensor & bag_size, const at::Tensor & maximum_indices, int64_t num_weights, bool scale_grad_by_freq, int64_t mode, const c10::optional<at::Tensor> & per_sample_weights, int64_t padding_idx) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, indices, offset2bag, bag_size, maximum_indices);
     return at::redispatch::_embedding_bag_dense_backward(grad, indices, offset2bag, bag_size, maximum_indices, num_weights, scale_grad_by_freq, mode, per_sample_weights, padding_idx);
@@ -2649,7 +2526,7 @@ Tensor wrap__embedding_bag_dense_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H__EMBEDDING_BAG_DENSE_BACKWARD, grad, indices, offset2bag, bag_size, maximum_indices, num_weights, scale_grad_by_freq, mode, per_sample_weights, padding_idx);
 }
 
-Tensor wrap__embedding_bag_per_sample_weights_backward(args...) {
+at::Tensor wrap__embedding_bag_per_sample_weights_backward(const at::Tensor & grad, const at::Tensor & weight, const at::Tensor & indices, const at::Tensor & offsets, const at::Tensor & offset2bag, int64_t mode, int64_t padding_idx) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, weight, indices, offsets, offset2bag);
     return at::redispatch::_embedding_bag_per_sample_weights_backward(grad, weight, indices, offsets, offset2bag, mode, padding_idx);
@@ -2657,23 +2534,19 @@ Tensor wrap__embedding_bag_per_sample_weights_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H__EMBEDDING_BAG_PER_SAMPLE_WEIGHTS_BACKWARD, grad, weight, indices, offsets, offset2bag, mode, padding_idx);
 }
 
-Tensor wrap_empty_names(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::empty(size, names, dtype, layout, device, pin_memory, memory_format);
-  }
-  return MK_TORCHY(None, None, H_EMPTY_NAMES, size, names, dtype, layout, device, pin_memory, memory_format);
+at::Tensor wrap_empty_names(at::IntArrayRef size, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::empty(size, names, dtype, layout, device, pin_memory, memory_format));
 }
 
-Tensor wrap_empty_memory_format(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::empty(size, dtype, layout, device, pin_memory, memory_format);
-  }
-  return MK_TORCHY(None, None, H_EMPTY_MEMORY_FORMAT, size, dtype, layout, device, pin_memory, memory_format);
+at::Tensor wrap_empty_memory_format(at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::empty(size, dtype, layout, device, pin_memory, memory_format));
 }
 
-Tensor wrap_new_empty(args...) {
+at::Tensor wrap_new_empty(const at::Tensor & self, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::new_empty(self, size, dtype, layout, device, pin_memory);
@@ -2681,7 +2554,7 @@ Tensor wrap_new_empty(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NEW_EMPTY, self, size, dtype, layout, device, pin_memory);
 }
 
-Tensor wrap_new_empty_strided(args...) {
+at::Tensor wrap_new_empty_strided(const at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::new_empty_strided(self, size, stride, dtype, layout, device, pin_memory);
@@ -2689,7 +2562,7 @@ Tensor wrap_new_empty_strided(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NEW_EMPTY_STRIDED, self, size, stride, dtype, layout, device, pin_memory);
 }
 
-Tensor wrap_new_full(args...) {
+at::Tensor wrap_new_full(const at::Tensor & self, at::IntArrayRef size, const at::Scalar & fill_value, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::new_full(self, size, fill_value, dtype, layout, device, pin_memory);
@@ -2697,7 +2570,7 @@ Tensor wrap_new_full(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NEW_FULL, self, size, fill_value, dtype, layout, device, pin_memory);
 }
 
-Tensor wrap_new_zeros(args...) {
+at::Tensor wrap_new_zeros(const at::Tensor & self, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::new_zeros(self, size, dtype, layout, device, pin_memory);
@@ -2705,15 +2578,13 @@ Tensor wrap_new_zeros(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NEW_ZEROS, self, size, dtype, layout, device, pin_memory);
 }
 
-Tensor wrap__empty_affine_quantized(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::_empty_affine_quantized(size, dtype, layout, device, pin_memory, scale, zero_point, memory_format);
-  }
-  return MK_TORCHY(None, None, H__EMPTY_AFFINE_QUANTIZED, size, dtype, layout, device, pin_memory, scale, zero_point, memory_format);
+at::Tensor wrap__empty_affine_quantized(at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, double scale, int64_t zero_point, c10::optional<at::MemoryFormat> memory_format) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::_empty_affine_quantized(size, dtype, layout, device, pin_memory, scale, zero_point, memory_format));
 }
 
-Tensor wrap__empty_per_channel_affine_quantized(args...) {
+at::Tensor wrap__empty_per_channel_affine_quantized(at::IntArrayRef size, const at::Tensor & scales, const at::Tensor & zero_points, int64_t axis, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(scales, zero_points);
     return at::redispatch::_empty_per_channel_affine_quantized(size, scales, zero_points, axis, dtype, layout, device, pin_memory, memory_format);
@@ -2721,15 +2592,12 @@ Tensor wrap__empty_per_channel_affine_quantized(args...) {
   return MK_TORCHY(scales.dtype(), scales.device(), H__EMPTY_PER_CHANNEL_AFFINE_QUANTIZED, size, scales, zero_points, axis, dtype, layout, device, pin_memory, memory_format);
 }
 
-Tensor wrap_resize_(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::resize_(self, size, memory_format);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_RESIZE_, self, size, memory_format);
+const at::Tensor & wrap_resize_(const at::Tensor & self, at::IntArrayRef size, c10::optional<at::MemoryFormat> memory_format) {
+  ensure_materialized(self);
+  return at::redispatch::resize_(self, size, memory_format);
 }
 
-Tensor wrap_empty_quantized(args...) {
+at::Tensor wrap_empty_quantized(at::IntArrayRef size, const at::Tensor & qtensor) {
   if (trace.is_flushing()) {
     ensure_materialized(qtensor);
     return at::redispatch::empty_quantized(size, qtensor);
@@ -2737,7 +2605,7 @@ Tensor wrap_empty_quantized(args...) {
   return MK_TORCHY(qtensor.dtype(), qtensor.device(), H_EMPTY_QUANTIZED, size, qtensor);
 }
 
-Tensor wrap_empty_out(args...) {
+at::Tensor & wrap_empty_out(at::IntArrayRef size, c10::optional<at::MemoryFormat> memory_format, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::empty(out, size, memory_format);
@@ -2745,7 +2613,7 @@ Tensor wrap_empty_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_EMPTY_OUT, out, size, memory_format);
 }
 
-Tensor wrap_empty_like(args...) {
+at::Tensor wrap_empty_like(const at::Tensor & self, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::empty_like(self, dtype, layout, device, pin_memory, memory_format);
@@ -2753,15 +2621,13 @@ Tensor wrap_empty_like(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_EMPTY_LIKE, self, dtype, layout, device, pin_memory, memory_format);
 }
 
-Tensor wrap_empty_strided(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::empty_strided(size, stride, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_EMPTY_STRIDED, size, stride, dtype, layout, device, pin_memory);
+at::Tensor wrap_empty_strided(at::IntArrayRef size, at::IntArrayRef stride, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::empty_strided(size, stride, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_erf_out(args...) {
+at::Tensor & wrap_erf_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::erf(out, self);
@@ -2769,7 +2635,7 @@ Tensor wrap_erf_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ERF_OUT, out, self);
 }
 
-Tensor wrap_erfc_out(args...) {
+at::Tensor & wrap_erfc_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::erfc(out, self);
@@ -2777,7 +2643,7 @@ Tensor wrap_erfc_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ERFC_OUT, out, self);
 }
 
-Tensor wrap_exp_out(args...) {
+at::Tensor & wrap_exp_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::exp(out, self);
@@ -2785,7 +2651,7 @@ Tensor wrap_exp_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_EXP_OUT, out, self);
 }
 
-Tensor wrap_exp2_out(args...) {
+at::Tensor & wrap_exp2_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::exp2(out, self);
@@ -2793,7 +2659,7 @@ Tensor wrap_exp2_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_EXP2_OUT, out, self);
 }
 
-Tensor wrap_expm1_out(args...) {
+at::Tensor & wrap_expm1_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::expm1(out, self);
@@ -2801,7 +2667,7 @@ Tensor wrap_expm1_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_EXPM1_OUT, out, self);
 }
 
-Tensor wrap_expand(args...) {
+at::Tensor wrap_expand(const at::Tensor & self, at::IntArrayRef size, bool implicit) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::expand(self, size, implicit);
@@ -2809,7 +2675,7 @@ Tensor wrap_expand(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_EXPAND, self, size, implicit);
 }
 
-Tensor wrap_expand_as(args...) {
+at::Tensor wrap_expand_as(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::expand_as(self, other);
@@ -2817,23 +2683,19 @@ Tensor wrap_expand_as(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_EXPAND_AS, self, other);
 }
 
-Tensor wrap_eye(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::eye(n, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_EYE, n, dtype, layout, device, pin_memory);
+at::Tensor wrap_eye(int64_t n, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::eye(n, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_eye_m(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::eye(n, m, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_EYE_M, n, m, dtype, layout, device, pin_memory);
+at::Tensor wrap_eye_m(int64_t n, int64_t m, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::eye(n, m, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_eye_out(args...) {
+at::Tensor & wrap_eye_out(int64_t n, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::eye(out, n);
@@ -2841,7 +2703,7 @@ Tensor wrap_eye_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_EYE_OUT, out, n);
 }
 
-Tensor wrap_eye_m_out(args...) {
+at::Tensor & wrap_eye_m_out(int64_t n, int64_t m, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::eye(out, n, m);
@@ -2849,7 +2711,7 @@ Tensor wrap_eye_m_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_EYE_M_OUT, out, n, m);
 }
 
-Tensor wrap_flatten_using_ints(args...) {
+at::Tensor wrap_flatten_using_ints(const at::Tensor & self, int64_t start_dim, int64_t end_dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::flatten(self, start_dim, end_dim);
@@ -2857,7 +2719,7 @@ Tensor wrap_flatten_using_ints(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLATTEN_USING_INTS, self, start_dim, end_dim);
 }
 
-Tensor wrap_flatten_named_out_dim(args...) {
+at::Tensor wrap_flatten_named_out_dim(const at::Tensor & self, int64_t start_dim, int64_t end_dim, at::Dimname out_dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::flatten(self, start_dim, end_dim, out_dim);
@@ -2865,7 +2727,7 @@ Tensor wrap_flatten_named_out_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLATTEN_NAMED_OUT_DIM, self, start_dim, end_dim, out_dim);
 }
 
-Tensor wrap_flatten_using_names(args...) {
+at::Tensor wrap_flatten_using_names(const at::Tensor & self, at::Dimname start_dim, at::Dimname end_dim, at::Dimname out_dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::flatten(self, start_dim, end_dim, out_dim);
@@ -2873,7 +2735,7 @@ Tensor wrap_flatten_using_names(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLATTEN_USING_NAMES, self, start_dim, end_dim, out_dim);
 }
 
-Tensor wrap_flatten_DimnameList(args...) {
+at::Tensor wrap_flatten_DimnameList(const at::Tensor & self, at::DimnameList dims, at::Dimname out_dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::flatten(self, dims, out_dim);
@@ -2881,7 +2743,7 @@ Tensor wrap_flatten_DimnameList(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLATTEN_DIMNAMELIST, self, dims, out_dim);
 }
 
-Tensor wrap_unflatten_int(args...) {
+at::Tensor wrap_unflatten_int(const at::Tensor & self, int64_t dim, at::IntArrayRef sizes, c10::optional<at::DimnameList> names) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::unflatten(self, dim, sizes, names);
@@ -2889,7 +2751,7 @@ Tensor wrap_unflatten_int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_UNFLATTEN_INT, self, dim, sizes, names);
 }
 
-Tensor wrap_unflatten_Dimname(args...) {
+at::Tensor wrap_unflatten_Dimname(const at::Tensor & self, at::Dimname dim, at::IntArrayRef sizes, at::DimnameList names) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::unflatten(self, dim, sizes, names);
@@ -2897,7 +2759,7 @@ Tensor wrap_unflatten_Dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_UNFLATTEN_DIMNAME, self, dim, sizes, names);
 }
 
-Tensor wrap_fill__Scalar(args...) {
+at::Tensor & wrap_fill__Scalar(at::Tensor & self, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fill_(self, value);
@@ -2905,7 +2767,7 @@ Tensor wrap_fill__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FILL__SCALAR, self, value);
 }
 
-Tensor wrap_fill__Tensor(args...) {
+at::Tensor & wrap_fill__Tensor(at::Tensor & self, const at::Tensor & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, value);
     return at::redispatch::fill_(self, value);
@@ -2913,7 +2775,7 @@ Tensor wrap_fill__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FILL__TENSOR, self, value);
 }
 
-Tensor wrap_floor(args...) {
+at::Tensor wrap_floor(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::floor(self);
@@ -2921,7 +2783,7 @@ Tensor wrap_floor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLOOR, self);
 }
 
-Tensor wrap_floor_(args...) {
+at::Tensor & wrap_floor_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::floor_(self);
@@ -2929,7 +2791,7 @@ Tensor wrap_floor_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLOOR_, self);
 }
 
-Tensor wrap_floor_out(args...) {
+at::Tensor & wrap_floor_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::floor(out, self);
@@ -2937,7 +2799,7 @@ Tensor wrap_floor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FLOOR_OUT, out, self);
 }
 
-Tensor wrap_floor_divide(args...) {
+at::Tensor wrap_floor_divide(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::floor_divide(self, other);
@@ -2945,7 +2807,7 @@ Tensor wrap_floor_divide(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLOOR_DIVIDE, self, other);
 }
 
-Tensor wrap_floor_divide__Tensor(args...) {
+at::Tensor & wrap_floor_divide__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::floor_divide_(self, other);
@@ -2953,7 +2815,7 @@ Tensor wrap_floor_divide__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLOOR_DIVIDE__TENSOR, self, other);
 }
 
-Tensor wrap_floor_divide_out(args...) {
+at::Tensor & wrap_floor_divide_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::floor_divide(out, self, other);
@@ -2961,7 +2823,7 @@ Tensor wrap_floor_divide_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FLOOR_DIVIDE_OUT, out, self, other);
 }
 
-Tensor wrap_floor_divide_Scalar(args...) {
+at::Tensor wrap_floor_divide_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::floor_divide(self, other);
@@ -2969,7 +2831,7 @@ Tensor wrap_floor_divide_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLOOR_DIVIDE_SCALAR, self, other);
 }
 
-Tensor wrap_floor_divide__Scalar(args...) {
+at::Tensor & wrap_floor_divide__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::floor_divide_(self, other);
@@ -2977,7 +2839,7 @@ Tensor wrap_floor_divide__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLOOR_DIVIDE__SCALAR, self, other);
 }
 
-Tensor wrap_frac(args...) {
+at::Tensor wrap_frac(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::frac(self);
@@ -2985,7 +2847,7 @@ Tensor wrap_frac(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FRAC, self);
 }
 
-Tensor wrap_frac_(args...) {
+at::Tensor & wrap_frac_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::frac_(self);
@@ -2993,7 +2855,7 @@ Tensor wrap_frac_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FRAC_, self);
 }
 
-Tensor wrap_frac_out(args...) {
+at::Tensor & wrap_frac_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::frac(out, self);
@@ -3001,23 +2863,19 @@ Tensor wrap_frac_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FRAC_OUT, out, self);
 }
 
-Tensor wrap_full_names(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::full(size, fill_value, names, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_FULL_NAMES, size, fill_value, names, dtype, layout, device, pin_memory);
+at::Tensor wrap_full_names(at::IntArrayRef size, const at::Scalar & fill_value, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::full(size, fill_value, names, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_full(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::full(size, fill_value, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_FULL, size, fill_value, dtype, layout, device, pin_memory);
+at::Tensor wrap_full(at::IntArrayRef size, const at::Scalar & fill_value, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::full(size, fill_value, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_full_out(args...) {
+at::Tensor & wrap_full_out(at::IntArrayRef size, const at::Scalar & fill_value, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::full(out, size, fill_value);
@@ -3025,7 +2883,7 @@ Tensor wrap_full_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FULL_OUT, out, size, fill_value);
 }
 
-Tensor wrap_full_like(args...) {
+at::Tensor wrap_full_like(const at::Tensor & self, const at::Scalar & fill_value, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::full_like(self, fill_value, dtype, layout, device, pin_memory, memory_format);
@@ -3033,15 +2891,13 @@ Tensor wrap_full_like(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FULL_LIKE, self, fill_value, dtype, layout, device, pin_memory, memory_format);
 }
 
-Tensor wrap_from_file(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::from_file(filename, shared, size, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_FROM_FILE, filename, shared, size, dtype, layout, device, pin_memory);
+at::Tensor wrap_from_file(std::string filename, c10::optional<bool> shared, c10::optional<int64_t> size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::from_file(filename, shared, size, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_gcd_out(args...) {
+at::Tensor & wrap_gcd_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::gcd(out, self, other);
@@ -3049,7 +2905,7 @@ Tensor wrap_gcd_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GCD_OUT, out, self, other);
 }
 
-Tensor wrap_gcd(args...) {
+at::Tensor wrap_gcd(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::gcd(self, other);
@@ -3057,7 +2913,7 @@ Tensor wrap_gcd(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GCD, self, other);
 }
 
-Tensor wrap_gcd_(args...) {
+at::Tensor & wrap_gcd_(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::gcd_(self, other);
@@ -3065,7 +2921,7 @@ Tensor wrap_gcd_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GCD_, self, other);
 }
 
-Tensor wrap_lcm_out(args...) {
+at::Tensor & wrap_lcm_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::lcm(out, self, other);
@@ -3073,7 +2929,7 @@ Tensor wrap_lcm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LCM_OUT, out, self, other);
 }
 
-Tensor wrap_lcm(args...) {
+at::Tensor wrap_lcm(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::lcm(self, other);
@@ -3081,7 +2937,7 @@ Tensor wrap_lcm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LCM, self, other);
 }
 
-Tensor wrap_lcm_(args...) {
+at::Tensor & wrap_lcm_(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::lcm_(self, other);
@@ -3089,7 +2945,7 @@ Tensor wrap_lcm_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LCM_, self, other);
 }
 
-Tensor wrap_grid_sampler(args...) {
+at::Tensor wrap_grid_sampler(const at::Tensor & input, const at::Tensor & grid, int64_t interpolation_mode, int64_t padding_mode, bool align_corners) {
   if (trace.is_flushing()) {
     ensure_materialized(input, grid);
     return at::redispatch::grid_sampler(input, grid, interpolation_mode, padding_mode, align_corners);
@@ -3097,7 +2953,7 @@ Tensor wrap_grid_sampler(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_GRID_SAMPLER, input, grid, interpolation_mode, padding_mode, align_corners);
 }
 
-Tensor wrap_grid_sampler_2d(args...) {
+at::Tensor wrap_grid_sampler_2d(const at::Tensor & input, const at::Tensor & grid, int64_t interpolation_mode, int64_t padding_mode, bool align_corners) {
   if (trace.is_flushing()) {
     ensure_materialized(input, grid);
     return at::redispatch::grid_sampler_2d(input, grid, interpolation_mode, padding_mode, align_corners);
@@ -3105,15 +2961,12 @@ Tensor wrap_grid_sampler_2d(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_GRID_SAMPLER_2D, input, grid, interpolation_mode, padding_mode, align_corners);
 }
 
-Tensor wrap_grid_sampler_2d_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, input, grid);
-    return at::redispatch::grid_sampler_2d_backward(grad_output, input, grid, interpolation_mode, padding_mode, align_corners);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_GRID_SAMPLER_2D_BACKWARD, grad_output, input, grid, interpolation_mode, padding_mode, align_corners);
+std::tuple<at::Tensor,at::Tensor> wrap_grid_sampler_2d_backward(const at::Tensor & grad_output, const at::Tensor & input, const at::Tensor & grid, int64_t interpolation_mode, int64_t padding_mode, bool align_corners) {
+  ensure_materialized(grad_output, input, grid);
+  return at::redispatch::grid_sampler_2d_backward(grad_output, input, grid, interpolation_mode, padding_mode, align_corners);
 }
 
-Tensor wrap__grid_sampler_2d_cpu_fallback(args...) {
+at::Tensor wrap__grid_sampler_2d_cpu_fallback(const at::Tensor & input, const at::Tensor & grid, int64_t interpolation_mode, int64_t padding_mode, bool align_corners) {
   if (trace.is_flushing()) {
     ensure_materialized(input, grid);
     return at::redispatch::_grid_sampler_2d_cpu_fallback(input, grid, interpolation_mode, padding_mode, align_corners);
@@ -3121,15 +2974,12 @@ Tensor wrap__grid_sampler_2d_cpu_fallback(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H__GRID_SAMPLER_2D_CPU_FALLBACK, input, grid, interpolation_mode, padding_mode, align_corners);
 }
 
-Tensor wrap__grid_sampler_2d_cpu_fallback_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, input, grid);
-    return at::redispatch::_grid_sampler_2d_cpu_fallback_backward(grad_output, input, grid, interpolation_mode, padding_mode, align_corners);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H__GRID_SAMPLER_2D_CPU_FALLBACK_BACKWARD, grad_output, input, grid, interpolation_mode, padding_mode, align_corners);
+std::tuple<at::Tensor,at::Tensor> wrap__grid_sampler_2d_cpu_fallback_backward(const at::Tensor & grad_output, const at::Tensor & input, const at::Tensor & grid, int64_t interpolation_mode, int64_t padding_mode, bool align_corners) {
+  ensure_materialized(grad_output, input, grid);
+  return at::redispatch::_grid_sampler_2d_cpu_fallback_backward(grad_output, input, grid, interpolation_mode, padding_mode, align_corners);
 }
 
-Tensor wrap_grid_sampler_3d(args...) {
+at::Tensor wrap_grid_sampler_3d(const at::Tensor & input, const at::Tensor & grid, int64_t interpolation_mode, int64_t padding_mode, bool align_corners) {
   if (trace.is_flushing()) {
     ensure_materialized(input, grid);
     return at::redispatch::grid_sampler_3d(input, grid, interpolation_mode, padding_mode, align_corners);
@@ -3137,87 +2987,66 @@ Tensor wrap_grid_sampler_3d(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_GRID_SAMPLER_3D, input, grid, interpolation_mode, padding_mode, align_corners);
 }
 
-Tensor wrap_grid_sampler_3d_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, input, grid);
-    return at::redispatch::grid_sampler_3d_backward(grad_output, input, grid, interpolation_mode, padding_mode, align_corners);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_GRID_SAMPLER_3D_BACKWARD, grad_output, input, grid, interpolation_mode, padding_mode, align_corners);
+std::tuple<at::Tensor,at::Tensor> wrap_grid_sampler_3d_backward(const at::Tensor & grad_output, const at::Tensor & input, const at::Tensor & grid, int64_t interpolation_mode, int64_t padding_mode, bool align_corners) {
+  ensure_materialized(grad_output, input, grid);
+  return at::redispatch::grid_sampler_3d_backward(grad_output, input, grid, interpolation_mode, padding_mode, align_corners);
 }
 
-Tensor wrap_hann_window(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::hann_window(window_length, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_HANN_WINDOW, window_length, dtype, layout, device, pin_memory);
+at::Tensor wrap_hann_window(int64_t window_length, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::hann_window(window_length, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_hann_window_periodic(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::hann_window(window_length, periodic, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_HANN_WINDOW_PERIODIC, window_length, periodic, dtype, layout, device, pin_memory);
+at::Tensor wrap_hann_window_periodic(int64_t window_length, bool periodic, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::hann_window(window_length, periodic, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_hamming_window(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::hamming_window(window_length, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_HAMMING_WINDOW, window_length, dtype, layout, device, pin_memory);
+at::Tensor wrap_hamming_window(int64_t window_length, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::hamming_window(window_length, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_hamming_window_periodic(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::hamming_window(window_length, periodic, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_HAMMING_WINDOW_PERIODIC, window_length, periodic, dtype, layout, device, pin_memory);
+at::Tensor wrap_hamming_window_periodic(int64_t window_length, bool periodic, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::hamming_window(window_length, periodic, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_hamming_window_periodic_alpha(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::hamming_window(window_length, periodic, alpha, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_HAMMING_WINDOW_PERIODIC_ALPHA, window_length, periodic, alpha, dtype, layout, device, pin_memory);
+at::Tensor wrap_hamming_window_periodic_alpha(int64_t window_length, bool periodic, double alpha, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::hamming_window(window_length, periodic, alpha, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_hamming_window_periodic_alpha_beta(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::hamming_window(window_length, periodic, alpha, beta, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_HAMMING_WINDOW_PERIODIC_ALPHA_BETA, window_length, periodic, alpha, beta, dtype, layout, device, pin_memory);
+at::Tensor wrap_hamming_window_periodic_alpha_beta(int64_t window_length, bool periodic, double alpha, double beta, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::hamming_window(window_length, periodic, alpha, beta, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_kaiser_window(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::kaiser_window(window_length, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_KAISER_WINDOW, window_length, dtype, layout, device, pin_memory);
+at::Tensor wrap_kaiser_window(int64_t window_length, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::kaiser_window(window_length, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_kaiser_window_periodic(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::kaiser_window(window_length, periodic, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_KAISER_WINDOW_PERIODIC, window_length, periodic, dtype, layout, device, pin_memory);
+at::Tensor wrap_kaiser_window_periodic(int64_t window_length, bool periodic, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::kaiser_window(window_length, periodic, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_kaiser_window_beta(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::kaiser_window(window_length, periodic, beta, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_KAISER_WINDOW_BETA, window_length, periodic, beta, dtype, layout, device, pin_memory);
+at::Tensor wrap_kaiser_window_beta(int64_t window_length, bool periodic, double beta, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::kaiser_window(window_length, periodic, beta, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_hinge_embedding_loss(args...) {
+at::Tensor wrap_hinge_embedding_loss(const at::Tensor & self, const at::Tensor & target, double margin, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::hinge_embedding_loss(self, target, margin, reduction);
@@ -3225,7 +3054,7 @@ Tensor wrap_hinge_embedding_loss(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HINGE_EMBEDDING_LOSS, self, target, margin, reduction);
 }
 
-Tensor wrap_group_norm(args...) {
+at::Tensor wrap_group_norm(const at::Tensor & input, int64_t num_groups, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, double eps, bool cudnn_enabled) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::group_norm(input, num_groups, weight, bias, eps, cudnn_enabled);
@@ -3233,23 +3062,17 @@ Tensor wrap_group_norm(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_GROUP_NORM, input, num_groups, weight, bias, eps, cudnn_enabled);
 }
 
-Tensor wrap_native_group_norm(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input);
-    return at::redispatch::native_group_norm(input, weight, bias, N, C, HxW, group, eps);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_NATIVE_GROUP_NORM, input, weight, bias, N, C, HxW, group, eps);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_native_group_norm(const at::Tensor & input, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, int64_t N, int64_t C, int64_t HxW, int64_t group, double eps) {
+  ensure_materialized(input);
+  return at::redispatch::native_group_norm(input, weight, bias, N, C, HxW, group, eps);
 }
 
-Tensor wrap_native_group_norm_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_out, input, mean, rstd);
-    return at::redispatch::native_group_norm_backward(grad_out, input, mean, rstd, weight, N, C, HxW, group, output_mask);
-  }
-  return MK_TORCHY(grad_out.dtype(), grad_out.device(), H_NATIVE_GROUP_NORM_BACKWARD, grad_out, input, mean, rstd, weight, N, C, HxW, group, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_native_group_norm_backward(const at::Tensor & grad_out, const at::Tensor & input, const at::Tensor & mean, const at::Tensor & rstd, const c10::optional<at::Tensor> & weight, int64_t N, int64_t C, int64_t HxW, int64_t group, std::array<bool,3> output_mask) {
+  ensure_materialized(grad_out, input, mean, rstd);
+  return at::redispatch::native_group_norm_backward(grad_out, input, mean, rstd, weight, N, C, HxW, group, output_mask);
 }
 
-Tensor wrap__fft_r2c(args...) {
+at::Tensor wrap__fft_r2c(const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, bool onesided) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_fft_r2c(self, dim, normalization, onesided);
@@ -3257,7 +3080,7 @@ Tensor wrap__fft_r2c(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__FFT_R2C, self, dim, normalization, onesided);
 }
 
-Tensor wrap__fft_r2c_out(args...) {
+at::Tensor & wrap__fft_r2c_out(const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, bool onesided, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::_fft_r2c(out, self, dim, normalization, onesided);
@@ -3265,7 +3088,7 @@ Tensor wrap__fft_r2c_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H__FFT_R2C_OUT, out, self, dim, normalization, onesided);
 }
 
-Tensor wrap__fft_c2r(args...) {
+at::Tensor wrap__fft_c2r(const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, int64_t last_dim_size) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_fft_c2r(self, dim, normalization, last_dim_size);
@@ -3273,7 +3096,7 @@ Tensor wrap__fft_c2r(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__FFT_C2R, self, dim, normalization, last_dim_size);
 }
 
-Tensor wrap__fft_c2r_out(args...) {
+at::Tensor & wrap__fft_c2r_out(const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, int64_t last_dim_size, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::_fft_c2r(out, self, dim, normalization, last_dim_size);
@@ -3281,7 +3104,7 @@ Tensor wrap__fft_c2r_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H__FFT_C2R_OUT, out, self, dim, normalization, last_dim_size);
 }
 
-Tensor wrap__fft_c2c(args...) {
+at::Tensor wrap__fft_c2c(const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, bool forward) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_fft_c2c(self, dim, normalization, forward);
@@ -3289,7 +3112,7 @@ Tensor wrap__fft_c2c(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__FFT_C2C, self, dim, normalization, forward);
 }
 
-Tensor wrap__fft_c2c_out(args...) {
+at::Tensor & wrap__fft_c2c_out(const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, bool forward, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::_fft_c2c(out, self, dim, normalization, forward);
@@ -3297,27 +3120,27 @@ Tensor wrap__fft_c2c_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H__FFT_C2C_OUT, out, self, dim, normalization, forward);
 }
 
-int wrap__cufft_get_plan_cache_size(args...) {
+int64_t wrap__cufft_get_plan_cache_size(int64_t device_index) {
   ensure_materialized();
   return at::redispatch::_cufft_get_plan_cache_size(device_index);
 }
 
-int wrap__cufft_get_plan_cache_max_size(args...) {
+int64_t wrap__cufft_get_plan_cache_max_size(int64_t device_index) {
   ensure_materialized();
   return at::redispatch::_cufft_get_plan_cache_max_size(device_index);
 }
 
-void wrap__cufft_set_plan_cache_max_size(args...) {
+void wrap__cufft_set_plan_cache_max_size(int64_t device_index, int64_t max_size) {
   ensure_materialized();
   return at::redispatch::_cufft_set_plan_cache_max_size(device_index, max_size);
 }
 
-void wrap__cufft_clear_plan_cache(args...) {
+void wrap__cufft_clear_plan_cache(int64_t device_index) {
   ensure_materialized();
   return at::redispatch::_cufft_clear_plan_cache(device_index);
 }
 
-Tensor wrap_index_Tensor(args...) {
+at::Tensor wrap_index_Tensor(const at::Tensor & self, const c10::List<c10::optional<at::Tensor>> & indices) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::index(self, indices);
@@ -3325,7 +3148,7 @@ Tensor wrap_index_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_TENSOR, self, indices);
 }
 
-Tensor wrap_index_copy_(args...) {
+at::Tensor & wrap_index_copy_(at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & source) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::index_copy_(self, dim, index, source);
@@ -3333,7 +3156,7 @@ Tensor wrap_index_copy_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_COPY_, self, dim, index, source);
 }
 
-Tensor wrap_index_copy(args...) {
+at::Tensor wrap_index_copy(const at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & source) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::index_copy(self, dim, index, source);
@@ -3341,7 +3164,7 @@ Tensor wrap_index_copy(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_COPY, self, dim, index, source);
 }
 
-Tensor wrap_index_copy__dimname(args...) {
+at::Tensor & wrap_index_copy__dimname(at::Tensor & self, at::Dimname dim, const at::Tensor & index, const at::Tensor & source) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::index_copy_(self, dim, index, source);
@@ -3349,7 +3172,7 @@ Tensor wrap_index_copy__dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_COPY__DIMNAME, self, dim, index, source);
 }
 
-Tensor wrap_index_copy_dimname(args...) {
+at::Tensor wrap_index_copy_dimname(const at::Tensor & self, at::Dimname dim, const at::Tensor & index, const at::Tensor & source) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::index_copy(self, dim, index, source);
@@ -3357,7 +3180,7 @@ Tensor wrap_index_copy_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_COPY_DIMNAME, self, dim, index, source);
 }
 
-Tensor wrap_index_put_(args...) {
+at::Tensor & wrap_index_put_(at::Tensor & self, const c10::List<c10::optional<at::Tensor>> & indices, const at::Tensor & values, bool accumulate) {
   if (trace.is_flushing()) {
     ensure_materialized(self, values);
     return at::redispatch::index_put_(self, indices, values, accumulate);
@@ -3365,7 +3188,7 @@ Tensor wrap_index_put_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_PUT_, self, indices, values, accumulate);
 }
 
-Tensor wrap_index_put(args...) {
+at::Tensor wrap_index_put(const at::Tensor & self, const c10::List<c10::optional<at::Tensor>> & indices, const at::Tensor & values, bool accumulate) {
   if (trace.is_flushing()) {
     ensure_materialized(self, values);
     return at::redispatch::index_put(self, indices, values, accumulate);
@@ -3373,7 +3196,7 @@ Tensor wrap_index_put(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_PUT, self, indices, values, accumulate);
 }
 
-Tensor wrap__index_put_impl_(args...) {
+at::Tensor & wrap__index_put_impl_(at::Tensor & self, const c10::List<c10::optional<at::Tensor>> & indices, const at::Tensor & values, bool accumulate, bool unsafe) {
   if (trace.is_flushing()) {
     ensure_materialized(self, values);
     return at::redispatch::_index_put_impl_(self, indices, values, accumulate, unsafe);
@@ -3381,7 +3204,7 @@ Tensor wrap__index_put_impl_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__INDEX_PUT_IMPL_, self, indices, values, accumulate, unsafe);
 }
 
-Tensor wrap_instance_norm(args...) {
+at::Tensor wrap_instance_norm(const at::Tensor & input, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, bool use_input_stats, double momentum, double eps, bool cudnn_enabled) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::instance_norm(input, weight, bias, running_mean, running_var, use_input_stats, momentum, eps, cudnn_enabled);
@@ -3389,7 +3212,7 @@ Tensor wrap_instance_norm(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_INSTANCE_NORM, input, weight, bias, running_mean, running_var, use_input_stats, momentum, eps, cudnn_enabled);
 }
 
-Tensor wrap_inverse(args...) {
+at::Tensor wrap_inverse(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::inverse(self);
@@ -3397,7 +3220,7 @@ Tensor wrap_inverse(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INVERSE, self);
 }
 
-Tensor wrap_inverse_out(args...) {
+at::Tensor & wrap_inverse_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::inverse(out, self);
@@ -3405,7 +3228,7 @@ Tensor wrap_inverse_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_INVERSE_OUT, out, self);
 }
 
-Tensor wrap__inverse_helper(args...) {
+at::Tensor wrap__inverse_helper(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_inverse_helper(self);
@@ -3413,7 +3236,7 @@ Tensor wrap__inverse_helper(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__INVERSE_HELPER, self);
 }
 
-Tensor wrap_isclose(args...) {
+at::Tensor wrap_isclose(const at::Tensor & self, const at::Tensor & other, double rtol, double atol, bool equal_nan) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::isclose(self, other, rtol, atol, equal_nan);
@@ -3421,7 +3244,7 @@ Tensor wrap_isclose(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ISCLOSE, self, other, rtol, atol, equal_nan);
 }
 
-Tensor wrap_isnan(args...) {
+at::Tensor wrap_isnan(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::isnan(self);
@@ -3429,12 +3252,12 @@ Tensor wrap_isnan(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ISNAN, self);
 }
 
-bool wrap_is_distributed(args...) {
+bool wrap_is_distributed(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::is_distributed(self);
 }
 
-Tensor wrap_isreal(args...) {
+at::Tensor wrap_isreal(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::isreal(self);
@@ -3442,17 +3265,17 @@ Tensor wrap_isreal(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ISREAL, self);
 }
 
-bool wrap_is_nonzero(args...) {
+bool wrap_is_nonzero(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::is_nonzero(self);
 }
 
-bool wrap_is_same_size(args...) {
+bool wrap_is_same_size(const at::Tensor & self, const at::Tensor & other) {
   ensure_materialized(self, other);
   return at::redispatch::is_same_size(self, other);
 }
 
-Tensor wrap_kl_div(args...) {
+at::Tensor wrap_kl_div(const at::Tensor & self, const at::Tensor & target, int64_t reduction, bool log_target) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::kl_div(self, target, reduction, log_target);
@@ -3460,7 +3283,7 @@ Tensor wrap_kl_div(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_KL_DIV, self, target, reduction, log_target);
 }
 
-Tensor wrap_kl_div_backward(args...) {
+at::Tensor wrap_kl_div_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction, bool log_target) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target);
     return at::redispatch::kl_div_backward(grad_output, self, target, reduction, log_target);
@@ -3468,7 +3291,7 @@ Tensor wrap_kl_div_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_KL_DIV_BACKWARD, grad_output, self, target, reduction, log_target);
 }
 
-Tensor wrap_kron(args...) {
+at::Tensor wrap_kron(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::kron(self, other);
@@ -3476,7 +3299,7 @@ Tensor wrap_kron(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_KRON, self, other);
 }
 
-Tensor wrap_kron_out(args...) {
+at::Tensor & wrap_kron_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::kron(out, self, other);
@@ -3484,39 +3307,27 @@ Tensor wrap_kron_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_KRON_OUT, out, self, other);
 }
 
-Tensor wrap_kthvalue(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::kthvalue(self, k, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_KTHVALUE, self, k, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_kthvalue(const at::Tensor & self, int64_t k, int64_t dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::kthvalue(self, k, dim, keepdim);
 }
 
-Tensor wrap_kthvalue_values(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::kthvalue(values, indices, self, k, dim, keepdim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_KTHVALUE_VALUES, values, indices, self, k, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_kthvalue_values(const at::Tensor & self, int64_t k, int64_t dim, bool keepdim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::kthvalue(values, indices, self, k, dim, keepdim);
 }
 
-Tensor wrap_kthvalue_dimname(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::kthvalue(self, k, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_KTHVALUE_DIMNAME, self, k, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_kthvalue_dimname(const at::Tensor & self, int64_t k, at::Dimname dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::kthvalue(self, k, dim, keepdim);
 }
 
-Tensor wrap_kthvalue_dimname_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::kthvalue(values, indices, self, k, dim, keepdim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_KTHVALUE_DIMNAME_OUT, values, indices, self, k, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_kthvalue_dimname_out(const at::Tensor & self, int64_t k, at::Dimname dim, bool keepdim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::kthvalue(values, indices, self, k, dim, keepdim);
 }
 
-Tensor wrap_layer_norm(args...) {
+at::Tensor wrap_layer_norm(const at::Tensor & input, at::IntArrayRef normalized_shape, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, double eps, bool cudnn_enable) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::layer_norm(input, normalized_shape, weight, bias, eps, cudnn_enable);
@@ -3524,23 +3335,17 @@ Tensor wrap_layer_norm(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_LAYER_NORM, input, normalized_shape, weight, bias, eps, cudnn_enable);
 }
 
-Tensor wrap_native_layer_norm(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input);
-    return at::redispatch::native_layer_norm(input, normalized_shape, weight, bias, eps);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_NATIVE_LAYER_NORM, input, normalized_shape, weight, bias, eps);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_native_layer_norm(const at::Tensor & input, at::IntArrayRef normalized_shape, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, double eps) {
+  ensure_materialized(input);
+  return at::redispatch::native_layer_norm(input, normalized_shape, weight, bias, eps);
 }
 
-Tensor wrap_native_layer_norm_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_out, input, mean, rstd);
-    return at::redispatch::native_layer_norm_backward(grad_out, input, normalized_shape, mean, rstd, weight, bias, output_mask);
-  }
-  return MK_TORCHY(grad_out.dtype(), grad_out.device(), H_NATIVE_LAYER_NORM_BACKWARD, grad_out, input, normalized_shape, mean, rstd, weight, bias, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_native_layer_norm_backward(const at::Tensor & grad_out, const at::Tensor & input, at::IntArrayRef normalized_shape, const at::Tensor & mean, const at::Tensor & rstd, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, std::array<bool,3> output_mask) {
+  ensure_materialized(grad_out, input, mean, rstd);
+  return at::redispatch::native_layer_norm_backward(grad_out, input, normalized_shape, mean, rstd, weight, bias, output_mask);
 }
 
-Tensor wrap_nan_to_num(args...) {
+at::Tensor wrap_nan_to_num(const at::Tensor & self, c10::optional<double> nan, c10::optional<double> posinf, c10::optional<double> neginf) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::nan_to_num(self, nan, posinf, neginf);
@@ -3548,7 +3353,7 @@ Tensor wrap_nan_to_num(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NAN_TO_NUM, self, nan, posinf, neginf);
 }
 
-Tensor wrap_nan_to_num_(args...) {
+at::Tensor & wrap_nan_to_num_(at::Tensor & self, c10::optional<double> nan, c10::optional<double> posinf, c10::optional<double> neginf) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::nan_to_num_(self, nan, posinf, neginf);
@@ -3556,7 +3361,7 @@ Tensor wrap_nan_to_num_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NAN_TO_NUM_, self, nan, posinf, neginf);
 }
 
-Tensor wrap_nan_to_num_out(args...) {
+at::Tensor & wrap_nan_to_num_out(const at::Tensor & self, c10::optional<double> nan, c10::optional<double> posinf, c10::optional<double> neginf, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::nan_to_num(out, self, nan, posinf, neginf);
@@ -3564,7 +3369,7 @@ Tensor wrap_nan_to_num_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NAN_TO_NUM_OUT, out, self, nan, posinf, neginf);
 }
 
-Tensor wrap_linear(args...) {
+at::Tensor wrap_linear(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::linear(input, weight, bias);
@@ -3572,7 +3377,7 @@ Tensor wrap_linear(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_LINEAR, input, weight, bias);
 }
 
-Tensor wrap_mkldnn_linear(args...) {
+at::Tensor wrap_mkldnn_linear(const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::mkldnn_linear(self, weight, bias);
@@ -3580,7 +3385,7 @@ Tensor wrap_mkldnn_linear(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MKLDNN_LINEAR, self, weight, bias);
 }
 
-Tensor wrap_mkldnn_linear_backward_input(args...) {
+at::Tensor wrap_mkldnn_linear_backward_input(at::IntArrayRef input_size, const at::Tensor & grad_output, const at::Tensor & weight) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, weight);
     return at::redispatch::mkldnn_linear_backward_input(input_size, grad_output, weight);
@@ -3588,23 +3393,17 @@ Tensor wrap_mkldnn_linear_backward_input(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MKLDNN_LINEAR_BACKWARD_INPUT, input_size, grad_output, weight);
 }
 
-Tensor wrap_mkldnn_linear_backward_weights(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, input, weight);
-    return at::redispatch::mkldnn_linear_backward_weights(grad_output, input, weight, bias_defined);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MKLDNN_LINEAR_BACKWARD_WEIGHTS, grad_output, input, weight, bias_defined);
+std::tuple<at::Tensor,at::Tensor> wrap_mkldnn_linear_backward_weights(const at::Tensor & grad_output, const at::Tensor & input, const at::Tensor & weight, bool bias_defined) {
+  ensure_materialized(grad_output, input, weight);
+  return at::redispatch::mkldnn_linear_backward_weights(grad_output, input, weight, bias_defined);
 }
 
-Tensor wrap_mkldnn_linear_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, grad_output, weight);
-    return at::redispatch::mkldnn_linear_backward(self, grad_output, weight, output_mask);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MKLDNN_LINEAR_BACKWARD, self, grad_output, weight, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_mkldnn_linear_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, std::array<bool,3> output_mask) {
+  ensure_materialized(self, grad_output, weight);
+  return at::redispatch::mkldnn_linear_backward(self, grad_output, weight, output_mask);
 }
 
-Tensor wrap_fbgemm_linear_int8_weight_fp32_activation(args...) {
+at::Tensor wrap_fbgemm_linear_int8_weight_fp32_activation(const at::Tensor & input, const at::Tensor & weight, const at::Tensor & packed, const at::Tensor & col_offsets, const at::Scalar & weight_scale, const at::Scalar & weight_zero_point, const at::Tensor & bias) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight, packed, col_offsets, bias);
     return at::redispatch::fbgemm_linear_int8_weight_fp32_activation(input, weight, packed, col_offsets, weight_scale, weight_zero_point, bias);
@@ -3612,7 +3411,7 @@ Tensor wrap_fbgemm_linear_int8_weight_fp32_activation(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_FBGEMM_LINEAR_INT8_WEIGHT_FP32_ACTIVATION, input, weight, packed, col_offsets, weight_scale, weight_zero_point, bias);
 }
 
-Tensor wrap_fbgemm_linear_int8_weight(args...) {
+at::Tensor wrap_fbgemm_linear_int8_weight(const at::Tensor & input, const at::Tensor & weight, const at::Tensor & packed, const at::Tensor & col_offsets, const at::Scalar & weight_scale, const at::Scalar & weight_zero_point, const at::Tensor & bias) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight, packed, col_offsets, bias);
     return at::redispatch::fbgemm_linear_int8_weight(input, weight, packed, col_offsets, weight_scale, weight_zero_point, bias);
@@ -3620,15 +3419,12 @@ Tensor wrap_fbgemm_linear_int8_weight(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_FBGEMM_LINEAR_INT8_WEIGHT, input, weight, packed, col_offsets, weight_scale, weight_zero_point, bias);
 }
 
-Tensor wrap_fbgemm_linear_quantize_weight(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input);
-    return at::redispatch::fbgemm_linear_quantize_weight(input);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_FBGEMM_LINEAR_QUANTIZE_WEIGHT, input);
+std::tuple<at::Tensor,at::Tensor,double,int64_t> wrap_fbgemm_linear_quantize_weight(const at::Tensor & input) {
+  ensure_materialized(input);
+  return at::redispatch::fbgemm_linear_quantize_weight(input);
 }
 
-Tensor wrap_fbgemm_pack_gemm_matrix_fp16(args...) {
+at::Tensor wrap_fbgemm_pack_gemm_matrix_fp16(const at::Tensor & input) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::fbgemm_pack_gemm_matrix_fp16(input);
@@ -3636,7 +3432,7 @@ Tensor wrap_fbgemm_pack_gemm_matrix_fp16(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_FBGEMM_PACK_GEMM_MATRIX_FP16, input);
 }
 
-Tensor wrap_fbgemm_linear_fp16_weight_fp32_activation(args...) {
+at::Tensor wrap_fbgemm_linear_fp16_weight_fp32_activation(const at::Tensor & input, const at::Tensor & packed_weight, const at::Tensor & bias) {
   if (trace.is_flushing()) {
     ensure_materialized(input, packed_weight, bias);
     return at::redispatch::fbgemm_linear_fp16_weight_fp32_activation(input, packed_weight, bias);
@@ -3644,7 +3440,7 @@ Tensor wrap_fbgemm_linear_fp16_weight_fp32_activation(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_FBGEMM_LINEAR_FP16_WEIGHT_FP32_ACTIVATION, input, packed_weight, bias);
 }
 
-Tensor wrap_fbgemm_linear_fp16_weight(args...) {
+at::Tensor wrap_fbgemm_linear_fp16_weight(const at::Tensor & input, const at::Tensor & packed_weight, const at::Tensor & bias) {
   if (trace.is_flushing()) {
     ensure_materialized(input, packed_weight, bias);
     return at::redispatch::fbgemm_linear_fp16_weight(input, packed_weight, bias);
@@ -3652,7 +3448,7 @@ Tensor wrap_fbgemm_linear_fp16_weight(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_FBGEMM_LINEAR_FP16_WEIGHT, input, packed_weight, bias);
 }
 
-Tensor wrap_fbgemm_pack_quantized_matrix(args...) {
+at::Tensor wrap_fbgemm_pack_quantized_matrix(const at::Tensor & input) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::fbgemm_pack_quantized_matrix(input);
@@ -3660,7 +3456,7 @@ Tensor wrap_fbgemm_pack_quantized_matrix(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_FBGEMM_PACK_QUANTIZED_MATRIX, input);
 }
 
-Tensor wrap_fbgemm_pack_quantized_matrix_KN(args...) {
+at::Tensor wrap_fbgemm_pack_quantized_matrix_KN(const at::Tensor & input, int64_t K, int64_t N) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::fbgemm_pack_quantized_matrix(input, K, N);
@@ -3668,7 +3464,7 @@ Tensor wrap_fbgemm_pack_quantized_matrix_KN(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_FBGEMM_PACK_QUANTIZED_MATRIX_KN, input, K, N);
 }
 
-Tensor wrap_ldexp_Tensor(args...) {
+at::Tensor wrap_ldexp_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::ldexp(self, other);
@@ -3676,7 +3472,7 @@ Tensor wrap_ldexp_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LDEXP_TENSOR, self, other);
 }
 
-Tensor wrap_ldexp_(args...) {
+at::Tensor & wrap_ldexp_(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::ldexp_(self, other);
@@ -3684,7 +3480,7 @@ Tensor wrap_ldexp_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LDEXP_, self, other);
 }
 
-Tensor wrap_ldexp_out(args...) {
+at::Tensor & wrap_ldexp_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::ldexp(out, self, other);
@@ -3692,15 +3488,13 @@ Tensor wrap_ldexp_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LDEXP_OUT, out, self, other);
 }
 
-Tensor wrap_linspace(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::linspace(start, end, steps, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_LINSPACE, start, end, steps, dtype, layout, device, pin_memory);
+at::Tensor wrap_linspace(const at::Scalar & start, const at::Scalar & end, c10::optional<int64_t> steps, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::linspace(start, end, steps, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_linspace_out(args...) {
+at::Tensor & wrap_linspace_out(const at::Scalar & start, const at::Scalar & end, c10::optional<int64_t> steps, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::linspace(out, start, end, steps);
@@ -3708,7 +3502,7 @@ Tensor wrap_linspace_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINSPACE_OUT, out, start, end, steps);
 }
 
-Tensor wrap_log_out(args...) {
+at::Tensor & wrap_log_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::log(out, self);
@@ -3716,7 +3510,7 @@ Tensor wrap_log_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOG_OUT, out, self);
 }
 
-Tensor wrap_log10_out(args...) {
+at::Tensor & wrap_log10_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::log10(out, self);
@@ -3724,7 +3518,7 @@ Tensor wrap_log10_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOG10_OUT, out, self);
 }
 
-Tensor wrap_log1p(args...) {
+at::Tensor wrap_log1p(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::log1p(self);
@@ -3732,7 +3526,7 @@ Tensor wrap_log1p(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOG1P, self);
 }
 
-Tensor wrap_log1p_(args...) {
+at::Tensor & wrap_log1p_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::log1p_(self);
@@ -3740,7 +3534,7 @@ Tensor wrap_log1p_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOG1P_, self);
 }
 
-Tensor wrap_log1p_out(args...) {
+at::Tensor & wrap_log1p_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::log1p(out, self);
@@ -3748,7 +3542,7 @@ Tensor wrap_log1p_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOG1P_OUT, out, self);
 }
 
-Tensor wrap_log2_out(args...) {
+at::Tensor & wrap_log2_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::log2(out, self);
@@ -3756,7 +3550,7 @@ Tensor wrap_log2_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOG2_OUT, out, self);
 }
 
-Tensor wrap_logaddexp_out(args...) {
+at::Tensor & wrap_logaddexp_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::logaddexp(out, self, other);
@@ -3764,7 +3558,7 @@ Tensor wrap_logaddexp_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGADDEXP_OUT, out, self, other);
 }
 
-Tensor wrap_logaddexp(args...) {
+at::Tensor wrap_logaddexp(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::logaddexp(self, other);
@@ -3772,7 +3566,7 @@ Tensor wrap_logaddexp(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGADDEXP, self, other);
 }
 
-Tensor wrap_logaddexp2_out(args...) {
+at::Tensor & wrap_logaddexp2_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::logaddexp2(out, self, other);
@@ -3780,7 +3574,7 @@ Tensor wrap_logaddexp2_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGADDEXP2_OUT, out, self, other);
 }
 
-Tensor wrap_logaddexp2(args...) {
+at::Tensor wrap_logaddexp2(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::logaddexp2(self, other);
@@ -3788,7 +3582,7 @@ Tensor wrap_logaddexp2(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGADDEXP2, self, other);
 }
 
-Tensor wrap_xlogy_Tensor(args...) {
+at::Tensor wrap_xlogy_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::xlogy(self, other);
@@ -3796,7 +3590,7 @@ Tensor wrap_xlogy_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_XLOGY_TENSOR, self, other);
 }
 
-Tensor wrap_xlogy_Scalar_Self(args...) {
+at::Tensor wrap_xlogy_Scalar_Self(const at::Scalar & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(other);
     return at::redispatch::xlogy(self, other);
@@ -3804,7 +3598,7 @@ Tensor wrap_xlogy_Scalar_Self(args...) {
   return MK_TORCHY(other.dtype(), other.device(), H_XLOGY_SCALAR_SELF, self, other);
 }
 
-Tensor wrap_xlogy_Scalar_Other(args...) {
+at::Tensor wrap_xlogy_Scalar_Other(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::xlogy(self, other);
@@ -3812,7 +3606,7 @@ Tensor wrap_xlogy_Scalar_Other(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_XLOGY_SCALAR_OTHER, self, other);
 }
 
-Tensor wrap_xlogy__Tensor(args...) {
+at::Tensor & wrap_xlogy__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::xlogy_(self, other);
@@ -3820,7 +3614,7 @@ Tensor wrap_xlogy__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_XLOGY__TENSOR, self, other);
 }
 
-Tensor wrap_xlogy__Scalar_Other(args...) {
+at::Tensor & wrap_xlogy__Scalar_Other(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::xlogy_(self, other);
@@ -3828,7 +3622,7 @@ Tensor wrap_xlogy__Scalar_Other(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_XLOGY__SCALAR_OTHER, self, other);
 }
 
-Tensor wrap_xlogy_OutTensor(args...) {
+at::Tensor & wrap_xlogy_OutTensor(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::xlogy(out, self, other);
@@ -3836,7 +3630,7 @@ Tensor wrap_xlogy_OutTensor(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_XLOGY_OUTTENSOR, out, self, other);
 }
 
-Tensor wrap_xlogy_OutScalar_Self(args...) {
+at::Tensor & wrap_xlogy_OutScalar_Self(const at::Scalar & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, other);
     return at::redispatch::xlogy(out, self, other);
@@ -3844,7 +3638,7 @@ Tensor wrap_xlogy_OutScalar_Self(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_XLOGY_OUTSCALAR_SELF, out, self, other);
 }
 
-Tensor wrap_xlogy_OutScalar_Other(args...) {
+at::Tensor & wrap_xlogy_OutScalar_Other(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::xlogy(out, self, other);
@@ -3852,7 +3646,7 @@ Tensor wrap_xlogy_OutScalar_Other(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_XLOGY_OUTSCALAR_OTHER, out, self, other);
 }
 
-Tensor wrap_logdet(args...) {
+at::Tensor wrap_logdet(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::logdet(self);
@@ -3860,15 +3654,13 @@ Tensor wrap_logdet(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGDET, self);
 }
 
-Tensor wrap_logspace(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::logspace(start, end, steps, base, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_LOGSPACE, start, end, steps, base, dtype, layout, device, pin_memory);
+at::Tensor wrap_logspace(const at::Scalar & start, const at::Scalar & end, c10::optional<int64_t> steps, double base, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::logspace(start, end, steps, base, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_logspace_out(args...) {
+at::Tensor & wrap_logspace_out(const at::Scalar & start, const at::Scalar & end, c10::optional<int64_t> steps, double base, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::logspace(out, start, end, steps, base);
@@ -3876,7 +3668,7 @@ Tensor wrap_logspace_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGSPACE_OUT, out, start, end, steps, base);
 }
 
-Tensor wrap_log_softmax_int(args...) {
+at::Tensor wrap_log_softmax_int(const at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::log_softmax(self, dim, dtype);
@@ -3884,7 +3676,7 @@ Tensor wrap_log_softmax_int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOG_SOFTMAX_INT, self, dim, dtype);
 }
 
-Tensor wrap_log_softmax_Dimname(args...) {
+at::Tensor wrap_log_softmax_Dimname(const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::log_softmax(self, dim, dtype);
@@ -3892,7 +3684,7 @@ Tensor wrap_log_softmax_Dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOG_SOFTMAX_DIMNAME, self, dim, dtype);
 }
 
-Tensor wrap__log_softmax(args...) {
+at::Tensor wrap__log_softmax(const at::Tensor & self, int64_t dim, bool half_to_float) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_log_softmax(self, dim, half_to_float);
@@ -3900,7 +3692,7 @@ Tensor wrap__log_softmax(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__LOG_SOFTMAX, self, dim, half_to_float);
 }
 
-Tensor wrap__log_softmax_backward_data(args...) {
+at::Tensor wrap__log_softmax_backward_data(const at::Tensor & grad_output, const at::Tensor & output, int64_t dim, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, output, self);
     return at::redispatch::_log_softmax_backward_data(grad_output, output, dim, self);
@@ -3908,7 +3700,7 @@ Tensor wrap__log_softmax_backward_data(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H__LOG_SOFTMAX_BACKWARD_DATA, grad_output, output, dim, self);
 }
 
-Tensor wrap__logcumsumexp(args...) {
+at::Tensor wrap__logcumsumexp(const at::Tensor & self, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_logcumsumexp(self, dim);
@@ -3916,7 +3708,7 @@ Tensor wrap__logcumsumexp(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__LOGCUMSUMEXP, self, dim);
 }
 
-Tensor wrap__logcumsumexp_out(args...) {
+at::Tensor & wrap__logcumsumexp_out(const at::Tensor & self, int64_t dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::_logcumsumexp(out, self, dim);
@@ -3924,7 +3716,7 @@ Tensor wrap__logcumsumexp_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H__LOGCUMSUMEXP_OUT, out, self, dim);
 }
 
-Tensor wrap_logcumsumexp(args...) {
+at::Tensor wrap_logcumsumexp(const at::Tensor & self, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::logcumsumexp(self, dim);
@@ -3932,7 +3724,7 @@ Tensor wrap_logcumsumexp(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGCUMSUMEXP, self, dim);
 }
 
-Tensor wrap_logcumsumexp_out(args...) {
+at::Tensor & wrap_logcumsumexp_out(const at::Tensor & self, int64_t dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::logcumsumexp(out, self, dim);
@@ -3940,7 +3732,7 @@ Tensor wrap_logcumsumexp_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGCUMSUMEXP_OUT, out, self, dim);
 }
 
-Tensor wrap_logcumsumexp_dimname(args...) {
+at::Tensor wrap_logcumsumexp_dimname(const at::Tensor & self, at::Dimname dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::logcumsumexp(self, dim);
@@ -3948,7 +3740,7 @@ Tensor wrap_logcumsumexp_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGCUMSUMEXP_DIMNAME, self, dim);
 }
 
-Tensor wrap_logcumsumexp_dimname_out(args...) {
+at::Tensor & wrap_logcumsumexp_dimname_out(const at::Tensor & self, at::Dimname dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::logcumsumexp(out, self, dim);
@@ -3956,7 +3748,7 @@ Tensor wrap_logcumsumexp_dimname_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGCUMSUMEXP_DIMNAME_OUT, out, self, dim);
 }
 
-Tensor wrap_logsumexp(args...) {
+at::Tensor wrap_logsumexp(const at::Tensor & self, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::logsumexp(self, dim, keepdim);
@@ -3964,7 +3756,7 @@ Tensor wrap_logsumexp(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGSUMEXP, self, dim, keepdim);
 }
 
-Tensor wrap_logsumexp_out(args...) {
+at::Tensor & wrap_logsumexp_out(const at::Tensor & self, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::logsumexp(out, self, dim, keepdim);
@@ -3972,7 +3764,7 @@ Tensor wrap_logsumexp_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGSUMEXP_OUT, out, self, dim, keepdim);
 }
 
-Tensor wrap_logsumexp_names(args...) {
+at::Tensor wrap_logsumexp_names(const at::Tensor & self, at::DimnameList dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::logsumexp(self, dim, keepdim);
@@ -3980,7 +3772,7 @@ Tensor wrap_logsumexp_names(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGSUMEXP_NAMES, self, dim, keepdim);
 }
 
-Tensor wrap_logsumexp_names_out(args...) {
+at::Tensor & wrap_logsumexp_names_out(const at::Tensor & self, at::DimnameList dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::logsumexp(out, self, dim, keepdim);
@@ -3988,7 +3780,7 @@ Tensor wrap_logsumexp_names_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGSUMEXP_NAMES_OUT, out, self, dim, keepdim);
 }
 
-Tensor wrap_margin_ranking_loss(args...) {
+at::Tensor wrap_margin_ranking_loss(const at::Tensor & input1, const at::Tensor & input2, const at::Tensor & target, double margin, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(input1, input2, target);
     return at::redispatch::margin_ranking_loss(input1, input2, target, margin, reduction);
@@ -3996,7 +3788,7 @@ Tensor wrap_margin_ranking_loss(args...) {
   return MK_TORCHY(input1.dtype(), input1.device(), H_MARGIN_RANKING_LOSS, input1, input2, target, margin, reduction);
 }
 
-Tensor wrap_matmul(args...) {
+at::Tensor wrap_matmul(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::matmul(self, other);
@@ -4004,7 +3796,7 @@ Tensor wrap_matmul(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MATMUL, self, other);
 }
 
-Tensor wrap_matmul_out(args...) {
+at::Tensor & wrap_matmul_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::matmul(out, self, other);
@@ -4012,7 +3804,7 @@ Tensor wrap_matmul_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MATMUL_OUT, out, self, other);
 }
 
-Tensor wrap_matrix_rank_tol(args...) {
+at::Tensor wrap_matrix_rank_tol(const at::Tensor & self, double tol, bool symmetric) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::matrix_rank(self, tol, symmetric);
@@ -4020,7 +3812,7 @@ Tensor wrap_matrix_rank_tol(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MATRIX_RANK_TOL, self, tol, symmetric);
 }
 
-Tensor wrap_matrix_rank(args...) {
+at::Tensor wrap_matrix_rank(const at::Tensor & self, bool symmetric) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::matrix_rank(self, symmetric);
@@ -4028,7 +3820,7 @@ Tensor wrap_matrix_rank(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MATRIX_RANK, self, symmetric);
 }
 
-Tensor wrap_matrix_power(args...) {
+at::Tensor wrap_matrix_power(const at::Tensor & self, int64_t n) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::matrix_power(self, n);
@@ -4036,7 +3828,7 @@ Tensor wrap_matrix_power(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MATRIX_POWER, self, n);
 }
 
-Tensor wrap_matrix_power_out(args...) {
+at::Tensor & wrap_matrix_power_out(const at::Tensor & self, int64_t n, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::matrix_power(out, self, n);
@@ -4044,7 +3836,7 @@ Tensor wrap_matrix_power_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MATRIX_POWER_OUT, out, self, n);
 }
 
-Tensor wrap_matrix_exp(args...) {
+at::Tensor wrap_matrix_exp(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::matrix_exp(self);
@@ -4052,7 +3844,7 @@ Tensor wrap_matrix_exp(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MATRIX_EXP, self);
 }
 
-Tensor wrap_matrix_exp_backward(args...) {
+at::Tensor wrap_matrix_exp_backward(const at::Tensor & self, const at::Tensor & grad) {
   if (trace.is_flushing()) {
     ensure_materialized(self, grad);
     return at::redispatch::matrix_exp_backward(self, grad);
@@ -4060,23 +3852,17 @@ Tensor wrap_matrix_exp_backward(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MATRIX_EXP_BACKWARD, self, grad);
 }
 
-Tensor wrap__aminmax(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::_aminmax(self);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H__AMINMAX, self);
+std::tuple<at::Tensor,at::Tensor> wrap__aminmax(const at::Tensor & self) {
+  ensure_materialized(self);
+  return at::redispatch::_aminmax(self);
 }
 
-Tensor wrap__aminmax_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::_aminmax(self, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H__AMINMAX_DIM, self, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap__aminmax_dim(const at::Tensor & self, int64_t dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::_aminmax(self, dim, keepdim);
 }
 
-Tensor wrap__compute_linear_combination(args...) {
+at::Tensor wrap__compute_linear_combination(const at::Tensor & input, const at::Tensor & coefficients) {
   if (trace.is_flushing()) {
     ensure_materialized(input, coefficients);
     return at::redispatch::_compute_linear_combination(input, coefficients);
@@ -4084,7 +3870,7 @@ Tensor wrap__compute_linear_combination(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H__COMPUTE_LINEAR_COMBINATION, input, coefficients);
 }
 
-Tensor wrap__compute_linear_combination_out(args...) {
+at::Tensor & wrap__compute_linear_combination_out(const at::Tensor & input, const at::Tensor & coefficients, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, input, coefficients);
     return at::redispatch::_compute_linear_combination(out, input, coefficients);
@@ -4092,39 +3878,27 @@ Tensor wrap__compute_linear_combination_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H__COMPUTE_LINEAR_COMBINATION_OUT, out, input, coefficients);
 }
 
-Tensor wrap_max_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::max(self, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MAX_DIM, self, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_max_dim(const at::Tensor & self, int64_t dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::max(self, dim, keepdim);
 }
 
-Tensor wrap_max_dim_max(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(max, max_values, self);
-    return at::redispatch::max(max, max_values, self, dim, keepdim);
-  }
-  return MK_TORCHY(max.dtype(), max.device(), H_MAX_DIM_MAX, max, max_values, self, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_max_dim_max(const at::Tensor & self, int64_t dim, bool keepdim, at::Tensor & max, at::Tensor & max_values) {
+  ensure_materialized(max, max_values, self);
+  return at::redispatch::max(max, max_values, self, dim, keepdim);
 }
 
-Tensor wrap_max_names_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::max(self, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MAX_NAMES_DIM, self, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_max_names_dim(const at::Tensor & self, at::Dimname dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::max(self, dim, keepdim);
 }
 
-Tensor wrap_max_names_dim_max(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(max, max_values, self);
-    return at::redispatch::max(max, max_values, self, dim, keepdim);
-  }
-  return MK_TORCHY(max.dtype(), max.device(), H_MAX_NAMES_DIM_MAX, max, max_values, self, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_max_names_dim_max(const at::Tensor & self, at::Dimname dim, bool keepdim, at::Tensor & max, at::Tensor & max_values) {
+  ensure_materialized(max, max_values, self);
+  return at::redispatch::max(max, max_values, self, dim, keepdim);
 }
 
-Tensor wrap_value_selecting_reduction_backward(args...) {
+at::Tensor wrap_value_selecting_reduction_backward(const at::Tensor & grad, int64_t dim, const at::Tensor & indices, at::IntArrayRef sizes, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, indices);
     return at::redispatch::value_selecting_reduction_backward(grad, dim, indices, sizes, keepdim);
@@ -4132,7 +3906,7 @@ Tensor wrap_value_selecting_reduction_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_VALUE_SELECTING_REDUCTION_BACKWARD, grad, dim, indices, sizes, keepdim);
 }
 
-Tensor wrap_amax(args...) {
+at::Tensor wrap_amax(const at::Tensor & self, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::amax(self, dim, keepdim);
@@ -4140,7 +3914,7 @@ Tensor wrap_amax(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_AMAX, self, dim, keepdim);
 }
 
-Tensor wrap_amax_out(args...) {
+at::Tensor & wrap_amax_out(const at::Tensor & self, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::amax(out, self, dim, keepdim);
@@ -4148,15 +3922,12 @@ Tensor wrap_amax_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_AMAX_OUT, out, self, dim, keepdim);
 }
 
-Tensor wrap_max_pool1d_with_indices(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::max_pool1d_with_indices(self, kernel_size, stride, padding, dilation, ceil_mode);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MAX_POOL1D_WITH_INDICES, self, kernel_size, stride, padding, dilation, ceil_mode);
+std::tuple<at::Tensor,at::Tensor> wrap_max_pool1d_with_indices(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
+  ensure_materialized(self);
+  return at::redispatch::max_pool1d_with_indices(self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_max_pool1d(args...) {
+at::Tensor wrap_max_pool1d(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::max_pool1d(self, kernel_size, stride, padding, dilation, ceil_mode);
@@ -4164,7 +3935,7 @@ Tensor wrap_max_pool1d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MAX_POOL1D, self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_max_pool2d(args...) {
+at::Tensor wrap_max_pool2d(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::max_pool2d(self, kernel_size, stride, padding, dilation, ceil_mode);
@@ -4172,7 +3943,7 @@ Tensor wrap_max_pool2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MAX_POOL2D, self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_mkldnn_max_pool2d(args...) {
+at::Tensor wrap_mkldnn_max_pool2d(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mkldnn_max_pool2d(self, kernel_size, stride, padding, dilation, ceil_mode);
@@ -4180,7 +3951,7 @@ Tensor wrap_mkldnn_max_pool2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MKLDNN_MAX_POOL2D, self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_mkldnn_max_pool2d_backward(args...) {
+at::Tensor wrap_mkldnn_max_pool2d_backward(const at::Tensor & grad_output, const at::Tensor & output, const at::Tensor & input, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, output, input);
     return at::redispatch::mkldnn_max_pool2d_backward(grad_output, output, input, kernel_size, stride, padding, dilation, ceil_mode);
@@ -4188,7 +3959,7 @@ Tensor wrap_mkldnn_max_pool2d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MKLDNN_MAX_POOL2D_BACKWARD, grad_output, output, input, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_mkldnn_max_pool3d(args...) {
+at::Tensor wrap_mkldnn_max_pool3d(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mkldnn_max_pool3d(self, kernel_size, stride, padding, dilation, ceil_mode);
@@ -4196,7 +3967,7 @@ Tensor wrap_mkldnn_max_pool3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MKLDNN_MAX_POOL3D, self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_mkldnn_max_pool3d_backward(args...) {
+at::Tensor wrap_mkldnn_max_pool3d_backward(const at::Tensor & grad_output, const at::Tensor & output, const at::Tensor & input, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, output, input);
     return at::redispatch::mkldnn_max_pool3d_backward(grad_output, output, input, kernel_size, stride, padding, dilation, ceil_mode);
@@ -4204,7 +3975,7 @@ Tensor wrap_mkldnn_max_pool3d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MKLDNN_MAX_POOL3D_BACKWARD, grad_output, output, input, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_quantized_max_pool1d(args...) {
+at::Tensor wrap_quantized_max_pool1d(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::quantized_max_pool1d(self, kernel_size, stride, padding, dilation, ceil_mode);
@@ -4212,7 +3983,7 @@ Tensor wrap_quantized_max_pool1d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_QUANTIZED_MAX_POOL1D, self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_quantized_max_pool2d(args...) {
+at::Tensor wrap_quantized_max_pool2d(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::quantized_max_pool2d(self, kernel_size, stride, padding, dilation, ceil_mode);
@@ -4220,7 +3991,7 @@ Tensor wrap_quantized_max_pool2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_QUANTIZED_MAX_POOL2D, self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_max_pool3d(args...) {
+at::Tensor wrap_max_pool3d(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::max_pool3d(self, kernel_size, stride, padding, dilation, ceil_mode);
@@ -4228,7 +3999,7 @@ Tensor wrap_max_pool3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MAX_POOL3D, self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_mean(args...) {
+at::Tensor wrap_mean(const at::Tensor & self, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mean(self, dtype);
@@ -4236,7 +4007,7 @@ Tensor wrap_mean(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MEAN, self, dtype);
 }
 
-Tensor wrap_mean_dim(args...) {
+at::Tensor wrap_mean_dim(const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mean(self, dim, keepdim, dtype);
@@ -4244,7 +4015,7 @@ Tensor wrap_mean_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MEAN_DIM, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_mean_out(args...) {
+at::Tensor & wrap_mean_out(const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::mean(out, self, dim, keepdim, dtype);
@@ -4252,7 +4023,7 @@ Tensor wrap_mean_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MEAN_OUT, out, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_mean_names_dim(args...) {
+at::Tensor wrap_mean_names_dim(const at::Tensor & self, at::DimnameList dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mean(self, dim, keepdim, dtype);
@@ -4260,7 +4031,7 @@ Tensor wrap_mean_names_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MEAN_NAMES_DIM, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_mean_names_out(args...) {
+at::Tensor & wrap_mean_names_out(const at::Tensor & self, at::DimnameList dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::mean(out, self, dim, keepdim, dtype);
@@ -4268,7 +4039,7 @@ Tensor wrap_mean_names_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MEAN_NAMES_OUT, out, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_median(args...) {
+at::Tensor wrap_median(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::median(self);
@@ -4276,39 +4047,27 @@ Tensor wrap_median(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MEDIAN, self);
 }
 
-Tensor wrap_median_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::median(self, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MEDIAN_DIM, self, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_median_dim(const at::Tensor & self, int64_t dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::median(self, dim, keepdim);
 }
 
-Tensor wrap_median_dim_values(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::median(values, indices, self, dim, keepdim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_MEDIAN_DIM_VALUES, values, indices, self, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_median_dim_values(const at::Tensor & self, int64_t dim, bool keepdim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::median(values, indices, self, dim, keepdim);
 }
 
-Tensor wrap_median_names_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::median(self, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MEDIAN_NAMES_DIM, self, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_median_names_dim(const at::Tensor & self, at::Dimname dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::median(self, dim, keepdim);
 }
 
-Tensor wrap_median_names_dim_values(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::median(values, indices, self, dim, keepdim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_MEDIAN_NAMES_DIM_VALUES, values, indices, self, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_median_names_dim_values(const at::Tensor & self, at::Dimname dim, bool keepdim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::median(values, indices, self, dim, keepdim);
 }
 
-Tensor wrap_nanmedian(args...) {
+at::Tensor wrap_nanmedian(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::nanmedian(self);
@@ -4316,71 +4075,47 @@ Tensor wrap_nanmedian(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NANMEDIAN, self);
 }
 
-Tensor wrap_nanmedian_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::nanmedian(self, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_NANMEDIAN_DIM, self, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_nanmedian_dim(const at::Tensor & self, int64_t dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::nanmedian(self, dim, keepdim);
 }
 
-Tensor wrap_nanmedian_dim_values(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::nanmedian(values, indices, self, dim, keepdim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_NANMEDIAN_DIM_VALUES, values, indices, self, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_nanmedian_dim_values(const at::Tensor & self, int64_t dim, bool keepdim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::nanmedian(values, indices, self, dim, keepdim);
 }
 
-Tensor wrap_nanmedian_names_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::nanmedian(self, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_NANMEDIAN_NAMES_DIM, self, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_nanmedian_names_dim(const at::Tensor & self, at::Dimname dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::nanmedian(self, dim, keepdim);
 }
 
-Tensor wrap_nanmedian_names_dim_values(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::nanmedian(values, indices, self, dim, keepdim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_NANMEDIAN_NAMES_DIM_VALUES, values, indices, self, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_nanmedian_names_dim_values(const at::Tensor & self, at::Dimname dim, bool keepdim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::nanmedian(values, indices, self, dim, keepdim);
 }
 
-Tensor wrap_min_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::min(self, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MIN_DIM, self, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_min_dim(const at::Tensor & self, int64_t dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::min(self, dim, keepdim);
 }
 
-Tensor wrap_min_dim_min(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(min, min_indices, self);
-    return at::redispatch::min(min, min_indices, self, dim, keepdim);
-  }
-  return MK_TORCHY(min.dtype(), min.device(), H_MIN_DIM_MIN, min, min_indices, self, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_min_dim_min(const at::Tensor & self, int64_t dim, bool keepdim, at::Tensor & min, at::Tensor & min_indices) {
+  ensure_materialized(min, min_indices, self);
+  return at::redispatch::min(min, min_indices, self, dim, keepdim);
 }
 
-Tensor wrap_min_names_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::min(self, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MIN_NAMES_DIM, self, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_min_names_dim(const at::Tensor & self, at::Dimname dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::min(self, dim, keepdim);
 }
 
-Tensor wrap_min_names_dim_min(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(min, min_indices, self);
-    return at::redispatch::min(min, min_indices, self, dim, keepdim);
-  }
-  return MK_TORCHY(min.dtype(), min.device(), H_MIN_NAMES_DIM_MIN, min, min_indices, self, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_min_names_dim_min(const at::Tensor & self, at::Dimname dim, bool keepdim, at::Tensor & min, at::Tensor & min_indices) {
+  ensure_materialized(min, min_indices, self);
+  return at::redispatch::min(min, min_indices, self, dim, keepdim);
 }
 
-Tensor wrap_amin(args...) {
+at::Tensor wrap_amin(const at::Tensor & self, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::amin(self, dim, keepdim);
@@ -4388,7 +4123,7 @@ Tensor wrap_amin(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_AMIN, self, dim, keepdim);
 }
 
-Tensor wrap_amin_out(args...) {
+at::Tensor & wrap_amin_out(const at::Tensor & self, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::amin(out, self, dim, keepdim);
@@ -4396,7 +4131,7 @@ Tensor wrap_amin_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_AMIN_OUT, out, self, dim, keepdim);
 }
 
-Tensor wrap_mkldnn_convolution(args...) {
+at::Tensor wrap_mkldnn_convolution(const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::mkldnn_convolution(self, weight, bias, padding, stride, dilation, groups);
@@ -4404,7 +4139,7 @@ Tensor wrap_mkldnn_convolution(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MKLDNN_CONVOLUTION, self, weight, bias, padding, stride, dilation, groups);
 }
 
-Tensor wrap_mkldnn_convolution_backward_input(args...) {
+at::Tensor wrap_mkldnn_convolution_backward_input(at::IntArrayRef self_size, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool bias_defined) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, weight);
     return at::redispatch::mkldnn_convolution_backward_input(self_size, grad_output, weight, padding, stride, dilation, groups, bias_defined);
@@ -4412,39 +4147,27 @@ Tensor wrap_mkldnn_convolution_backward_input(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MKLDNN_CONVOLUTION_BACKWARD_INPUT, self_size, grad_output, weight, padding, stride, dilation, groups, bias_defined);
 }
 
-Tensor wrap_mkldnn_convolution_backward_weights(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self);
-    return at::redispatch::mkldnn_convolution_backward_weights(weight_size, grad_output, self, padding, stride, dilation, groups, bias_defined);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MKLDNN_CONVOLUTION_BACKWARD_WEIGHTS, weight_size, grad_output, self, padding, stride, dilation, groups, bias_defined);
+std::tuple<at::Tensor,at::Tensor> wrap_mkldnn_convolution_backward_weights(at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool bias_defined) {
+  ensure_materialized(grad_output, self);
+  return at::redispatch::mkldnn_convolution_backward_weights(weight_size, grad_output, self, padding, stride, dilation, groups, bias_defined);
 }
 
-Tensor wrap_mkldnn_convolution_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, grad_output, weight);
-    return at::redispatch::mkldnn_convolution_backward(self, grad_output, weight, padding, stride, dilation, groups, output_mask);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MKLDNN_CONVOLUTION_BACKWARD, self, grad_output, weight, padding, stride, dilation, groups, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_mkldnn_convolution_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, std::array<bool,3> output_mask) {
+  ensure_materialized(self, grad_output, weight);
+  return at::redispatch::mkldnn_convolution_backward(self, grad_output, weight, padding, stride, dilation, groups, output_mask);
 }
 
-Tensor wrap_miopen_batch_norm(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, weight);
-    return at::redispatch::miopen_batch_norm(input, weight, bias, running_mean, running_var, training, exponential_average_factor, epsilon);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_MIOPEN_BATCH_NORM, input, weight, bias, running_mean, running_var, training, exponential_average_factor, epsilon);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_miopen_batch_norm(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, bool training, double exponential_average_factor, double epsilon) {
+  ensure_materialized(input, weight);
+  return at::redispatch::miopen_batch_norm(input, weight, bias, running_mean, running_var, training, exponential_average_factor, epsilon);
 }
 
-Tensor wrap_miopen_batch_norm_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, grad_output, weight);
-    return at::redispatch::miopen_batch_norm_backward(input, grad_output, weight, running_mean, running_var, save_mean, save_var, epsilon);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_MIOPEN_BATCH_NORM_BACKWARD, input, grad_output, weight, running_mean, running_var, save_mean, save_var, epsilon);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_miopen_batch_norm_backward(const at::Tensor & input, const at::Tensor & grad_output, const at::Tensor & weight, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, const c10::optional<at::Tensor> & save_mean, const c10::optional<at::Tensor> & save_var, double epsilon) {
+  ensure_materialized(input, grad_output, weight);
+  return at::redispatch::miopen_batch_norm_backward(input, grad_output, weight, running_mean, running_var, save_mean, save_var, epsilon);
 }
 
-Tensor wrap_miopen_convolution(args...) {
+at::Tensor wrap_miopen_convolution(const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::miopen_convolution(self, weight, bias, padding, stride, dilation, groups, benchmark, deterministic);
@@ -4452,7 +4175,7 @@ Tensor wrap_miopen_convolution(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MIOPEN_CONVOLUTION, self, weight, bias, padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_miopen_convolution_backward_input(args...) {
+at::Tensor wrap_miopen_convolution_backward_input(at::IntArrayRef self_size, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, weight);
     return at::redispatch::miopen_convolution_backward_input(self_size, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic);
@@ -4460,15 +4183,12 @@ Tensor wrap_miopen_convolution_backward_input(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MIOPEN_CONVOLUTION_BACKWARD_INPUT, self_size, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_miopen_convolution_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, grad_output, weight);
-    return at::redispatch::miopen_convolution_backward(self, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, output_mask);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MIOPEN_CONVOLUTION_BACKWARD, self, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_miopen_convolution_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, std::array<bool,3> output_mask) {
+  ensure_materialized(self, grad_output, weight);
+  return at::redispatch::miopen_convolution_backward(self, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, output_mask);
 }
 
-Tensor wrap_miopen_convolution_backward_bias(args...) {
+at::Tensor wrap_miopen_convolution_backward_bias(const at::Tensor & grad_output) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output);
     return at::redispatch::miopen_convolution_backward_bias(grad_output);
@@ -4476,7 +4196,7 @@ Tensor wrap_miopen_convolution_backward_bias(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MIOPEN_CONVOLUTION_BACKWARD_BIAS, grad_output);
 }
 
-Tensor wrap_miopen_convolution_backward_weight(args...) {
+at::Tensor wrap_miopen_convolution_backward_weight(at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::miopen_convolution_backward_weight(weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic);
@@ -4484,7 +4204,7 @@ Tensor wrap_miopen_convolution_backward_weight(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MIOPEN_CONVOLUTION_BACKWARD_WEIGHT, weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_miopen_convolution_transpose(args...) {
+at::Tensor wrap_miopen_convolution_transpose(const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::miopen_convolution_transpose(self, weight, bias, padding, output_padding, stride, dilation, groups, benchmark, deterministic);
@@ -4492,15 +4212,12 @@ Tensor wrap_miopen_convolution_transpose(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MIOPEN_CONVOLUTION_TRANSPOSE, self, weight, bias, padding, output_padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_miopen_convolution_transpose_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, grad_output, weight);
-    return at::redispatch::miopen_convolution_transpose_backward(self, grad_output, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic, output_mask);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MIOPEN_CONVOLUTION_TRANSPOSE_BACKWARD, self, grad_output, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_miopen_convolution_transpose_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, std::array<bool,3> output_mask) {
+  ensure_materialized(self, grad_output, weight);
+  return at::redispatch::miopen_convolution_transpose_backward(self, grad_output, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic, output_mask);
 }
 
-Tensor wrap_miopen_convolution_transpose_backward_input(args...) {
+at::Tensor wrap_miopen_convolution_transpose_backward_input(const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, weight);
     return at::redispatch::miopen_convolution_transpose_backward_input(grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic);
@@ -4508,7 +4225,7 @@ Tensor wrap_miopen_convolution_transpose_backward_input(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MIOPEN_CONVOLUTION_TRANSPOSE_BACKWARD_INPUT, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_miopen_convolution_transpose_backward_weight(args...) {
+at::Tensor wrap_miopen_convolution_transpose_backward_weight(at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::miopen_convolution_transpose_backward_weight(weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic);
@@ -4516,7 +4233,7 @@ Tensor wrap_miopen_convolution_transpose_backward_weight(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MIOPEN_CONVOLUTION_TRANSPOSE_BACKWARD_WEIGHT, weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_miopen_depthwise_convolution(args...) {
+at::Tensor wrap_miopen_depthwise_convolution(const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::miopen_depthwise_convolution(self, weight, bias, padding, stride, dilation, groups, benchmark, deterministic);
@@ -4524,7 +4241,7 @@ Tensor wrap_miopen_depthwise_convolution(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MIOPEN_DEPTHWISE_CONVOLUTION, self, weight, bias, padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_miopen_depthwise_convolution_backward_input(args...) {
+at::Tensor wrap_miopen_depthwise_convolution_backward_input(at::IntArrayRef self_size, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, weight);
     return at::redispatch::miopen_depthwise_convolution_backward_input(self_size, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic);
@@ -4532,15 +4249,12 @@ Tensor wrap_miopen_depthwise_convolution_backward_input(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MIOPEN_DEPTHWISE_CONVOLUTION_BACKWARD_INPUT, self_size, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_miopen_depthwise_convolution_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, grad_output, weight);
-    return at::redispatch::miopen_depthwise_convolution_backward(self, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, output_mask);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MIOPEN_DEPTHWISE_CONVOLUTION_BACKWARD, self, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_miopen_depthwise_convolution_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, std::array<bool,3> output_mask) {
+  ensure_materialized(self, grad_output, weight);
+  return at::redispatch::miopen_depthwise_convolution_backward(self, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, output_mask);
 }
 
-Tensor wrap_miopen_depthwise_convolution_backward_weight(args...) {
+at::Tensor wrap_miopen_depthwise_convolution_backward_weight(at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::miopen_depthwise_convolution_backward_weight(weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic);
@@ -4548,23 +4262,17 @@ Tensor wrap_miopen_depthwise_convolution_backward_weight(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MIOPEN_DEPTHWISE_CONVOLUTION_BACKWARD_WEIGHT, weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic);
 }
 
-Tensor wrap_miopen_rnn(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, hx);
-    return at::redispatch::miopen_rnn(input, weight, weight_stride0, hx, cx, mode, hidden_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_MIOPEN_RNN, input, weight, weight_stride0, hx, cx, mode, hidden_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap_miopen_rnn(const at::Tensor & input, at::TensorList weight, int64_t weight_stride0, const at::Tensor & hx, const c10::optional<at::Tensor> & cx, int64_t mode, int64_t hidden_size, int64_t num_layers, bool batch_first, double dropout, bool train, bool bidirectional, at::IntArrayRef batch_sizes, const c10::optional<at::Tensor> & dropout_state) {
+  ensure_materialized(input, hx);
+  return at::redispatch::miopen_rnn(input, weight, weight_stride0, hx, cx, mode, hidden_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state);
 }
 
-Tensor wrap_miopen_rnn_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, weight_buf, hx, output, reserve);
-    return at::redispatch::miopen_rnn_backward(input, weight, weight_stride0, weight_buf, hx, cx, output, grad_output, grad_hy, grad_cy, mode, hidden_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state, reserve, output_mask);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_MIOPEN_RNN_BACKWARD, input, weight, weight_stride0, weight_buf, hx, cx, output, grad_output, grad_hy, grad_cy, mode, hidden_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state, reserve, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,std::vector<at::Tensor>> wrap_miopen_rnn_backward(const at::Tensor & input, at::TensorList weight, int64_t weight_stride0, const at::Tensor & weight_buf, const at::Tensor & hx, const c10::optional<at::Tensor> & cx, const at::Tensor & output, const c10::optional<at::Tensor> & grad_output, const c10::optional<at::Tensor> & grad_hy, const c10::optional<at::Tensor> & grad_cy, int64_t mode, int64_t hidden_size, int64_t num_layers, bool batch_first, double dropout, bool train, bool bidirectional, at::IntArrayRef batch_sizes, const c10::optional<at::Tensor> & dropout_state, const at::Tensor & reserve, std::array<bool,4> output_mask) {
+  ensure_materialized(input, weight_buf, hx, output, reserve);
+  return at::redispatch::miopen_rnn_backward(input, weight, weight_stride0, weight_buf, hx, cx, output, grad_output, grad_hy, grad_cy, mode, hidden_size, num_layers, batch_first, dropout, train, bidirectional, batch_sizes, dropout_state, reserve, output_mask);
 }
 
-Tensor wrap_mm(args...) {
+at::Tensor wrap_mm(const at::Tensor & self, const at::Tensor & mat2) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mat2);
     return at::redispatch::mm(self, mat2);
@@ -4572,7 +4280,7 @@ Tensor wrap_mm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MM, self, mat2);
 }
 
-Tensor wrap_mm_out(args...) {
+at::Tensor & wrap_mm_out(const at::Tensor & self, const at::Tensor & mat2, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, mat2);
     return at::redispatch::mm(out, self, mat2);
@@ -4580,7 +4288,7 @@ Tensor wrap_mm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MM_OUT, out, self, mat2);
 }
 
-Tensor wrap__sparse_mm(args...) {
+at::Tensor wrap__sparse_mm(const at::Tensor & sparse, const at::Tensor & dense) {
   if (trace.is_flushing()) {
     ensure_materialized(sparse, dense);
     return at::redispatch::_sparse_mm(sparse, dense);
@@ -4588,7 +4296,7 @@ Tensor wrap__sparse_mm(args...) {
   return MK_TORCHY(sparse.dtype(), sparse.device(), H__SPARSE_MM, sparse, dense);
 }
 
-Tensor wrap__sparse_sparse_matmul(args...) {
+at::Tensor wrap__sparse_sparse_matmul(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::_sparse_sparse_matmul(self, other);
@@ -4596,7 +4304,7 @@ Tensor wrap__sparse_sparse_matmul(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_SPARSE_MATMUL, self, other);
 }
 
-Tensor wrap__sparse_mask_helper(args...) {
+at::Tensor wrap__sparse_mask_helper(const at::Tensor & t, const at::Tensor & mask_indices) {
   if (trace.is_flushing()) {
     ensure_materialized(t, mask_indices);
     return at::redispatch::_sparse_mask_helper(t, mask_indices);
@@ -4604,39 +4312,27 @@ Tensor wrap__sparse_mask_helper(args...) {
   return MK_TORCHY(t.dtype(), t.device(), H__SPARSE_MASK_HELPER, t, mask_indices);
 }
 
-Tensor wrap_mode(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::mode(self, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MODE, self, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_mode(const at::Tensor & self, int64_t dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::mode(self, dim, keepdim);
 }
 
-Tensor wrap_mode_values(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::mode(values, indices, self, dim, keepdim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_MODE_VALUES, values, indices, self, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_mode_values(const at::Tensor & self, int64_t dim, bool keepdim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::mode(values, indices, self, dim, keepdim);
 }
 
-Tensor wrap_mode_dimname(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::mode(self, dim, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MODE_DIMNAME, self, dim, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_mode_dimname(const at::Tensor & self, at::Dimname dim, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::mode(self, dim, keepdim);
 }
 
-Tensor wrap_mode_dimname_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::mode(values, indices, self, dim, keepdim);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_MODE_DIMNAME_OUT, values, indices, self, dim, keepdim);
+std::tuple<at::Tensor &,at::Tensor &> wrap_mode_dimname_out(const at::Tensor & self, at::Dimname dim, bool keepdim, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::mode(values, indices, self, dim, keepdim);
 }
 
-Tensor wrap_mul_Tensor(args...) {
+at::Tensor wrap_mul_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::mul(self, other);
@@ -4644,7 +4340,7 @@ Tensor wrap_mul_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MUL_TENSOR, self, other);
 }
 
-Tensor wrap_mul__Tensor(args...) {
+at::Tensor & wrap_mul__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::mul_(self, other);
@@ -4652,7 +4348,7 @@ Tensor wrap_mul__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MUL__TENSOR, self, other);
 }
 
-Tensor wrap_mul_out(args...) {
+at::Tensor & wrap_mul_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::mul(out, self, other);
@@ -4660,7 +4356,7 @@ Tensor wrap_mul_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MUL_OUT, out, self, other);
 }
 
-Tensor wrap_mul_Scalar(args...) {
+at::Tensor wrap_mul_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mul(self, other);
@@ -4668,7 +4364,7 @@ Tensor wrap_mul_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MUL_SCALAR, self, other);
 }
 
-Tensor wrap_mul__Scalar(args...) {
+at::Tensor & wrap_mul__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mul_(self, other);
@@ -4676,7 +4372,7 @@ Tensor wrap_mul__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MUL__SCALAR, self, other);
 }
 
-Tensor wrap_multiply_Tensor(args...) {
+at::Tensor wrap_multiply_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::multiply(self, other);
@@ -4684,7 +4380,7 @@ Tensor wrap_multiply_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MULTIPLY_TENSOR, self, other);
 }
 
-Tensor wrap_multiply__Tensor(args...) {
+at::Tensor & wrap_multiply__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::multiply_(self, other);
@@ -4692,7 +4388,7 @@ Tensor wrap_multiply__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MULTIPLY__TENSOR, self, other);
 }
 
-Tensor wrap_multiply_out(args...) {
+at::Tensor & wrap_multiply_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::multiply(out, self, other);
@@ -4700,7 +4396,7 @@ Tensor wrap_multiply_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MULTIPLY_OUT, out, self, other);
 }
 
-Tensor wrap_multiply_Scalar(args...) {
+at::Tensor wrap_multiply_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::multiply(self, other);
@@ -4708,7 +4404,7 @@ Tensor wrap_multiply_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MULTIPLY_SCALAR, self, other);
 }
 
-Tensor wrap_multiply__Scalar(args...) {
+at::Tensor & wrap_multiply__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::multiply_(self, other);
@@ -4716,7 +4412,7 @@ Tensor wrap_multiply__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MULTIPLY__SCALAR, self, other);
 }
 
-Tensor wrap_mv(args...) {
+at::Tensor wrap_mv(const at::Tensor & self, const at::Tensor & vec) {
   if (trace.is_flushing()) {
     ensure_materialized(self, vec);
     return at::redispatch::mv(self, vec);
@@ -4724,7 +4420,7 @@ Tensor wrap_mv(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MV, self, vec);
 }
 
-Tensor wrap_mv_out(args...) {
+at::Tensor & wrap_mv_out(const at::Tensor & self, const at::Tensor & vec, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, vec);
     return at::redispatch::mv(out, self, vec);
@@ -4732,7 +4428,7 @@ Tensor wrap_mv_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MV_OUT, out, self, vec);
 }
 
-Tensor wrap_mvlgamma(args...) {
+at::Tensor wrap_mvlgamma(const at::Tensor & self, int64_t p) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mvlgamma(self, p);
@@ -4740,7 +4436,7 @@ Tensor wrap_mvlgamma(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MVLGAMMA, self, p);
 }
 
-Tensor wrap_mvlgamma_(args...) {
+at::Tensor & wrap_mvlgamma_(at::Tensor & self, int64_t p) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mvlgamma_(self, p);
@@ -4748,7 +4444,7 @@ Tensor wrap_mvlgamma_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MVLGAMMA_, self, p);
 }
 
-Tensor wrap_narrow_copy(args...) {
+at::Tensor wrap_narrow_copy(const at::Tensor & self, int64_t dim, int64_t start, int64_t length) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::narrow_copy(self, dim, start, length);
@@ -4756,7 +4452,7 @@ Tensor wrap_narrow_copy(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NARROW_COPY, self, dim, start, length);
 }
 
-Tensor wrap_narrow_copy_out(args...) {
+at::Tensor & wrap_narrow_copy_out(const at::Tensor & self, int64_t dim, int64_t start, int64_t length, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::narrow_copy(out, self, dim, start, length);
@@ -4764,7 +4460,7 @@ Tensor wrap_narrow_copy_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NARROW_COPY_OUT, out, self, dim, start, length);
 }
 
-Tensor wrap_narrow(args...) {
+at::Tensor wrap_narrow(const at::Tensor & self, int64_t dim, int64_t start, int64_t length) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::narrow(self, dim, start, length);
@@ -4772,7 +4468,7 @@ Tensor wrap_narrow(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NARROW, self, dim, start, length);
 }
 
-Tensor wrap_narrow_Tensor(args...) {
+at::Tensor wrap_narrow_Tensor(const at::Tensor & self, int64_t dim, const at::Tensor & start, int64_t length) {
   if (trace.is_flushing()) {
     ensure_materialized(self, start);
     return at::redispatch::narrow(self, dim, start, length);
@@ -4780,31 +4476,22 @@ Tensor wrap_narrow_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NARROW_TENSOR, self, dim, start, length);
 }
 
-Tensor wrap_native_batch_norm(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input);
-    return at::redispatch::native_batch_norm(input, weight, bias, running_mean, running_var, training, momentum, eps);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_NATIVE_BATCH_NORM, input, weight, bias, running_mean, running_var, training, momentum, eps);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_native_batch_norm(const at::Tensor & input, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, bool training, double momentum, double eps) {
+  ensure_materialized(input);
+  return at::redispatch::native_batch_norm(input, weight, bias, running_mean, running_var, training, momentum, eps);
 }
 
-Tensor wrap_native_batch_norm_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(out, save_mean, save_invstd, input);
-    return at::redispatch::native_batch_norm(out, save_mean, save_invstd, input, weight, bias, running_mean, running_var, training, momentum, eps);
-  }
-  return MK_TORCHY(out.dtype(), out.device(), H_NATIVE_BATCH_NORM_OUT, out, save_mean, save_invstd, input, weight, bias, running_mean, running_var, training, momentum, eps);
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> wrap_native_batch_norm_out(const at::Tensor & input, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, bool training, double momentum, double eps, at::Tensor & out, at::Tensor & save_mean, at::Tensor & save_invstd) {
+  ensure_materialized(out, save_mean, save_invstd, input);
+  return at::redispatch::native_batch_norm(out, save_mean, save_invstd, input, weight, bias, running_mean, running_var, training, momentum, eps);
 }
 
-Tensor wrap_batch_norm_stats(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input);
-    return at::redispatch::batch_norm_stats(input, eps);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_BATCH_NORM_STATS, input, eps);
+std::tuple<at::Tensor,at::Tensor> wrap_batch_norm_stats(const at::Tensor & input, double eps) {
+  ensure_materialized(input);
+  return at::redispatch::batch_norm_stats(input, eps);
 }
 
-Tensor wrap_batch_norm_elemt(args...) {
+at::Tensor wrap_batch_norm_elemt(const at::Tensor & input, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, const at::Tensor & mean, const at::Tensor & invstd, double eps) {
   if (trace.is_flushing()) {
     ensure_materialized(input, mean, invstd);
     return at::redispatch::batch_norm_elemt(input, weight, bias, mean, invstd, eps);
@@ -4812,7 +4499,7 @@ Tensor wrap_batch_norm_elemt(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_BATCH_NORM_ELEMT, input, weight, bias, mean, invstd, eps);
 }
 
-Tensor wrap_batch_norm_elemt_out(args...) {
+at::Tensor & wrap_batch_norm_elemt_out(const at::Tensor & input, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, const at::Tensor & mean, const at::Tensor & invstd, double eps, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, input, mean, invstd);
     return at::redispatch::batch_norm_elemt(out, input, weight, bias, mean, invstd, eps);
@@ -4820,39 +4507,27 @@ Tensor wrap_batch_norm_elemt_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BATCH_NORM_ELEMT_OUT, out, input, weight, bias, mean, invstd, eps);
 }
 
-Tensor wrap_batch_norm_gather_stats(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, mean, invstd);
-    return at::redispatch::batch_norm_gather_stats(input, mean, invstd, running_mean, running_var, momentum, eps, count);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_BATCH_NORM_GATHER_STATS, input, mean, invstd, running_mean, running_var, momentum, eps, count);
+std::tuple<at::Tensor,at::Tensor> wrap_batch_norm_gather_stats(const at::Tensor & input, const at::Tensor & mean, const at::Tensor & invstd, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, double momentum, double eps, int64_t count) {
+  ensure_materialized(input, mean, invstd);
+  return at::redispatch::batch_norm_gather_stats(input, mean, invstd, running_mean, running_var, momentum, eps, count);
 }
 
-Tensor wrap_batch_norm_gather_stats_with_counts(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, mean, invstd, counts);
-    return at::redispatch::batch_norm_gather_stats_with_counts(input, mean, invstd, running_mean, running_var, momentum, eps, counts);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_BATCH_NORM_GATHER_STATS_WITH_COUNTS, input, mean, invstd, running_mean, running_var, momentum, eps, counts);
+std::tuple<at::Tensor,at::Tensor> wrap_batch_norm_gather_stats_with_counts(const at::Tensor & input, const at::Tensor & mean, const at::Tensor & invstd, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, double momentum, double eps, const at::Tensor & counts) {
+  ensure_materialized(input, mean, invstd, counts);
+  return at::redispatch::batch_norm_gather_stats_with_counts(input, mean, invstd, running_mean, running_var, momentum, eps, counts);
 }
 
-Tensor wrap_native_batch_norm_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_out, input);
-    return at::redispatch::native_batch_norm_backward(grad_out, input, weight, running_mean, running_var, save_mean, save_invstd, train, eps, output_mask);
-  }
-  return MK_TORCHY(grad_out.dtype(), grad_out.device(), H_NATIVE_BATCH_NORM_BACKWARD, grad_out, input, weight, running_mean, running_var, save_mean, save_invstd, train, eps, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_native_batch_norm_backward(const at::Tensor & grad_out, const at::Tensor & input, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, const c10::optional<at::Tensor> & save_mean, const c10::optional<at::Tensor> & save_invstd, bool train, double eps, std::array<bool,3> output_mask) {
+  ensure_materialized(grad_out, input);
+  return at::redispatch::native_batch_norm_backward(grad_out, input, weight, running_mean, running_var, save_mean, save_invstd, train, eps, output_mask);
 }
 
-Tensor wrap_batch_norm_backward_reduce(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_out, input, mean, invstd);
-    return at::redispatch::batch_norm_backward_reduce(grad_out, input, mean, invstd, weight, input_g, weight_g, bias_g);
-  }
-  return MK_TORCHY(grad_out.dtype(), grad_out.device(), H_BATCH_NORM_BACKWARD_REDUCE, grad_out, input, mean, invstd, weight, input_g, weight_g, bias_g);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap_batch_norm_backward_reduce(const at::Tensor & grad_out, const at::Tensor & input, const at::Tensor & mean, const at::Tensor & invstd, const c10::optional<at::Tensor> & weight, bool input_g, bool weight_g, bool bias_g) {
+  ensure_materialized(grad_out, input, mean, invstd);
+  return at::redispatch::batch_norm_backward_reduce(grad_out, input, mean, invstd, weight, input_g, weight_g, bias_g);
 }
 
-Tensor wrap_batch_norm_backward_elemt(args...) {
+at::Tensor wrap_batch_norm_backward_elemt(const at::Tensor & grad_out, const at::Tensor & input, const at::Tensor & mean, const at::Tensor & invstd, const c10::optional<at::Tensor> & weight, const at::Tensor & mean_dy, const at::Tensor & mean_dy_xmu, const at::Tensor & count) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_out, input, mean, invstd, mean_dy, mean_dy_xmu, count);
     return at::redispatch::batch_norm_backward_elemt(grad_out, input, mean, invstd, weight, mean_dy, mean_dy_xmu, count);
@@ -4860,25 +4535,22 @@ Tensor wrap_batch_norm_backward_elemt(args...) {
   return MK_TORCHY(grad_out.dtype(), grad_out.device(), H_BATCH_NORM_BACKWARD_ELEMT, grad_out, input, mean, invstd, weight, mean_dy, mean_dy_xmu, count);
 }
 
-Tensor wrap_batch_norm_update_stats(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input);
-    return at::redispatch::batch_norm_update_stats(input, running_mean, running_var, momentum);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_BATCH_NORM_UPDATE_STATS, input, running_mean, running_var, momentum);
+std::tuple<at::Tensor,at::Tensor> wrap_batch_norm_update_stats(const at::Tensor & input, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, double momentum) {
+  ensure_materialized(input);
+  return at::redispatch::batch_norm_update_stats(input, running_mean, running_var, momentum);
 }
 
-bool wrap_is_vulkan_available(args...) {
+bool wrap_is_vulkan_available() {
   ensure_materialized();
   return at::redispatch::is_vulkan_available();
 }
 
-bool wrap__nnpack_available(args...) {
+bool wrap__nnpack_available() {
   ensure_materialized();
   return at::redispatch::_nnpack_available();
 }
 
-Tensor wrap__nnpack_spatial_convolution(args...) {
+at::Tensor wrap__nnpack_spatial_convolution(const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     ensure_materialized(input, weight);
     return at::redispatch::_nnpack_spatial_convolution(input, weight, bias, padding, stride);
@@ -4886,15 +4558,12 @@ Tensor wrap__nnpack_spatial_convolution(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H__NNPACK_SPATIAL_CONVOLUTION, input, weight, bias, padding, stride);
 }
 
-Tensor wrap__nnpack_spatial_convolution_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, grad_output, weight);
-    return at::redispatch::_nnpack_spatial_convolution_backward(input, grad_output, weight, padding, output_mask);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H__NNPACK_SPATIAL_CONVOLUTION_BACKWARD, input, grad_output, weight, padding, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap__nnpack_spatial_convolution_backward(const at::Tensor & input, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, std::array<bool,3> output_mask) {
+  ensure_materialized(input, grad_output, weight);
+  return at::redispatch::_nnpack_spatial_convolution_backward(input, grad_output, weight, padding, output_mask);
 }
 
-Tensor wrap__nnpack_spatial_convolution_backward_input(args...) {
+at::Tensor wrap__nnpack_spatial_convolution_backward_input(const at::Tensor & input, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(input, grad_output, weight);
     return at::redispatch::_nnpack_spatial_convolution_backward_input(input, grad_output, weight, padding);
@@ -4902,7 +4571,7 @@ Tensor wrap__nnpack_spatial_convolution_backward_input(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H__NNPACK_SPATIAL_CONVOLUTION_BACKWARD_INPUT, input, grad_output, weight, padding);
 }
 
-Tensor wrap__nnpack_spatial_convolution_backward_weight(args...) {
+at::Tensor wrap__nnpack_spatial_convolution_backward_weight(const at::Tensor & input, at::IntArrayRef weightsize, const at::Tensor & grad_output, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(input, grad_output);
     return at::redispatch::_nnpack_spatial_convolution_backward_weight(input, weightsize, grad_output, padding);
@@ -4910,23 +4579,19 @@ Tensor wrap__nnpack_spatial_convolution_backward_weight(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H__NNPACK_SPATIAL_CONVOLUTION_BACKWARD_WEIGHT, input, weightsize, grad_output, padding);
 }
 
-Tensor wrap_ones_names(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::ones(size, names, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_ONES_NAMES, size, names, dtype, layout, device, pin_memory);
+at::Tensor wrap_ones_names(at::IntArrayRef size, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::ones(size, names, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_ones(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::ones(size, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_ONES, size, dtype, layout, device, pin_memory);
+at::Tensor wrap_ones(at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::ones(size, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_ones_out(args...) {
+at::Tensor & wrap_ones_out(at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::ones(out, size);
@@ -4934,7 +4599,7 @@ Tensor wrap_ones_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ONES_OUT, out, size);
 }
 
-Tensor wrap_ones_like(args...) {
+at::Tensor wrap_ones_like(const at::Tensor & self, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::ones_like(self, dtype, layout, device, pin_memory, memory_format);
@@ -4942,7 +4607,7 @@ Tensor wrap_ones_like(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ONES_LIKE, self, dtype, layout, device, pin_memory, memory_format);
 }
 
-Tensor wrap_pairwise_distance(args...) {
+at::Tensor wrap_pairwise_distance(const at::Tensor & x1, const at::Tensor & x2, double p, double eps, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(x1, x2);
     return at::redispatch::pairwise_distance(x1, x2, p, eps, keepdim);
@@ -4950,7 +4615,7 @@ Tensor wrap_pairwise_distance(args...) {
   return MK_TORCHY(x1.dtype(), x1.device(), H_PAIRWISE_DISTANCE, x1, x2, p, eps, keepdim);
 }
 
-Tensor wrap_cdist(args...) {
+at::Tensor wrap_cdist(const at::Tensor & x1, const at::Tensor & x2, double p, c10::optional<int64_t> compute_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(x1, x2);
     return at::redispatch::cdist(x1, x2, p, compute_mode);
@@ -4958,7 +4623,7 @@ Tensor wrap_cdist(args...) {
   return MK_TORCHY(x1.dtype(), x1.device(), H_CDIST, x1, x2, p, compute_mode);
 }
 
-Tensor wrap__euclidean_dist(args...) {
+at::Tensor wrap__euclidean_dist(const at::Tensor & x1, const at::Tensor & x2) {
   if (trace.is_flushing()) {
     ensure_materialized(x1, x2);
     return at::redispatch::_euclidean_dist(x1, x2);
@@ -4966,7 +4631,7 @@ Tensor wrap__euclidean_dist(args...) {
   return MK_TORCHY(x1.dtype(), x1.device(), H__EUCLIDEAN_DIST, x1, x2);
 }
 
-Tensor wrap__cdist_forward(args...) {
+at::Tensor wrap__cdist_forward(const at::Tensor & x1, const at::Tensor & x2, double p, c10::optional<int64_t> compute_mode) {
   if (trace.is_flushing()) {
     ensure_materialized(x1, x2);
     return at::redispatch::_cdist_forward(x1, x2, p, compute_mode);
@@ -4974,7 +4639,7 @@ Tensor wrap__cdist_forward(args...) {
   return MK_TORCHY(x1.dtype(), x1.device(), H__CDIST_FORWARD, x1, x2, p, compute_mode);
 }
 
-Tensor wrap__cdist_backward(args...) {
+at::Tensor wrap__cdist_backward(const at::Tensor & grad, const at::Tensor & x1, const at::Tensor & x2, double p, const at::Tensor & cdist) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, x1, x2, cdist);
     return at::redispatch::_cdist_backward(grad, x1, x2, p, cdist);
@@ -4982,7 +4647,7 @@ Tensor wrap__cdist_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H__CDIST_BACKWARD, grad, x1, x2, p, cdist);
 }
 
-Tensor wrap_pdist(args...) {
+at::Tensor wrap_pdist(const at::Tensor & self, double p) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::pdist(self, p);
@@ -4990,7 +4655,7 @@ Tensor wrap_pdist(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PDIST, self, p);
 }
 
-Tensor wrap__pdist_forward(args...) {
+at::Tensor wrap__pdist_forward(const at::Tensor & self, double p) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_pdist_forward(self, p);
@@ -4998,7 +4663,7 @@ Tensor wrap__pdist_forward(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__PDIST_FORWARD, self, p);
 }
 
-Tensor wrap__pdist_backward(args...) {
+at::Tensor wrap__pdist_backward(const at::Tensor & grad, const at::Tensor & self, double p, const at::Tensor & pdist) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, self, pdist);
     return at::redispatch::_pdist_backward(grad, self, p, pdist);
@@ -5006,7 +4671,7 @@ Tensor wrap__pdist_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H__PDIST_BACKWARD, grad, self, p, pdist);
 }
 
-Tensor wrap_cosine_similarity(args...) {
+at::Tensor wrap_cosine_similarity(const at::Tensor & x1, const at::Tensor & x2, int64_t dim, double eps) {
   if (trace.is_flushing()) {
     ensure_materialized(x1, x2);
     return at::redispatch::cosine_similarity(x1, x2, dim, eps);
@@ -5014,7 +4679,7 @@ Tensor wrap_cosine_similarity(args...) {
   return MK_TORCHY(x1.dtype(), x1.device(), H_COSINE_SIMILARITY, x1, x2, dim, eps);
 }
 
-Tensor wrap_permute(args...) {
+at::Tensor wrap_permute(const at::Tensor & self, at::IntArrayRef dims) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::permute(self, dims);
@@ -5022,7 +4687,7 @@ Tensor wrap_permute(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PERMUTE, self, dims);
 }
 
-Tensor wrap_movedim_intlist(args...) {
+at::Tensor wrap_movedim_intlist(const at::Tensor & self, at::IntArrayRef source, at::IntArrayRef destination) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::movedim(self, source, destination);
@@ -5030,7 +4695,7 @@ Tensor wrap_movedim_intlist(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MOVEDIM_INTLIST, self, source, destination);
 }
 
-Tensor wrap_movedim_int(args...) {
+at::Tensor wrap_movedim_int(const at::Tensor & self, int64_t source, int64_t destination) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::movedim(self, source, destination);
@@ -5038,7 +4703,7 @@ Tensor wrap_movedim_int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MOVEDIM_INT, self, source, destination);
 }
 
-Tensor wrap_moveaxis_intlist(args...) {
+at::Tensor wrap_moveaxis_intlist(const at::Tensor & self, at::IntArrayRef source, at::IntArrayRef destination) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::moveaxis(self, source, destination);
@@ -5046,7 +4711,7 @@ Tensor wrap_moveaxis_intlist(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MOVEAXIS_INTLIST, self, source, destination);
 }
 
-Tensor wrap_moveaxis_int(args...) {
+at::Tensor wrap_moveaxis_int(const at::Tensor & self, int64_t source, int64_t destination) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::moveaxis(self, source, destination);
@@ -5054,7 +4719,7 @@ Tensor wrap_moveaxis_int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MOVEAXIS_INT, self, source, destination);
 }
 
-Tensor wrap_numpy_T(args...) {
+at::Tensor wrap_numpy_T(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::numpy_T(self);
@@ -5062,7 +4727,7 @@ Tensor wrap_numpy_T(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NUMPY_T, self);
 }
 
-Tensor wrap_pixel_shuffle(args...) {
+at::Tensor wrap_pixel_shuffle(const at::Tensor & self, int64_t upscale_factor) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::pixel_shuffle(self, upscale_factor);
@@ -5070,7 +4735,7 @@ Tensor wrap_pixel_shuffle(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PIXEL_SHUFFLE, self, upscale_factor);
 }
 
-Tensor wrap_pixel_unshuffle(args...) {
+at::Tensor wrap_pixel_unshuffle(const at::Tensor & self, int64_t downscale_factor) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::pixel_unshuffle(self, downscale_factor);
@@ -5078,7 +4743,7 @@ Tensor wrap_pixel_unshuffle(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PIXEL_UNSHUFFLE, self, downscale_factor);
 }
 
-Tensor wrap_channel_shuffle(args...) {
+at::Tensor wrap_channel_shuffle(const at::Tensor & self, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::channel_shuffle(self, groups);
@@ -5086,12 +4751,12 @@ Tensor wrap_channel_shuffle(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CHANNEL_SHUFFLE, self, groups);
 }
 
-bool wrap_is_pinned(args...) {
+bool wrap_is_pinned(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::is_pinned(self);
 }
 
-Tensor wrap_pin_memory(args...) {
+at::Tensor wrap_pin_memory(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::pin_memory(self);
@@ -5099,7 +4764,7 @@ Tensor wrap_pin_memory(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PIN_MEMORY, self);
 }
 
-Tensor wrap_pinverse(args...) {
+at::Tensor wrap_pinverse(const at::Tensor & self, double rcond) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::pinverse(self, rcond);
@@ -5107,7 +4772,7 @@ Tensor wrap_pinverse(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PINVERSE, self, rcond);
 }
 
-Tensor wrap_poisson_nll_loss(args...) {
+at::Tensor wrap_poisson_nll_loss(const at::Tensor & input, const at::Tensor & target, bool log_input, bool full, double eps, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(input, target);
     return at::redispatch::poisson_nll_loss(input, target, log_input, full, eps, reduction);
@@ -5115,7 +4780,7 @@ Tensor wrap_poisson_nll_loss(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_POISSON_NLL_LOSS, input, target, log_input, full, eps, reduction);
 }
 
-Tensor wrap_rad2deg(args...) {
+at::Tensor wrap_rad2deg(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::rad2deg(self);
@@ -5123,7 +4788,7 @@ Tensor wrap_rad2deg(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RAD2DEG, self);
 }
 
-Tensor wrap_rad2deg_(args...) {
+at::Tensor & wrap_rad2deg_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::rad2deg_(self);
@@ -5131,7 +4796,7 @@ Tensor wrap_rad2deg_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RAD2DEG_, self);
 }
 
-Tensor wrap_rad2deg_out(args...) {
+at::Tensor & wrap_rad2deg_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::rad2deg(out, self);
@@ -5139,7 +4804,7 @@ Tensor wrap_rad2deg_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RAD2DEG_OUT, out, self);
 }
 
-Tensor wrap_deg2rad(args...) {
+at::Tensor wrap_deg2rad(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::deg2rad(self);
@@ -5147,7 +4812,7 @@ Tensor wrap_deg2rad(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DEG2RAD, self);
 }
 
-Tensor wrap_deg2rad_(args...) {
+at::Tensor & wrap_deg2rad_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::deg2rad_(self);
@@ -5155,7 +4820,7 @@ Tensor wrap_deg2rad_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DEG2RAD_, self);
 }
 
-Tensor wrap_deg2rad_out(args...) {
+at::Tensor & wrap_deg2rad_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::deg2rad(out, self);
@@ -5163,47 +4828,37 @@ Tensor wrap_deg2rad_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_DEG2RAD_OUT, out, self);
 }
 
-Tensor wrap_scalar_tensor(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::scalar_tensor(s, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_SCALAR_TENSOR, s, dtype, layout, device, pin_memory);
+at::Tensor wrap_scalar_tensor(const at::Scalar & s, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::scalar_tensor(s, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_rand_names(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::rand(size, names, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RAND_NAMES, size, names, dtype, layout, device, pin_memory);
+at::Tensor wrap_rand_names(at::IntArrayRef size, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::rand(size, names, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_rand_generator_with_names(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::rand(size, generator, names, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RAND_GENERATOR_WITH_NAMES, size, generator, names, dtype, layout, device, pin_memory);
+at::Tensor wrap_rand_generator_with_names(at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::rand(size, generator, names, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_rand(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::rand(size, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RAND, size, dtype, layout, device, pin_memory);
+at::Tensor wrap_rand(at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::rand(size, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_rand_generator(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::rand(size, generator, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RAND_GENERATOR, size, generator, dtype, layout, device, pin_memory);
+at::Tensor wrap_rand_generator(at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::rand(size, generator, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_rand_out(args...) {
+at::Tensor & wrap_rand_out(at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::rand(out, size);
@@ -5211,7 +4866,7 @@ Tensor wrap_rand_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RAND_OUT, out, size);
 }
 
-Tensor wrap_rand_generator_out(args...) {
+at::Tensor & wrap_rand_generator_out(at::IntArrayRef size, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::rand(out, size, generator);
@@ -5219,7 +4874,7 @@ Tensor wrap_rand_generator_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RAND_GENERATOR_OUT, out, size, generator);
 }
 
-Tensor wrap_rand_like(args...) {
+at::Tensor wrap_rand_like(const at::Tensor & self, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::rand_like(self, dtype, layout, device, pin_memory, memory_format);
@@ -5227,39 +4882,31 @@ Tensor wrap_rand_like(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RAND_LIKE, self, dtype, layout, device, pin_memory, memory_format);
 }
 
-Tensor wrap_randint(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::randint(high, size, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANDINT, high, size, dtype, layout, device, pin_memory);
+at::Tensor wrap_randint(int64_t high, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::randint(high, size, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_randint_generator(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::randint(high, size, generator, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANDINT_GENERATOR, high, size, generator, dtype, layout, device, pin_memory);
+at::Tensor wrap_randint_generator(int64_t high, at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::randint(high, size, generator, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_randint_low(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::randint(low, high, size, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANDINT_LOW, low, high, size, dtype, layout, device, pin_memory);
+at::Tensor wrap_randint_low(int64_t low, int64_t high, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::randint(low, high, size, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_randint_low_generator(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::randint(low, high, size, generator, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANDINT_LOW_GENERATOR, low, high, size, generator, dtype, layout, device, pin_memory);
+at::Tensor wrap_randint_low_generator(int64_t low, int64_t high, at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::randint(low, high, size, generator, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_randint_out(args...) {
+at::Tensor & wrap_randint_out(int64_t high, at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::randint(out, high, size);
@@ -5267,7 +4914,7 @@ Tensor wrap_randint_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RANDINT_OUT, out, high, size);
 }
 
-Tensor wrap_randint_generator_out(args...) {
+at::Tensor & wrap_randint_generator_out(int64_t high, at::IntArrayRef size, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::randint(out, high, size, generator);
@@ -5275,7 +4922,7 @@ Tensor wrap_randint_generator_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RANDINT_GENERATOR_OUT, out, high, size, generator);
 }
 
-Tensor wrap_randint_low_out(args...) {
+at::Tensor & wrap_randint_low_out(int64_t low, int64_t high, at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::randint(out, low, high, size);
@@ -5283,7 +4930,7 @@ Tensor wrap_randint_low_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RANDINT_LOW_OUT, out, low, high, size);
 }
 
-Tensor wrap_randint_low_generator_out(args...) {
+at::Tensor & wrap_randint_low_generator_out(int64_t low, int64_t high, at::IntArrayRef size, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::randint(out, low, high, size, generator);
@@ -5291,7 +4938,7 @@ Tensor wrap_randint_low_generator_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RANDINT_LOW_GENERATOR_OUT, out, low, high, size, generator);
 }
 
-Tensor wrap_randint_like(args...) {
+at::Tensor wrap_randint_like(const at::Tensor & self, int64_t high, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::randint_like(self, high, dtype, layout, device, pin_memory, memory_format);
@@ -5299,7 +4946,7 @@ Tensor wrap_randint_like(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RANDINT_LIKE, self, high, dtype, layout, device, pin_memory, memory_format);
 }
 
-Tensor wrap_randint_like_low_dtype(args...) {
+at::Tensor wrap_randint_like_low_dtype(const at::Tensor & self, int64_t low, int64_t high, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::randint_like(self, low, high, dtype, layout, device, pin_memory, memory_format);
@@ -5307,39 +4954,31 @@ Tensor wrap_randint_like_low_dtype(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RANDINT_LIKE_LOW_DTYPE, self, low, high, dtype, layout, device, pin_memory, memory_format);
 }
 
-Tensor wrap_randn(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::randn(size, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANDN, size, dtype, layout, device, pin_memory);
+at::Tensor wrap_randn(at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::randn(size, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_randn_generator(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::randn(size, generator, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANDN_GENERATOR, size, generator, dtype, layout, device, pin_memory);
+at::Tensor wrap_randn_generator(at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::randn(size, generator, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_randn_names(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::randn(size, names, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANDN_NAMES, size, names, dtype, layout, device, pin_memory);
+at::Tensor wrap_randn_names(at::IntArrayRef size, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::randn(size, names, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_randn_generator_with_names(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::randn(size, generator, names, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANDN_GENERATOR_WITH_NAMES, size, generator, names, dtype, layout, device, pin_memory);
+at::Tensor wrap_randn_generator_with_names(at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::randn(size, generator, names, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_randn_out(args...) {
+at::Tensor & wrap_randn_out(at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::randn(out, size);
@@ -5347,7 +4986,7 @@ Tensor wrap_randn_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RANDN_OUT, out, size);
 }
 
-Tensor wrap_randn_generator_out(args...) {
+at::Tensor & wrap_randn_generator_out(at::IntArrayRef size, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::randn(out, size, generator);
@@ -5355,7 +4994,7 @@ Tensor wrap_randn_generator_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RANDN_GENERATOR_OUT, out, size, generator);
 }
 
-Tensor wrap_randn_like(args...) {
+at::Tensor wrap_randn_like(const at::Tensor & self, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::randn_like(self, dtype, layout, device, pin_memory, memory_format);
@@ -5363,23 +5002,19 @@ Tensor wrap_randn_like(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RANDN_LIKE, self, dtype, layout, device, pin_memory, memory_format);
 }
 
-Tensor wrap_randperm(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::randperm(n, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANDPERM, n, dtype, layout, device, pin_memory);
+at::Tensor wrap_randperm(int64_t n, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::randperm(n, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_randperm_generator(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::randperm(n, generator, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANDPERM_GENERATOR, n, generator, dtype, layout, device, pin_memory);
+at::Tensor wrap_randperm_generator(int64_t n, c10::optional<at::Generator> generator, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::randperm(n, generator, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_randperm_out(args...) {
+at::Tensor & wrap_randperm_out(int64_t n, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::randperm(out, n);
@@ -5387,7 +5022,7 @@ Tensor wrap_randperm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RANDPERM_OUT, out, n);
 }
 
-Tensor wrap_randperm_generator_out(args...) {
+at::Tensor & wrap_randperm_generator_out(int64_t n, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::randperm(out, n, generator);
@@ -5395,23 +5030,19 @@ Tensor wrap_randperm_generator_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RANDPERM_GENERATOR_OUT, out, n, generator);
 }
 
-Tensor wrap_range_step(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::range(start, end, step, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANGE_STEP, start, end, step, dtype, layout, device, pin_memory);
+at::Tensor wrap_range_step(const at::Scalar & start, const at::Scalar & end, const at::Scalar & step, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::range(start, end, step, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_range(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::range(start, end, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_RANGE, start, end, dtype, layout, device, pin_memory);
+at::Tensor wrap_range(const at::Scalar & start, const at::Scalar & end, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::range(start, end, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_range_out(args...) {
+at::Tensor & wrap_range_out(const at::Scalar & start, const at::Scalar & end, const at::Scalar & step, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::range(out, start, end, step);
@@ -5419,7 +5050,7 @@ Tensor wrap_range_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RANGE_OUT, out, start, end, step);
 }
 
-Tensor wrap_ravel(args...) {
+at::Tensor wrap_ravel(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::ravel(self);
@@ -5427,7 +5058,7 @@ Tensor wrap_ravel(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RAVEL, self);
 }
 
-Tensor wrap_reciprocal_out(args...) {
+at::Tensor & wrap_reciprocal_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::reciprocal(out, self);
@@ -5435,7 +5066,7 @@ Tensor wrap_reciprocal_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RECIPROCAL_OUT, out, self);
 }
 
-Tensor wrap_neg(args...) {
+at::Tensor wrap_neg(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::neg(self);
@@ -5443,7 +5074,7 @@ Tensor wrap_neg(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NEG, self);
 }
 
-Tensor wrap_neg_(args...) {
+at::Tensor & wrap_neg_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::neg_(self);
@@ -5451,7 +5082,7 @@ Tensor wrap_neg_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NEG_, self);
 }
 
-Tensor wrap_neg_out(args...) {
+at::Tensor & wrap_neg_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::neg(out, self);
@@ -5459,7 +5090,7 @@ Tensor wrap_neg_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NEG_OUT, out, self);
 }
 
-Tensor wrap_negative(args...) {
+at::Tensor wrap_negative(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::negative(self);
@@ -5467,7 +5098,7 @@ Tensor wrap_negative(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NEGATIVE, self);
 }
 
-Tensor wrap_negative_(args...) {
+at::Tensor & wrap_negative_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::negative_(self);
@@ -5475,7 +5106,7 @@ Tensor wrap_negative_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NEGATIVE_, self);
 }
 
-Tensor wrap_negative_out(args...) {
+at::Tensor & wrap_negative_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::negative(out, self);
@@ -5483,7 +5114,7 @@ Tensor wrap_negative_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NEGATIVE_OUT, out, self);
 }
 
-Tensor wrap_repeat(args...) {
+at::Tensor wrap_repeat(const at::Tensor & self, at::IntArrayRef repeats) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::repeat(self, repeats);
@@ -5491,7 +5122,7 @@ Tensor wrap_repeat(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_REPEAT, self, repeats);
 }
 
-Tensor wrap_repeat_interleave_Tensor(args...) {
+at::Tensor wrap_repeat_interleave_Tensor(const at::Tensor & repeats) {
   if (trace.is_flushing()) {
     ensure_materialized(repeats);
     return at::redispatch::repeat_interleave(repeats);
@@ -5499,7 +5130,7 @@ Tensor wrap_repeat_interleave_Tensor(args...) {
   return MK_TORCHY(repeats.dtype(), repeats.device(), H_REPEAT_INTERLEAVE_TENSOR, repeats);
 }
 
-Tensor wrap_repeat_interleave_self_Tensor(args...) {
+at::Tensor wrap_repeat_interleave_self_Tensor(const at::Tensor & self, const at::Tensor & repeats, c10::optional<int64_t> dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self, repeats);
     return at::redispatch::repeat_interleave(self, repeats, dim);
@@ -5507,7 +5138,7 @@ Tensor wrap_repeat_interleave_self_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_REPEAT_INTERLEAVE_SELF_TENSOR, self, repeats, dim);
 }
 
-Tensor wrap_repeat_interleave_self_int(args...) {
+at::Tensor wrap_repeat_interleave_self_int(const at::Tensor & self, int64_t repeats, c10::optional<int64_t> dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::repeat_interleave(self, repeats, dim);
@@ -5515,7 +5146,7 @@ Tensor wrap_repeat_interleave_self_int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_REPEAT_INTERLEAVE_SELF_INT, self, repeats, dim);
 }
 
-Tensor wrap_reshape(args...) {
+at::Tensor wrap_reshape(const at::Tensor & self, at::IntArrayRef shape) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::reshape(self, shape);
@@ -5523,7 +5154,7 @@ Tensor wrap_reshape(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RESHAPE, self, shape);
 }
 
-Tensor wrap__mkldnn_reshape(args...) {
+at::Tensor wrap__mkldnn_reshape(const at::Tensor & self, at::IntArrayRef shape) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_mkldnn_reshape(self, shape);
@@ -5531,7 +5162,7 @@ Tensor wrap__mkldnn_reshape(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__MKLDNN_RESHAPE, self, shape);
 }
 
-Tensor wrap_reshape_as(args...) {
+at::Tensor wrap_reshape_as(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::reshape_as(self, other);
@@ -5539,7 +5170,7 @@ Tensor wrap_reshape_as(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RESHAPE_AS, self, other);
 }
 
-Tensor wrap_round(args...) {
+at::Tensor wrap_round(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::round(self);
@@ -5547,7 +5178,7 @@ Tensor wrap_round(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ROUND, self);
 }
 
-Tensor wrap_round_(args...) {
+at::Tensor & wrap_round_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::round_(self);
@@ -5555,7 +5186,7 @@ Tensor wrap_round_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ROUND_, self);
 }
 
-Tensor wrap_round_out(args...) {
+at::Tensor & wrap_round_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::round(out, self);
@@ -5563,7 +5194,7 @@ Tensor wrap_round_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ROUND_OUT, out, self);
 }
 
-Tensor wrap_rrelu(args...) {
+at::Tensor wrap_rrelu(const at::Tensor & self, const at::Scalar & lower, const at::Scalar & upper, bool training, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::rrelu(self, lower, upper, training, generator);
@@ -5571,7 +5202,7 @@ Tensor wrap_rrelu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RRELU, self, lower, upper, training, generator);
 }
 
-Tensor wrap_rrelu_(args...) {
+at::Tensor & wrap_rrelu_(at::Tensor & self, const at::Scalar & lower, const at::Scalar & upper, bool training, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::rrelu_(self, lower, upper, training, generator);
@@ -5579,7 +5210,7 @@ Tensor wrap_rrelu_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RRELU_, self, lower, upper, training, generator);
 }
 
-Tensor wrap_relu(args...) {
+at::Tensor wrap_relu(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::relu(self);
@@ -5587,7 +5218,7 @@ Tensor wrap_relu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RELU, self);
 }
 
-Tensor wrap_relu_(args...) {
+at::Tensor & wrap_relu_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::relu_(self);
@@ -5595,7 +5226,7 @@ Tensor wrap_relu_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RELU_, self);
 }
 
-Tensor wrap_relu6(args...) {
+at::Tensor wrap_relu6(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::relu6(self);
@@ -5603,7 +5234,7 @@ Tensor wrap_relu6(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RELU6, self);
 }
 
-Tensor wrap_relu6_(args...) {
+at::Tensor & wrap_relu6_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::relu6_(self);
@@ -5611,7 +5242,7 @@ Tensor wrap_relu6_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RELU6_, self);
 }
 
-Tensor wrap_prelu(args...) {
+at::Tensor wrap_prelu(const at::Tensor & self, const at::Tensor & weight) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::prelu(self, weight);
@@ -5619,15 +5250,12 @@ Tensor wrap_prelu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PRELU, self, weight);
 }
 
-Tensor wrap_prelu_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self, weight);
-    return at::redispatch::prelu_backward(grad_output, self, weight);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_PRELU_BACKWARD, grad_output, self, weight);
+std::tuple<at::Tensor,at::Tensor> wrap_prelu_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight) {
+  ensure_materialized(grad_output, self, weight);
+  return at::redispatch::prelu_backward(grad_output, self, weight);
 }
 
-Tensor wrap_gelu(args...) {
+at::Tensor wrap_gelu(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::gelu(self);
@@ -5635,7 +5263,7 @@ Tensor wrap_gelu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GELU, self);
 }
 
-Tensor wrap_gelu_backward(args...) {
+at::Tensor wrap_gelu_backward(const at::Tensor & grad, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, self);
     return at::redispatch::gelu_backward(grad, self);
@@ -5643,7 +5271,7 @@ Tensor wrap_gelu_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_GELU_BACKWARD, grad, self);
 }
 
-Tensor wrap_infinitely_differentiable_gelu_backward(args...) {
+at::Tensor wrap_infinitely_differentiable_gelu_backward(const at::Tensor & grad, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, self);
     return at::redispatch::infinitely_differentiable_gelu_backward(grad, self);
@@ -5651,7 +5279,7 @@ Tensor wrap_infinitely_differentiable_gelu_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_INFINITELY_DIFFERENTIABLE_GELU_BACKWARD, grad, self);
 }
 
-Tensor wrap_hardshrink(args...) {
+at::Tensor wrap_hardshrink(const at::Tensor & self, const at::Scalar & lambd) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::hardshrink(self, lambd);
@@ -5659,7 +5287,7 @@ Tensor wrap_hardshrink(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HARDSHRINK, self, lambd);
 }
 
-Tensor wrap_hardshrink_backward(args...) {
+at::Tensor wrap_hardshrink_backward(const at::Tensor & grad_out, const at::Tensor & self, const at::Scalar & lambd) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_out, self);
     return at::redispatch::hardshrink_backward(grad_out, self, lambd);
@@ -5667,7 +5295,7 @@ Tensor wrap_hardshrink_backward(args...) {
   return MK_TORCHY(grad_out.dtype(), grad_out.device(), H_HARDSHRINK_BACKWARD, grad_out, self, lambd);
 }
 
-Tensor wrap_rsqrt(args...) {
+at::Tensor wrap_rsqrt(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::rsqrt(self);
@@ -5675,7 +5303,7 @@ Tensor wrap_rsqrt(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RSQRT, self);
 }
 
-Tensor wrap_rsqrt_(args...) {
+at::Tensor & wrap_rsqrt_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::rsqrt_(self);
@@ -5683,7 +5311,7 @@ Tensor wrap_rsqrt_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RSQRT_, self);
 }
 
-Tensor wrap_rsqrt_out(args...) {
+at::Tensor & wrap_rsqrt_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::rsqrt(out, self);
@@ -5691,7 +5319,7 @@ Tensor wrap_rsqrt_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RSQRT_OUT, out, self);
 }
 
-Tensor wrap_select_Dimname(args...) {
+at::Tensor wrap_select_Dimname(const at::Tensor & self, at::Dimname dim, int64_t index) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::select(self, dim, index);
@@ -5699,7 +5327,7 @@ Tensor wrap_select_Dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SELECT_DIMNAME, self, dim, index);
 }
 
-Tensor wrap_select_int(args...) {
+at::Tensor wrap_select_int(const at::Tensor & self, int64_t dim, int64_t index) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::select(self, dim, index);
@@ -5707,7 +5335,7 @@ Tensor wrap_select_int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SELECT_INT, self, dim, index);
 }
 
-Tensor wrap_select_backward(args...) {
+at::Tensor wrap_select_backward(const at::Tensor & grad, at::IntArrayRef input_sizes, int64_t dim, int64_t index) {
   if (trace.is_flushing()) {
     ensure_materialized(grad);
     return at::redispatch::select_backward(grad, input_sizes, dim, index);
@@ -5715,7 +5343,7 @@ Tensor wrap_select_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_SELECT_BACKWARD, grad, input_sizes, dim, index);
 }
 
-Tensor wrap_selu(args...) {
+at::Tensor wrap_selu(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::selu(self);
@@ -5723,7 +5351,7 @@ Tensor wrap_selu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SELU, self);
 }
 
-Tensor wrap_selu_(args...) {
+at::Tensor & wrap_selu_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::selu_(self);
@@ -5731,7 +5359,7 @@ Tensor wrap_selu_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SELU_, self);
 }
 
-Tensor wrap_celu(args...) {
+at::Tensor wrap_celu(const at::Tensor & self, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::celu(self, alpha);
@@ -5739,7 +5367,7 @@ Tensor wrap_celu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CELU, self, alpha);
 }
 
-Tensor wrap_celu_(args...) {
+at::Tensor & wrap_celu_(at::Tensor & self, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::celu_(self, alpha);
@@ -5747,7 +5375,7 @@ Tensor wrap_celu_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CELU_, self, alpha);
 }
 
-Tensor wrap_silu(args...) {
+at::Tensor wrap_silu(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::silu(self);
@@ -5755,7 +5383,7 @@ Tensor wrap_silu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SILU, self);
 }
 
-Tensor wrap_silu_(args...) {
+at::Tensor & wrap_silu_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::silu_(self);
@@ -5763,7 +5391,7 @@ Tensor wrap_silu_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SILU_, self);
 }
 
-Tensor wrap_silu_out(args...) {
+at::Tensor & wrap_silu_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::silu(out, self);
@@ -5771,7 +5399,7 @@ Tensor wrap_silu_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SILU_OUT, out, self);
 }
 
-Tensor wrap_silu_backward(args...) {
+at::Tensor wrap_silu_backward(const at::Tensor & grad_output, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::silu_backward(grad_output, self);
@@ -5779,7 +5407,7 @@ Tensor wrap_silu_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_SILU_BACKWARD, grad_output, self);
 }
 
-Tensor wrap_sigmoid(args...) {
+at::Tensor wrap_sigmoid(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sigmoid(self);
@@ -5787,7 +5415,7 @@ Tensor wrap_sigmoid(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SIGMOID, self);
 }
 
-Tensor wrap_sigmoid_(args...) {
+at::Tensor & wrap_sigmoid_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sigmoid_(self);
@@ -5795,7 +5423,7 @@ Tensor wrap_sigmoid_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SIGMOID_, self);
 }
 
-Tensor wrap_sigmoid_out(args...) {
+at::Tensor & wrap_sigmoid_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::sigmoid(out, self);
@@ -5803,7 +5431,7 @@ Tensor wrap_sigmoid_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SIGMOID_OUT, out, self);
 }
 
-Tensor wrap_logit(args...) {
+at::Tensor wrap_logit(const at::Tensor & self, c10::optional<double> eps) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::logit(self, eps);
@@ -5811,7 +5439,7 @@ Tensor wrap_logit(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGIT, self, eps);
 }
 
-Tensor wrap_logit_(args...) {
+at::Tensor & wrap_logit_(at::Tensor & self, c10::optional<double> eps) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::logit_(self, eps);
@@ -5819,7 +5447,7 @@ Tensor wrap_logit_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOGIT_, self, eps);
 }
 
-Tensor wrap_logit_out(args...) {
+at::Tensor & wrap_logit_out(const at::Tensor & self, c10::optional<double> eps, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::logit(out, self, eps);
@@ -5827,7 +5455,7 @@ Tensor wrap_logit_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOGIT_OUT, out, self, eps);
 }
 
-Tensor wrap_sin_out(args...) {
+at::Tensor & wrap_sin_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::sin(out, self);
@@ -5835,7 +5463,7 @@ Tensor wrap_sin_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SIN_OUT, out, self);
 }
 
-Tensor wrap_sinc_out(args...) {
+at::Tensor & wrap_sinc_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::sinc(out, self);
@@ -5843,7 +5471,7 @@ Tensor wrap_sinc_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SINC_OUT, out, self);
 }
 
-Tensor wrap_sinh_out(args...) {
+at::Tensor & wrap_sinh_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::sinh(out, self);
@@ -5851,7 +5479,7 @@ Tensor wrap_sinh_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SINH_OUT, out, self);
 }
 
-Tensor wrap_detach(args...) {
+at::Tensor wrap_detach(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::detach(self);
@@ -5859,7 +5487,7 @@ Tensor wrap_detach(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DETACH, self);
 }
 
-Tensor wrap_detach_(args...) {
+at::Tensor & wrap_detach_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::detach_(self);
@@ -5867,12 +5495,12 @@ Tensor wrap_detach_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DETACH_, self);
 }
 
-int wrap_size_Dimname(args...) {
+int64_t wrap_size_Dimname(const at::Tensor & self, at::Dimname dim) {
   ensure_materialized(self);
   return at::redispatch::size(self, dim);
 }
 
-Tensor wrap_slice_Tensor(args...) {
+at::Tensor wrap_slice_Tensor(const at::Tensor & self, int64_t dim, c10::optional<int64_t> start, c10::optional<int64_t> end, int64_t step) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::slice(self, dim, start, end, step);
@@ -5880,7 +5508,7 @@ Tensor wrap_slice_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SLICE_TENSOR, self, dim, start, end, step);
 }
 
-Tensor wrap_slice_backward(args...) {
+at::Tensor wrap_slice_backward(const at::Tensor & grad, at::IntArrayRef input_sizes, int64_t dim, int64_t start, int64_t end, int64_t step) {
   if (trace.is_flushing()) {
     ensure_materialized(grad);
     return at::redispatch::slice_backward(grad, input_sizes, dim, start, end, step);
@@ -5888,15 +5516,12 @@ Tensor wrap_slice_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_SLICE_BACKWARD, grad, input_sizes, dim, start, end, step);
 }
 
-Tensor wrap_slogdet(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::slogdet(self);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_SLOGDET, self);
+std::tuple<at::Tensor,at::Tensor> wrap_slogdet(const at::Tensor & self) {
+  ensure_materialized(self);
+  return at::redispatch::slogdet(self);
 }
 
-Tensor wrap_smm(args...) {
+at::Tensor wrap_smm(const at::Tensor & self, const at::Tensor & mat2) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mat2);
     return at::redispatch::smm(self, mat2);
@@ -5904,7 +5529,7 @@ Tensor wrap_smm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SMM, self, mat2);
 }
 
-Tensor wrap_softmax_int(args...) {
+at::Tensor wrap_softmax_int(const at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::softmax(self, dim, dtype);
@@ -5912,7 +5537,7 @@ Tensor wrap_softmax_int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SOFTMAX_INT, self, dim, dtype);
 }
 
-Tensor wrap_softmax_Dimname(args...) {
+at::Tensor wrap_softmax_Dimname(const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::softmax(self, dim, dtype);
@@ -5920,7 +5545,7 @@ Tensor wrap_softmax_Dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SOFTMAX_DIMNAME, self, dim, dtype);
 }
 
-Tensor wrap__softmax(args...) {
+at::Tensor wrap__softmax(const at::Tensor & self, int64_t dim, bool half_to_float) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_softmax(self, dim, half_to_float);
@@ -5928,7 +5553,7 @@ Tensor wrap__softmax(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SOFTMAX, self, dim, half_to_float);
 }
 
-Tensor wrap__softmax_backward_data(args...) {
+at::Tensor wrap__softmax_backward_data(const at::Tensor & grad_output, const at::Tensor & output, int64_t dim, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, output, self);
     return at::redispatch::_softmax_backward_data(grad_output, output, dim, self);
@@ -5936,27 +5561,27 @@ Tensor wrap__softmax_backward_data(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H__SOFTMAX_BACKWARD_DATA, grad_output, output, dim, self);
 }
 
-Tensor[] wrap_unsafe_split_Tensor(args...) {
+std::vector<at::Tensor> wrap_unsafe_split_Tensor(const at::Tensor & self, int64_t split_size, int64_t dim) {
   ensure_materialized(self);
   return at::redispatch::unsafe_split(self, split_size, dim);
 }
 
-Tensor[] wrap_split_Tensor(args...) {
+std::vector<at::Tensor> wrap_split_Tensor(const at::Tensor & self, int64_t split_size, int64_t dim) {
   ensure_materialized(self);
   return at::redispatch::split(self, split_size, dim);
 }
 
-Tensor[] wrap_unsafe_split_with_sizes(args...) {
+std::vector<at::Tensor> wrap_unsafe_split_with_sizes(const at::Tensor & self, at::IntArrayRef split_sizes, int64_t dim) {
   ensure_materialized(self);
   return at::redispatch::unsafe_split_with_sizes(self, split_sizes, dim);
 }
 
-Tensor[] wrap_split_with_sizes(args...) {
+std::vector<at::Tensor> wrap_split_with_sizes(const at::Tensor & self, at::IntArrayRef split_sizes, int64_t dim) {
   ensure_materialized(self);
   return at::redispatch::split_with_sizes(self, split_sizes, dim);
 }
 
-Tensor wrap_squeeze(args...) {
+at::Tensor wrap_squeeze(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::squeeze(self);
@@ -5964,7 +5589,7 @@ Tensor wrap_squeeze(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SQUEEZE, self);
 }
 
-Tensor wrap_squeeze_dim(args...) {
+at::Tensor wrap_squeeze_dim(const at::Tensor & self, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::squeeze(self, dim);
@@ -5972,7 +5597,7 @@ Tensor wrap_squeeze_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SQUEEZE_DIM, self, dim);
 }
 
-Tensor wrap_squeeze_dimname(args...) {
+at::Tensor wrap_squeeze_dimname(const at::Tensor & self, at::Dimname dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::squeeze(self, dim);
@@ -5980,7 +5605,7 @@ Tensor wrap_squeeze_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SQUEEZE_DIMNAME, self, dim);
 }
 
-Tensor wrap_squeeze_(args...) {
+at::Tensor & wrap_squeeze_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::squeeze_(self);
@@ -5988,7 +5613,7 @@ Tensor wrap_squeeze_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SQUEEZE_, self);
 }
 
-Tensor wrap_squeeze__dim(args...) {
+at::Tensor & wrap_squeeze__dim(at::Tensor & self, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::squeeze_(self, dim);
@@ -5996,7 +5621,7 @@ Tensor wrap_squeeze__dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SQUEEZE__DIM, self, dim);
 }
 
-Tensor wrap_squeeze__dimname(args...) {
+at::Tensor & wrap_squeeze__dimname(at::Tensor & self, at::Dimname dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::squeeze_(self, dim);
@@ -6004,7 +5629,7 @@ Tensor wrap_squeeze__dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SQUEEZE__DIMNAME, self, dim);
 }
 
-Tensor wrap_sspaddmm(args...) {
+at::Tensor wrap_sspaddmm(const at::Tensor & self, const at::Tensor & mat1, const at::Tensor & mat2, const at::Scalar & beta, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mat1, mat2);
     return at::redispatch::sspaddmm(self, mat1, mat2, beta, alpha);
@@ -6012,7 +5637,7 @@ Tensor wrap_sspaddmm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SSPADDMM, self, mat1, mat2, beta, alpha);
 }
 
-Tensor wrap_sspaddmm_out(args...) {
+at::Tensor & wrap_sspaddmm_out(const at::Tensor & self, const at::Tensor & mat1, const at::Tensor & mat2, const at::Scalar & beta, const at::Scalar & alpha, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, mat1, mat2);
     return at::redispatch::sspaddmm(out, self, mat1, mat2, beta, alpha);
@@ -6020,15 +5645,13 @@ Tensor wrap_sspaddmm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SSPADDMM_OUT, out, self, mat1, mat2, beta, alpha);
 }
 
-Tensor wrap_stack(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::stack(tensors, dim);
-  }
-  return MK_TORCHY(None, None, H_STACK, tensors, dim);
+at::Tensor wrap_stack(at::TensorList tensors, int64_t dim) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::stack(tensors, dim));
 }
 
-Tensor wrap_stack_out(args...) {
+at::Tensor & wrap_stack_out(at::TensorList tensors, int64_t dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::stack(out, tensors, dim);
@@ -6036,15 +5659,13 @@ Tensor wrap_stack_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_STACK_OUT, out, tensors, dim);
 }
 
-Tensor wrap__stack(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::_stack(tensors, dim);
-  }
-  return MK_TORCHY(None, None, H__STACK, tensors, dim);
+at::Tensor wrap__stack(at::TensorList tensors, int64_t dim) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::_stack(tensors, dim));
 }
 
-Tensor wrap__stack_out(args...) {
+at::Tensor & wrap__stack_out(at::TensorList tensors, int64_t dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::_stack(out, tensors, dim);
@@ -6052,15 +5673,13 @@ Tensor wrap__stack_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H__STACK_OUT, out, tensors, dim);
 }
 
-Tensor wrap_hstack(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::hstack(tensors);
-  }
-  return MK_TORCHY(None, None, H_HSTACK, tensors);
+at::Tensor wrap_hstack(at::TensorList tensors) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::hstack(tensors));
 }
 
-Tensor wrap_hstack_out(args...) {
+at::Tensor & wrap_hstack_out(at::TensorList tensors, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::hstack(out, tensors);
@@ -6068,15 +5687,13 @@ Tensor wrap_hstack_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_HSTACK_OUT, out, tensors);
 }
 
-Tensor wrap_vstack(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::vstack(tensors);
-  }
-  return MK_TORCHY(None, None, H_VSTACK, tensors);
+at::Tensor wrap_vstack(at::TensorList tensors) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::vstack(tensors));
 }
 
-Tensor wrap_vstack_out(args...) {
+at::Tensor & wrap_vstack_out(at::TensorList tensors, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::vstack(out, tensors);
@@ -6084,15 +5701,13 @@ Tensor wrap_vstack_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_VSTACK_OUT, out, tensors);
 }
 
-Tensor wrap_dstack(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::dstack(tensors);
-  }
-  return MK_TORCHY(None, None, H_DSTACK, tensors);
+at::Tensor wrap_dstack(at::TensorList tensors) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::dstack(tensors));
 }
 
-Tensor wrap_dstack_out(args...) {
+at::Tensor & wrap_dstack_out(at::TensorList tensors, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::dstack(out, tensors);
@@ -6100,7 +5715,7 @@ Tensor wrap_dstack_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_DSTACK_OUT, out, tensors);
 }
 
-Tensor wrap_stft(args...) {
+at::Tensor wrap_stft(const at::Tensor & self, int64_t n_fft, c10::optional<int64_t> hop_length, c10::optional<int64_t> win_length, const c10::optional<at::Tensor> & window, bool normalized, c10::optional<bool> onesided, c10::optional<bool> return_complex) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::stft(self, n_fft, hop_length, win_length, window, normalized, onesided, return_complex);
@@ -6108,7 +5723,7 @@ Tensor wrap_stft(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_STFT, self, n_fft, hop_length, win_length, window, normalized, onesided, return_complex);
 }
 
-Tensor wrap_istft(args...) {
+at::Tensor wrap_istft(const at::Tensor & self, int64_t n_fft, c10::optional<int64_t> hop_length, c10::optional<int64_t> win_length, const c10::optional<at::Tensor> & window, bool center, bool normalized, c10::optional<bool> onesided, c10::optional<int64_t> length, bool return_complex) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::istft(self, n_fft, hop_length, win_length, window, center, normalized, onesided, length, return_complex);
@@ -6116,12 +5731,12 @@ Tensor wrap_istft(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ISTFT, self, n_fft, hop_length, win_length, window, center, normalized, onesided, length, return_complex);
 }
 
-int wrap_stride_Dimname(args...) {
+int64_t wrap_stride_Dimname(const at::Tensor & self, at::Dimname dim) {
   ensure_materialized(self);
   return at::redispatch::stride(self, dim);
 }
 
-Tensor wrap_sum(args...) {
+at::Tensor wrap_sum(const at::Tensor & self, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sum(self, dtype);
@@ -6129,7 +5744,7 @@ Tensor wrap_sum(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUM, self, dtype);
 }
 
-Tensor wrap_sum_dim_IntList(args...) {
+at::Tensor wrap_sum_dim_IntList(const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sum(self, dim, keepdim, dtype);
@@ -6137,7 +5752,7 @@ Tensor wrap_sum_dim_IntList(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUM_DIM_INTLIST, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_sum_dim_DimnameList(args...) {
+at::Tensor wrap_sum_dim_DimnameList(const at::Tensor & self, at::DimnameList dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sum(self, dim, keepdim, dtype);
@@ -6145,7 +5760,7 @@ Tensor wrap_sum_dim_DimnameList(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUM_DIM_DIMNAMELIST, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_sum_IntList_out(args...) {
+at::Tensor & wrap_sum_IntList_out(const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::sum(out, self, dim, keepdim, dtype);
@@ -6153,7 +5768,7 @@ Tensor wrap_sum_IntList_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SUM_INTLIST_OUT, out, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_sum_DimnameList_out(args...) {
+at::Tensor & wrap_sum_DimnameList_out(const at::Tensor & self, at::DimnameList dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::sum(out, self, dim, keepdim, dtype);
@@ -6161,7 +5776,7 @@ Tensor wrap_sum_DimnameList_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SUM_DIMNAMELIST_OUT, out, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_nansum(args...) {
+at::Tensor wrap_nansum(const at::Tensor & self, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::nansum(self, dtype);
@@ -6169,7 +5784,7 @@ Tensor wrap_nansum(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NANSUM, self, dtype);
 }
 
-Tensor wrap_nansum_dim_IntList(args...) {
+at::Tensor wrap_nansum_dim_IntList(const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::nansum(self, dim, keepdim, dtype);
@@ -6177,7 +5792,7 @@ Tensor wrap_nansum_dim_IntList(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NANSUM_DIM_INTLIST, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_nansum_IntList_out(args...) {
+at::Tensor & wrap_nansum_IntList_out(const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::nansum(out, self, dim, keepdim, dtype);
@@ -6185,7 +5800,7 @@ Tensor wrap_nansum_IntList_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NANSUM_INTLIST_OUT, out, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_sum_to_size(args...) {
+at::Tensor wrap_sum_to_size(const at::Tensor & self, at::IntArrayRef size) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sum_to_size(self, size);
@@ -6193,7 +5808,7 @@ Tensor wrap_sum_to_size(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUM_TO_SIZE, self, size);
 }
 
-Tensor wrap_sqrt(args...) {
+at::Tensor wrap_sqrt(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sqrt(self);
@@ -6201,7 +5816,7 @@ Tensor wrap_sqrt(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SQRT, self);
 }
 
-Tensor wrap_sqrt_out(args...) {
+at::Tensor & wrap_sqrt_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::sqrt(out, self);
@@ -6209,7 +5824,7 @@ Tensor wrap_sqrt_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SQRT_OUT, out, self);
 }
 
-Tensor wrap_square(args...) {
+at::Tensor wrap_square(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::square(self);
@@ -6217,7 +5832,7 @@ Tensor wrap_square(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SQUARE, self);
 }
 
-Tensor wrap_square_(args...) {
+at::Tensor & wrap_square_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::square_(self);
@@ -6225,7 +5840,7 @@ Tensor wrap_square_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SQUARE_, self);
 }
 
-Tensor wrap_square_out(args...) {
+at::Tensor & wrap_square_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::square(out, self);
@@ -6233,7 +5848,7 @@ Tensor wrap_square_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SQUARE_OUT, out, self);
 }
 
-Tensor wrap_std(args...) {
+at::Tensor wrap_std(const at::Tensor & self, bool unbiased) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::std(self, unbiased);
@@ -6241,7 +5856,7 @@ Tensor wrap_std(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_STD, self, unbiased);
 }
 
-Tensor wrap_std_dim(args...) {
+at::Tensor wrap_std_dim(const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::std(self, dim, unbiased, keepdim);
@@ -6249,31 +5864,22 @@ Tensor wrap_std_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_STD_DIM, self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_std_mean(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::std_mean(self, unbiased);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_STD_MEAN, self, unbiased);
+std::tuple<at::Tensor,at::Tensor> wrap_std_mean(const at::Tensor & self, bool unbiased) {
+  ensure_materialized(self);
+  return at::redispatch::std_mean(self, unbiased);
 }
 
-Tensor wrap_std_mean_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::std_mean(self, dim, unbiased, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_STD_MEAN_DIM, self, dim, unbiased, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_std_mean_dim(const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::std_mean(self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_std_mean_names_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::std_mean(self, dim, unbiased, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_STD_MEAN_NAMES_DIM, self, dim, unbiased, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_std_mean_names_dim(const at::Tensor & self, at::DimnameList dim, bool unbiased, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::std_mean(self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_std_out(args...) {
+at::Tensor & wrap_std_out(const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::std(out, self, dim, unbiased, keepdim);
@@ -6281,7 +5887,7 @@ Tensor wrap_std_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_STD_OUT, out, self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_std_names_dim(args...) {
+at::Tensor wrap_std_names_dim(const at::Tensor & self, at::DimnameList dim, bool unbiased, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::std(self, dim, unbiased, keepdim);
@@ -6289,7 +5895,7 @@ Tensor wrap_std_names_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_STD_NAMES_DIM, self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_std_names_out(args...) {
+at::Tensor & wrap_std_names_out(const at::Tensor & self, at::DimnameList dim, bool unbiased, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::std(out, self, dim, unbiased, keepdim);
@@ -6297,7 +5903,7 @@ Tensor wrap_std_names_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_STD_NAMES_OUT, out, self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_prod(args...) {
+at::Tensor wrap_prod(const at::Tensor & self, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::prod(self, dtype);
@@ -6305,7 +5911,7 @@ Tensor wrap_prod(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PROD, self, dtype);
 }
 
-Tensor wrap_prod_dim_int(args...) {
+at::Tensor wrap_prod_dim_int(const at::Tensor & self, int64_t dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::prod(self, dim, keepdim, dtype);
@@ -6313,7 +5919,7 @@ Tensor wrap_prod_dim_int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PROD_DIM_INT, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_prod_int_out(args...) {
+at::Tensor & wrap_prod_int_out(const at::Tensor & self, int64_t dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::prod(out, self, dim, keepdim, dtype);
@@ -6321,7 +5927,7 @@ Tensor wrap_prod_int_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_PROD_INT_OUT, out, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_prod_dim_Dimname(args...) {
+at::Tensor wrap_prod_dim_Dimname(const at::Tensor & self, at::Dimname dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::prod(self, dim, keepdim, dtype);
@@ -6329,7 +5935,7 @@ Tensor wrap_prod_dim_Dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PROD_DIM_DIMNAME, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_prod_Dimname_out(args...) {
+at::Tensor & wrap_prod_Dimname_out(const at::Tensor & self, at::Dimname dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::prod(out, self, dim, keepdim, dtype);
@@ -6337,7 +5943,7 @@ Tensor wrap_prod_Dimname_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_PROD_DIMNAME_OUT, out, self, dim, keepdim, dtype);
 }
 
-Tensor wrap_t(args...) {
+at::Tensor wrap_t(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::t(self);
@@ -6345,7 +5951,7 @@ Tensor wrap_t(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_T, self);
 }
 
-Tensor wrap_t_(args...) {
+at::Tensor & wrap_t_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::t_(self);
@@ -6353,7 +5959,7 @@ Tensor wrap_t_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_T_, self);
 }
 
-Tensor wrap_tan_out(args...) {
+at::Tensor & wrap_tan_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::tan(out, self);
@@ -6361,7 +5967,7 @@ Tensor wrap_tan_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_TAN_OUT, out, self);
 }
 
-Tensor wrap_tanh(args...) {
+at::Tensor wrap_tanh(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::tanh(self);
@@ -6369,7 +5975,7 @@ Tensor wrap_tanh(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TANH, self);
 }
 
-Tensor wrap_tanh_(args...) {
+at::Tensor & wrap_tanh_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::tanh_(self);
@@ -6377,7 +5983,7 @@ Tensor wrap_tanh_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TANH_, self);
 }
 
-Tensor wrap_tanh_out(args...) {
+at::Tensor & wrap_tanh_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::tanh(out, self);
@@ -6385,7 +5991,7 @@ Tensor wrap_tanh_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_TANH_OUT, out, self);
 }
 
-Tensor wrap_tensordot(args...) {
+at::Tensor wrap_tensordot(const at::Tensor & self, const at::Tensor & other, at::IntArrayRef dims_self, at::IntArrayRef dims_other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::tensordot(self, other, dims_self, dims_other);
@@ -6393,7 +5999,7 @@ Tensor wrap_tensordot(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TENSORDOT, self, other, dims_self, dims_other);
 }
 
-Tensor wrap_tensordot_out(args...) {
+at::Tensor & wrap_tensordot_out(const at::Tensor & self, const at::Tensor & other, at::IntArrayRef dims_self, at::IntArrayRef dims_other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::tensordot(out, self, other, dims_self, dims_other);
@@ -6401,7 +6007,7 @@ Tensor wrap_tensordot_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_TENSORDOT_OUT, out, self, other, dims_self, dims_other);
 }
 
-Tensor wrap_threshold(args...) {
+at::Tensor wrap_threshold(const at::Tensor & self, const at::Scalar & threshold, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::threshold(self, threshold, value);
@@ -6409,7 +6015,7 @@ Tensor wrap_threshold(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_THRESHOLD, self, threshold, value);
 }
 
-Tensor wrap_threshold_(args...) {
+at::Tensor & wrap_threshold_(at::Tensor & self, const at::Scalar & threshold, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::threshold_(self, threshold, value);
@@ -6417,7 +6023,7 @@ Tensor wrap_threshold_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_THRESHOLD_, self, threshold, value);
 }
 
-Tensor wrap_threshold_out(args...) {
+at::Tensor & wrap_threshold_out(const at::Tensor & self, const at::Scalar & threshold, const at::Scalar & value, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::threshold(out, self, threshold, value);
@@ -6425,7 +6031,7 @@ Tensor wrap_threshold_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_THRESHOLD_OUT, out, self, threshold, value);
 }
 
-Tensor wrap_threshold_backward(args...) {
+at::Tensor wrap_threshold_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Scalar & threshold) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::threshold_backward(grad_output, self, threshold);
@@ -6433,7 +6039,7 @@ Tensor wrap_threshold_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_THRESHOLD_BACKWARD, grad_output, self, threshold);
 }
 
-Tensor wrap_tile(args...) {
+at::Tensor wrap_tile(const at::Tensor & self, at::IntArrayRef dims) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::tile(self, dims);
@@ -6441,7 +6047,7 @@ Tensor wrap_tile(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TILE, self, dims);
 }
 
-Tensor wrap_transpose_int(args...) {
+at::Tensor wrap_transpose_int(const at::Tensor & self, int64_t dim0, int64_t dim1) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::transpose(self, dim0, dim1);
@@ -6449,7 +6055,7 @@ Tensor wrap_transpose_int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRANSPOSE_INT, self, dim0, dim1);
 }
 
-Tensor wrap_transpose_Dimname(args...) {
+at::Tensor wrap_transpose_Dimname(const at::Tensor & self, at::Dimname dim0, at::Dimname dim1) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::transpose(self, dim0, dim1);
@@ -6457,7 +6063,7 @@ Tensor wrap_transpose_Dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRANSPOSE_DIMNAME, self, dim0, dim1);
 }
 
-Tensor wrap__mkldnn_transpose(args...) {
+at::Tensor wrap__mkldnn_transpose(const at::Tensor & self, int64_t dim0, int64_t dim1) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_mkldnn_transpose(self, dim0, dim1);
@@ -6465,7 +6071,7 @@ Tensor wrap__mkldnn_transpose(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__MKLDNN_TRANSPOSE, self, dim0, dim1);
 }
 
-Tensor wrap_transpose_(args...) {
+at::Tensor & wrap_transpose_(at::Tensor & self, int64_t dim0, int64_t dim1) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::transpose_(self, dim0, dim1);
@@ -6473,7 +6079,7 @@ Tensor wrap_transpose_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRANSPOSE_, self, dim0, dim1);
 }
 
-Tensor wrap__mkldnn_transpose_(args...) {
+at::Tensor & wrap__mkldnn_transpose_(at::Tensor & self, int64_t dim0, int64_t dim1) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_mkldnn_transpose_(self, dim0, dim1);
@@ -6481,7 +6087,7 @@ Tensor wrap__mkldnn_transpose_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__MKLDNN_TRANSPOSE_, self, dim0, dim1);
 }
 
-Tensor wrap_one_hot(args...) {
+at::Tensor wrap_one_hot(const at::Tensor & self, int64_t num_classes) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::one_hot(self, num_classes);
@@ -6489,7 +6095,7 @@ Tensor wrap_one_hot(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ONE_HOT, self, num_classes);
 }
 
-Tensor wrap_flip(args...) {
+at::Tensor wrap_flip(const at::Tensor & self, at::IntArrayRef dims) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::flip(self, dims);
@@ -6497,7 +6103,7 @@ Tensor wrap_flip(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLIP, self, dims);
 }
 
-Tensor wrap_fliplr(args...) {
+at::Tensor wrap_fliplr(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fliplr(self);
@@ -6505,7 +6111,7 @@ Tensor wrap_fliplr(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLIPLR, self);
 }
 
-Tensor wrap_flipud(args...) {
+at::Tensor wrap_flipud(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::flipud(self);
@@ -6513,7 +6119,7 @@ Tensor wrap_flipud(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLIPUD, self);
 }
 
-Tensor wrap_roll(args...) {
+at::Tensor wrap_roll(const at::Tensor & self, at::IntArrayRef shifts, at::IntArrayRef dims) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::roll(self, shifts, dims);
@@ -6521,7 +6127,7 @@ Tensor wrap_roll(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ROLL, self, shifts, dims);
 }
 
-Tensor wrap_rot90(args...) {
+at::Tensor wrap_rot90(const at::Tensor & self, int64_t k, at::IntArrayRef dims) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::rot90(self, k, dims);
@@ -6529,7 +6135,7 @@ Tensor wrap_rot90(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ROT90, self, k, dims);
 }
 
-Tensor wrap_trapz_x(args...) {
+at::Tensor wrap_trapz_x(const at::Tensor & y, const at::Tensor & x, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(y, x);
     return at::redispatch::trapz(y, x, dim);
@@ -6537,7 +6143,7 @@ Tensor wrap_trapz_x(args...) {
   return MK_TORCHY(y.dtype(), y.device(), H_TRAPZ_X, y, x, dim);
 }
 
-Tensor wrap_trapz_dx(args...) {
+at::Tensor wrap_trapz_dx(const at::Tensor & y, double dx, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(y);
     return at::redispatch::trapz(y, dx, dim);
@@ -6545,7 +6151,7 @@ Tensor wrap_trapz_dx(args...) {
   return MK_TORCHY(y.dtype(), y.device(), H_TRAPZ_DX, y, dx, dim);
 }
 
-Tensor wrap__trilinear(args...) {
+at::Tensor wrap__trilinear(const at::Tensor & i1, const at::Tensor & i2, const at::Tensor & i3, at::IntArrayRef expand1, at::IntArrayRef expand2, at::IntArrayRef expand3, at::IntArrayRef sumdim, int64_t unroll_dim) {
   if (trace.is_flushing()) {
     ensure_materialized(i1, i2, i3);
     return at::redispatch::_trilinear(i1, i2, i3, expand1, expand2, expand3, sumdim, unroll_dim);
@@ -6553,7 +6159,7 @@ Tensor wrap__trilinear(args...) {
   return MK_TORCHY(i1.dtype(), i1.device(), H__TRILINEAR, i1, i2, i3, expand1, expand2, expand3, sumdim, unroll_dim);
 }
 
-Tensor wrap_triplet_margin_loss(args...) {
+at::Tensor wrap_triplet_margin_loss(const at::Tensor & anchor, const at::Tensor & positive, const at::Tensor & negative, double margin, double p, double eps, bool swap, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(anchor, positive, negative);
     return at::redispatch::triplet_margin_loss(anchor, positive, negative, margin, p, eps, swap, reduction);
@@ -6561,7 +6167,7 @@ Tensor wrap_triplet_margin_loss(args...) {
   return MK_TORCHY(anchor.dtype(), anchor.device(), H_TRIPLET_MARGIN_LOSS, anchor, positive, negative, margin, p, eps, swap, reduction);
 }
 
-Tensor wrap_trunc(args...) {
+at::Tensor wrap_trunc(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::trunc(self);
@@ -6569,7 +6175,7 @@ Tensor wrap_trunc(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRUNC, self);
 }
 
-Tensor wrap_trunc_(args...) {
+at::Tensor & wrap_trunc_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::trunc_(self);
@@ -6577,7 +6183,7 @@ Tensor wrap_trunc_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRUNC_, self);
 }
 
-Tensor wrap_trunc_out(args...) {
+at::Tensor & wrap_trunc_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::trunc(out, self);
@@ -6585,7 +6191,7 @@ Tensor wrap_trunc_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_TRUNC_OUT, out, self);
 }
 
-Tensor wrap_fix(args...) {
+at::Tensor wrap_fix(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fix(self);
@@ -6593,7 +6199,7 @@ Tensor wrap_fix(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FIX, self);
 }
 
-Tensor wrap_fix_(args...) {
+at::Tensor & wrap_fix_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fix_(self);
@@ -6601,7 +6207,7 @@ Tensor wrap_fix_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FIX_, self);
 }
 
-Tensor wrap_fix_out(args...) {
+at::Tensor & wrap_fix_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fix(out, self);
@@ -6609,7 +6215,7 @@ Tensor wrap_fix_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FIX_OUT, out, self);
 }
 
-Tensor wrap_type_as(args...) {
+at::Tensor wrap_type_as(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::type_as(self, other);
@@ -6617,52 +6223,37 @@ Tensor wrap_type_as(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TYPE_AS, self, other);
 }
 
-bool wrap__has_compatible_shallow_copy_type(args...) {
+bool wrap__has_compatible_shallow_copy_type(const at::Tensor & self, const at::Tensor & from) {
   ensure_materialized(self, from);
   return at::redispatch::_has_compatible_shallow_copy_type(self, from);
 }
 
-Tensor wrap__unique(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::_unique(self, sorted, return_inverse);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H__UNIQUE, self, sorted, return_inverse);
+std::tuple<at::Tensor,at::Tensor> wrap__unique(const at::Tensor & self, bool sorted, bool return_inverse) {
+  ensure_materialized(self);
+  return at::redispatch::_unique(self, sorted, return_inverse);
 }
 
-Tensor wrap_unique_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::unique_dim(self, dim, sorted, return_inverse, return_counts);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_UNIQUE_DIM, self, dim, sorted, return_inverse, return_counts);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_unique_dim(const at::Tensor & self, int64_t dim, bool sorted, bool return_inverse, bool return_counts) {
+  ensure_materialized(self);
+  return at::redispatch::unique_dim(self, dim, sorted, return_inverse, return_counts);
 }
 
-Tensor wrap_unique_consecutive(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::unique_consecutive(self, return_inverse, return_counts, dim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_UNIQUE_CONSECUTIVE, self, return_inverse, return_counts, dim);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_unique_consecutive(const at::Tensor & self, bool return_inverse, bool return_counts, c10::optional<int64_t> dim) {
+  ensure_materialized(self);
+  return at::redispatch::unique_consecutive(self, return_inverse, return_counts, dim);
 }
 
-Tensor wrap_unique_dim_consecutive(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::unique_dim_consecutive(self, dim, return_inverse, return_counts);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_UNIQUE_DIM_CONSECUTIVE, self, dim, return_inverse, return_counts);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_unique_dim_consecutive(const at::Tensor & self, int64_t dim, bool return_inverse, bool return_counts) {
+  ensure_materialized(self);
+  return at::redispatch::unique_dim_consecutive(self, dim, return_inverse, return_counts);
 }
 
-Tensor wrap__unique2(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::_unique2(self, sorted, return_inverse, return_counts);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H__UNIQUE2, self, sorted, return_inverse, return_counts);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap__unique2(const at::Tensor & self, bool sorted, bool return_inverse, bool return_counts) {
+  ensure_materialized(self);
+  return at::redispatch::_unique2(self, sorted, return_inverse, return_counts);
 }
 
-Tensor wrap__unsafe_view(args...) {
+at::Tensor wrap__unsafe_view(const at::Tensor & self, at::IntArrayRef size) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_unsafe_view(self, size);
@@ -6670,7 +6261,7 @@ Tensor wrap__unsafe_view(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__UNSAFE_VIEW, self, size);
 }
 
-Tensor wrap_unsqueeze(args...) {
+at::Tensor wrap_unsqueeze(const at::Tensor & self, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::unsqueeze(self, dim);
@@ -6678,7 +6269,7 @@ Tensor wrap_unsqueeze(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_UNSQUEEZE, self, dim);
 }
 
-Tensor wrap_unsqueeze_(args...) {
+at::Tensor & wrap_unsqueeze_(at::Tensor & self, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::unsqueeze_(self, dim);
@@ -6686,7 +6277,7 @@ Tensor wrap_unsqueeze_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_UNSQUEEZE_, self, dim);
 }
 
-Tensor wrap_vander(args...) {
+at::Tensor wrap_vander(const at::Tensor & x, c10::optional<int64_t> N, bool increasing) {
   if (trace.is_flushing()) {
     ensure_materialized(x);
     return at::redispatch::vander(x, N, increasing);
@@ -6694,7 +6285,7 @@ Tensor wrap_vander(args...) {
   return MK_TORCHY(x.dtype(), x.device(), H_VANDER, x, N, increasing);
 }
 
-Tensor wrap_var(args...) {
+at::Tensor wrap_var(const at::Tensor & self, bool unbiased) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::var(self, unbiased);
@@ -6702,7 +6293,7 @@ Tensor wrap_var(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_VAR, self, unbiased);
 }
 
-Tensor wrap_var_dim(args...) {
+at::Tensor wrap_var_dim(const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::var(self, dim, unbiased, keepdim);
@@ -6710,7 +6301,7 @@ Tensor wrap_var_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_VAR_DIM, self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_var_out(args...) {
+at::Tensor & wrap_var_out(const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::var(out, self, dim, unbiased, keepdim);
@@ -6718,7 +6309,7 @@ Tensor wrap_var_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_VAR_OUT, out, self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_var_names_dim(args...) {
+at::Tensor wrap_var_names_dim(const at::Tensor & self, at::DimnameList dim, bool unbiased, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::var(self, dim, unbiased, keepdim);
@@ -6726,7 +6317,7 @@ Tensor wrap_var_names_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_VAR_NAMES_DIM, self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_var_names_out(args...) {
+at::Tensor & wrap_var_names_out(const at::Tensor & self, at::DimnameList dim, bool unbiased, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::var(out, self, dim, unbiased, keepdim);
@@ -6734,31 +6325,22 @@ Tensor wrap_var_names_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_VAR_NAMES_OUT, out, self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_var_mean(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::var_mean(self, unbiased);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_VAR_MEAN, self, unbiased);
+std::tuple<at::Tensor,at::Tensor> wrap_var_mean(const at::Tensor & self, bool unbiased) {
+  ensure_materialized(self);
+  return at::redispatch::var_mean(self, unbiased);
 }
 
-Tensor wrap_var_mean_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::var_mean(self, dim, unbiased, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_VAR_MEAN_DIM, self, dim, unbiased, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_var_mean_dim(const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::var_mean(self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_var_mean_names_dim(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::var_mean(self, dim, unbiased, keepdim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_VAR_MEAN_NAMES_DIM, self, dim, unbiased, keepdim);
+std::tuple<at::Tensor,at::Tensor> wrap_var_mean_names_dim(const at::Tensor & self, at::DimnameList dim, bool unbiased, bool keepdim) {
+  ensure_materialized(self);
+  return at::redispatch::var_mean(self, dim, unbiased, keepdim);
 }
 
-Tensor wrap_view_as(args...) {
+at::Tensor wrap_view_as(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::view_as(self, other);
@@ -6766,7 +6348,7 @@ Tensor wrap_view_as(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_VIEW_AS, self, other);
 }
 
-Tensor wrap_where_self(args...) {
+at::Tensor wrap_where_self(const at::Tensor & condition, const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(condition, self, other);
     return at::redispatch::where(condition, self, other);
@@ -6774,7 +6356,7 @@ Tensor wrap_where_self(args...) {
   return MK_TORCHY(condition.dtype(), condition.device(), H_WHERE_SELF, condition, self, other);
 }
 
-Tensor wrap_where_ScalarSelf(args...) {
+at::Tensor wrap_where_ScalarSelf(const at::Tensor & condition, const at::Scalar & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(condition, other);
     return at::redispatch::where(condition, self, other);
@@ -6782,7 +6364,7 @@ Tensor wrap_where_ScalarSelf(args...) {
   return MK_TORCHY(condition.dtype(), condition.device(), H_WHERE_SCALARSELF, condition, self, other);
 }
 
-Tensor wrap_where_ScalarOther(args...) {
+at::Tensor wrap_where_ScalarOther(const at::Tensor & condition, const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(condition, self);
     return at::redispatch::where(condition, self, other);
@@ -6790,7 +6372,7 @@ Tensor wrap_where_ScalarOther(args...) {
   return MK_TORCHY(condition.dtype(), condition.device(), H_WHERE_SCALAROTHER, condition, self, other);
 }
 
-Tensor wrap_where_Scalar(args...) {
+at::Tensor wrap_where_Scalar(const at::Tensor & condition, const at::Scalar & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(condition);
     return at::redispatch::where(condition, self, other);
@@ -6798,12 +6380,12 @@ Tensor wrap_where_Scalar(args...) {
   return MK_TORCHY(condition.dtype(), condition.device(), H_WHERE_SCALAR, condition, self, other);
 }
 
-Tensor[] wrap_where(args...) {
+std::vector<at::Tensor> wrap_where(const at::Tensor & condition) {
   ensure_materialized(condition);
   return at::redispatch::where(condition);
 }
 
-Tensor wrap__s_where(args...) {
+at::Tensor wrap__s_where(const at::Tensor & condition, const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(condition, self, other);
     return at::redispatch::_s_where(condition, self, other);
@@ -6811,7 +6393,7 @@ Tensor wrap__s_where(args...) {
   return MK_TORCHY(condition.dtype(), condition.device(), H__S_WHERE, condition, self, other);
 }
 
-Tensor wrap_norm_except_dim(args...) {
+at::Tensor wrap_norm_except_dim(const at::Tensor & v, int64_t pow, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(v);
     return at::redispatch::norm_except_dim(v, pow, dim);
@@ -6819,7 +6401,7 @@ Tensor wrap_norm_except_dim(args...) {
   return MK_TORCHY(v.dtype(), v.device(), H_NORM_EXCEPT_DIM, v, pow, dim);
 }
 
-Tensor wrap__weight_norm(args...) {
+at::Tensor wrap__weight_norm(const at::Tensor & v, const at::Tensor & g, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(v, g);
     return at::redispatch::_weight_norm(v, g, dim);
@@ -6827,47 +6409,34 @@ Tensor wrap__weight_norm(args...) {
   return MK_TORCHY(v.dtype(), v.device(), H__WEIGHT_NORM, v, g, dim);
 }
 
-Tensor wrap__weight_norm_cuda_interface(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(v, g);
-    return at::redispatch::_weight_norm_cuda_interface(v, g, dim);
-  }
-  return MK_TORCHY(v.dtype(), v.device(), H__WEIGHT_NORM_CUDA_INTERFACE, v, g, dim);
+std::tuple<at::Tensor,at::Tensor> wrap__weight_norm_cuda_interface(const at::Tensor & v, const at::Tensor & g, int64_t dim) {
+  ensure_materialized(v, g);
+  return at::redispatch::_weight_norm_cuda_interface(v, g, dim);
 }
 
-Tensor wrap__weight_norm_cuda_interface_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_w, saved_v, saved_g, saved_norms);
-    return at::redispatch::_weight_norm_cuda_interface_backward(grad_w, saved_v, saved_g, saved_norms, dim);
-  }
-  return MK_TORCHY(grad_w.dtype(), grad_w.device(), H__WEIGHT_NORM_CUDA_INTERFACE_BACKWARD, grad_w, saved_v, saved_g, saved_norms, dim);
+std::tuple<at::Tensor,at::Tensor> wrap__weight_norm_cuda_interface_backward(const at::Tensor & grad_w, const at::Tensor & saved_v, const at::Tensor & saved_g, const at::Tensor & saved_norms, int64_t dim) {
+  ensure_materialized(grad_w, saved_v, saved_g, saved_norms);
+  return at::redispatch::_weight_norm_cuda_interface_backward(grad_w, saved_v, saved_g, saved_norms, dim);
 }
 
-Tensor wrap__weight_norm_differentiable_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_w, saved_v, saved_g, saved_norms);
-    return at::redispatch::_weight_norm_differentiable_backward(grad_w, saved_v, saved_g, saved_norms, dim);
-  }
-  return MK_TORCHY(grad_w.dtype(), grad_w.device(), H__WEIGHT_NORM_DIFFERENTIABLE_BACKWARD, grad_w, saved_v, saved_g, saved_norms, dim);
+std::tuple<at::Tensor,at::Tensor> wrap__weight_norm_differentiable_backward(const at::Tensor & grad_w, const at::Tensor & saved_v, const at::Tensor & saved_g, const at::Tensor & saved_norms, int64_t dim) {
+  ensure_materialized(grad_w, saved_v, saved_g, saved_norms);
+  return at::redispatch::_weight_norm_differentiable_backward(grad_w, saved_v, saved_g, saved_norms, dim);
 }
 
-Tensor wrap_zeros_names(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::zeros(size, names, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_ZEROS_NAMES, size, names, dtype, layout, device, pin_memory);
+at::Tensor wrap_zeros_names(at::IntArrayRef size, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::zeros(size, names, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_zeros(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::zeros(size, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_ZEROS, size, dtype, layout, device, pin_memory);
+at::Tensor wrap_zeros(at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::zeros(size, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_zeros_out(args...) {
+at::Tensor & wrap_zeros_out(at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::zeros(out, size);
@@ -6875,7 +6444,7 @@ Tensor wrap_zeros_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ZEROS_OUT, out, size);
 }
 
-Tensor wrap_zeros_like(args...) {
+at::Tensor wrap_zeros_like(const at::Tensor & self, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::zeros_like(self, dtype, layout, device, pin_memory, memory_format);
@@ -6883,7 +6452,7 @@ Tensor wrap_zeros_like(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ZEROS_LIKE, self, dtype, layout, device, pin_memory, memory_format);
 }
 
-Tensor wrap__standard_gamma_grad(args...) {
+at::Tensor wrap__standard_gamma_grad(const at::Tensor & self, const at::Tensor & output) {
   if (trace.is_flushing()) {
     ensure_materialized(self, output);
     return at::redispatch::_standard_gamma_grad(self, output);
@@ -6891,7 +6460,7 @@ Tensor wrap__standard_gamma_grad(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__STANDARD_GAMMA_GRAD, self, output);
 }
 
-Tensor wrap__standard_gamma(args...) {
+at::Tensor wrap__standard_gamma(const at::Tensor & self, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_standard_gamma(self, generator);
@@ -6899,7 +6468,7 @@ Tensor wrap__standard_gamma(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__STANDARD_GAMMA, self, generator);
 }
 
-Tensor wrap__dirichlet_grad(args...) {
+at::Tensor wrap__dirichlet_grad(const at::Tensor & x, const at::Tensor & alpha, const at::Tensor & total) {
   if (trace.is_flushing()) {
     ensure_materialized(x, alpha, total);
     return at::redispatch::_dirichlet_grad(x, alpha, total);
@@ -6907,7 +6476,7 @@ Tensor wrap__dirichlet_grad(args...) {
   return MK_TORCHY(x.dtype(), x.device(), H__DIRICHLET_GRAD, x, alpha, total);
 }
 
-Tensor wrap__sample_dirichlet(args...) {
+at::Tensor wrap__sample_dirichlet(const at::Tensor & self, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sample_dirichlet(self, generator);
@@ -6915,7 +6484,7 @@ Tensor wrap__sample_dirichlet(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SAMPLE_DIRICHLET, self, generator);
 }
 
-Tensor wrap_poisson(args...) {
+at::Tensor wrap_poisson(const at::Tensor & self, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::poisson(self, generator);
@@ -6923,7 +6492,7 @@ Tensor wrap_poisson(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_POISSON, self, generator);
 }
 
-Tensor wrap_binomial(args...) {
+at::Tensor wrap_binomial(const at::Tensor & count, const at::Tensor & prob, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(count, prob);
     return at::redispatch::binomial(count, prob, generator);
@@ -6931,7 +6500,7 @@ Tensor wrap_binomial(args...) {
   return MK_TORCHY(count.dtype(), count.device(), H_BINOMIAL, count, prob, generator);
 }
 
-Tensor wrap_native_norm(args...) {
+at::Tensor wrap_native_norm(const at::Tensor & self, const at::Scalar & p) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::native_norm(self, p);
@@ -6939,7 +6508,7 @@ Tensor wrap_native_norm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NATIVE_NORM, self, p);
 }
 
-Tensor wrap_native_norm_ScalarOpt_dim_dtype(args...) {
+at::Tensor wrap_native_norm_ScalarOpt_dim_dtype(const at::Tensor & self, const c10::optional<at::Scalar> & p, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::native_norm(self, p, dim, keepdim, dtype);
@@ -6947,7 +6516,7 @@ Tensor wrap_native_norm_ScalarOpt_dim_dtype(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NATIVE_NORM_SCALAROPT_DIM_DTYPE, self, p, dim, keepdim, dtype);
 }
 
-Tensor wrap__sparse_sum(args...) {
+at::Tensor wrap__sparse_sum(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sparse_sum(self);
@@ -6955,7 +6524,7 @@ Tensor wrap__sparse_sum(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_SUM, self);
 }
 
-Tensor wrap__sparse_sum_dtype(args...) {
+at::Tensor wrap__sparse_sum_dtype(const at::Tensor & self, at::ScalarType dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sparse_sum(self, dtype);
@@ -6963,7 +6532,7 @@ Tensor wrap__sparse_sum_dtype(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_SUM_DTYPE, self, dtype);
 }
 
-Tensor wrap__sparse_sum_dim(args...) {
+at::Tensor wrap__sparse_sum_dim(const at::Tensor & self, at::IntArrayRef dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sparse_sum(self, dim);
@@ -6971,7 +6540,7 @@ Tensor wrap__sparse_sum_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_SUM_DIM, self, dim);
 }
 
-Tensor wrap__sparse_sum_dim_dtype(args...) {
+at::Tensor wrap__sparse_sum_dim_dtype(const at::Tensor & self, at::IntArrayRef dim, at::ScalarType dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sparse_sum(self, dim, dtype);
@@ -6979,7 +6548,7 @@ Tensor wrap__sparse_sum_dim_dtype(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_SUM_DIM_DTYPE, self, dim, dtype);
 }
 
-Tensor wrap__sparse_sum_backward(args...) {
+at::Tensor wrap__sparse_sum_backward(const at::Tensor & grad, const at::Tensor & self, at::IntArrayRef dim) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, self);
     return at::redispatch::_sparse_sum_backward(grad, self, dim);
@@ -6987,7 +6556,7 @@ Tensor wrap__sparse_sum_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H__SPARSE_SUM_BACKWARD, grad, self, dim);
 }
 
-Tensor wrap__sparse_softmax_int(args...) {
+at::Tensor wrap__sparse_softmax_int(const at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sparse_softmax(self, dim, dtype);
@@ -6995,7 +6564,7 @@ Tensor wrap__sparse_softmax_int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_SOFTMAX_INT, self, dim, dtype);
 }
 
-Tensor wrap__sparse_softmax_Dimname(args...) {
+at::Tensor wrap__sparse_softmax_Dimname(const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sparse_softmax(self, dim, dtype);
@@ -7003,7 +6572,7 @@ Tensor wrap__sparse_softmax_Dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_SOFTMAX_DIMNAME, self, dim, dtype);
 }
 
-Tensor wrap__sparse_softmax(args...) {
+at::Tensor wrap__sparse_softmax(const at::Tensor & self, int64_t dim, bool half_to_float) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sparse_softmax(self, dim, half_to_float);
@@ -7011,7 +6580,7 @@ Tensor wrap__sparse_softmax(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_SOFTMAX, self, dim, half_to_float);
 }
 
-Tensor wrap__sparse_softmax_backward_data(args...) {
+at::Tensor wrap__sparse_softmax_backward_data(const at::Tensor & grad_output, const at::Tensor & output, int64_t dim, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, output, self);
     return at::redispatch::_sparse_softmax_backward_data(grad_output, output, dim, self);
@@ -7019,7 +6588,7 @@ Tensor wrap__sparse_softmax_backward_data(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H__SPARSE_SOFTMAX_BACKWARD_DATA, grad_output, output, dim, self);
 }
 
-Tensor wrap__sparse_log_softmax_int(args...) {
+at::Tensor wrap__sparse_log_softmax_int(const at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sparse_log_softmax(self, dim, dtype);
@@ -7027,7 +6596,7 @@ Tensor wrap__sparse_log_softmax_int(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_LOG_SOFTMAX_INT, self, dim, dtype);
 }
 
-Tensor wrap__sparse_log_softmax_Dimname(args...) {
+at::Tensor wrap__sparse_log_softmax_Dimname(const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sparse_log_softmax(self, dim, dtype);
@@ -7035,7 +6604,7 @@ Tensor wrap__sparse_log_softmax_Dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_LOG_SOFTMAX_DIMNAME, self, dim, dtype);
 }
 
-Tensor wrap__sparse_log_softmax(args...) {
+at::Tensor wrap__sparse_log_softmax(const at::Tensor & self, int64_t dim, bool half_to_float) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_sparse_log_softmax(self, dim, half_to_float);
@@ -7043,7 +6612,7 @@ Tensor wrap__sparse_log_softmax(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_LOG_SOFTMAX, self, dim, half_to_float);
 }
 
-Tensor wrap__sparse_log_softmax_backward_data(args...) {
+at::Tensor wrap__sparse_log_softmax_backward_data(const at::Tensor & grad_output, const at::Tensor & output, int64_t dim, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, output, self);
     return at::redispatch::_sparse_log_softmax_backward_data(grad_output, output, dim, self);
@@ -7051,7 +6620,7 @@ Tensor wrap__sparse_log_softmax_backward_data(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H__SPARSE_LOG_SOFTMAX_BACKWARD_DATA, grad_output, output, dim, self);
 }
 
-Tensor wrap_norm_ScalarOpt_dtype(args...) {
+at::Tensor wrap_norm_ScalarOpt_dtype(const at::Tensor & self, const c10::optional<at::Scalar> & p, at::ScalarType dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::norm(self, p, dtype);
@@ -7059,7 +6628,7 @@ Tensor wrap_norm_ScalarOpt_dtype(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NORM_SCALAROPT_DTYPE, self, p, dtype);
 }
 
-Tensor wrap_norm_Scalar(args...) {
+at::Tensor wrap_norm_Scalar(const at::Tensor & self, const at::Scalar & p) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::norm(self, p);
@@ -7067,7 +6636,7 @@ Tensor wrap_norm_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NORM_SCALAR, self, p);
 }
 
-Tensor wrap_norm_ScalarOpt_dim_dtype(args...) {
+at::Tensor wrap_norm_ScalarOpt_dim_dtype(const at::Tensor & self, const c10::optional<at::Scalar> & p, at::IntArrayRef dim, bool keepdim, at::ScalarType dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::norm(self, p, dim, keepdim, dtype);
@@ -7075,7 +6644,7 @@ Tensor wrap_norm_ScalarOpt_dim_dtype(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NORM_SCALAROPT_DIM_DTYPE, self, p, dim, keepdim, dtype);
 }
 
-Tensor wrap_norm_ScalarOpt_dim(args...) {
+at::Tensor wrap_norm_ScalarOpt_dim(const at::Tensor & self, const c10::optional<at::Scalar> & p, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::norm(self, p, dim, keepdim);
@@ -7083,7 +6652,7 @@ Tensor wrap_norm_ScalarOpt_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NORM_SCALAROPT_DIM, self, p, dim, keepdim);
 }
 
-Tensor wrap_norm_dtype_out(args...) {
+at::Tensor & wrap_norm_dtype_out(const at::Tensor & self, const c10::optional<at::Scalar> & p, at::IntArrayRef dim, bool keepdim, at::ScalarType dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::norm(out, self, p, dim, keepdim, dtype);
@@ -7091,7 +6660,7 @@ Tensor wrap_norm_dtype_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NORM_DTYPE_OUT, out, self, p, dim, keepdim, dtype);
 }
 
-Tensor wrap_norm_out(args...) {
+at::Tensor & wrap_norm_out(const at::Tensor & self, const c10::optional<at::Scalar> & p, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::norm(out, self, p, dim, keepdim);
@@ -7099,7 +6668,7 @@ Tensor wrap_norm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NORM_OUT, out, self, p, dim, keepdim);
 }
 
-Tensor wrap_norm_names_ScalarOpt_dim_dtype(args...) {
+at::Tensor wrap_norm_names_ScalarOpt_dim_dtype(const at::Tensor & self, const c10::optional<at::Scalar> & p, at::DimnameList dim, bool keepdim, at::ScalarType dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::norm(self, p, dim, keepdim, dtype);
@@ -7107,7 +6676,7 @@ Tensor wrap_norm_names_ScalarOpt_dim_dtype(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NORM_NAMES_SCALAROPT_DIM_DTYPE, self, p, dim, keepdim, dtype);
 }
 
-Tensor wrap_norm_names_ScalarOpt_dim(args...) {
+at::Tensor wrap_norm_names_ScalarOpt_dim(const at::Tensor & self, const c10::optional<at::Scalar> & p, at::DimnameList dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::norm(self, p, dim, keepdim);
@@ -7115,7 +6684,7 @@ Tensor wrap_norm_names_ScalarOpt_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NORM_NAMES_SCALAROPT_DIM, self, p, dim, keepdim);
 }
 
-Tensor wrap_norm_names_dtype_out(args...) {
+at::Tensor & wrap_norm_names_dtype_out(const at::Tensor & self, const c10::optional<at::Scalar> & p, at::DimnameList dim, bool keepdim, at::ScalarType dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::norm(out, self, p, dim, keepdim, dtype);
@@ -7123,7 +6692,7 @@ Tensor wrap_norm_names_dtype_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NORM_NAMES_DTYPE_OUT, out, self, p, dim, keepdim, dtype);
 }
 
-Tensor wrap_norm_names_out(args...) {
+at::Tensor & wrap_norm_names_out(const at::Tensor & self, const c10::optional<at::Scalar> & p, at::DimnameList dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::norm(out, self, p, dim, keepdim);
@@ -7131,23 +6700,17 @@ Tensor wrap_norm_names_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NORM_NAMES_OUT, out, self, p, dim, keepdim);
 }
 
-Tensor wrap_frexp_Tensor(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::frexp(self);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_FREXP_TENSOR, self);
+std::tuple<at::Tensor,at::Tensor> wrap_frexp_Tensor(const at::Tensor & self) {
+  ensure_materialized(self);
+  return at::redispatch::frexp(self);
 }
 
-Tensor wrap_frexp_Tensor_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(mantissa, exponent, self);
-    return at::redispatch::frexp(mantissa, exponent, self);
-  }
-  return MK_TORCHY(mantissa.dtype(), mantissa.device(), H_FREXP_TENSOR_OUT, mantissa, exponent, self);
+std::tuple<at::Tensor &,at::Tensor &> wrap_frexp_Tensor_out(const at::Tensor & self, at::Tensor & mantissa, at::Tensor & exponent) {
+  ensure_materialized(mantissa, exponent, self);
+  return at::redispatch::frexp(mantissa, exponent, self);
 }
 
-Tensor wrap_frobenius_norm(args...) {
+at::Tensor wrap_frobenius_norm(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::frobenius_norm(self);
@@ -7155,7 +6718,7 @@ Tensor wrap_frobenius_norm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FROBENIUS_NORM, self);
 }
 
-Tensor wrap_frobenius_norm_dim(args...) {
+at::Tensor wrap_frobenius_norm_dim(const at::Tensor & self, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::frobenius_norm(self, dim, keepdim);
@@ -7163,7 +6726,7 @@ Tensor wrap_frobenius_norm_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FROBENIUS_NORM_DIM, self, dim, keepdim);
 }
 
-Tensor wrap_frobenius_norm_out(args...) {
+at::Tensor & wrap_frobenius_norm_out(const at::Tensor & self, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::frobenius_norm(out, self, dim, keepdim);
@@ -7171,7 +6734,7 @@ Tensor wrap_frobenius_norm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FROBENIUS_NORM_OUT, out, self, dim, keepdim);
 }
 
-Tensor wrap_nuclear_norm(args...) {
+at::Tensor wrap_nuclear_norm(const at::Tensor & self, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::nuclear_norm(self, keepdim);
@@ -7179,7 +6742,7 @@ Tensor wrap_nuclear_norm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NUCLEAR_NORM, self, keepdim);
 }
 
-Tensor wrap_nuclear_norm_out(args...) {
+at::Tensor & wrap_nuclear_norm_out(const at::Tensor & self, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::nuclear_norm(out, self, keepdim);
@@ -7187,7 +6750,7 @@ Tensor wrap_nuclear_norm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NUCLEAR_NORM_OUT, out, self, keepdim);
 }
 
-Tensor wrap_nuclear_norm_dim(args...) {
+at::Tensor wrap_nuclear_norm_dim(const at::Tensor & self, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::nuclear_norm(self, dim, keepdim);
@@ -7195,7 +6758,7 @@ Tensor wrap_nuclear_norm_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NUCLEAR_NORM_DIM, self, dim, keepdim);
 }
 
-Tensor wrap_nuclear_norm_dim_out(args...) {
+at::Tensor & wrap_nuclear_norm_dim_out(const at::Tensor & self, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::nuclear_norm(out, self, dim, keepdim);
@@ -7203,7 +6766,7 @@ Tensor wrap_nuclear_norm_dim_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NUCLEAR_NORM_DIM_OUT, out, self, dim, keepdim);
 }
 
-Tensor wrap_clone(args...) {
+at::Tensor wrap_clone(const at::Tensor & self, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::clone(self, memory_format);
@@ -7211,23 +6774,17 @@ Tensor wrap_clone(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CLONE, self, memory_format);
 }
 
-Tensor wrap_resize_as_(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, the_template);
-    return at::redispatch::resize_as_(self, the_template, memory_format);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_RESIZE_AS_, self, the_template, memory_format);
+const at::Tensor & wrap_resize_as_(const at::Tensor & self, const at::Tensor & the_template, c10::optional<at::MemoryFormat> memory_format) {
+  ensure_materialized(self, the_template);
+  return at::redispatch::resize_as_(self, the_template, memory_format);
 }
 
-Tensor wrap_resize_as_sparse_(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, the_template);
-    return at::redispatch::resize_as_sparse_(self, the_template);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_RESIZE_AS_SPARSE_, self, the_template);
+const at::Tensor & wrap_resize_as_sparse_(const at::Tensor & self, const at::Tensor & the_template) {
+  ensure_materialized(self, the_template);
+  return at::redispatch::resize_as_sparse_(self, the_template);
 }
 
-Tensor wrap_zero_(args...) {
+at::Tensor & wrap_zero_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::zero_(self);
@@ -7235,7 +6792,7 @@ Tensor wrap_zero_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ZERO_, self);
 }
 
-Tensor wrap_sub_out(args...) {
+at::Tensor & wrap_sub_out(const at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::sub(out, self, other, alpha);
@@ -7243,7 +6800,7 @@ Tensor wrap_sub_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SUB_OUT, out, self, other, alpha);
 }
 
-Tensor wrap_sub_Tensor(args...) {
+at::Tensor wrap_sub_Tensor(const at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::sub(self, other, alpha);
@@ -7251,7 +6808,7 @@ Tensor wrap_sub_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUB_TENSOR, self, other, alpha);
 }
 
-Tensor wrap_sub__Tensor(args...) {
+at::Tensor & wrap_sub__Tensor(at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::sub_(self, other, alpha);
@@ -7259,7 +6816,7 @@ Tensor wrap_sub__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUB__TENSOR, self, other, alpha);
 }
 
-Tensor wrap_sub_Scalar(args...) {
+at::Tensor wrap_sub_Scalar(const at::Tensor & self, const at::Scalar & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sub(self, other, alpha);
@@ -7267,7 +6824,7 @@ Tensor wrap_sub_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUB_SCALAR, self, other, alpha);
 }
 
-Tensor wrap_sub__Scalar(args...) {
+at::Tensor & wrap_sub__Scalar(at::Tensor & self, const at::Scalar & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sub_(self, other, alpha);
@@ -7275,7 +6832,7 @@ Tensor wrap_sub__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUB__SCALAR, self, other, alpha);
 }
 
-Tensor wrap_subtract_out(args...) {
+at::Tensor & wrap_subtract_out(const at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::subtract(out, self, other, alpha);
@@ -7283,7 +6840,7 @@ Tensor wrap_subtract_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SUBTRACT_OUT, out, self, other, alpha);
 }
 
-Tensor wrap_subtract_Tensor(args...) {
+at::Tensor wrap_subtract_Tensor(const at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::subtract(self, other, alpha);
@@ -7291,7 +6848,7 @@ Tensor wrap_subtract_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUBTRACT_TENSOR, self, other, alpha);
 }
 
-Tensor wrap_subtract__Tensor(args...) {
+at::Tensor & wrap_subtract__Tensor(at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::subtract_(self, other, alpha);
@@ -7299,7 +6856,7 @@ Tensor wrap_subtract__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUBTRACT__TENSOR, self, other, alpha);
 }
 
-Tensor wrap_subtract_Scalar(args...) {
+at::Tensor wrap_subtract_Scalar(const at::Tensor & self, const at::Scalar & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::subtract(self, other, alpha);
@@ -7307,7 +6864,7 @@ Tensor wrap_subtract_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUBTRACT_SCALAR, self, other, alpha);
 }
 
-Tensor wrap_subtract__Scalar(args...) {
+at::Tensor & wrap_subtract__Scalar(at::Tensor & self, const at::Scalar & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::subtract_(self, other, alpha);
@@ -7315,7 +6872,7 @@ Tensor wrap_subtract__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SUBTRACT__SCALAR, self, other, alpha);
 }
 
-Tensor wrap_rsub_Tensor(args...) {
+at::Tensor wrap_rsub_Tensor(const at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::rsub(self, other, alpha);
@@ -7323,7 +6880,7 @@ Tensor wrap_rsub_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RSUB_TENSOR, self, other, alpha);
 }
 
-Tensor wrap_heaviside_out(args...) {
+at::Tensor & wrap_heaviside_out(const at::Tensor & self, const at::Tensor & values, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, values);
     return at::redispatch::heaviside(out, self, values);
@@ -7331,7 +6888,7 @@ Tensor wrap_heaviside_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_HEAVISIDE_OUT, out, self, values);
 }
 
-Tensor wrap_heaviside(args...) {
+at::Tensor wrap_heaviside(const at::Tensor & self, const at::Tensor & values) {
   if (trace.is_flushing()) {
     ensure_materialized(self, values);
     return at::redispatch::heaviside(self, values);
@@ -7339,7 +6896,7 @@ Tensor wrap_heaviside(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HEAVISIDE, self, values);
 }
 
-Tensor wrap_heaviside_(args...) {
+at::Tensor & wrap_heaviside_(at::Tensor & self, const at::Tensor & values) {
   if (trace.is_flushing()) {
     ensure_materialized(self, values);
     return at::redispatch::heaviside_(self, values);
@@ -7347,7 +6904,7 @@ Tensor wrap_heaviside_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HEAVISIDE_, self, values);
 }
 
-Tensor wrap_rsub_Scalar(args...) {
+at::Tensor wrap_rsub_Scalar(const at::Tensor & self, const at::Scalar & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::rsub(self, other, alpha);
@@ -7355,7 +6912,7 @@ Tensor wrap_rsub_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RSUB_SCALAR, self, other, alpha);
 }
 
-Tensor wrap__sparse_addmm(args...) {
+at::Tensor wrap__sparse_addmm(const at::Tensor & self, const at::Tensor & sparse, const at::Tensor & dense, const at::Scalar & beta, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, sparse, dense);
     return at::redispatch::_sparse_addmm(self, sparse, dense, beta, alpha);
@@ -7363,7 +6920,7 @@ Tensor wrap__sparse_addmm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__SPARSE_ADDMM, self, sparse, dense, beta, alpha);
 }
 
-Tensor wrap_addmm_out(args...) {
+at::Tensor & wrap_addmm_out(const at::Tensor & self, const at::Tensor & mat1, const at::Tensor & mat2, const at::Scalar & beta, const at::Scalar & alpha, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, mat1, mat2);
     return at::redispatch::addmm(out, self, mat1, mat2, beta, alpha);
@@ -7371,7 +6928,7 @@ Tensor wrap_addmm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ADDMM_OUT, out, self, mat1, mat2, beta, alpha);
 }
 
-Tensor wrap_addmm(args...) {
+at::Tensor wrap_addmm(const at::Tensor & self, const at::Tensor & mat1, const at::Tensor & mat2, const at::Scalar & beta, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mat1, mat2);
     return at::redispatch::addmm(self, mat1, mat2, beta, alpha);
@@ -7379,7 +6936,7 @@ Tensor wrap_addmm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADDMM, self, mat1, mat2, beta, alpha);
 }
 
-Tensor wrap_addmm_(args...) {
+at::Tensor & wrap_addmm_(at::Tensor & self, const at::Tensor & mat1, const at::Tensor & mat2, const at::Scalar & beta, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mat1, mat2);
     return at::redispatch::addmm_(self, mat1, mat2, beta, alpha);
@@ -7387,7 +6944,7 @@ Tensor wrap_addmm_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADDMM_, self, mat1, mat2, beta, alpha);
 }
 
-Tensor wrap_sparse_csr_tensor_crow_col_value_size(args...) {
+at::Tensor wrap_sparse_csr_tensor_crow_col_value_size(const at::Tensor & crow_indices, const at::Tensor & col_indices, const at::Tensor & values, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     ensure_materialized(crow_indices, col_indices, values);
     return at::redispatch::sparse_csr_tensor(crow_indices, col_indices, values, size, dtype, layout, device, pin_memory);
@@ -7395,7 +6952,7 @@ Tensor wrap_sparse_csr_tensor_crow_col_value_size(args...) {
   return MK_TORCHY(crow_indices.dtype(), crow_indices.device(), H_SPARSE_CSR_TENSOR_CROW_COL_VALUE_SIZE, crow_indices, col_indices, values, size, dtype, layout, device, pin_memory);
 }
 
-Tensor wrap_sparse_csr_tensor_crow_col_value(args...) {
+at::Tensor wrap_sparse_csr_tensor_crow_col_value(const at::Tensor & crow_indices, const at::Tensor & col_indices, const at::Tensor & values, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     ensure_materialized(crow_indices, col_indices, values);
     return at::redispatch::sparse_csr_tensor(crow_indices, col_indices, values, dtype, layout, device, pin_memory);
@@ -7403,15 +6960,13 @@ Tensor wrap_sparse_csr_tensor_crow_col_value(args...) {
   return MK_TORCHY(crow_indices.dtype(), crow_indices.device(), H_SPARSE_CSR_TENSOR_CROW_COL_VALUE, crow_indices, col_indices, values, dtype, layout, device, pin_memory);
 }
 
-Tensor wrap_sparse_coo_tensor_size(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::sparse_coo_tensor(size, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_SPARSE_COO_TENSOR_SIZE, size, dtype, layout, device, pin_memory);
+at::Tensor wrap_sparse_coo_tensor_size(at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::sparse_coo_tensor(size, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_sparse_coo_tensor_indices(args...) {
+at::Tensor wrap_sparse_coo_tensor_indices(const at::Tensor & indices, const at::Tensor & values, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     ensure_materialized(indices, values);
     return at::redispatch::sparse_coo_tensor(indices, values, dtype, layout, device, pin_memory);
@@ -7419,7 +6974,7 @@ Tensor wrap_sparse_coo_tensor_indices(args...) {
   return MK_TORCHY(indices.dtype(), indices.device(), H_SPARSE_COO_TENSOR_INDICES, indices, values, dtype, layout, device, pin_memory);
 }
 
-Tensor wrap_sparse_coo_tensor_indices_size(args...) {
+at::Tensor wrap_sparse_coo_tensor_indices_size(const at::Tensor & indices, const at::Tensor & values, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     ensure_materialized(indices, values);
     return at::redispatch::sparse_coo_tensor(indices, values, size, dtype, layout, device, pin_memory);
@@ -7427,7 +6982,7 @@ Tensor wrap_sparse_coo_tensor_indices_size(args...) {
   return MK_TORCHY(indices.dtype(), indices.device(), H_SPARSE_COO_TENSOR_INDICES_SIZE, indices, values, size, dtype, layout, device, pin_memory);
 }
 
-Tensor wrap__sparse_coo_tensor_unsafe(args...) {
+at::Tensor wrap__sparse_coo_tensor_unsafe(const at::Tensor & indices, const at::Tensor & values, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     ensure_materialized(indices, values);
     return at::redispatch::_sparse_coo_tensor_unsafe(indices, values, size, dtype, layout, device, pin_memory);
@@ -7435,20 +6990,18 @@ Tensor wrap__sparse_coo_tensor_unsafe(args...) {
   return MK_TORCHY(indices.dtype(), indices.device(), H__SPARSE_COO_TENSOR_UNSAFE, indices, values, size, dtype, layout, device, pin_memory);
 }
 
-void wrap__validate_sparse_coo_tensor_args(args...) {
+void wrap__validate_sparse_coo_tensor_args(const at::Tensor & indices, const at::Tensor & values, at::IntArrayRef size) {
   ensure_materialized(indices, values);
   return at::redispatch::_validate_sparse_coo_tensor_args(indices, values, size);
 }
 
-Tensor wrap__sparse_coo_tensor_with_dims(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::_sparse_coo_tensor_with_dims(sparse_dim, dense_dim, size, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H__SPARSE_COO_TENSOR_WITH_DIMS, sparse_dim, dense_dim, size, dtype, layout, device, pin_memory);
+at::Tensor wrap__sparse_coo_tensor_with_dims(int64_t sparse_dim, int64_t dense_dim, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::_sparse_coo_tensor_with_dims(sparse_dim, dense_dim, size, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap__sparse_coo_tensor_with_dims_and_tensors(args...) {
+at::Tensor wrap__sparse_coo_tensor_with_dims_and_tensors(int64_t sparse_dim, int64_t dense_dim, at::IntArrayRef size, const at::Tensor & indices, const at::Tensor & values, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     ensure_materialized(indices, values);
     return at::redispatch::_sparse_coo_tensor_with_dims_and_tensors(sparse_dim, dense_dim, size, indices, values, dtype, layout, device, pin_memory);
@@ -7456,23 +7009,17 @@ Tensor wrap__sparse_coo_tensor_with_dims_and_tensors(args...) {
   return MK_TORCHY(indices.dtype(), indices.device(), H__SPARSE_COO_TENSOR_WITH_DIMS_AND_TENSORS, sparse_dim, dense_dim, size, indices, values, dtype, layout, device, pin_memory);
 }
 
-Tensor wrap_sparse_resize_(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::sparse_resize_(self, size, sparse_dim, dense_dim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_SPARSE_RESIZE_, self, size, sparse_dim, dense_dim);
+const at::Tensor & wrap_sparse_resize_(const at::Tensor & self, at::IntArrayRef size, int64_t sparse_dim, int64_t dense_dim) {
+  ensure_materialized(self);
+  return at::redispatch::sparse_resize_(self, size, sparse_dim, dense_dim);
 }
 
-Tensor wrap_sparse_resize_and_clear_(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::sparse_resize_and_clear_(self, size, sparse_dim, dense_dim);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_SPARSE_RESIZE_AND_CLEAR_, self, size, sparse_dim, dense_dim);
+const at::Tensor & wrap_sparse_resize_and_clear_(const at::Tensor & self, at::IntArrayRef size, int64_t sparse_dim, int64_t dense_dim) {
+  ensure_materialized(self);
+  return at::redispatch::sparse_resize_and_clear_(self, size, sparse_dim, dense_dim);
 }
 
-Tensor wrap_sparse_mask(args...) {
+at::Tensor wrap_sparse_mask(const at::Tensor & self, const at::Tensor & mask) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mask);
     return at::redispatch::sparse_mask(self, mask);
@@ -7480,7 +7027,7 @@ Tensor wrap_sparse_mask(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SPARSE_MASK, self, mask);
 }
 
-Tensor wrap_to_dense(args...) {
+at::Tensor wrap_to_dense(const at::Tensor & self, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::to_dense(self, dtype);
@@ -7488,7 +7035,7 @@ Tensor wrap_to_dense(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TO_DENSE, self, dtype);
 }
 
-Tensor wrap_to_dense_backward(args...) {
+at::Tensor wrap_to_dense_backward(const at::Tensor & grad, const at::Tensor & input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, input);
     return at::redispatch::to_dense_backward(grad, input);
@@ -7496,32 +7043,32 @@ Tensor wrap_to_dense_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_TO_DENSE_BACKWARD, grad, input);
 }
 
-int wrap_sparse_dim(args...) {
+int64_t wrap_sparse_dim(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::sparse_dim(self);
 }
 
-int wrap__dimI(args...) {
+int64_t wrap__dimI(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::_dimI(self);
 }
 
-int wrap_dense_dim(args...) {
+int64_t wrap_dense_dim(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::dense_dim(self);
 }
 
-int wrap__dimV(args...) {
+int64_t wrap__dimV(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::_dimV(self);
 }
 
-int wrap__nnz(args...) {
+int64_t wrap__nnz(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::_nnz(self);
 }
 
-Tensor wrap_coalesce(args...) {
+at::Tensor wrap_coalesce(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::coalesce(self);
@@ -7529,7 +7076,7 @@ Tensor wrap_coalesce(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_COALESCE, self);
 }
 
-Tensor wrap__coalesce(args...) {
+at::Tensor wrap__coalesce(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_coalesce(self);
@@ -7537,12 +7084,12 @@ Tensor wrap__coalesce(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__COALESCE, self);
 }
 
-bool wrap_is_coalesced(args...) {
+bool wrap_is_coalesced(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::is_coalesced(self);
 }
 
-Tensor wrap__indices(args...) {
+at::Tensor wrap__indices(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_indices(self);
@@ -7550,7 +7097,7 @@ Tensor wrap__indices(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__INDICES, self);
 }
 
-Tensor wrap__values(args...) {
+at::Tensor wrap__values(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_values(self);
@@ -7558,7 +7105,7 @@ Tensor wrap__values(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__VALUES, self);
 }
 
-Tensor wrap__coalesced_(args...) {
+at::Tensor & wrap__coalesced_(at::Tensor & self, bool coalesced) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_coalesced_(self, coalesced);
@@ -7566,7 +7113,7 @@ Tensor wrap__coalesced_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__COALESCED_, self, coalesced);
 }
 
-Tensor wrap_indices(args...) {
+at::Tensor wrap_indices(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::indices(self);
@@ -7574,7 +7121,7 @@ Tensor wrap_indices(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDICES, self);
 }
 
-Tensor wrap_values(args...) {
+at::Tensor wrap_values(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::values(self);
@@ -7582,7 +7129,7 @@ Tensor wrap_values(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_VALUES, self);
 }
 
-Tensor wrap_crow_indices(args...) {
+at::Tensor wrap_crow_indices(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::crow_indices(self);
@@ -7590,7 +7137,7 @@ Tensor wrap_crow_indices(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CROW_INDICES, self);
 }
 
-Tensor wrap_col_indices(args...) {
+at::Tensor wrap_col_indices(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::col_indices(self);
@@ -7598,7 +7145,7 @@ Tensor wrap_col_indices(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_COL_INDICES, self);
 }
 
-Tensor wrap_hspmm_out(args...) {
+at::Tensor & wrap_hspmm_out(const at::Tensor & mat1, const at::Tensor & mat2, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, mat1, mat2);
     return at::redispatch::hspmm(out, mat1, mat2);
@@ -7606,7 +7153,7 @@ Tensor wrap_hspmm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_HSPMM_OUT, out, mat1, mat2);
 }
 
-Tensor wrap_hspmm(args...) {
+at::Tensor wrap_hspmm(const at::Tensor & mat1, const at::Tensor & mat2) {
   if (trace.is_flushing()) {
     ensure_materialized(mat1, mat2);
     return at::redispatch::hspmm(mat1, mat2);
@@ -7614,7 +7161,7 @@ Tensor wrap_hspmm(args...) {
   return MK_TORCHY(mat1.dtype(), mat1.device(), H_HSPMM, mat1, mat2);
 }
 
-Tensor wrap_copy_sparse_to_sparse_(args...) {
+at::Tensor & wrap_copy_sparse_to_sparse_(at::Tensor & self, const at::Tensor & src, bool non_blocking) {
   if (trace.is_flushing()) {
     ensure_materialized(self, src);
     return at::redispatch::copy_sparse_to_sparse_(self, src, non_blocking);
@@ -7622,17 +7169,17 @@ Tensor wrap_copy_sparse_to_sparse_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_COPY_SPARSE_TO_SPARSE_, self, src, non_blocking);
 }
 
-Tensor[] wrap_unbind_int(args...) {
+std::vector<at::Tensor> wrap_unbind_int(const at::Tensor & self, int64_t dim) {
   ensure_materialized(self);
   return at::redispatch::unbind(self, dim);
 }
 
-Tensor[] wrap_unbind_Dimname(args...) {
+std::vector<at::Tensor> wrap_unbind_Dimname(const at::Tensor & self, at::Dimname dim) {
   ensure_materialized(self);
   return at::redispatch::unbind(self, dim);
 }
 
-Tensor wrap_to_sparse_sparse_dim(args...) {
+at::Tensor wrap_to_sparse_sparse_dim(const at::Tensor & self, int64_t sparse_dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::to_sparse(self, sparse_dim);
@@ -7640,7 +7187,7 @@ Tensor wrap_to_sparse_sparse_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TO_SPARSE_SPARSE_DIM, self, sparse_dim);
 }
 
-Tensor wrap_to_sparse(args...) {
+at::Tensor wrap_to_sparse(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::to_sparse(self);
@@ -7648,7 +7195,7 @@ Tensor wrap_to_sparse(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TO_SPARSE, self);
 }
 
-Tensor wrap_to_mkldnn(args...) {
+at::Tensor wrap_to_mkldnn(const at::Tensor & self, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::to_mkldnn(self, dtype);
@@ -7656,7 +7203,7 @@ Tensor wrap_to_mkldnn(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TO_MKLDNN, self, dtype);
 }
 
-Tensor wrap_mkldnn_reorder_conv2d_weight(args...) {
+at::Tensor wrap_mkldnn_reorder_conv2d_weight(const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mkldnn_reorder_conv2d_weight(self, padding, stride, dilation, groups);
@@ -7664,7 +7211,7 @@ Tensor wrap_mkldnn_reorder_conv2d_weight(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MKLDNN_REORDER_CONV2D_WEIGHT, self, padding, stride, dilation, groups);
 }
 
-Tensor wrap_mkldnn_reorder_conv3d_weight(args...) {
+at::Tensor wrap_mkldnn_reorder_conv3d_weight(const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mkldnn_reorder_conv3d_weight(self, padding, stride, dilation, groups);
@@ -7672,7 +7219,7 @@ Tensor wrap_mkldnn_reorder_conv3d_weight(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MKLDNN_REORDER_CONV3D_WEIGHT, self, padding, stride, dilation, groups);
 }
 
-Tensor wrap_to_mkldnn_backward(args...) {
+at::Tensor wrap_to_mkldnn_backward(const at::Tensor & grad, const at::Tensor & input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, input);
     return at::redispatch::to_mkldnn_backward(grad, input);
@@ -7680,7 +7227,7 @@ Tensor wrap_to_mkldnn_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_TO_MKLDNN_BACKWARD, grad, input);
 }
 
-Tensor wrap_quantize_per_tensor(args...) {
+at::Tensor wrap_quantize_per_tensor(const at::Tensor & self, double scale, int64_t zero_point, at::ScalarType dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::quantize_per_tensor(self, scale, zero_point, dtype);
@@ -7688,12 +7235,12 @@ Tensor wrap_quantize_per_tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_QUANTIZE_PER_TENSOR, self, scale, zero_point, dtype);
 }
 
-Tensor[] wrap_quantize_per_tensor_tensors(args...) {
+std::vector<at::Tensor> wrap_quantize_per_tensor_tensors(at::TensorList tensors, const at::Tensor & scales, const at::Tensor & zero_points, at::ScalarType dtype) {
   ensure_materialized(scales, zero_points);
   return at::redispatch::quantize_per_tensor(tensors, scales, zero_points, dtype);
 }
 
-Tensor wrap_quantize_per_channel(args...) {
+at::Tensor wrap_quantize_per_channel(const at::Tensor & self, const at::Tensor & scales, const at::Tensor & zero_points, int64_t axis, at::ScalarType dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self, scales, zero_points);
     return at::redispatch::quantize_per_channel(self, scales, zero_points, axis, dtype);
@@ -7701,7 +7248,7 @@ Tensor wrap_quantize_per_channel(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_QUANTIZE_PER_CHANNEL, self, scales, zero_points, axis, dtype);
 }
 
-Tensor wrap_dequantize_self(args...) {
+at::Tensor wrap_dequantize_self(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::dequantize(self);
@@ -7709,22 +7256,22 @@ Tensor wrap_dequantize_self(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DEQUANTIZE_SELF, self);
 }
 
-Tensor[] wrap_dequantize_tensors(args...) {
+std::vector<at::Tensor> wrap_dequantize_tensors(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::dequantize(tensors);
 }
 
-float wrap_q_scale(args...) {
+double wrap_q_scale(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::q_scale(self);
 }
 
-int wrap_q_zero_point(args...) {
+int64_t wrap_q_zero_point(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::q_zero_point(self);
 }
 
-Tensor wrap_q_per_channel_scales(args...) {
+at::Tensor wrap_q_per_channel_scales(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::q_per_channel_scales(self);
@@ -7732,7 +7279,7 @@ Tensor wrap_q_per_channel_scales(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_Q_PER_CHANNEL_SCALES, self);
 }
 
-Tensor wrap_q_per_channel_zero_points(args...) {
+at::Tensor wrap_q_per_channel_zero_points(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::q_per_channel_zero_points(self);
@@ -7740,12 +7287,12 @@ Tensor wrap_q_per_channel_zero_points(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_Q_PER_CHANNEL_ZERO_POINTS, self);
 }
 
-int wrap_q_per_channel_axis(args...) {
+int64_t wrap_q_per_channel_axis(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::q_per_channel_axis(self);
 }
 
-Tensor wrap_int_repr(args...) {
+at::Tensor wrap_int_repr(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::int_repr(self);
@@ -7753,7 +7300,7 @@ Tensor wrap_int_repr(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INT_REPR, self);
 }
 
-Tensor wrap__make_per_tensor_quantized_tensor(args...) {
+at::Tensor wrap__make_per_tensor_quantized_tensor(const at::Tensor & self, double scale, int64_t zero_point) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_make_per_tensor_quantized_tensor(self, scale, zero_point);
@@ -7761,7 +7308,7 @@ Tensor wrap__make_per_tensor_quantized_tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__MAKE_PER_TENSOR_QUANTIZED_TENSOR, self, scale, zero_point);
 }
 
-Tensor wrap__make_per_channel_quantized_tensor(args...) {
+at::Tensor wrap__make_per_channel_quantized_tensor(const at::Tensor & self, const at::Tensor & scale, const at::Tensor & zero_point, int64_t axis) {
   if (trace.is_flushing()) {
     ensure_materialized(self, scale, zero_point);
     return at::redispatch::_make_per_channel_quantized_tensor(self, scale, zero_point, axis);
@@ -7769,12 +7316,12 @@ Tensor wrap__make_per_channel_quantized_tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__MAKE_PER_CHANNEL_QUANTIZED_TENSOR, self, scale, zero_point, axis);
 }
 
-QScheme wrap_qscheme(args...) {
+at::QScheme wrap_qscheme(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::qscheme(self);
 }
 
-Tensor wrap_fake_quantize_per_tensor_affine(args...) {
+at::Tensor wrap_fake_quantize_per_tensor_affine(const at::Tensor & self, double scale, int64_t zero_point, int64_t quant_min, int64_t quant_max) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fake_quantize_per_tensor_affine(self, scale, zero_point, quant_min, quant_max);
@@ -7782,15 +7329,12 @@ Tensor wrap_fake_quantize_per_tensor_affine(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FAKE_QUANTIZE_PER_TENSOR_AFFINE, self, scale, zero_point, quant_min, quant_max);
 }
 
-Tensor wrap_fake_quantize_per_tensor_affine_cachemask(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::fake_quantize_per_tensor_affine_cachemask(self, scale, zero_point, quant_min, quant_max);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_FAKE_QUANTIZE_PER_TENSOR_AFFINE_CACHEMASK, self, scale, zero_point, quant_min, quant_max);
+std::tuple<at::Tensor,at::Tensor> wrap_fake_quantize_per_tensor_affine_cachemask(const at::Tensor & self, double scale, int64_t zero_point, int64_t quant_min, int64_t quant_max) {
+  ensure_materialized(self);
+  return at::redispatch::fake_quantize_per_tensor_affine_cachemask(self, scale, zero_point, quant_min, quant_max);
 }
 
-Tensor wrap_fake_quantize_per_tensor_affine_cachemask_backward(args...) {
+at::Tensor wrap_fake_quantize_per_tensor_affine_cachemask_backward(const at::Tensor & grad, const at::Tensor & mask) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, mask);
     return at::redispatch::fake_quantize_per_tensor_affine_cachemask_backward(grad, mask);
@@ -7798,7 +7342,7 @@ Tensor wrap_fake_quantize_per_tensor_affine_cachemask_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_FAKE_QUANTIZE_PER_TENSOR_AFFINE_CACHEMASK_BACKWARD, grad, mask);
 }
 
-Tensor wrap__fake_quantize_learnable_per_tensor_affine(args...) {
+at::Tensor wrap__fake_quantize_learnable_per_tensor_affine(const at::Tensor & self, const at::Tensor & scale, const at::Tensor & zero_point, int64_t quant_min, int64_t quant_max, double grad_factor) {
   if (trace.is_flushing()) {
     ensure_materialized(self, scale, zero_point);
     return at::redispatch::_fake_quantize_learnable_per_tensor_affine(self, scale, zero_point, quant_min, quant_max, grad_factor);
@@ -7806,15 +7350,12 @@ Tensor wrap__fake_quantize_learnable_per_tensor_affine(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__FAKE_QUANTIZE_LEARNABLE_PER_TENSOR_AFFINE, self, scale, zero_point, quant_min, quant_max, grad_factor);
 }
 
-Tensor wrap__fake_quantize_learnable_per_tensor_affine_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad, self, scale, zero_point);
-    return at::redispatch::_fake_quantize_learnable_per_tensor_affine_backward(grad, self, scale, zero_point, quant_min, quant_max, grad_factor);
-  }
-  return MK_TORCHY(grad.dtype(), grad.device(), H__FAKE_QUANTIZE_LEARNABLE_PER_TENSOR_AFFINE_BACKWARD, grad, self, scale, zero_point, quant_min, quant_max, grad_factor);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap__fake_quantize_learnable_per_tensor_affine_backward(const at::Tensor & grad, const at::Tensor & self, const at::Tensor & scale, const at::Tensor & zero_point, int64_t quant_min, int64_t quant_max, double grad_factor) {
+  ensure_materialized(grad, self, scale, zero_point);
+  return at::redispatch::_fake_quantize_learnable_per_tensor_affine_backward(grad, self, scale, zero_point, quant_min, quant_max, grad_factor);
 }
 
-Tensor wrap_fake_quantize_per_channel_affine(args...) {
+at::Tensor wrap_fake_quantize_per_channel_affine(const at::Tensor & self, const at::Tensor & scale, const at::Tensor & zero_point, int64_t axis, int64_t quant_min, int64_t quant_max) {
   if (trace.is_flushing()) {
     ensure_materialized(self, scale, zero_point);
     return at::redispatch::fake_quantize_per_channel_affine(self, scale, zero_point, axis, quant_min, quant_max);
@@ -7822,15 +7363,12 @@ Tensor wrap_fake_quantize_per_channel_affine(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FAKE_QUANTIZE_PER_CHANNEL_AFFINE, self, scale, zero_point, axis, quant_min, quant_max);
 }
 
-Tensor wrap_fake_quantize_per_channel_affine_cachemask(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, scale, zero_point);
-    return at::redispatch::fake_quantize_per_channel_affine_cachemask(self, scale, zero_point, axis, quant_min, quant_max);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_FAKE_QUANTIZE_PER_CHANNEL_AFFINE_CACHEMASK, self, scale, zero_point, axis, quant_min, quant_max);
+std::tuple<at::Tensor,at::Tensor> wrap_fake_quantize_per_channel_affine_cachemask(const at::Tensor & self, const at::Tensor & scale, const at::Tensor & zero_point, int64_t axis, int64_t quant_min, int64_t quant_max) {
+  ensure_materialized(self, scale, zero_point);
+  return at::redispatch::fake_quantize_per_channel_affine_cachemask(self, scale, zero_point, axis, quant_min, quant_max);
 }
 
-Tensor wrap_fake_quantize_per_channel_affine_cachemask_backward(args...) {
+at::Tensor wrap_fake_quantize_per_channel_affine_cachemask_backward(const at::Tensor & grad, const at::Tensor & mask) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, mask);
     return at::redispatch::fake_quantize_per_channel_affine_cachemask_backward(grad, mask);
@@ -7838,7 +7376,7 @@ Tensor wrap_fake_quantize_per_channel_affine_cachemask_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_FAKE_QUANTIZE_PER_CHANNEL_AFFINE_CACHEMASK_BACKWARD, grad, mask);
 }
 
-Tensor wrap__fake_quantize_learnable_per_channel_affine(args...) {
+at::Tensor wrap__fake_quantize_learnable_per_channel_affine(const at::Tensor & self, const at::Tensor & scale, const at::Tensor & zero_point, int64_t axis, int64_t quant_min, int64_t quant_max, double grad_factor) {
   if (trace.is_flushing()) {
     ensure_materialized(self, scale, zero_point);
     return at::redispatch::_fake_quantize_learnable_per_channel_affine(self, scale, zero_point, axis, quant_min, quant_max, grad_factor);
@@ -7846,20 +7384,17 @@ Tensor wrap__fake_quantize_learnable_per_channel_affine(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__FAKE_QUANTIZE_LEARNABLE_PER_CHANNEL_AFFINE, self, scale, zero_point, axis, quant_min, quant_max, grad_factor);
 }
 
-Tensor wrap__fake_quantize_learnable_per_channel_affine_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad, self, scale, zero_point);
-    return at::redispatch::_fake_quantize_learnable_per_channel_affine_backward(grad, self, scale, zero_point, axis, quant_min, quant_max, grad_factor);
-  }
-  return MK_TORCHY(grad.dtype(), grad.device(), H__FAKE_QUANTIZE_LEARNABLE_PER_CHANNEL_AFFINE_BACKWARD, grad, self, scale, zero_point, axis, quant_min, quant_max, grad_factor);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap__fake_quantize_learnable_per_channel_affine_backward(const at::Tensor & grad, const at::Tensor & self, const at::Tensor & scale, const at::Tensor & zero_point, int64_t axis, int64_t quant_min, int64_t quant_max, double grad_factor) {
+  ensure_materialized(grad, self, scale, zero_point);
+  return at::redispatch::_fake_quantize_learnable_per_channel_affine_backward(grad, self, scale, zero_point, axis, quant_min, quant_max, grad_factor);
 }
 
-float wrap__choose_qparams_per_tensor(args...) {
+std::tuple<double,int64_t> wrap__choose_qparams_per_tensor(const at::Tensor & self, bool reduce_range) {
   ensure_materialized(self);
   return at::redispatch::_choose_qparams_per_tensor(self, reduce_range);
 }
 
-Tensor wrap__saturate_weight_to_fp16(args...) {
+at::Tensor wrap__saturate_weight_to_fp16(const at::Tensor & weight) {
   if (trace.is_flushing()) {
     ensure_materialized(weight);
     return at::redispatch::_saturate_weight_to_fp16(weight);
@@ -7867,15 +7402,12 @@ Tensor wrap__saturate_weight_to_fp16(args...) {
   return MK_TORCHY(weight.dtype(), weight.device(), H__SATURATE_WEIGHT_TO_FP16, weight);
 }
 
-Tensor wrap_choose_qparams_optimized(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input);
-    return at::redispatch::choose_qparams_optimized(input, numel, n_bins, ratio, bit_width);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_CHOOSE_QPARAMS_OPTIMIZED, input, numel, n_bins, ratio, bit_width);
+std::tuple<at::Tensor,at::Tensor> wrap_choose_qparams_optimized(const at::Tensor & input, int64_t numel, int64_t n_bins, double ratio, int64_t bit_width) {
+  ensure_materialized(input);
+  return at::redispatch::choose_qparams_optimized(input, numel, n_bins, ratio, bit_width);
 }
 
-Tensor wrap_to_dtype_layout(args...) {
+at::Tensor wrap_to_dtype_layout(const at::Tensor & self, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, bool non_blocking, bool copy, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::to(self, dtype, layout, device, pin_memory, non_blocking, copy, memory_format);
@@ -7883,7 +7415,7 @@ Tensor wrap_to_dtype_layout(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TO_DTYPE_LAYOUT, self, dtype, layout, device, pin_memory, non_blocking, copy, memory_format);
 }
 
-Tensor wrap_to_device(args...) {
+at::Tensor wrap_to_device(const at::Tensor & self, at::Device device, at::ScalarType dtype, bool non_blocking, bool copy, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::to(self, device, dtype, non_blocking, copy, memory_format);
@@ -7891,7 +7423,7 @@ Tensor wrap_to_device(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TO_DEVICE, self, device, dtype, non_blocking, copy, memory_format);
 }
 
-Tensor wrap_to_dtype(args...) {
+at::Tensor wrap_to_dtype(const at::Tensor & self, at::ScalarType dtype, bool non_blocking, bool copy, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::to(self, dtype, non_blocking, copy, memory_format);
@@ -7899,7 +7431,7 @@ Tensor wrap_to_dtype(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TO_DTYPE, self, dtype, non_blocking, copy, memory_format);
 }
 
-Tensor wrap_to_other(args...) {
+at::Tensor wrap_to_other(const at::Tensor & self, const at::Tensor & other, bool non_blocking, bool copy, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::to(self, other, non_blocking, copy, memory_format);
@@ -7907,20 +7439,18 @@ Tensor wrap_to_other(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TO_OTHER, self, other, non_blocking, copy, memory_format);
 }
 
-Tensor[] wrap_meshgrid(args...) {
+std::vector<at::Tensor> wrap_meshgrid(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::meshgrid(tensors);
 }
 
-Tensor wrap_cartesian_prod(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::cartesian_prod(tensors);
-  }
-  return MK_TORCHY(None, None, H_CARTESIAN_PROD, tensors);
+at::Tensor wrap_cartesian_prod(at::TensorList tensors) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::cartesian_prod(tensors));
 }
 
-Tensor wrap_combinations(args...) {
+at::Tensor wrap_combinations(const at::Tensor & self, int64_t r, bool with_replacement) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::combinations(self, r, with_replacement);
@@ -7928,167 +7458,122 @@ Tensor wrap_combinations(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_COMBINATIONS, self, r, with_replacement);
 }
 
-Scalar wrap_item(args...) {
+at::Scalar wrap_item(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::item(self);
 }
 
-ScalarType wrap_result_type_Tensor(args...) {
+at::ScalarType wrap_result_type_Tensor(const at::Tensor & tensor, const at::Tensor & other) {
   ensure_materialized(tensor, other);
   return at::redispatch::result_type(tensor, other);
 }
 
-ScalarType wrap_result_type_Scalar(args...) {
+at::ScalarType wrap_result_type_Scalar(const at::Tensor & tensor, const at::Scalar & other) {
   ensure_materialized(tensor);
   return at::redispatch::result_type(tensor, other);
 }
 
-ScalarType wrap_result_type_Scalar_Tensor(args...) {
+at::ScalarType wrap_result_type_Scalar_Tensor(const at::Scalar & scalar, const at::Tensor & tensor) {
   ensure_materialized(tensor);
   return at::redispatch::result_type(scalar, tensor);
 }
 
-ScalarType wrap_result_type_Scalar_Scalar(args...) {
+at::ScalarType wrap_result_type_Scalar_Scalar(const at::Scalar & scalar1, const at::Scalar & scalar2) {
   ensure_materialized();
   return at::redispatch::result_type(scalar1, scalar2);
 }
 
-bool wrap_can_cast(args...) {
+bool wrap_can_cast(at::ScalarType from, at::ScalarType to) {
   ensure_materialized();
   return at::redispatch::can_cast(from, to);
 }
 
-ScalarType wrap_promote_types(args...) {
+at::ScalarType wrap_promote_types(at::ScalarType type1, at::ScalarType type2) {
   ensure_materialized();
   return at::redispatch::promote_types(type1, type2);
 }
 
-Scalar wrap__local_scalar_dense(args...) {
+at::Scalar wrap__local_scalar_dense(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::_local_scalar_dense(self);
 }
 
-Tensor wrap__thnn_fused_lstm_cell(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input_gates, hidden_gates, cx);
-    return at::redispatch::_thnn_fused_lstm_cell(input_gates, hidden_gates, cx, input_bias, hidden_bias);
-  }
-  return MK_TORCHY(input_gates.dtype(), input_gates.device(), H__THNN_FUSED_LSTM_CELL, input_gates, hidden_gates, cx, input_bias, hidden_bias);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap__thnn_fused_lstm_cell(const at::Tensor & input_gates, const at::Tensor & hidden_gates, const at::Tensor & cx, const c10::optional<at::Tensor> & input_bias, const c10::optional<at::Tensor> & hidden_bias) {
+  ensure_materialized(input_gates, hidden_gates, cx);
+  return at::redispatch::_thnn_fused_lstm_cell(input_gates, hidden_gates, cx, input_bias, hidden_bias);
 }
 
-Tensor wrap__thnn_fused_lstm_cell_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(cx, cy, workspace);
-    return at::redispatch::_thnn_fused_lstm_cell_backward(grad_hy, grad_cy, cx, cy, workspace, has_bias);
-  }
-  return MK_TORCHY(cx.dtype(), cx.device(), H__THNN_FUSED_LSTM_CELL_BACKWARD, grad_hy, grad_cy, cx, cy, workspace, has_bias);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap__thnn_fused_lstm_cell_backward(const c10::optional<at::Tensor> & grad_hy, const c10::optional<at::Tensor> & grad_cy, const at::Tensor & cx, const at::Tensor & cy, const at::Tensor & workspace, bool has_bias) {
+  ensure_materialized(cx, cy, workspace);
+  return at::redispatch::_thnn_fused_lstm_cell_backward(grad_hy, grad_cy, cx, cy, workspace, has_bias);
 }
 
-Tensor wrap__thnn_differentiable_lstm_cell_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input_gates, hidden_gates, cx, cy);
-    return at::redispatch::_thnn_differentiable_lstm_cell_backward(grad_hy, grad_cy, input_gates, hidden_gates, input_bias, hidden_bias, cx, cy);
-  }
-  return MK_TORCHY(input_gates.dtype(), input_gates.device(), H__THNN_DIFFERENTIABLE_LSTM_CELL_BACKWARD, grad_hy, grad_cy, input_gates, hidden_gates, input_bias, hidden_bias, cx, cy);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap__thnn_differentiable_lstm_cell_backward(const c10::optional<at::Tensor> & grad_hy, const c10::optional<at::Tensor> & grad_cy, const at::Tensor & input_gates, const at::Tensor & hidden_gates, const c10::optional<at::Tensor> & input_bias, const c10::optional<at::Tensor> & hidden_bias, const at::Tensor & cx, const at::Tensor & cy) {
+  ensure_materialized(input_gates, hidden_gates, cx, cy);
+  return at::redispatch::_thnn_differentiable_lstm_cell_backward(grad_hy, grad_cy, input_gates, hidden_gates, input_bias, hidden_bias, cx, cy);
 }
 
-Tensor wrap__thnn_fused_gru_cell(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input_gates, hidden_gates, hx);
-    return at::redispatch::_thnn_fused_gru_cell(input_gates, hidden_gates, hx, input_bias, hidden_bias);
-  }
-  return MK_TORCHY(input_gates.dtype(), input_gates.device(), H__THNN_FUSED_GRU_CELL, input_gates, hidden_gates, hx, input_bias, hidden_bias);
+std::tuple<at::Tensor,at::Tensor> wrap__thnn_fused_gru_cell(const at::Tensor & input_gates, const at::Tensor & hidden_gates, const at::Tensor & hx, const c10::optional<at::Tensor> & input_bias, const c10::optional<at::Tensor> & hidden_bias) {
+  ensure_materialized(input_gates, hidden_gates, hx);
+  return at::redispatch::_thnn_fused_gru_cell(input_gates, hidden_gates, hx, input_bias, hidden_bias);
 }
 
-Tensor wrap__thnn_fused_gru_cell_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_hy, workspace);
-    return at::redispatch::_thnn_fused_gru_cell_backward(grad_hy, workspace, has_bias);
-  }
-  return MK_TORCHY(grad_hy.dtype(), grad_hy.device(), H__THNN_FUSED_GRU_CELL_BACKWARD, grad_hy, workspace, has_bias);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap__thnn_fused_gru_cell_backward(const at::Tensor & grad_hy, const at::Tensor & workspace, bool has_bias) {
+  ensure_materialized(grad_hy, workspace);
+  return at::redispatch::_thnn_fused_gru_cell_backward(grad_hy, workspace, has_bias);
 }
 
-Tensor wrap__thnn_differentiable_gru_cell_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_hy, input_gates, hidden_gates, hx);
-    return at::redispatch::_thnn_differentiable_gru_cell_backward(grad_hy, input_gates, hidden_gates, hx, input_bias, hidden_bias);
-  }
-  return MK_TORCHY(grad_hy.dtype(), grad_hy.device(), H__THNN_DIFFERENTIABLE_GRU_CELL_BACKWARD, grad_hy, input_gates, hidden_gates, hx, input_bias, hidden_bias);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap__thnn_differentiable_gru_cell_backward(const at::Tensor & grad_hy, const at::Tensor & input_gates, const at::Tensor & hidden_gates, const at::Tensor & hx, const c10::optional<at::Tensor> & input_bias, const c10::optional<at::Tensor> & hidden_bias) {
+  ensure_materialized(grad_hy, input_gates, hidden_gates, hx);
+  return at::redispatch::_thnn_differentiable_gru_cell_backward(grad_hy, input_gates, hidden_gates, hx, input_bias, hidden_bias);
 }
 
-Tensor wrap_lstm_input(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input);
-    return at::redispatch::lstm(input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_LSTM_INPUT, input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_lstm_input(const at::Tensor & input, at::TensorList hx, at::TensorList params, bool has_biases, int64_t num_layers, double dropout, bool train, bool bidirectional, bool batch_first) {
+  ensure_materialized(input);
+  return at::redispatch::lstm(input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
 }
 
-Tensor wrap_lstm_data(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(data, batch_sizes);
-    return at::redispatch::lstm(data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
-  }
-  return MK_TORCHY(data.dtype(), data.device(), H_LSTM_DATA, data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_lstm_data(const at::Tensor & data, const at::Tensor & batch_sizes, at::TensorList hx, at::TensorList params, bool has_biases, int64_t num_layers, double dropout, bool train, bool bidirectional) {
+  ensure_materialized(data, batch_sizes);
+  return at::redispatch::lstm(data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
 }
 
-Tensor wrap_gru_input(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, hx);
-    return at::redispatch::gru(input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_GRU_INPUT, input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
+std::tuple<at::Tensor,at::Tensor> wrap_gru_input(const at::Tensor & input, const at::Tensor & hx, at::TensorList params, bool has_biases, int64_t num_layers, double dropout, bool train, bool bidirectional, bool batch_first) {
+  ensure_materialized(input, hx);
+  return at::redispatch::gru(input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
 }
 
-Tensor wrap_gru_data(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(data, batch_sizes, hx);
-    return at::redispatch::gru(data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
-  }
-  return MK_TORCHY(data.dtype(), data.device(), H_GRU_DATA, data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
+std::tuple<at::Tensor,at::Tensor> wrap_gru_data(const at::Tensor & data, const at::Tensor & batch_sizes, const at::Tensor & hx, at::TensorList params, bool has_biases, int64_t num_layers, double dropout, bool train, bool bidirectional) {
+  ensure_materialized(data, batch_sizes, hx);
+  return at::redispatch::gru(data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
 }
 
-Tensor wrap_rnn_tanh_input(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, hx);
-    return at::redispatch::rnn_tanh(input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_RNN_TANH_INPUT, input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
+std::tuple<at::Tensor,at::Tensor> wrap_rnn_tanh_input(const at::Tensor & input, const at::Tensor & hx, at::TensorList params, bool has_biases, int64_t num_layers, double dropout, bool train, bool bidirectional, bool batch_first) {
+  ensure_materialized(input, hx);
+  return at::redispatch::rnn_tanh(input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
 }
 
-Tensor wrap_rnn_tanh_data(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(data, batch_sizes, hx);
-    return at::redispatch::rnn_tanh(data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
-  }
-  return MK_TORCHY(data.dtype(), data.device(), H_RNN_TANH_DATA, data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
+std::tuple<at::Tensor,at::Tensor> wrap_rnn_tanh_data(const at::Tensor & data, const at::Tensor & batch_sizes, const at::Tensor & hx, at::TensorList params, bool has_biases, int64_t num_layers, double dropout, bool train, bool bidirectional) {
+  ensure_materialized(data, batch_sizes, hx);
+  return at::redispatch::rnn_tanh(data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
 }
 
-Tensor wrap_rnn_relu_input(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, hx);
-    return at::redispatch::rnn_relu(input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_RNN_RELU_INPUT, input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
+std::tuple<at::Tensor,at::Tensor> wrap_rnn_relu_input(const at::Tensor & input, const at::Tensor & hx, at::TensorList params, bool has_biases, int64_t num_layers, double dropout, bool train, bool bidirectional, bool batch_first) {
+  ensure_materialized(input, hx);
+  return at::redispatch::rnn_relu(input, hx, params, has_biases, num_layers, dropout, train, bidirectional, batch_first);
 }
 
-Tensor wrap_rnn_relu_data(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(data, batch_sizes, hx);
-    return at::redispatch::rnn_relu(data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
-  }
-  return MK_TORCHY(data.dtype(), data.device(), H_RNN_RELU_DATA, data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
+std::tuple<at::Tensor,at::Tensor> wrap_rnn_relu_data(const at::Tensor & data, const at::Tensor & batch_sizes, const at::Tensor & hx, at::TensorList params, bool has_biases, int64_t num_layers, double dropout, bool train, bool bidirectional) {
+  ensure_materialized(data, batch_sizes, hx);
+  return at::redispatch::rnn_relu(data, batch_sizes, hx, params, has_biases, num_layers, dropout, train, bidirectional);
 }
 
-Tensor wrap_lstm_cell(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, w_ih, w_hh);
-    return at::redispatch::lstm_cell(input, hx, w_ih, w_hh, b_ih, b_hh);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_LSTM_CELL, input, hx, w_ih, w_hh, b_ih, b_hh);
+std::tuple<at::Tensor,at::Tensor> wrap_lstm_cell(const at::Tensor & input, at::TensorList hx, const at::Tensor & w_ih, const at::Tensor & w_hh, const c10::optional<at::Tensor> & b_ih, const c10::optional<at::Tensor> & b_hh) {
+  ensure_materialized(input, w_ih, w_hh);
+  return at::redispatch::lstm_cell(input, hx, w_ih, w_hh, b_ih, b_hh);
 }
 
-Tensor wrap_gru_cell(args...) {
+at::Tensor wrap_gru_cell(const at::Tensor & input, const at::Tensor & hx, const at::Tensor & w_ih, const at::Tensor & w_hh, const c10::optional<at::Tensor> & b_ih, const c10::optional<at::Tensor> & b_hh) {
   if (trace.is_flushing()) {
     ensure_materialized(input, hx, w_ih, w_hh);
     return at::redispatch::gru_cell(input, hx, w_ih, w_hh, b_ih, b_hh);
@@ -8096,7 +7581,7 @@ Tensor wrap_gru_cell(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_GRU_CELL, input, hx, w_ih, w_hh, b_ih, b_hh);
 }
 
-Tensor wrap_rnn_tanh_cell(args...) {
+at::Tensor wrap_rnn_tanh_cell(const at::Tensor & input, const at::Tensor & hx, const at::Tensor & w_ih, const at::Tensor & w_hh, const c10::optional<at::Tensor> & b_ih, const c10::optional<at::Tensor> & b_hh) {
   if (trace.is_flushing()) {
     ensure_materialized(input, hx, w_ih, w_hh);
     return at::redispatch::rnn_tanh_cell(input, hx, w_ih, w_hh, b_ih, b_hh);
@@ -8104,7 +7589,7 @@ Tensor wrap_rnn_tanh_cell(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_RNN_TANH_CELL, input, hx, w_ih, w_hh, b_ih, b_hh);
 }
 
-Tensor wrap_rnn_relu_cell(args...) {
+at::Tensor wrap_rnn_relu_cell(const at::Tensor & input, const at::Tensor & hx, const at::Tensor & w_ih, const at::Tensor & w_hh, const c10::optional<at::Tensor> & b_ih, const c10::optional<at::Tensor> & b_hh) {
   if (trace.is_flushing()) {
     ensure_materialized(input, hx, w_ih, w_hh);
     return at::redispatch::rnn_relu_cell(input, hx, w_ih, w_hh, b_ih, b_hh);
@@ -8112,15 +7597,12 @@ Tensor wrap_rnn_relu_cell(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_RNN_RELU_CELL, input, hx, w_ih, w_hh, b_ih, b_hh);
 }
 
-Tensor wrap_quantized_lstm_cell(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh);
-    return at::redispatch::quantized_lstm_cell(input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh, scale_ih, scale_hh, zero_point_ih, zero_point_hh);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H_QUANTIZED_LSTM_CELL, input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh, scale_ih, scale_hh, zero_point_ih, zero_point_hh);
+std::tuple<at::Tensor,at::Tensor> wrap_quantized_lstm_cell(const at::Tensor & input, at::TensorList hx, const at::Tensor & w_ih, const at::Tensor & w_hh, const at::Tensor & b_ih, const at::Tensor & b_hh, const at::Tensor & packed_ih, const at::Tensor & packed_hh, const at::Tensor & col_offsets_ih, const at::Tensor & col_offsets_hh, const at::Scalar & scale_ih, const at::Scalar & scale_hh, const at::Scalar & zero_point_ih, const at::Scalar & zero_point_hh) {
+  ensure_materialized(input, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh);
+  return at::redispatch::quantized_lstm_cell(input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh, scale_ih, scale_hh, zero_point_ih, zero_point_hh);
 }
 
-Tensor wrap_quantized_gru_cell(args...) {
+at::Tensor wrap_quantized_gru_cell(const at::Tensor & input, const at::Tensor & hx, const at::Tensor & w_ih, const at::Tensor & w_hh, const at::Tensor & b_ih, const at::Tensor & b_hh, const at::Tensor & packed_ih, const at::Tensor & packed_hh, const at::Tensor & col_offsets_ih, const at::Tensor & col_offsets_hh, const at::Scalar & scale_ih, const at::Scalar & scale_hh, const at::Scalar & zero_point_ih, const at::Scalar & zero_point_hh) {
   if (trace.is_flushing()) {
     ensure_materialized(input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh);
     return at::redispatch::quantized_gru_cell(input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh, scale_ih, scale_hh, zero_point_ih, zero_point_hh);
@@ -8128,7 +7610,7 @@ Tensor wrap_quantized_gru_cell(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_QUANTIZED_GRU_CELL, input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh, scale_ih, scale_hh, zero_point_ih, zero_point_hh);
 }
 
-Tensor wrap_quantized_rnn_relu_cell(args...) {
+at::Tensor wrap_quantized_rnn_relu_cell(const at::Tensor & input, const at::Tensor & hx, const at::Tensor & w_ih, const at::Tensor & w_hh, const at::Tensor & b_ih, const at::Tensor & b_hh, const at::Tensor & packed_ih, const at::Tensor & packed_hh, const at::Tensor & col_offsets_ih, const at::Tensor & col_offsets_hh, const at::Scalar & scale_ih, const at::Scalar & scale_hh, const at::Scalar & zero_point_ih, const at::Scalar & zero_point_hh) {
   if (trace.is_flushing()) {
     ensure_materialized(input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh);
     return at::redispatch::quantized_rnn_relu_cell(input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh, scale_ih, scale_hh, zero_point_ih, zero_point_hh);
@@ -8136,7 +7618,7 @@ Tensor wrap_quantized_rnn_relu_cell(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_QUANTIZED_RNN_RELU_CELL, input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh, scale_ih, scale_hh, zero_point_ih, zero_point_hh);
 }
 
-Tensor wrap_quantized_rnn_tanh_cell(args...) {
+at::Tensor wrap_quantized_rnn_tanh_cell(const at::Tensor & input, const at::Tensor & hx, const at::Tensor & w_ih, const at::Tensor & w_hh, const at::Tensor & b_ih, const at::Tensor & b_hh, const at::Tensor & packed_ih, const at::Tensor & packed_hh, const at::Tensor & col_offsets_ih, const at::Tensor & col_offsets_hh, const at::Scalar & scale_ih, const at::Scalar & scale_hh, const at::Scalar & zero_point_ih, const at::Scalar & zero_point_hh) {
   if (trace.is_flushing()) {
     ensure_materialized(input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh);
     return at::redispatch::quantized_rnn_tanh_cell(input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh, scale_ih, scale_hh, zero_point_ih, zero_point_hh);
@@ -8144,15 +7626,12 @@ Tensor wrap_quantized_rnn_tanh_cell(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_QUANTIZED_RNN_TANH_CELL, input, hx, w_ih, w_hh, b_ih, b_hh, packed_ih, packed_hh, col_offsets_ih, col_offsets_hh, scale_ih, scale_hh, zero_point_ih, zero_point_hh);
 }
 
-Tensor wrap__pack_padded_sequence(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(input, lengths);
-    return at::redispatch::_pack_padded_sequence(input, lengths, batch_first);
-  }
-  return MK_TORCHY(input.dtype(), input.device(), H__PACK_PADDED_SEQUENCE, input, lengths, batch_first);
+std::tuple<at::Tensor,at::Tensor> wrap__pack_padded_sequence(const at::Tensor & input, const at::Tensor & lengths, bool batch_first) {
+  ensure_materialized(input, lengths);
+  return at::redispatch::_pack_padded_sequence(input, lengths, batch_first);
 }
 
-Tensor wrap__pack_padded_sequence_backward(args...) {
+at::Tensor wrap__pack_padded_sequence_backward(const at::Tensor & grad, at::IntArrayRef input_size, const at::Tensor & batch_sizes, bool batch_first) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, batch_sizes);
     return at::redispatch::_pack_padded_sequence_backward(grad, input_size, batch_sizes, batch_first);
@@ -8160,15 +7639,12 @@ Tensor wrap__pack_padded_sequence_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H__PACK_PADDED_SEQUENCE_BACKWARD, grad, input_size, batch_sizes, batch_first);
 }
 
-Tensor wrap__pad_packed_sequence(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(data, batch_sizes);
-    return at::redispatch::_pad_packed_sequence(data, batch_sizes, batch_first, padding_value, total_length);
-  }
-  return MK_TORCHY(data.dtype(), data.device(), H__PAD_PACKED_SEQUENCE, data, batch_sizes, batch_first, padding_value, total_length);
+std::tuple<at::Tensor,at::Tensor> wrap__pad_packed_sequence(const at::Tensor & data, const at::Tensor & batch_sizes, bool batch_first, const at::Scalar & padding_value, int64_t total_length) {
+  ensure_materialized(data, batch_sizes);
+  return at::redispatch::_pad_packed_sequence(data, batch_sizes, batch_first, padding_value, total_length);
 }
 
-Tensor wrap_set__source_Storage(args...) {
+at::Tensor & wrap_set__source_Storage(at::Tensor & self, at::Storage source) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::set_(self, source);
@@ -8176,7 +7652,7 @@ Tensor wrap_set__source_Storage(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SET__SOURCE_STORAGE, self, source);
 }
 
-Tensor wrap_set__source_Storage_storage_offset(args...) {
+at::Tensor & wrap_set__source_Storage_storage_offset(at::Tensor & self, at::Storage source, int64_t storage_offset, at::IntArrayRef size, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::set_(self, source, storage_offset, size, stride);
@@ -8184,7 +7660,7 @@ Tensor wrap_set__source_Storage_storage_offset(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SET__SOURCE_STORAGE_STORAGE_OFFSET, self, source, storage_offset, size, stride);
 }
 
-Tensor wrap_set__source_Tensor(args...) {
+at::Tensor & wrap_set__source_Tensor(at::Tensor & self, const at::Tensor & source) {
   if (trace.is_flushing()) {
     ensure_materialized(self, source);
     return at::redispatch::set_(self, source);
@@ -8192,7 +7668,7 @@ Tensor wrap_set__source_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SET__SOURCE_TENSOR, self, source);
 }
 
-Tensor wrap_set_(args...) {
+at::Tensor & wrap_set_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::set_(self);
@@ -8200,12 +7676,12 @@ Tensor wrap_set_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SET_, self);
 }
 
-bool wrap_is_set_to(args...) {
+bool wrap_is_set_to(const at::Tensor & self, const at::Tensor & tensor) {
   ensure_materialized(self, tensor);
   return at::redispatch::is_set_to(self, tensor);
 }
 
-Tensor wrap_masked_fill__Scalar(args...) {
+at::Tensor & wrap_masked_fill__Scalar(at::Tensor & self, const at::Tensor & mask, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mask);
     return at::redispatch::masked_fill_(self, mask, value);
@@ -8213,7 +7689,7 @@ Tensor wrap_masked_fill__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MASKED_FILL__SCALAR, self, mask, value);
 }
 
-Tensor wrap_masked_fill_Scalar(args...) {
+at::Tensor wrap_masked_fill_Scalar(const at::Tensor & self, const at::Tensor & mask, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mask);
     return at::redispatch::masked_fill(self, mask, value);
@@ -8221,7 +7697,7 @@ Tensor wrap_masked_fill_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MASKED_FILL_SCALAR, self, mask, value);
 }
 
-Tensor wrap_masked_fill__Tensor(args...) {
+at::Tensor & wrap_masked_fill__Tensor(at::Tensor & self, const at::Tensor & mask, const at::Tensor & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mask, value);
     return at::redispatch::masked_fill_(self, mask, value);
@@ -8229,7 +7705,7 @@ Tensor wrap_masked_fill__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MASKED_FILL__TENSOR, self, mask, value);
 }
 
-Tensor wrap_masked_fill_Tensor(args...) {
+at::Tensor wrap_masked_fill_Tensor(const at::Tensor & self, const at::Tensor & mask, const at::Tensor & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mask, value);
     return at::redispatch::masked_fill(self, mask, value);
@@ -8237,7 +7713,7 @@ Tensor wrap_masked_fill_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MASKED_FILL_TENSOR, self, mask, value);
 }
 
-Tensor wrap_masked_scatter_(args...) {
+at::Tensor & wrap_masked_scatter_(at::Tensor & self, const at::Tensor & mask, const at::Tensor & source) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mask, source);
     return at::redispatch::masked_scatter_(self, mask, source);
@@ -8245,7 +7721,7 @@ Tensor wrap_masked_scatter_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MASKED_SCATTER_, self, mask, source);
 }
 
-Tensor wrap_masked_scatter(args...) {
+at::Tensor wrap_masked_scatter(const at::Tensor & self, const at::Tensor & mask, const at::Tensor & source) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mask, source);
     return at::redispatch::masked_scatter(self, mask, source);
@@ -8253,7 +7729,7 @@ Tensor wrap_masked_scatter(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MASKED_SCATTER, self, mask, source);
 }
 
-Tensor wrap_view(args...) {
+at::Tensor wrap_view(const at::Tensor & self, at::IntArrayRef size) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::view(self, size);
@@ -8261,7 +7737,7 @@ Tensor wrap_view(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_VIEW, self, size);
 }
 
-Tensor wrap_view_dtype(args...) {
+at::Tensor wrap_view_dtype(const at::Tensor & self, at::ScalarType dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::view(self, dtype);
@@ -8269,7 +7745,7 @@ Tensor wrap_view_dtype(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_VIEW_DTYPE, self, dtype);
 }
 
-Tensor wrap_put_(args...) {
+at::Tensor & wrap_put_(at::Tensor & self, const at::Tensor & index, const at::Tensor & source, bool accumulate) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::put_(self, index, source, accumulate);
@@ -8277,7 +7753,7 @@ Tensor wrap_put_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PUT_, self, index, source, accumulate);
 }
 
-Tensor wrap_put(args...) {
+at::Tensor wrap_put(const at::Tensor & self, const at::Tensor & index, const at::Tensor & source, bool accumulate) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::put(self, index, source, accumulate);
@@ -8285,7 +7761,7 @@ Tensor wrap_put(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_PUT, self, index, source, accumulate);
 }
 
-Tensor wrap_index_add_(args...) {
+at::Tensor & wrap_index_add_(at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & source) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::index_add_(self, dim, index, source);
@@ -8293,7 +7769,7 @@ Tensor wrap_index_add_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_ADD_, self, dim, index, source);
 }
 
-Tensor wrap_index_add__alpha(args...) {
+at::Tensor & wrap_index_add__alpha(at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & source, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::index_add_(self, dim, index, source, alpha);
@@ -8301,7 +7777,7 @@ Tensor wrap_index_add__alpha(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_ADD__ALPHA, self, dim, index, source, alpha);
 }
 
-Tensor wrap_index_add(args...) {
+at::Tensor wrap_index_add(const at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & source) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::index_add(self, dim, index, source);
@@ -8309,7 +7785,7 @@ Tensor wrap_index_add(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_ADD, self, dim, index, source);
 }
 
-Tensor wrap_index_add_alpha(args...) {
+at::Tensor wrap_index_add_alpha(const at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & source, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::index_add(self, dim, index, source, alpha);
@@ -8317,7 +7793,7 @@ Tensor wrap_index_add_alpha(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_ADD_ALPHA, self, dim, index, source, alpha);
 }
 
-Tensor wrap_index_add_dimname(args...) {
+at::Tensor wrap_index_add_dimname(const at::Tensor & self, at::Dimname dim, const at::Tensor & index, const at::Tensor & source, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::index_add(self, dim, index, source, alpha);
@@ -8325,7 +7801,7 @@ Tensor wrap_index_add_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_ADD_DIMNAME, self, dim, index, source, alpha);
 }
 
-Tensor wrap_index_fill__int_Scalar(args...) {
+at::Tensor & wrap_index_fill__int_Scalar(at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::index_fill_(self, dim, index, value);
@@ -8333,7 +7809,7 @@ Tensor wrap_index_fill__int_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_FILL__INT_SCALAR, self, dim, index, value);
 }
 
-Tensor wrap_index_fill_int_Scalar(args...) {
+at::Tensor wrap_index_fill_int_Scalar(const at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::index_fill(self, dim, index, value);
@@ -8341,7 +7817,7 @@ Tensor wrap_index_fill_int_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_FILL_INT_SCALAR, self, dim, index, value);
 }
 
-Tensor wrap_index_fill__int_Tensor(args...) {
+at::Tensor & wrap_index_fill__int_Tensor(at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, value);
     return at::redispatch::index_fill_(self, dim, index, value);
@@ -8349,7 +7825,7 @@ Tensor wrap_index_fill__int_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_FILL__INT_TENSOR, self, dim, index, value);
 }
 
-Tensor wrap_index_fill_int_Tensor(args...) {
+at::Tensor wrap_index_fill_int_Tensor(const at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, value);
     return at::redispatch::index_fill(self, dim, index, value);
@@ -8357,7 +7833,7 @@ Tensor wrap_index_fill_int_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_FILL_INT_TENSOR, self, dim, index, value);
 }
 
-Tensor wrap_index_fill__Dimname_Scalar(args...) {
+at::Tensor & wrap_index_fill__Dimname_Scalar(at::Tensor & self, at::Dimname dim, const at::Tensor & index, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::index_fill_(self, dim, index, value);
@@ -8365,7 +7841,7 @@ Tensor wrap_index_fill__Dimname_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_FILL__DIMNAME_SCALAR, self, dim, index, value);
 }
 
-Tensor wrap_index_fill__Dimname_Tensor(args...) {
+at::Tensor & wrap_index_fill__Dimname_Tensor(at::Tensor & self, at::Dimname dim, const at::Tensor & index, const at::Tensor & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, value);
     return at::redispatch::index_fill_(self, dim, index, value);
@@ -8373,7 +7849,7 @@ Tensor wrap_index_fill__Dimname_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_FILL__DIMNAME_TENSOR, self, dim, index, value);
 }
 
-Tensor wrap_index_fill_Dimname_Scalar(args...) {
+at::Tensor wrap_index_fill_Dimname_Scalar(const at::Tensor & self, at::Dimname dim, const at::Tensor & index, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::index_fill(self, dim, index, value);
@@ -8381,7 +7857,7 @@ Tensor wrap_index_fill_Dimname_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_FILL_DIMNAME_SCALAR, self, dim, index, value);
 }
 
-Tensor wrap_index_fill_Dimname_Tensor(args...) {
+at::Tensor wrap_index_fill_Dimname_Tensor(const at::Tensor & self, at::Dimname dim, const at::Tensor & index, const at::Tensor & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, value);
     return at::redispatch::index_fill(self, dim, index, value);
@@ -8389,7 +7865,7 @@ Tensor wrap_index_fill_Dimname_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_FILL_DIMNAME_TENSOR, self, dim, index, value);
 }
 
-Tensor wrap_scatter__src(args...) {
+at::Tensor & wrap_scatter__src(at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & src) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, src);
     return at::redispatch::scatter_(self, dim, index, src);
@@ -8397,7 +7873,7 @@ Tensor wrap_scatter__src(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SCATTER__SRC, self, dim, index, src);
 }
 
-Tensor wrap_scatter_src(args...) {
+at::Tensor wrap_scatter_src(const at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & src) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, src);
     return at::redispatch::scatter(self, dim, index, src);
@@ -8405,7 +7881,7 @@ Tensor wrap_scatter_src(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SCATTER_SRC, self, dim, index, src);
 }
 
-Tensor wrap_scatter__value(args...) {
+at::Tensor & wrap_scatter__value(at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::scatter_(self, dim, index, value);
@@ -8413,7 +7889,7 @@ Tensor wrap_scatter__value(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SCATTER__VALUE, self, dim, index, value);
 }
 
-Tensor wrap_scatter_value(args...) {
+at::Tensor wrap_scatter_value(const at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::scatter(self, dim, index, value);
@@ -8421,7 +7897,7 @@ Tensor wrap_scatter_value(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SCATTER_VALUE, self, dim, index, value);
 }
 
-Tensor wrap_scatter_dimname_src(args...) {
+at::Tensor wrap_scatter_dimname_src(const at::Tensor & self, at::Dimname dim, const at::Tensor & index, const at::Tensor & src) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, src);
     return at::redispatch::scatter(self, dim, index, src);
@@ -8429,7 +7905,7 @@ Tensor wrap_scatter_dimname_src(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SCATTER_DIMNAME_SRC, self, dim, index, src);
 }
 
-Tensor wrap_scatter_dimname_value(args...) {
+at::Tensor wrap_scatter_dimname_value(const at::Tensor & self, at::Dimname dim, const at::Tensor & index, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::scatter(self, dim, index, value);
@@ -8437,7 +7913,7 @@ Tensor wrap_scatter_dimname_value(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SCATTER_DIMNAME_VALUE, self, dim, index, value);
 }
 
-Tensor wrap_scatter__reduce(args...) {
+at::Tensor & wrap_scatter__reduce(at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & src, std::string reduce) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, src);
     return at::redispatch::scatter_(self, dim, index, src, reduce);
@@ -8445,7 +7921,7 @@ Tensor wrap_scatter__reduce(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SCATTER__REDUCE, self, dim, index, src, reduce);
 }
 
-Tensor wrap_scatter__value_reduce(args...) {
+at::Tensor & wrap_scatter__value_reduce(at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Scalar & value, std::string reduce) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::scatter_(self, dim, index, value, reduce);
@@ -8453,7 +7929,7 @@ Tensor wrap_scatter__value_reduce(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SCATTER__VALUE_REDUCE, self, dim, index, value, reduce);
 }
 
-Tensor wrap_scatter_add_(args...) {
+at::Tensor & wrap_scatter_add_(at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & src) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, src);
     return at::redispatch::scatter_add_(self, dim, index, src);
@@ -8461,7 +7937,7 @@ Tensor wrap_scatter_add_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SCATTER_ADD_, self, dim, index, src);
 }
 
-Tensor wrap_scatter_add(args...) {
+at::Tensor wrap_scatter_add(const at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & src) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, src);
     return at::redispatch::scatter_add(self, dim, index, src);
@@ -8469,7 +7945,7 @@ Tensor wrap_scatter_add(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SCATTER_ADD, self, dim, index, src);
 }
 
-Tensor wrap_scatter_add_dimname(args...) {
+at::Tensor wrap_scatter_add_dimname(const at::Tensor & self, at::Dimname dim, const at::Tensor & index, const at::Tensor & src) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, src);
     return at::redispatch::scatter_add(self, dim, index, src);
@@ -8477,7 +7953,7 @@ Tensor wrap_scatter_add_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SCATTER_ADD_DIMNAME, self, dim, index, src);
 }
 
-Tensor wrap_eq__Scalar(args...) {
+at::Tensor & wrap_eq__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::eq_(self, other);
@@ -8485,7 +7961,7 @@ Tensor wrap_eq__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_EQ__SCALAR, self, other);
 }
 
-Tensor wrap_eq__Tensor(args...) {
+at::Tensor & wrap_eq__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::eq_(self, other);
@@ -8493,7 +7969,7 @@ Tensor wrap_eq__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_EQ__TENSOR, self, other);
 }
 
-Tensor wrap_bitwise_and_Tensor_out(args...) {
+at::Tensor & wrap_bitwise_and_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::bitwise_and(out, self, other);
@@ -8501,7 +7977,7 @@ Tensor wrap_bitwise_and_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BITWISE_AND_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_bitwise_and_Scalar_out(args...) {
+at::Tensor & wrap_bitwise_and_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::bitwise_and(out, self, other);
@@ -8509,7 +7985,7 @@ Tensor wrap_bitwise_and_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BITWISE_AND_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_bitwise_and_Scalar(args...) {
+at::Tensor wrap_bitwise_and_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bitwise_and(self, other);
@@ -8517,7 +7993,7 @@ Tensor wrap_bitwise_and_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_AND_SCALAR, self, other);
 }
 
-Tensor wrap_bitwise_and_Tensor(args...) {
+at::Tensor wrap_bitwise_and_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::bitwise_and(self, other);
@@ -8525,7 +8001,7 @@ Tensor wrap_bitwise_and_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_AND_TENSOR, self, other);
 }
 
-Tensor wrap_bitwise_and__Scalar(args...) {
+at::Tensor & wrap_bitwise_and__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bitwise_and_(self, other);
@@ -8533,7 +8009,7 @@ Tensor wrap_bitwise_and__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_AND__SCALAR, self, other);
 }
 
-Tensor wrap_bitwise_and__Tensor(args...) {
+at::Tensor & wrap_bitwise_and__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::bitwise_and_(self, other);
@@ -8541,7 +8017,7 @@ Tensor wrap_bitwise_and__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_AND__TENSOR, self, other);
 }
 
-Tensor wrap___and___Scalar(args...) {
+at::Tensor wrap___and___Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::__and__(self, other);
@@ -8549,7 +8025,7 @@ Tensor wrap___and___Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___AND___SCALAR, self, other);
 }
 
-Tensor wrap___and___Tensor(args...) {
+at::Tensor wrap___and___Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::__and__(self, other);
@@ -8557,7 +8033,7 @@ Tensor wrap___and___Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___AND___TENSOR, self, other);
 }
 
-Tensor wrap___iand___Scalar(args...) {
+at::Tensor & wrap___iand___Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::__iand__(self, other);
@@ -8565,7 +8041,7 @@ Tensor wrap___iand___Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___IAND___SCALAR, self, other);
 }
 
-Tensor wrap___iand___Tensor(args...) {
+at::Tensor & wrap___iand___Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::__iand__(self, other);
@@ -8573,7 +8049,7 @@ Tensor wrap___iand___Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___IAND___TENSOR, self, other);
 }
 
-Tensor wrap_bitwise_or_Tensor_out(args...) {
+at::Tensor & wrap_bitwise_or_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::bitwise_or(out, self, other);
@@ -8581,7 +8057,7 @@ Tensor wrap_bitwise_or_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BITWISE_OR_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_bitwise_or_Scalar_out(args...) {
+at::Tensor & wrap_bitwise_or_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::bitwise_or(out, self, other);
@@ -8589,7 +8065,7 @@ Tensor wrap_bitwise_or_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BITWISE_OR_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_bitwise_or_Scalar(args...) {
+at::Tensor wrap_bitwise_or_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bitwise_or(self, other);
@@ -8597,7 +8073,7 @@ Tensor wrap_bitwise_or_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_OR_SCALAR, self, other);
 }
 
-Tensor wrap_bitwise_or_Tensor(args...) {
+at::Tensor wrap_bitwise_or_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::bitwise_or(self, other);
@@ -8605,7 +8081,7 @@ Tensor wrap_bitwise_or_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_OR_TENSOR, self, other);
 }
 
-Tensor wrap_bitwise_or__Scalar(args...) {
+at::Tensor & wrap_bitwise_or__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bitwise_or_(self, other);
@@ -8613,7 +8089,7 @@ Tensor wrap_bitwise_or__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_OR__SCALAR, self, other);
 }
 
-Tensor wrap_bitwise_or__Tensor(args...) {
+at::Tensor & wrap_bitwise_or__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::bitwise_or_(self, other);
@@ -8621,7 +8097,7 @@ Tensor wrap_bitwise_or__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_OR__TENSOR, self, other);
 }
 
-Tensor wrap___or___Scalar(args...) {
+at::Tensor wrap___or___Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::__or__(self, other);
@@ -8629,7 +8105,7 @@ Tensor wrap___or___Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___OR___SCALAR, self, other);
 }
 
-Tensor wrap___or___Tensor(args...) {
+at::Tensor wrap___or___Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::__or__(self, other);
@@ -8637,7 +8113,7 @@ Tensor wrap___or___Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___OR___TENSOR, self, other);
 }
 
-Tensor wrap___ior___Scalar(args...) {
+at::Tensor & wrap___ior___Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::__ior__(self, other);
@@ -8645,7 +8121,7 @@ Tensor wrap___ior___Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___IOR___SCALAR, self, other);
 }
 
-Tensor wrap___ior___Tensor(args...) {
+at::Tensor & wrap___ior___Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::__ior__(self, other);
@@ -8653,7 +8129,7 @@ Tensor wrap___ior___Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___IOR___TENSOR, self, other);
 }
 
-Tensor wrap_bitwise_xor_Tensor_out(args...) {
+at::Tensor & wrap_bitwise_xor_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::bitwise_xor(out, self, other);
@@ -8661,7 +8137,7 @@ Tensor wrap_bitwise_xor_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BITWISE_XOR_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_bitwise_xor_Scalar_out(args...) {
+at::Tensor & wrap_bitwise_xor_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::bitwise_xor(out, self, other);
@@ -8669,7 +8145,7 @@ Tensor wrap_bitwise_xor_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BITWISE_XOR_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_bitwise_xor_Scalar(args...) {
+at::Tensor wrap_bitwise_xor_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bitwise_xor(self, other);
@@ -8677,7 +8153,7 @@ Tensor wrap_bitwise_xor_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_XOR_SCALAR, self, other);
 }
 
-Tensor wrap_bitwise_xor_Tensor(args...) {
+at::Tensor wrap_bitwise_xor_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::bitwise_xor(self, other);
@@ -8685,7 +8161,7 @@ Tensor wrap_bitwise_xor_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_XOR_TENSOR, self, other);
 }
 
-Tensor wrap_bitwise_xor__Scalar(args...) {
+at::Tensor & wrap_bitwise_xor__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::bitwise_xor_(self, other);
@@ -8693,7 +8169,7 @@ Tensor wrap_bitwise_xor__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_XOR__SCALAR, self, other);
 }
 
-Tensor wrap_bitwise_xor__Tensor(args...) {
+at::Tensor & wrap_bitwise_xor__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::bitwise_xor_(self, other);
@@ -8701,7 +8177,7 @@ Tensor wrap_bitwise_xor__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BITWISE_XOR__TENSOR, self, other);
 }
 
-Tensor wrap___xor___Scalar(args...) {
+at::Tensor wrap___xor___Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::__xor__(self, other);
@@ -8709,7 +8185,7 @@ Tensor wrap___xor___Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___XOR___SCALAR, self, other);
 }
 
-Tensor wrap___xor___Tensor(args...) {
+at::Tensor wrap___xor___Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::__xor__(self, other);
@@ -8717,7 +8193,7 @@ Tensor wrap___xor___Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___XOR___TENSOR, self, other);
 }
 
-Tensor wrap___ixor___Scalar(args...) {
+at::Tensor & wrap___ixor___Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::__ixor__(self, other);
@@ -8725,7 +8201,7 @@ Tensor wrap___ixor___Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___IXOR___SCALAR, self, other);
 }
 
-Tensor wrap___ixor___Tensor(args...) {
+at::Tensor & wrap___ixor___Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::__ixor__(self, other);
@@ -8733,7 +8209,7 @@ Tensor wrap___ixor___Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___IXOR___TENSOR, self, other);
 }
 
-Tensor wrap___lshift___Scalar(args...) {
+at::Tensor wrap___lshift___Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::__lshift__(self, other);
@@ -8741,7 +8217,7 @@ Tensor wrap___lshift___Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___LSHIFT___SCALAR, self, other);
 }
 
-Tensor wrap___lshift___Tensor(args...) {
+at::Tensor wrap___lshift___Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::__lshift__(self, other);
@@ -8749,7 +8225,7 @@ Tensor wrap___lshift___Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___LSHIFT___TENSOR, self, other);
 }
 
-Tensor wrap___ilshift___Scalar(args...) {
+at::Tensor & wrap___ilshift___Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::__ilshift__(self, other);
@@ -8757,7 +8233,7 @@ Tensor wrap___ilshift___Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___ILSHIFT___SCALAR, self, other);
 }
 
-Tensor wrap___ilshift___Tensor(args...) {
+at::Tensor & wrap___ilshift___Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::__ilshift__(self, other);
@@ -8765,7 +8241,7 @@ Tensor wrap___ilshift___Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___ILSHIFT___TENSOR, self, other);
 }
 
-Tensor wrap___rshift___Scalar(args...) {
+at::Tensor wrap___rshift___Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::__rshift__(self, other);
@@ -8773,7 +8249,7 @@ Tensor wrap___rshift___Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___RSHIFT___SCALAR, self, other);
 }
 
-Tensor wrap___rshift___Tensor(args...) {
+at::Tensor wrap___rshift___Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::__rshift__(self, other);
@@ -8781,7 +8257,7 @@ Tensor wrap___rshift___Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___RSHIFT___TENSOR, self, other);
 }
 
-Tensor wrap___irshift___Scalar(args...) {
+at::Tensor & wrap___irshift___Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::__irshift__(self, other);
@@ -8789,7 +8265,7 @@ Tensor wrap___irshift___Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___IRSHIFT___SCALAR, self, other);
 }
 
-Tensor wrap___irshift___Tensor(args...) {
+at::Tensor & wrap___irshift___Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::__irshift__(self, other);
@@ -8797,7 +8273,7 @@ Tensor wrap___irshift___Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H___IRSHIFT___TENSOR, self, other);
 }
 
-Tensor wrap_tril_(args...) {
+at::Tensor & wrap_tril_(at::Tensor & self, int64_t diagonal) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::tril_(self, diagonal);
@@ -8805,7 +8281,7 @@ Tensor wrap_tril_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRIL_, self, diagonal);
 }
 
-Tensor wrap_triu_(args...) {
+at::Tensor & wrap_triu_(at::Tensor & self, int64_t diagonal) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::triu_(self, diagonal);
@@ -8813,7 +8289,7 @@ Tensor wrap_triu_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRIU_, self, diagonal);
 }
 
-Tensor wrap_renorm_(args...) {
+at::Tensor & wrap_renorm_(at::Tensor & self, const at::Scalar & p, int64_t dim, const at::Scalar & maxnorm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::renorm_(self, p, dim, maxnorm);
@@ -8821,7 +8297,7 @@ Tensor wrap_renorm_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RENORM_, self, p, dim, maxnorm);
 }
 
-Tensor wrap_lerp__Scalar(args...) {
+at::Tensor & wrap_lerp__Scalar(at::Tensor & self, const at::Tensor & end, const at::Scalar & weight) {
   if (trace.is_flushing()) {
     ensure_materialized(self, end);
     return at::redispatch::lerp_(self, end, weight);
@@ -8829,7 +8305,7 @@ Tensor wrap_lerp__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LERP__SCALAR, self, end, weight);
 }
 
-Tensor wrap_lerp__Tensor(args...) {
+at::Tensor & wrap_lerp__Tensor(at::Tensor & self, const at::Tensor & end, const at::Tensor & weight) {
   if (trace.is_flushing()) {
     ensure_materialized(self, end, weight);
     return at::redispatch::lerp_(self, end, weight);
@@ -8837,7 +8313,7 @@ Tensor wrap_lerp__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LERP__TENSOR, self, end, weight);
 }
 
-Tensor wrap_fmod__Scalar(args...) {
+at::Tensor & wrap_fmod__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fmod_(self, other);
@@ -8845,7 +8321,7 @@ Tensor wrap_fmod__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FMOD__SCALAR, self, other);
 }
 
-Tensor wrap_fmod__Tensor(args...) {
+at::Tensor & wrap_fmod__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::fmod_(self, other);
@@ -8853,7 +8329,7 @@ Tensor wrap_fmod__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FMOD__TENSOR, self, other);
 }
 
-Tensor wrap_remainder__Scalar(args...) {
+at::Tensor & wrap_remainder__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::remainder_(self, other);
@@ -8861,7 +8337,7 @@ Tensor wrap_remainder__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_REMAINDER__SCALAR, self, other);
 }
 
-Tensor wrap_remainder__Tensor(args...) {
+at::Tensor & wrap_remainder__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::remainder_(self, other);
@@ -8869,7 +8345,7 @@ Tensor wrap_remainder__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_REMAINDER__TENSOR, self, other);
 }
 
-Tensor wrap_addbmm_(args...) {
+at::Tensor & wrap_addbmm_(at::Tensor & self, const at::Tensor & batch1, const at::Tensor & batch2, const at::Scalar & beta, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, batch1, batch2);
     return at::redispatch::addbmm_(self, batch1, batch2, beta, alpha);
@@ -8877,7 +8353,7 @@ Tensor wrap_addbmm_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADDBMM_, self, batch1, batch2, beta, alpha);
 }
 
-Tensor wrap_addbmm_out(args...) {
+at::Tensor & wrap_addbmm_out(const at::Tensor & self, const at::Tensor & batch1, const at::Tensor & batch2, const at::Scalar & beta, const at::Scalar & alpha, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, batch1, batch2);
     return at::redispatch::addbmm(out, self, batch1, batch2, beta, alpha);
@@ -8885,7 +8361,7 @@ Tensor wrap_addbmm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ADDBMM_OUT, out, self, batch1, batch2, beta, alpha);
 }
 
-Tensor wrap_addbmm(args...) {
+at::Tensor wrap_addbmm(const at::Tensor & self, const at::Tensor & batch1, const at::Tensor & batch2, const at::Scalar & beta, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, batch1, batch2);
     return at::redispatch::addbmm(self, batch1, batch2, beta, alpha);
@@ -8893,7 +8369,7 @@ Tensor wrap_addbmm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADDBMM, self, batch1, batch2, beta, alpha);
 }
 
-Tensor wrap_addcdiv_(args...) {
+at::Tensor & wrap_addcdiv_(at::Tensor & self, const at::Tensor & tensor1, const at::Tensor & tensor2, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, tensor1, tensor2);
     return at::redispatch::addcdiv_(self, tensor1, tensor2, value);
@@ -8901,7 +8377,7 @@ Tensor wrap_addcdiv_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADDCDIV_, self, tensor1, tensor2, value);
 }
 
-Tensor wrap_random__from(args...) {
+at::Tensor & wrap_random__from(at::Tensor & self, int64_t from, c10::optional<int64_t> to, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::random_(self, from, to, generator);
@@ -8909,7 +8385,7 @@ Tensor wrap_random__from(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RANDOM__FROM, self, from, to, generator);
 }
 
-Tensor wrap_random__to(args...) {
+at::Tensor & wrap_random__to(at::Tensor & self, int64_t to, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::random_(self, to, generator);
@@ -8917,7 +8393,7 @@ Tensor wrap_random__to(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RANDOM__TO, self, to, generator);
 }
 
-Tensor wrap_random_(args...) {
+at::Tensor & wrap_random_(at::Tensor & self, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::random_(self, generator);
@@ -8925,7 +8401,7 @@ Tensor wrap_random_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RANDOM_, self, generator);
 }
 
-Tensor wrap_uniform_(args...) {
+at::Tensor & wrap_uniform_(at::Tensor & self, double from, double to, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::uniform_(self, from, to, generator);
@@ -8933,7 +8409,7 @@ Tensor wrap_uniform_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_UNIFORM_, self, from, to, generator);
 }
 
-Tensor wrap_cauchy_(args...) {
+at::Tensor & wrap_cauchy_(at::Tensor & self, double median, double sigma, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::cauchy_(self, median, sigma, generator);
@@ -8941,7 +8417,7 @@ Tensor wrap_cauchy_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CAUCHY_, self, median, sigma, generator);
 }
 
-Tensor wrap_log_normal_(args...) {
+at::Tensor & wrap_log_normal_(at::Tensor & self, double mean, double std, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::log_normal_(self, mean, std, generator);
@@ -8949,7 +8425,7 @@ Tensor wrap_log_normal_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOG_NORMAL_, self, mean, std, generator);
 }
 
-Tensor wrap_exponential_(args...) {
+at::Tensor & wrap_exponential_(at::Tensor & self, double lambd, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::exponential_(self, lambd, generator);
@@ -8957,7 +8433,7 @@ Tensor wrap_exponential_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_EXPONENTIAL_, self, lambd, generator);
 }
 
-Tensor wrap_geometric_(args...) {
+at::Tensor & wrap_geometric_(at::Tensor & self, double p, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::geometric_(self, p, generator);
@@ -8965,7 +8441,7 @@ Tensor wrap_geometric_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GEOMETRIC_, self, p, generator);
 }
 
-Tensor wrap_diag_out(args...) {
+at::Tensor & wrap_diag_out(const at::Tensor & self, int64_t diagonal, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::diag(out, self, diagonal);
@@ -8973,7 +8449,7 @@ Tensor wrap_diag_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_DIAG_OUT, out, self, diagonal);
 }
 
-Tensor wrap_diag(args...) {
+at::Tensor wrap_diag(const at::Tensor & self, int64_t diagonal) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::diag(self, diagonal);
@@ -8981,7 +8457,7 @@ Tensor wrap_diag(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIAG, self, diagonal);
 }
 
-Tensor wrap_diag_backward(args...) {
+at::Tensor wrap_diag_backward(const at::Tensor & grad, at::IntArrayRef input_sizes, int64_t diagonal) {
   if (trace.is_flushing()) {
     ensure_materialized(grad);
     return at::redispatch::diag_backward(grad, input_sizes, diagonal);
@@ -8989,7 +8465,7 @@ Tensor wrap_diag_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_DIAG_BACKWARD, grad, input_sizes, diagonal);
 }
 
-Tensor wrap_cross_out(args...) {
+at::Tensor & wrap_cross_out(const at::Tensor & self, const at::Tensor & other, c10::optional<int64_t> dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::cross(out, self, other, dim);
@@ -8997,7 +8473,7 @@ Tensor wrap_cross_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CROSS_OUT, out, self, other, dim);
 }
 
-Tensor wrap_cross(args...) {
+at::Tensor wrap_cross(const at::Tensor & self, const at::Tensor & other, c10::optional<int64_t> dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::cross(self, other, dim);
@@ -9005,7 +8481,7 @@ Tensor wrap_cross(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CROSS, self, other, dim);
 }
 
-Tensor wrap_triu_out(args...) {
+at::Tensor & wrap_triu_out(const at::Tensor & self, int64_t diagonal, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::triu(out, self, diagonal);
@@ -9013,7 +8489,7 @@ Tensor wrap_triu_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_TRIU_OUT, out, self, diagonal);
 }
 
-Tensor wrap_triu(args...) {
+at::Tensor wrap_triu(const at::Tensor & self, int64_t diagonal) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::triu(self, diagonal);
@@ -9021,7 +8497,7 @@ Tensor wrap_triu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRIU, self, diagonal);
 }
 
-Tensor wrap_tril_out(args...) {
+at::Tensor & wrap_tril_out(const at::Tensor & self, int64_t diagonal, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::tril(out, self, diagonal);
@@ -9029,7 +8505,7 @@ Tensor wrap_tril_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_TRIL_OUT, out, self, diagonal);
 }
 
-Tensor wrap_tril(args...) {
+at::Tensor wrap_tril(const at::Tensor & self, int64_t diagonal) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::tril(self, diagonal);
@@ -9037,23 +8513,19 @@ Tensor wrap_tril(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRIL, self, diagonal);
 }
 
-Tensor wrap_tril_indices(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::tril_indices(row, col, offset, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_TRIL_INDICES, row, col, offset, dtype, layout, device, pin_memory);
+at::Tensor wrap_tril_indices(int64_t row, int64_t col, int64_t offset, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::tril_indices(row, col, offset, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_triu_indices(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::triu_indices(row, col, offset, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_TRIU_INDICES, row, col, offset, dtype, layout, device, pin_memory);
+at::Tensor wrap_triu_indices(int64_t row, int64_t col, int64_t offset, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::triu_indices(row, col, offset, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_trace(args...) {
+at::Tensor wrap_trace(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::trace(self);
@@ -9061,7 +8533,7 @@ Tensor wrap_trace(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TRACE, self);
 }
 
-Tensor wrap_trace_backward(args...) {
+at::Tensor wrap_trace_backward(const at::Tensor & grad, at::IntArrayRef sizes) {
   if (trace.is_flushing()) {
     ensure_materialized(grad);
     return at::redispatch::trace_backward(grad, sizes);
@@ -9069,7 +8541,7 @@ Tensor wrap_trace_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_TRACE_BACKWARD, grad, sizes);
 }
 
-Tensor wrap_ne_Scalar_out(args...) {
+at::Tensor & wrap_ne_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::ne(out, self, other);
@@ -9077,7 +8549,7 @@ Tensor wrap_ne_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NE_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_ne_Scalar(args...) {
+at::Tensor wrap_ne_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::ne(self, other);
@@ -9085,7 +8557,7 @@ Tensor wrap_ne_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NE_SCALAR, self, other);
 }
 
-Tensor wrap_ne_Tensor_out(args...) {
+at::Tensor & wrap_ne_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::ne(out, self, other);
@@ -9093,7 +8565,7 @@ Tensor wrap_ne_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NE_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_ne_Tensor(args...) {
+at::Tensor wrap_ne_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::ne(self, other);
@@ -9101,7 +8573,7 @@ Tensor wrap_ne_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NE_TENSOR, self, other);
 }
 
-Tensor wrap_ne__Scalar(args...) {
+at::Tensor & wrap_ne__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::ne_(self, other);
@@ -9109,7 +8581,7 @@ Tensor wrap_ne__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NE__SCALAR, self, other);
 }
 
-Tensor wrap_ne__Tensor(args...) {
+at::Tensor & wrap_ne__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::ne_(self, other);
@@ -9117,7 +8589,7 @@ Tensor wrap_ne__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NE__TENSOR, self, other);
 }
 
-Tensor wrap_not_equal_Scalar_out(args...) {
+at::Tensor & wrap_not_equal_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::not_equal(out, self, other);
@@ -9125,7 +8597,7 @@ Tensor wrap_not_equal_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NOT_EQUAL_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_not_equal_Scalar(args...) {
+at::Tensor wrap_not_equal_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::not_equal(self, other);
@@ -9133,7 +8605,7 @@ Tensor wrap_not_equal_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NOT_EQUAL_SCALAR, self, other);
 }
 
-Tensor wrap_not_equal_Tensor_out(args...) {
+at::Tensor & wrap_not_equal_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::not_equal(out, self, other);
@@ -9141,7 +8613,7 @@ Tensor wrap_not_equal_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NOT_EQUAL_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_not_equal_Tensor(args...) {
+at::Tensor wrap_not_equal_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::not_equal(self, other);
@@ -9149,7 +8621,7 @@ Tensor wrap_not_equal_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NOT_EQUAL_TENSOR, self, other);
 }
 
-Tensor wrap_not_equal__Scalar(args...) {
+at::Tensor & wrap_not_equal__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::not_equal_(self, other);
@@ -9157,7 +8629,7 @@ Tensor wrap_not_equal__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NOT_EQUAL__SCALAR, self, other);
 }
 
-Tensor wrap_not_equal__Tensor(args...) {
+at::Tensor & wrap_not_equal__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::not_equal_(self, other);
@@ -9165,7 +8637,7 @@ Tensor wrap_not_equal__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NOT_EQUAL__TENSOR, self, other);
 }
 
-Tensor wrap_eq_Scalar_out(args...) {
+at::Tensor & wrap_eq_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::eq(out, self, other);
@@ -9173,7 +8645,7 @@ Tensor wrap_eq_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_EQ_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_eq_Scalar(args...) {
+at::Tensor wrap_eq_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::eq(self, other);
@@ -9181,7 +8653,7 @@ Tensor wrap_eq_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_EQ_SCALAR, self, other);
 }
 
-Tensor wrap_eq_Tensor_out(args...) {
+at::Tensor & wrap_eq_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::eq(out, self, other);
@@ -9189,7 +8661,7 @@ Tensor wrap_eq_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_EQ_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_eq_Tensor(args...) {
+at::Tensor wrap_eq_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::eq(self, other);
@@ -9197,7 +8669,7 @@ Tensor wrap_eq_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_EQ_TENSOR, self, other);
 }
 
-Tensor wrap_ge_Scalar_out(args...) {
+at::Tensor & wrap_ge_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::ge(out, self, other);
@@ -9205,7 +8677,7 @@ Tensor wrap_ge_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GE_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_ge_Scalar(args...) {
+at::Tensor wrap_ge_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::ge(self, other);
@@ -9213,7 +8685,7 @@ Tensor wrap_ge_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GE_SCALAR, self, other);
 }
 
-Tensor wrap_ge_Tensor_out(args...) {
+at::Tensor & wrap_ge_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::ge(out, self, other);
@@ -9221,7 +8693,7 @@ Tensor wrap_ge_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GE_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_ge_Tensor(args...) {
+at::Tensor wrap_ge_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::ge(self, other);
@@ -9229,7 +8701,7 @@ Tensor wrap_ge_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GE_TENSOR, self, other);
 }
 
-Tensor wrap_ge__Scalar(args...) {
+at::Tensor & wrap_ge__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::ge_(self, other);
@@ -9237,7 +8709,7 @@ Tensor wrap_ge__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GE__SCALAR, self, other);
 }
 
-Tensor wrap_ge__Tensor(args...) {
+at::Tensor & wrap_ge__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::ge_(self, other);
@@ -9245,7 +8717,7 @@ Tensor wrap_ge__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GE__TENSOR, self, other);
 }
 
-Tensor wrap_greater_equal_Scalar_out(args...) {
+at::Tensor & wrap_greater_equal_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::greater_equal(out, self, other);
@@ -9253,7 +8725,7 @@ Tensor wrap_greater_equal_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GREATER_EQUAL_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_greater_equal_Scalar(args...) {
+at::Tensor wrap_greater_equal_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::greater_equal(self, other);
@@ -9261,7 +8733,7 @@ Tensor wrap_greater_equal_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GREATER_EQUAL_SCALAR, self, other);
 }
 
-Tensor wrap_greater_equal_Tensor_out(args...) {
+at::Tensor & wrap_greater_equal_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::greater_equal(out, self, other);
@@ -9269,7 +8741,7 @@ Tensor wrap_greater_equal_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GREATER_EQUAL_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_greater_equal_Tensor(args...) {
+at::Tensor wrap_greater_equal_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::greater_equal(self, other);
@@ -9277,7 +8749,7 @@ Tensor wrap_greater_equal_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GREATER_EQUAL_TENSOR, self, other);
 }
 
-Tensor wrap_greater_equal__Scalar(args...) {
+at::Tensor & wrap_greater_equal__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::greater_equal_(self, other);
@@ -9285,7 +8757,7 @@ Tensor wrap_greater_equal__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GREATER_EQUAL__SCALAR, self, other);
 }
 
-Tensor wrap_greater_equal__Tensor(args...) {
+at::Tensor & wrap_greater_equal__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::greater_equal_(self, other);
@@ -9293,7 +8765,7 @@ Tensor wrap_greater_equal__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GREATER_EQUAL__TENSOR, self, other);
 }
 
-Tensor wrap_le_Scalar_out(args...) {
+at::Tensor & wrap_le_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::le(out, self, other);
@@ -9301,7 +8773,7 @@ Tensor wrap_le_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LE_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_le_Scalar(args...) {
+at::Tensor wrap_le_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::le(self, other);
@@ -9309,7 +8781,7 @@ Tensor wrap_le_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LE_SCALAR, self, other);
 }
 
-Tensor wrap_le_Tensor_out(args...) {
+at::Tensor & wrap_le_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::le(out, self, other);
@@ -9317,7 +8789,7 @@ Tensor wrap_le_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LE_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_le_Tensor(args...) {
+at::Tensor wrap_le_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::le(self, other);
@@ -9325,7 +8797,7 @@ Tensor wrap_le_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LE_TENSOR, self, other);
 }
 
-Tensor wrap_le__Scalar(args...) {
+at::Tensor & wrap_le__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::le_(self, other);
@@ -9333,7 +8805,7 @@ Tensor wrap_le__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LE__SCALAR, self, other);
 }
 
-Tensor wrap_le__Tensor(args...) {
+at::Tensor & wrap_le__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::le_(self, other);
@@ -9341,7 +8813,7 @@ Tensor wrap_le__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LE__TENSOR, self, other);
 }
 
-Tensor wrap_less_equal_Scalar_out(args...) {
+at::Tensor & wrap_less_equal_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::less_equal(out, self, other);
@@ -9349,7 +8821,7 @@ Tensor wrap_less_equal_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LESS_EQUAL_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_less_equal_Scalar(args...) {
+at::Tensor wrap_less_equal_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::less_equal(self, other);
@@ -9357,7 +8829,7 @@ Tensor wrap_less_equal_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LESS_EQUAL_SCALAR, self, other);
 }
 
-Tensor wrap_less_equal_Tensor_out(args...) {
+at::Tensor & wrap_less_equal_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::less_equal(out, self, other);
@@ -9365,7 +8837,7 @@ Tensor wrap_less_equal_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LESS_EQUAL_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_less_equal_Tensor(args...) {
+at::Tensor wrap_less_equal_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::less_equal(self, other);
@@ -9373,7 +8845,7 @@ Tensor wrap_less_equal_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LESS_EQUAL_TENSOR, self, other);
 }
 
-Tensor wrap_less_equal__Scalar(args...) {
+at::Tensor & wrap_less_equal__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::less_equal_(self, other);
@@ -9381,7 +8853,7 @@ Tensor wrap_less_equal__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LESS_EQUAL__SCALAR, self, other);
 }
 
-Tensor wrap_less_equal__Tensor(args...) {
+at::Tensor & wrap_less_equal__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::less_equal_(self, other);
@@ -9389,7 +8861,7 @@ Tensor wrap_less_equal__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LESS_EQUAL__TENSOR, self, other);
 }
 
-Tensor wrap_gt_Scalar_out(args...) {
+at::Tensor & wrap_gt_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::gt(out, self, other);
@@ -9397,7 +8869,7 @@ Tensor wrap_gt_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GT_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_gt_Scalar(args...) {
+at::Tensor wrap_gt_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::gt(self, other);
@@ -9405,7 +8877,7 @@ Tensor wrap_gt_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GT_SCALAR, self, other);
 }
 
-Tensor wrap_gt_Tensor_out(args...) {
+at::Tensor & wrap_gt_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::gt(out, self, other);
@@ -9413,7 +8885,7 @@ Tensor wrap_gt_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GT_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_gt_Tensor(args...) {
+at::Tensor wrap_gt_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::gt(self, other);
@@ -9421,7 +8893,7 @@ Tensor wrap_gt_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GT_TENSOR, self, other);
 }
 
-Tensor wrap_gt__Scalar(args...) {
+at::Tensor & wrap_gt__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::gt_(self, other);
@@ -9429,7 +8901,7 @@ Tensor wrap_gt__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GT__SCALAR, self, other);
 }
 
-Tensor wrap_gt__Tensor(args...) {
+at::Tensor & wrap_gt__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::gt_(self, other);
@@ -9437,7 +8909,7 @@ Tensor wrap_gt__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GT__TENSOR, self, other);
 }
 
-Tensor wrap_greater_Scalar_out(args...) {
+at::Tensor & wrap_greater_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::greater(out, self, other);
@@ -9445,7 +8917,7 @@ Tensor wrap_greater_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GREATER_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_greater_Scalar(args...) {
+at::Tensor wrap_greater_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::greater(self, other);
@@ -9453,7 +8925,7 @@ Tensor wrap_greater_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GREATER_SCALAR, self, other);
 }
 
-Tensor wrap_greater_Tensor_out(args...) {
+at::Tensor & wrap_greater_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::greater(out, self, other);
@@ -9461,7 +8933,7 @@ Tensor wrap_greater_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GREATER_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_greater_Tensor(args...) {
+at::Tensor wrap_greater_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::greater(self, other);
@@ -9469,7 +8941,7 @@ Tensor wrap_greater_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GREATER_TENSOR, self, other);
 }
 
-Tensor wrap_greater__Scalar(args...) {
+at::Tensor & wrap_greater__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::greater_(self, other);
@@ -9477,7 +8949,7 @@ Tensor wrap_greater__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GREATER__SCALAR, self, other);
 }
 
-Tensor wrap_greater__Tensor(args...) {
+at::Tensor & wrap_greater__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::greater_(self, other);
@@ -9485,7 +8957,7 @@ Tensor wrap_greater__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GREATER__TENSOR, self, other);
 }
 
-Tensor wrap_lt_Scalar_out(args...) {
+at::Tensor & wrap_lt_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::lt(out, self, other);
@@ -9493,7 +8965,7 @@ Tensor wrap_lt_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LT_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_lt_Scalar(args...) {
+at::Tensor wrap_lt_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::lt(self, other);
@@ -9501,7 +8973,7 @@ Tensor wrap_lt_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LT_SCALAR, self, other);
 }
 
-Tensor wrap_lt_Tensor_out(args...) {
+at::Tensor & wrap_lt_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::lt(out, self, other);
@@ -9509,7 +8981,7 @@ Tensor wrap_lt_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LT_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_lt_Tensor(args...) {
+at::Tensor wrap_lt_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::lt(self, other);
@@ -9517,7 +8989,7 @@ Tensor wrap_lt_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LT_TENSOR, self, other);
 }
 
-Tensor wrap_lt__Scalar(args...) {
+at::Tensor & wrap_lt__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::lt_(self, other);
@@ -9525,7 +8997,7 @@ Tensor wrap_lt__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LT__SCALAR, self, other);
 }
 
-Tensor wrap_lt__Tensor(args...) {
+at::Tensor & wrap_lt__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::lt_(self, other);
@@ -9533,7 +9005,7 @@ Tensor wrap_lt__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LT__TENSOR, self, other);
 }
 
-Tensor wrap_less_Scalar_out(args...) {
+at::Tensor & wrap_less_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::less(out, self, other);
@@ -9541,7 +9013,7 @@ Tensor wrap_less_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LESS_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_less_Scalar(args...) {
+at::Tensor wrap_less_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::less(self, other);
@@ -9549,7 +9021,7 @@ Tensor wrap_less_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LESS_SCALAR, self, other);
 }
 
-Tensor wrap_less_Tensor_out(args...) {
+at::Tensor & wrap_less_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::less(out, self, other);
@@ -9557,7 +9029,7 @@ Tensor wrap_less_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LESS_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_less_Tensor(args...) {
+at::Tensor wrap_less_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::less(self, other);
@@ -9565,7 +9037,7 @@ Tensor wrap_less_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LESS_TENSOR, self, other);
 }
 
-Tensor wrap_less__Scalar(args...) {
+at::Tensor & wrap_less__Scalar(at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::less_(self, other);
@@ -9573,7 +9045,7 @@ Tensor wrap_less__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LESS__SCALAR, self, other);
 }
 
-Tensor wrap_less__Tensor(args...) {
+at::Tensor & wrap_less__Tensor(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::less_(self, other);
@@ -9581,7 +9053,7 @@ Tensor wrap_less__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LESS__TENSOR, self, other);
 }
 
-Tensor wrap_take_out(args...) {
+at::Tensor & wrap_take_out(const at::Tensor & self, const at::Tensor & index, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, index);
     return at::redispatch::take(out, self, index);
@@ -9589,7 +9061,7 @@ Tensor wrap_take_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_TAKE_OUT, out, self, index);
 }
 
-Tensor wrap_take(args...) {
+at::Tensor wrap_take(const at::Tensor & self, const at::Tensor & index) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::take(self, index);
@@ -9597,7 +9069,7 @@ Tensor wrap_take(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TAKE, self, index);
 }
 
-Tensor wrap_take_along_dim_out(args...) {
+at::Tensor & wrap_take_along_dim_out(const at::Tensor & self, const at::Tensor & indices, c10::optional<int64_t> dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, indices);
     return at::redispatch::take_along_dim(out, self, indices, dim);
@@ -9605,7 +9077,7 @@ Tensor wrap_take_along_dim_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_TAKE_ALONG_DIM_OUT, out, self, indices, dim);
 }
 
-Tensor wrap_take_along_dim(args...) {
+at::Tensor wrap_take_along_dim(const at::Tensor & self, const at::Tensor & indices, c10::optional<int64_t> dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self, indices);
     return at::redispatch::take_along_dim(self, indices, dim);
@@ -9613,7 +9085,7 @@ Tensor wrap_take_along_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_TAKE_ALONG_DIM, self, indices, dim);
 }
 
-Tensor wrap_index_select_out(args...) {
+at::Tensor & wrap_index_select_out(const at::Tensor & self, int64_t dim, const at::Tensor & index, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, index);
     return at::redispatch::index_select(out, self, dim, index);
@@ -9621,7 +9093,7 @@ Tensor wrap_index_select_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_INDEX_SELECT_OUT, out, self, dim, index);
 }
 
-Tensor wrap_index_select(args...) {
+at::Tensor wrap_index_select(const at::Tensor & self, int64_t dim, const at::Tensor & index) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::index_select(self, dim, index);
@@ -9629,7 +9101,7 @@ Tensor wrap_index_select(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_SELECT, self, dim, index);
 }
 
-Tensor wrap_index_select_dimname_out(args...) {
+at::Tensor & wrap_index_select_dimname_out(const at::Tensor & self, at::Dimname dim, const at::Tensor & index, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, index);
     return at::redispatch::index_select(out, self, dim, index);
@@ -9637,7 +9109,7 @@ Tensor wrap_index_select_dimname_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_INDEX_SELECT_DIMNAME_OUT, out, self, dim, index);
 }
 
-Tensor wrap_index_select_dimname(args...) {
+at::Tensor wrap_index_select_dimname(const at::Tensor & self, at::Dimname dim, const at::Tensor & index) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::index_select(self, dim, index);
@@ -9645,7 +9117,7 @@ Tensor wrap_index_select_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INDEX_SELECT_DIMNAME, self, dim, index);
 }
 
-Tensor wrap_index_select_backward(args...) {
+at::Tensor wrap_index_select_backward(const at::Tensor & grad, at::IntArrayRef self_sizes, int64_t dim, const at::Tensor & index) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, index);
     return at::redispatch::index_select_backward(grad, self_sizes, dim, index);
@@ -9653,7 +9125,7 @@ Tensor wrap_index_select_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_INDEX_SELECT_BACKWARD, grad, self_sizes, dim, index);
 }
 
-Tensor wrap_masked_select_out(args...) {
+at::Tensor & wrap_masked_select_out(const at::Tensor & self, const at::Tensor & mask, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, mask);
     return at::redispatch::masked_select(out, self, mask);
@@ -9661,7 +9133,7 @@ Tensor wrap_masked_select_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MASKED_SELECT_OUT, out, self, mask);
 }
 
-Tensor wrap_masked_select(args...) {
+at::Tensor wrap_masked_select(const at::Tensor & self, const at::Tensor & mask) {
   if (trace.is_flushing()) {
     ensure_materialized(self, mask);
     return at::redispatch::masked_select(self, mask);
@@ -9669,7 +9141,7 @@ Tensor wrap_masked_select(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MASKED_SELECT, self, mask);
 }
 
-Tensor wrap_masked_select_backward(args...) {
+at::Tensor wrap_masked_select_backward(const at::Tensor & grad, const at::Tensor & input, const at::Tensor & mask) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, input, mask);
     return at::redispatch::masked_select_backward(grad, input, mask);
@@ -9677,7 +9149,7 @@ Tensor wrap_masked_select_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_MASKED_SELECT_BACKWARD, grad, input, mask);
 }
 
-Tensor wrap_nonzero_out(args...) {
+at::Tensor & wrap_nonzero_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::nonzero(out, self);
@@ -9685,7 +9157,7 @@ Tensor wrap_nonzero_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NONZERO_OUT, out, self);
 }
 
-Tensor wrap_nonzero(args...) {
+at::Tensor wrap_nonzero(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::nonzero(self);
@@ -9693,12 +9165,12 @@ Tensor wrap_nonzero(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NONZERO, self);
 }
 
-Tensor[] wrap_nonzero_numpy(args...) {
+std::vector<at::Tensor> wrap_nonzero_numpy(const at::Tensor & self) {
   ensure_materialized(self);
   return at::redispatch::nonzero_numpy(self);
 }
 
-Tensor wrap_gather_out(args...) {
+at::Tensor & wrap_gather_out(const at::Tensor & self, int64_t dim, const at::Tensor & index, bool sparse_grad, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, index);
     return at::redispatch::gather(out, self, dim, index, sparse_grad);
@@ -9706,7 +9178,7 @@ Tensor wrap_gather_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GATHER_OUT, out, self, dim, index, sparse_grad);
 }
 
-Tensor wrap_gather(args...) {
+at::Tensor wrap_gather(const at::Tensor & self, int64_t dim, const at::Tensor & index, bool sparse_grad) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::gather(self, dim, index, sparse_grad);
@@ -9714,7 +9186,7 @@ Tensor wrap_gather(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GATHER, self, dim, index, sparse_grad);
 }
 
-Tensor wrap_gather_backward(args...) {
+at::Tensor wrap_gather_backward(const at::Tensor & grad, const at::Tensor & self, int64_t dim, const at::Tensor & index, bool sparse_grad) {
   if (trace.is_flushing()) {
     ensure_materialized(grad, self, index);
     return at::redispatch::gather_backward(grad, self, dim, index, sparse_grad);
@@ -9722,7 +9194,7 @@ Tensor wrap_gather_backward(args...) {
   return MK_TORCHY(grad.dtype(), grad.device(), H_GATHER_BACKWARD, grad, self, dim, index, sparse_grad);
 }
 
-Tensor wrap_gather_dimname_out(args...) {
+at::Tensor & wrap_gather_dimname_out(const at::Tensor & self, at::Dimname dim, const at::Tensor & index, bool sparse_grad, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, index);
     return at::redispatch::gather(out, self, dim, index, sparse_grad);
@@ -9730,7 +9202,7 @@ Tensor wrap_gather_dimname_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GATHER_DIMNAME_OUT, out, self, dim, index, sparse_grad);
 }
 
-Tensor wrap_gather_dimname(args...) {
+at::Tensor wrap_gather_dimname(const at::Tensor & self, at::Dimname dim, const at::Tensor & index, bool sparse_grad) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index);
     return at::redispatch::gather(self, dim, index, sparse_grad);
@@ -9738,7 +9210,7 @@ Tensor wrap_gather_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GATHER_DIMNAME, self, dim, index, sparse_grad);
 }
 
-Tensor wrap__gather_sparse_backward(args...) {
+at::Tensor wrap__gather_sparse_backward(const at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & grad) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, grad);
     return at::redispatch::_gather_sparse_backward(self, dim, index, grad);
@@ -9746,7 +9218,7 @@ Tensor wrap__gather_sparse_backward(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__GATHER_SPARSE_BACKWARD, self, dim, index, grad);
 }
 
-Tensor wrap_addcmul_out(args...) {
+at::Tensor & wrap_addcmul_out(const at::Tensor & self, const at::Tensor & tensor1, const at::Tensor & tensor2, const at::Scalar & value, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, tensor1, tensor2);
     return at::redispatch::addcmul(out, self, tensor1, tensor2, value);
@@ -9754,7 +9226,7 @@ Tensor wrap_addcmul_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ADDCMUL_OUT, out, self, tensor1, tensor2, value);
 }
 
-Tensor wrap_addcmul(args...) {
+at::Tensor wrap_addcmul(const at::Tensor & self, const at::Tensor & tensor1, const at::Tensor & tensor2, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, tensor1, tensor2);
     return at::redispatch::addcmul(self, tensor1, tensor2, value);
@@ -9762,7 +9234,7 @@ Tensor wrap_addcmul(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADDCMUL, self, tensor1, tensor2, value);
 }
 
-Tensor wrap_addcmul_(args...) {
+at::Tensor & wrap_addcmul_(at::Tensor & self, const at::Tensor & tensor1, const at::Tensor & tensor2, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, tensor1, tensor2);
     return at::redispatch::addcmul_(self, tensor1, tensor2, value);
@@ -9770,7 +9242,7 @@ Tensor wrap_addcmul_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADDCMUL_, self, tensor1, tensor2, value);
 }
 
-Tensor wrap_addcdiv_out(args...) {
+at::Tensor & wrap_addcdiv_out(const at::Tensor & self, const at::Tensor & tensor1, const at::Tensor & tensor2, const at::Scalar & value, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, tensor1, tensor2);
     return at::redispatch::addcdiv(out, self, tensor1, tensor2, value);
@@ -9778,7 +9250,7 @@ Tensor wrap_addcdiv_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ADDCDIV_OUT, out, self, tensor1, tensor2, value);
 }
 
-Tensor wrap_addcdiv(args...) {
+at::Tensor wrap_addcdiv(const at::Tensor & self, const at::Tensor & tensor1, const at::Tensor & tensor2, const at::Scalar & value) {
   if (trace.is_flushing()) {
     ensure_materialized(self, tensor1, tensor2);
     return at::redispatch::addcdiv(self, tensor1, tensor2, value);
@@ -9786,7 +9258,7 @@ Tensor wrap_addcdiv(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADDCDIV, self, tensor1, tensor2, value);
 }
 
-Tensor wrap_cross_entropy_loss(args...) {
+at::Tensor wrap_cross_entropy_loss(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::cross_entropy_loss(self, target, weight, reduction, ignore_index);
@@ -9794,103 +9266,67 @@ Tensor wrap_cross_entropy_loss(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CROSS_ENTROPY_LOSS, self, target, weight, reduction, ignore_index);
 }
 
-Tensor wrap_lstsq_X(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(X, qr, self, A);
-    return at::redispatch::lstsq(X, qr, self, A);
-  }
-  return MK_TORCHY(X.dtype(), X.device(), H_LSTSQ_X, X, qr, self, A);
+std::tuple<at::Tensor &,at::Tensor &> wrap_lstsq_X(const at::Tensor & self, const at::Tensor & A, at::Tensor & X, at::Tensor & qr) {
+  ensure_materialized(X, qr, self, A);
+  return at::redispatch::lstsq(X, qr, self, A);
 }
 
-Tensor wrap_lstsq(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, A);
-    return at::redispatch::lstsq(self, A);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_LSTSQ, self, A);
+std::tuple<at::Tensor,at::Tensor> wrap_lstsq(const at::Tensor & self, const at::Tensor & A) {
+  ensure_materialized(self, A);
+  return at::redispatch::lstsq(self, A);
 }
 
-Tensor wrap_triangular_solve_X(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(X, M, self, A);
-    return at::redispatch::triangular_solve(X, M, self, A, upper, transpose, unitriangular);
-  }
-  return MK_TORCHY(X.dtype(), X.device(), H_TRIANGULAR_SOLVE_X, X, M, self, A, upper, transpose, unitriangular);
+std::tuple<at::Tensor &,at::Tensor &> wrap_triangular_solve_X(const at::Tensor & self, const at::Tensor & A, bool upper, bool transpose, bool unitriangular, at::Tensor & X, at::Tensor & M) {
+  ensure_materialized(X, M, self, A);
+  return at::redispatch::triangular_solve(X, M, self, A, upper, transpose, unitriangular);
 }
 
-Tensor wrap_triangular_solve(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, A);
-    return at::redispatch::triangular_solve(self, A, upper, transpose, unitriangular);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_TRIANGULAR_SOLVE, self, A, upper, transpose, unitriangular);
+std::tuple<at::Tensor,at::Tensor> wrap_triangular_solve(const at::Tensor & self, const at::Tensor & A, bool upper, bool transpose, bool unitriangular) {
+  ensure_materialized(self, A);
+  return at::redispatch::triangular_solve(self, A, upper, transpose, unitriangular);
 }
 
-Tensor wrap_symeig_e(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(e, V, self);
-    return at::redispatch::symeig(e, V, self, eigenvectors, upper);
-  }
-  return MK_TORCHY(e.dtype(), e.device(), H_SYMEIG_E, e, V, self, eigenvectors, upper);
+std::tuple<at::Tensor &,at::Tensor &> wrap_symeig_e(const at::Tensor & self, bool eigenvectors, bool upper, at::Tensor & e, at::Tensor & V) {
+  ensure_materialized(e, V, self);
+  return at::redispatch::symeig(e, V, self, eigenvectors, upper);
 }
 
-Tensor wrap_symeig(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::symeig(self, eigenvectors, upper);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_SYMEIG, self, eigenvectors, upper);
+std::tuple<at::Tensor,at::Tensor> wrap_symeig(const at::Tensor & self, bool eigenvectors, bool upper) {
+  ensure_materialized(self);
+  return at::redispatch::symeig(self, eigenvectors, upper);
 }
 
-Tensor wrap__symeig_helper(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::_symeig_helper(self, eigenvectors, upper);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H__SYMEIG_HELPER, self, eigenvectors, upper);
+std::tuple<at::Tensor,at::Tensor> wrap__symeig_helper(const at::Tensor & self, bool eigenvectors, bool upper) {
+  ensure_materialized(self);
+  return at::redispatch::_symeig_helper(self, eigenvectors, upper);
 }
 
-Tensor wrap_eig_e(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(e, v, self);
-    return at::redispatch::eig(e, v, self, eigenvectors);
-  }
-  return MK_TORCHY(e.dtype(), e.device(), H_EIG_E, e, v, self, eigenvectors);
+std::tuple<at::Tensor &,at::Tensor &> wrap_eig_e(const at::Tensor & self, bool eigenvectors, at::Tensor & e, at::Tensor & v) {
+  ensure_materialized(e, v, self);
+  return at::redispatch::eig(e, v, self, eigenvectors);
 }
 
-Tensor wrap_eig(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::eig(self, eigenvectors);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_EIG, self, eigenvectors);
+std::tuple<at::Tensor,at::Tensor> wrap_eig(const at::Tensor & self, bool eigenvectors) {
+  ensure_materialized(self);
+  return at::redispatch::eig(self, eigenvectors);
 }
 
-Tensor wrap_svd_U(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(U, S, V, self);
-    return at::redispatch::svd(U, S, V, self, some, compute_uv);
-  }
-  return MK_TORCHY(U.dtype(), U.device(), H_SVD_U, U, S, V, self, some, compute_uv);
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> wrap_svd_U(const at::Tensor & self, bool some, bool compute_uv, at::Tensor & U, at::Tensor & S, at::Tensor & V) {
+  ensure_materialized(U, S, V, self);
+  return at::redispatch::svd(U, S, V, self, some, compute_uv);
 }
 
-Tensor wrap_svd(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::svd(self, some, compute_uv);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_SVD, self, some, compute_uv);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_svd(const at::Tensor & self, bool some, bool compute_uv) {
+  ensure_materialized(self);
+  return at::redispatch::svd(self, some, compute_uv);
 }
 
-Tensor wrap__svd_helper(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::_svd_helper(self, some, compute_uv);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H__SVD_HELPER, self, some, compute_uv);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap__svd_helper(const at::Tensor & self, bool some, bool compute_uv) {
+  ensure_materialized(self);
+  return at::redispatch::_svd_helper(self, some, compute_uv);
 }
 
-Tensor wrap_swapaxes(args...) {
+at::Tensor wrap_swapaxes(const at::Tensor & self, int64_t axis0, int64_t axis1) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::swapaxes(self, axis0, axis1);
@@ -9898,7 +9334,7 @@ Tensor wrap_swapaxes(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SWAPAXES, self, axis0, axis1);
 }
 
-Tensor wrap_swapaxes_(args...) {
+at::Tensor & wrap_swapaxes_(at::Tensor & self, int64_t axis0, int64_t axis1) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::swapaxes_(self, axis0, axis1);
@@ -9906,7 +9342,7 @@ Tensor wrap_swapaxes_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SWAPAXES_, self, axis0, axis1);
 }
 
-Tensor wrap_swapdims(args...) {
+at::Tensor wrap_swapdims(const at::Tensor & self, int64_t dim0, int64_t dim1) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::swapdims(self, dim0, dim1);
@@ -9914,7 +9350,7 @@ Tensor wrap_swapdims(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SWAPDIMS, self, dim0, dim1);
 }
 
-Tensor wrap_swapdims_(args...) {
+at::Tensor & wrap_swapdims_(at::Tensor & self, int64_t dim0, int64_t dim1) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::swapdims_(self, dim0, dim1);
@@ -9922,7 +9358,7 @@ Tensor wrap_swapdims_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SWAPDIMS_, self, dim0, dim1);
 }
 
-Tensor wrap_cholesky_out(args...) {
+at::Tensor & wrap_cholesky_out(const at::Tensor & self, bool upper, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::cholesky(out, self, upper);
@@ -9930,7 +9366,7 @@ Tensor wrap_cholesky_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CHOLESKY_OUT, out, self, upper);
 }
 
-Tensor wrap_cholesky(args...) {
+at::Tensor wrap_cholesky(const at::Tensor & self, bool upper) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::cholesky(self, upper);
@@ -9938,7 +9374,7 @@ Tensor wrap_cholesky(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CHOLESKY, self, upper);
 }
 
-Tensor wrap__cholesky_helper(args...) {
+at::Tensor wrap__cholesky_helper(const at::Tensor & self, bool upper) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_cholesky_helper(self, upper);
@@ -9946,7 +9382,7 @@ Tensor wrap__cholesky_helper(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CHOLESKY_HELPER, self, upper);
 }
 
-Tensor wrap_cholesky_solve_out(args...) {
+at::Tensor & wrap_cholesky_solve_out(const at::Tensor & self, const at::Tensor & input2, bool upper, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, input2);
     return at::redispatch::cholesky_solve(out, self, input2, upper);
@@ -9954,7 +9390,7 @@ Tensor wrap_cholesky_solve_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CHOLESKY_SOLVE_OUT, out, self, input2, upper);
 }
 
-Tensor wrap_cholesky_solve(args...) {
+at::Tensor wrap_cholesky_solve(const at::Tensor & self, const at::Tensor & input2, bool upper) {
   if (trace.is_flushing()) {
     ensure_materialized(self, input2);
     return at::redispatch::cholesky_solve(self, input2, upper);
@@ -9962,7 +9398,7 @@ Tensor wrap_cholesky_solve(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CHOLESKY_SOLVE, self, input2, upper);
 }
 
-Tensor wrap__cholesky_solve_helper(args...) {
+at::Tensor wrap__cholesky_solve_helper(const at::Tensor & self, const at::Tensor & A, bool upper) {
   if (trace.is_flushing()) {
     ensure_materialized(self, A);
     return at::redispatch::_cholesky_solve_helper(self, A, upper);
@@ -9970,31 +9406,22 @@ Tensor wrap__cholesky_solve_helper(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CHOLESKY_SOLVE_HELPER, self, A, upper);
 }
 
-Tensor wrap_solve(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, A);
-    return at::redispatch::solve(self, A);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_SOLVE, self, A);
+std::tuple<at::Tensor,at::Tensor> wrap_solve(const at::Tensor & self, const at::Tensor & A) {
+  ensure_materialized(self, A);
+  return at::redispatch::solve(self, A);
 }
 
-Tensor wrap_solve_solution(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(solution, lu, self, A);
-    return at::redispatch::solve(solution, lu, self, A);
-  }
-  return MK_TORCHY(solution.dtype(), solution.device(), H_SOLVE_SOLUTION, solution, lu, self, A);
+std::tuple<at::Tensor &,at::Tensor &> wrap_solve_solution(const at::Tensor & self, const at::Tensor & A, at::Tensor & solution, at::Tensor & lu) {
+  ensure_materialized(solution, lu, self, A);
+  return at::redispatch::solve(solution, lu, self, A);
 }
 
-Tensor wrap__solve_helper(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, A);
-    return at::redispatch::_solve_helper(self, A);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H__SOLVE_HELPER, self, A);
+std::tuple<at::Tensor,at::Tensor> wrap__solve_helper(const at::Tensor & self, const at::Tensor & A) {
+  ensure_materialized(self, A);
+  return at::redispatch::_solve_helper(self, A);
 }
 
-Tensor wrap_cholesky_inverse(args...) {
+at::Tensor wrap_cholesky_inverse(const at::Tensor & self, bool upper) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::cholesky_inverse(self, upper);
@@ -10002,7 +9429,7 @@ Tensor wrap_cholesky_inverse(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CHOLESKY_INVERSE, self, upper);
 }
 
-Tensor wrap_cholesky_inverse_out(args...) {
+at::Tensor & wrap_cholesky_inverse_out(const at::Tensor & self, bool upper, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::cholesky_inverse(out, self, upper);
@@ -10010,39 +9437,27 @@ Tensor wrap_cholesky_inverse_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_CHOLESKY_INVERSE_OUT, out, self, upper);
 }
 
-Tensor wrap_qr_Q(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(Q, R, self);
-    return at::redispatch::qr(Q, R, self, some);
-  }
-  return MK_TORCHY(Q.dtype(), Q.device(), H_QR_Q, Q, R, self, some);
+std::tuple<at::Tensor &,at::Tensor &> wrap_qr_Q(const at::Tensor & self, bool some, at::Tensor & Q, at::Tensor & R) {
+  ensure_materialized(Q, R, self);
+  return at::redispatch::qr(Q, R, self, some);
 }
 
-Tensor wrap_qr(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::qr(self, some);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_QR, self, some);
+std::tuple<at::Tensor,at::Tensor> wrap_qr(const at::Tensor & self, bool some) {
+  ensure_materialized(self);
+  return at::redispatch::qr(self, some);
 }
 
-Tensor wrap_geqrf_a(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(a, tau, self);
-    return at::redispatch::geqrf(a, tau, self);
-  }
-  return MK_TORCHY(a.dtype(), a.device(), H_GEQRF_A, a, tau, self);
+std::tuple<at::Tensor &,at::Tensor &> wrap_geqrf_a(const at::Tensor & self, at::Tensor & a, at::Tensor & tau) {
+  ensure_materialized(a, tau, self);
+  return at::redispatch::geqrf(a, tau, self);
 }
 
-Tensor wrap_geqrf(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::geqrf(self);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_GEQRF, self);
+std::tuple<at::Tensor,at::Tensor> wrap_geqrf(const at::Tensor & self) {
+  ensure_materialized(self);
+  return at::redispatch::geqrf(self);
 }
 
-Tensor wrap_orgqr(args...) {
+at::Tensor wrap_orgqr(const at::Tensor & self, const at::Tensor & input2) {
   if (trace.is_flushing()) {
     ensure_materialized(self, input2);
     return at::redispatch::orgqr(self, input2);
@@ -10050,7 +9465,7 @@ Tensor wrap_orgqr(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ORGQR, self, input2);
 }
 
-Tensor wrap_orgqr_out(args...) {
+at::Tensor & wrap_orgqr_out(const at::Tensor & self, const at::Tensor & input2, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, input2);
     return at::redispatch::orgqr(out, self, input2);
@@ -10058,7 +9473,7 @@ Tensor wrap_orgqr_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ORGQR_OUT, out, self, input2);
 }
 
-Tensor wrap_ormqr_out(args...) {
+at::Tensor & wrap_ormqr_out(const at::Tensor & self, const at::Tensor & input2, const at::Tensor & input3, bool left, bool transpose, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, input2, input3);
     return at::redispatch::ormqr(out, self, input2, input3, left, transpose);
@@ -10066,7 +9481,7 @@ Tensor wrap_ormqr_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ORMQR_OUT, out, self, input2, input3, left, transpose);
 }
 
-Tensor wrap_ormqr(args...) {
+at::Tensor wrap_ormqr(const at::Tensor & self, const at::Tensor & input2, const at::Tensor & input3, bool left, bool transpose) {
   if (trace.is_flushing()) {
     ensure_materialized(self, input2, input3);
     return at::redispatch::ormqr(self, input2, input3, left, transpose);
@@ -10074,15 +9489,12 @@ Tensor wrap_ormqr(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ORMQR, self, input2, input3, left, transpose);
 }
 
-Tensor wrap__lu_with_info(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::_lu_with_info(self, pivot, check_errors);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H__LU_WITH_INFO, self, pivot, check_errors);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap__lu_with_info(const at::Tensor & self, bool pivot, bool check_errors) {
+  ensure_materialized(self);
+  return at::redispatch::_lu_with_info(self, pivot, check_errors);
 }
 
-Tensor wrap_lu_solve_out(args...) {
+at::Tensor & wrap_lu_solve_out(const at::Tensor & self, const at::Tensor & LU_data, const at::Tensor & LU_pivots, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, LU_data, LU_pivots);
     return at::redispatch::lu_solve(out, self, LU_data, LU_pivots);
@@ -10090,7 +9502,7 @@ Tensor wrap_lu_solve_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LU_SOLVE_OUT, out, self, LU_data, LU_pivots);
 }
 
-Tensor wrap_lu_solve(args...) {
+at::Tensor wrap_lu_solve(const at::Tensor & self, const at::Tensor & LU_data, const at::Tensor & LU_pivots) {
   if (trace.is_flushing()) {
     ensure_materialized(self, LU_data, LU_pivots);
     return at::redispatch::lu_solve(self, LU_data, LU_pivots);
@@ -10098,7 +9510,7 @@ Tensor wrap_lu_solve(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LU_SOLVE, self, LU_data, LU_pivots);
 }
 
-Tensor wrap__lu_solve_helper(args...) {
+at::Tensor wrap__lu_solve_helper(const at::Tensor & self, const at::Tensor & LU_data, const at::Tensor & LU_pivots) {
   if (trace.is_flushing()) {
     ensure_materialized(self, LU_data, LU_pivots);
     return at::redispatch::_lu_solve_helper(self, LU_data, LU_pivots);
@@ -10106,7 +9518,7 @@ Tensor wrap__lu_solve_helper(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__LU_SOLVE_HELPER, self, LU_data, LU_pivots);
 }
 
-Tensor wrap_multinomial_out(args...) {
+at::Tensor & wrap_multinomial_out(const at::Tensor & self, int64_t num_samples, bool replacement, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::multinomial(out, self, num_samples, replacement, generator);
@@ -10114,7 +9526,7 @@ Tensor wrap_multinomial_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MULTINOMIAL_OUT, out, self, num_samples, replacement, generator);
 }
 
-Tensor wrap_multinomial(args...) {
+at::Tensor wrap_multinomial(const at::Tensor & self, int64_t num_samples, bool replacement, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::multinomial(self, num_samples, replacement, generator);
@@ -10122,7 +9534,7 @@ Tensor wrap_multinomial(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MULTINOMIAL, self, num_samples, replacement, generator);
 }
 
-Tensor wrap_lgamma_out(args...) {
+at::Tensor & wrap_lgamma_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::lgamma(out, self);
@@ -10130,7 +9542,7 @@ Tensor wrap_lgamma_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LGAMMA_OUT, out, self);
 }
 
-Tensor wrap_digamma_out(args...) {
+at::Tensor & wrap_digamma_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::digamma(out, self);
@@ -10138,7 +9550,7 @@ Tensor wrap_digamma_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_DIGAMMA_OUT, out, self);
 }
 
-Tensor wrap_polygamma_out(args...) {
+at::Tensor & wrap_polygamma_out(int64_t n, const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::polygamma(out, n, self);
@@ -10146,7 +9558,7 @@ Tensor wrap_polygamma_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_POLYGAMMA_OUT, out, n, self);
 }
 
-Tensor wrap_polygamma(args...) {
+at::Tensor wrap_polygamma(int64_t n, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::polygamma(n, self);
@@ -10154,7 +9566,7 @@ Tensor wrap_polygamma(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_POLYGAMMA, n, self);
 }
 
-Tensor wrap_polygamma_(args...) {
+at::Tensor & wrap_polygamma_(at::Tensor & self, int64_t n) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::polygamma_(self, n);
@@ -10162,7 +9574,7 @@ Tensor wrap_polygamma_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_POLYGAMMA_, self, n);
 }
 
-Tensor wrap_erfinv_out(args...) {
+at::Tensor & wrap_erfinv_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::erfinv(out, self);
@@ -10170,7 +9582,7 @@ Tensor wrap_erfinv_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ERFINV_OUT, out, self);
 }
 
-Tensor wrap_i0(args...) {
+at::Tensor wrap_i0(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::i0(self);
@@ -10178,7 +9590,7 @@ Tensor wrap_i0(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_I0, self);
 }
 
-Tensor wrap_i0_(args...) {
+at::Tensor & wrap_i0_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::i0_(self);
@@ -10186,7 +9598,7 @@ Tensor wrap_i0_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_I0_, self);
 }
 
-Tensor wrap_i0_out(args...) {
+at::Tensor & wrap_i0_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::i0(out, self);
@@ -10194,7 +9606,7 @@ Tensor wrap_i0_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_I0_OUT, out, self);
 }
 
-Tensor wrap_sign(args...) {
+at::Tensor wrap_sign(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sign(self);
@@ -10202,7 +9614,7 @@ Tensor wrap_sign(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SIGN, self);
 }
 
-Tensor wrap_sign_(args...) {
+at::Tensor & wrap_sign_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::sign_(self);
@@ -10210,7 +9622,7 @@ Tensor wrap_sign_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SIGN_, self);
 }
 
-Tensor wrap_sign_out(args...) {
+at::Tensor & wrap_sign_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::sign(out, self);
@@ -10218,7 +9630,7 @@ Tensor wrap_sign_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SIGN_OUT, out, self);
 }
 
-Tensor wrap_signbit(args...) {
+at::Tensor wrap_signbit(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::signbit(self);
@@ -10226,7 +9638,7 @@ Tensor wrap_signbit(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SIGNBIT, self);
 }
 
-Tensor wrap_signbit_out(args...) {
+at::Tensor & wrap_signbit_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::signbit(out, self);
@@ -10234,7 +9646,7 @@ Tensor wrap_signbit_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SIGNBIT_OUT, out, self);
 }
 
-Tensor wrap_dist(args...) {
+at::Tensor wrap_dist(const at::Tensor & self, const at::Tensor & other, const at::Scalar & p) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::dist(self, other, p);
@@ -10242,7 +9654,7 @@ Tensor wrap_dist(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DIST, self, other, p);
 }
 
-Tensor wrap_atan2_out(args...) {
+at::Tensor & wrap_atan2_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::atan2(out, self, other);
@@ -10250,7 +9662,7 @@ Tensor wrap_atan2_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ATAN2_OUT, out, self, other);
 }
 
-Tensor wrap_lerp_Scalar_out(args...) {
+at::Tensor & wrap_lerp_Scalar_out(const at::Tensor & self, const at::Tensor & end, const at::Scalar & weight, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, end);
     return at::redispatch::lerp(out, self, end, weight);
@@ -10258,7 +9670,7 @@ Tensor wrap_lerp_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LERP_SCALAR_OUT, out, self, end, weight);
 }
 
-Tensor wrap_lerp_Tensor_out(args...) {
+at::Tensor & wrap_lerp_Tensor_out(const at::Tensor & self, const at::Tensor & end, const at::Tensor & weight, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, end, weight);
     return at::redispatch::lerp(out, self, end, weight);
@@ -10266,7 +9678,7 @@ Tensor wrap_lerp_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LERP_TENSOR_OUT, out, self, end, weight);
 }
 
-Tensor wrap_lerp_Scalar(args...) {
+at::Tensor wrap_lerp_Scalar(const at::Tensor & self, const at::Tensor & end, const at::Scalar & weight) {
   if (trace.is_flushing()) {
     ensure_materialized(self, end);
     return at::redispatch::lerp(self, end, weight);
@@ -10274,7 +9686,7 @@ Tensor wrap_lerp_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LERP_SCALAR, self, end, weight);
 }
 
-Tensor wrap_lerp_Tensor(args...) {
+at::Tensor wrap_lerp_Tensor(const at::Tensor & self, const at::Tensor & end, const at::Tensor & weight) {
   if (trace.is_flushing()) {
     ensure_materialized(self, end, weight);
     return at::redispatch::lerp(self, end, weight);
@@ -10282,7 +9694,7 @@ Tensor wrap_lerp_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LERP_TENSOR, self, end, weight);
 }
 
-Tensor wrap_histc_out(args...) {
+at::Tensor & wrap_histc_out(const at::Tensor & self, int64_t bins, const at::Scalar & min, const at::Scalar & max, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::histc(out, self, bins, min, max);
@@ -10290,7 +9702,7 @@ Tensor wrap_histc_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_HISTC_OUT, out, self, bins, min, max);
 }
 
-Tensor wrap_histc(args...) {
+at::Tensor wrap_histc(const at::Tensor & self, int64_t bins, const at::Scalar & min, const at::Scalar & max) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::histc(self, bins, min, max);
@@ -10298,7 +9710,7 @@ Tensor wrap_histc(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HISTC, self, bins, min, max);
 }
 
-Tensor wrap_fmod_Scalar_out(args...) {
+at::Tensor & wrap_fmod_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fmod(out, self, other);
@@ -10306,7 +9718,7 @@ Tensor wrap_fmod_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FMOD_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_fmod_Scalar(args...) {
+at::Tensor wrap_fmod_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fmod(self, other);
@@ -10314,7 +9726,7 @@ Tensor wrap_fmod_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FMOD_SCALAR, self, other);
 }
 
-Tensor wrap_fmod_Tensor_out(args...) {
+at::Tensor & wrap_fmod_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::fmod(out, self, other);
@@ -10322,7 +9734,7 @@ Tensor wrap_fmod_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FMOD_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_fmod_Tensor(args...) {
+at::Tensor wrap_fmod_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::fmod(self, other);
@@ -10330,7 +9742,7 @@ Tensor wrap_fmod_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FMOD_TENSOR, self, other);
 }
 
-Tensor wrap_hypot_out(args...) {
+at::Tensor & wrap_hypot_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::hypot(out, self, other);
@@ -10338,7 +9750,7 @@ Tensor wrap_hypot_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_HYPOT_OUT, out, self, other);
 }
 
-Tensor wrap_hypot(args...) {
+at::Tensor wrap_hypot(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::hypot(self, other);
@@ -10346,7 +9758,7 @@ Tensor wrap_hypot(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HYPOT, self, other);
 }
 
-Tensor wrap_hypot_(args...) {
+at::Tensor & wrap_hypot_(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::hypot_(self, other);
@@ -10354,7 +9766,7 @@ Tensor wrap_hypot_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HYPOT_, self, other);
 }
 
-Tensor wrap_igamma_out(args...) {
+at::Tensor & wrap_igamma_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::igamma(out, self, other);
@@ -10362,7 +9774,7 @@ Tensor wrap_igamma_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_IGAMMA_OUT, out, self, other);
 }
 
-Tensor wrap_igamma(args...) {
+at::Tensor wrap_igamma(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::igamma(self, other);
@@ -10370,7 +9782,7 @@ Tensor wrap_igamma(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_IGAMMA, self, other);
 }
 
-Tensor wrap_igamma_(args...) {
+at::Tensor & wrap_igamma_(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::igamma_(self, other);
@@ -10378,7 +9790,7 @@ Tensor wrap_igamma_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_IGAMMA_, self, other);
 }
 
-Tensor wrap_igammac_out(args...) {
+at::Tensor & wrap_igammac_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::igammac(out, self, other);
@@ -10386,7 +9798,7 @@ Tensor wrap_igammac_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_IGAMMAC_OUT, out, self, other);
 }
 
-Tensor wrap_igammac(args...) {
+at::Tensor wrap_igammac(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::igammac(self, other);
@@ -10394,7 +9806,7 @@ Tensor wrap_igammac(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_IGAMMAC, self, other);
 }
 
-Tensor wrap_igammac_(args...) {
+at::Tensor & wrap_igammac_(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::igammac_(self, other);
@@ -10402,7 +9814,7 @@ Tensor wrap_igammac_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_IGAMMAC_, self, other);
 }
 
-Tensor wrap_nextafter_out(args...) {
+at::Tensor & wrap_nextafter_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::nextafter(out, self, other);
@@ -10410,7 +9822,7 @@ Tensor wrap_nextafter_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NEXTAFTER_OUT, out, self, other);
 }
 
-Tensor wrap_nextafter(args...) {
+at::Tensor wrap_nextafter(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::nextafter(self, other);
@@ -10418,7 +9830,7 @@ Tensor wrap_nextafter(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NEXTAFTER, self, other);
 }
 
-Tensor wrap_nextafter_(args...) {
+at::Tensor & wrap_nextafter_(at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::nextafter_(self, other);
@@ -10426,7 +9838,7 @@ Tensor wrap_nextafter_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NEXTAFTER_, self, other);
 }
 
-Tensor wrap_remainder_Scalar_out(args...) {
+at::Tensor & wrap_remainder_Scalar_out(const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::remainder(out, self, other);
@@ -10434,7 +9846,7 @@ Tensor wrap_remainder_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_REMAINDER_SCALAR_OUT, out, self, other);
 }
 
-Tensor wrap_remainder_Scalar(args...) {
+at::Tensor wrap_remainder_Scalar(const at::Tensor & self, const at::Scalar & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::remainder(self, other);
@@ -10442,7 +9854,7 @@ Tensor wrap_remainder_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_REMAINDER_SCALAR, self, other);
 }
 
-Tensor wrap_remainder_Tensor_out(args...) {
+at::Tensor & wrap_remainder_Tensor_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::remainder(out, self, other);
@@ -10450,7 +9862,7 @@ Tensor wrap_remainder_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_REMAINDER_TENSOR_OUT, out, self, other);
 }
 
-Tensor wrap_remainder_Tensor(args...) {
+at::Tensor wrap_remainder_Tensor(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::remainder(self, other);
@@ -10458,7 +9870,7 @@ Tensor wrap_remainder_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_REMAINDER_TENSOR, self, other);
 }
 
-Tensor wrap_min(args...) {
+at::Tensor wrap_min(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::min(self);
@@ -10466,7 +9878,7 @@ Tensor wrap_min(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MIN, self);
 }
 
-Tensor wrap_fmin(args...) {
+at::Tensor wrap_fmin(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::fmin(self, other);
@@ -10474,7 +9886,7 @@ Tensor wrap_fmin(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FMIN, self, other);
 }
 
-Tensor wrap_fmin_out(args...) {
+at::Tensor & wrap_fmin_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::fmin(out, self, other);
@@ -10482,7 +9894,7 @@ Tensor wrap_fmin_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FMIN_OUT, out, self, other);
 }
 
-Tensor wrap_max(args...) {
+at::Tensor wrap_max(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::max(self);
@@ -10490,7 +9902,7 @@ Tensor wrap_max(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MAX, self);
 }
 
-Tensor wrap_fmax(args...) {
+at::Tensor wrap_fmax(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::fmax(self, other);
@@ -10498,7 +9910,7 @@ Tensor wrap_fmax(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FMAX, self, other);
 }
 
-Tensor wrap_fmax_out(args...) {
+at::Tensor & wrap_fmax_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::fmax(out, self, other);
@@ -10506,7 +9918,7 @@ Tensor wrap_fmax_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FMAX_OUT, out, self, other);
 }
 
-Tensor wrap_maximum(args...) {
+at::Tensor wrap_maximum(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::maximum(self, other);
@@ -10514,7 +9926,7 @@ Tensor wrap_maximum(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MAXIMUM, self, other);
 }
 
-Tensor wrap_maximum_out(args...) {
+at::Tensor & wrap_maximum_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::maximum(out, self, other);
@@ -10522,7 +9934,7 @@ Tensor wrap_maximum_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MAXIMUM_OUT, out, self, other);
 }
 
-Tensor wrap_max_other(args...) {
+at::Tensor wrap_max_other(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::max(self, other);
@@ -10530,7 +9942,7 @@ Tensor wrap_max_other(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MAX_OTHER, self, other);
 }
 
-Tensor wrap_max_out(args...) {
+at::Tensor & wrap_max_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::max(out, self, other);
@@ -10538,7 +9950,7 @@ Tensor wrap_max_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MAX_OUT, out, self, other);
 }
 
-Tensor wrap_minimum(args...) {
+at::Tensor wrap_minimum(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::minimum(self, other);
@@ -10546,7 +9958,7 @@ Tensor wrap_minimum(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MINIMUM, self, other);
 }
 
-Tensor wrap_minimum_out(args...) {
+at::Tensor & wrap_minimum_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::minimum(out, self, other);
@@ -10554,7 +9966,7 @@ Tensor wrap_minimum_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MINIMUM_OUT, out, self, other);
 }
 
-Tensor wrap_min_out(args...) {
+at::Tensor & wrap_min_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::min(out, self, other);
@@ -10562,7 +9974,7 @@ Tensor wrap_min_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MIN_OUT, out, self, other);
 }
 
-Tensor wrap_min_other(args...) {
+at::Tensor wrap_min_other(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::min(self, other);
@@ -10570,7 +9982,7 @@ Tensor wrap_min_other(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MIN_OTHER, self, other);
 }
 
-Tensor wrap_quantile_scalar_out(args...) {
+at::Tensor & wrap_quantile_scalar_out(const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::quantile(out, self, q, dim, keepdim);
@@ -10578,7 +9990,7 @@ Tensor wrap_quantile_scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_QUANTILE_SCALAR_OUT, out, self, q, dim, keepdim);
 }
 
-Tensor wrap_quantile_scalar(args...) {
+at::Tensor wrap_quantile_scalar(const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::quantile(self, q, dim, keepdim);
@@ -10586,7 +9998,7 @@ Tensor wrap_quantile_scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_QUANTILE_SCALAR, self, q, dim, keepdim);
 }
 
-Tensor wrap_quantile_out(args...) {
+at::Tensor & wrap_quantile_out(const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, q);
     return at::redispatch::quantile(out, self, q, dim, keepdim);
@@ -10594,7 +10006,7 @@ Tensor wrap_quantile_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_QUANTILE_OUT, out, self, q, dim, keepdim);
 }
 
-Tensor wrap_quantile(args...) {
+at::Tensor wrap_quantile(const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self, q);
     return at::redispatch::quantile(self, q, dim, keepdim);
@@ -10602,7 +10014,7 @@ Tensor wrap_quantile(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_QUANTILE, self, q, dim, keepdim);
 }
 
-Tensor wrap_nanquantile_scalar_out(args...) {
+at::Tensor & wrap_nanquantile_scalar_out(const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::nanquantile(out, self, q, dim, keepdim);
@@ -10610,7 +10022,7 @@ Tensor wrap_nanquantile_scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NANQUANTILE_SCALAR_OUT, out, self, q, dim, keepdim);
 }
 
-Tensor wrap_nanquantile_scalar(args...) {
+at::Tensor wrap_nanquantile_scalar(const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::nanquantile(self, q, dim, keepdim);
@@ -10618,7 +10030,7 @@ Tensor wrap_nanquantile_scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NANQUANTILE_SCALAR, self, q, dim, keepdim);
 }
 
-Tensor wrap_nanquantile_out(args...) {
+at::Tensor & wrap_nanquantile_out(const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, q);
     return at::redispatch::nanquantile(out, self, q, dim, keepdim);
@@ -10626,7 +10038,7 @@ Tensor wrap_nanquantile_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NANQUANTILE_OUT, out, self, q, dim, keepdim);
 }
 
-Tensor wrap_nanquantile(args...) {
+at::Tensor wrap_nanquantile(const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim) {
   if (trace.is_flushing()) {
     ensure_materialized(self, q);
     return at::redispatch::nanquantile(self, q, dim, keepdim);
@@ -10634,7 +10046,7 @@ Tensor wrap_nanquantile(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NANQUANTILE, self, q, dim, keepdim);
 }
 
-Tensor wrap_quantile_new_scalar_out(args...) {
+at::Tensor & wrap_quantile_new_scalar_out(const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::quantile(out, self, q, dim, keepdim, interpolation);
@@ -10642,7 +10054,7 @@ Tensor wrap_quantile_new_scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_QUANTILE_NEW_SCALAR_OUT, out, self, q, dim, keepdim, interpolation);
 }
 
-Tensor wrap_quantile_new_scalar(args...) {
+at::Tensor wrap_quantile_new_scalar(const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::quantile(self, q, dim, keepdim, interpolation);
@@ -10650,7 +10062,7 @@ Tensor wrap_quantile_new_scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_QUANTILE_NEW_SCALAR, self, q, dim, keepdim, interpolation);
 }
 
-Tensor wrap_quantile_new_out(args...) {
+at::Tensor & wrap_quantile_new_out(const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, q);
     return at::redispatch::quantile(out, self, q, dim, keepdim, interpolation);
@@ -10658,7 +10070,7 @@ Tensor wrap_quantile_new_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_QUANTILE_NEW_OUT, out, self, q, dim, keepdim, interpolation);
 }
 
-Tensor wrap_quantile_new(args...) {
+at::Tensor wrap_quantile_new(const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation) {
   if (trace.is_flushing()) {
     ensure_materialized(self, q);
     return at::redispatch::quantile(self, q, dim, keepdim, interpolation);
@@ -10666,7 +10078,7 @@ Tensor wrap_quantile_new(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_QUANTILE_NEW, self, q, dim, keepdim, interpolation);
 }
 
-Tensor wrap_nanquantile_new_scalar_out(args...) {
+at::Tensor & wrap_nanquantile_new_scalar_out(const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::nanquantile(out, self, q, dim, keepdim, interpolation);
@@ -10674,7 +10086,7 @@ Tensor wrap_nanquantile_new_scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NANQUANTILE_NEW_SCALAR_OUT, out, self, q, dim, keepdim, interpolation);
 }
 
-Tensor wrap_nanquantile_new_scalar(args...) {
+at::Tensor wrap_nanquantile_new_scalar(const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::nanquantile(self, q, dim, keepdim, interpolation);
@@ -10682,7 +10094,7 @@ Tensor wrap_nanquantile_new_scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NANQUANTILE_NEW_SCALAR, self, q, dim, keepdim, interpolation);
 }
 
-Tensor wrap_nanquantile_new_out(args...) {
+at::Tensor & wrap_nanquantile_new_out(const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, q);
     return at::redispatch::nanquantile(out, self, q, dim, keepdim, interpolation);
@@ -10690,7 +10102,7 @@ Tensor wrap_nanquantile_new_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NANQUANTILE_NEW_OUT, out, self, q, dim, keepdim, interpolation);
 }
 
-Tensor wrap_nanquantile_new(args...) {
+at::Tensor wrap_nanquantile_new(const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation) {
   if (trace.is_flushing()) {
     ensure_materialized(self, q);
     return at::redispatch::nanquantile(self, q, dim, keepdim, interpolation);
@@ -10698,71 +10110,47 @@ Tensor wrap_nanquantile_new(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NANQUANTILE_NEW, self, q, dim, keepdim, interpolation);
 }
 
-Tensor wrap_sort_values(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::sort(values, indices, self, dim, descending);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_SORT_VALUES, values, indices, self, dim, descending);
+std::tuple<at::Tensor &,at::Tensor &> wrap_sort_values(const at::Tensor & self, int64_t dim, bool descending, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::sort(values, indices, self, dim, descending);
 }
 
-Tensor wrap_sort_values_stable(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::sort(values, indices, self, stable, dim, descending);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_SORT_VALUES_STABLE, values, indices, self, stable, dim, descending);
+std::tuple<at::Tensor &,at::Tensor &> wrap_sort_values_stable(const at::Tensor & self, c10::optional<bool> stable, int64_t dim, bool descending, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::sort(values, indices, self, stable, dim, descending);
 }
 
-Tensor wrap_sort(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::sort(self, dim, descending);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_SORT, self, dim, descending);
+std::tuple<at::Tensor,at::Tensor> wrap_sort(const at::Tensor & self, int64_t dim, bool descending) {
+  ensure_materialized(self);
+  return at::redispatch::sort(self, dim, descending);
 }
 
-Tensor wrap_sort_stable(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::sort(self, stable, dim, descending);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_SORT_STABLE, self, stable, dim, descending);
+std::tuple<at::Tensor,at::Tensor> wrap_sort_stable(const at::Tensor & self, c10::optional<bool> stable, int64_t dim, bool descending) {
+  ensure_materialized(self);
+  return at::redispatch::sort(self, stable, dim, descending);
 }
 
-Tensor wrap_sort_dimname_values(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::sort(values, indices, self, dim, descending);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_SORT_DIMNAME_VALUES, values, indices, self, dim, descending);
+std::tuple<at::Tensor &,at::Tensor &> wrap_sort_dimname_values(const at::Tensor & self, at::Dimname dim, bool descending, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::sort(values, indices, self, dim, descending);
 }
 
-Tensor wrap_sort_dimname_values_stable(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::sort(values, indices, self, stable, dim, descending);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_SORT_DIMNAME_VALUES_STABLE, values, indices, self, stable, dim, descending);
+std::tuple<at::Tensor &,at::Tensor &> wrap_sort_dimname_values_stable(const at::Tensor & self, c10::optional<bool> stable, at::Dimname dim, bool descending, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::sort(values, indices, self, stable, dim, descending);
 }
 
-Tensor wrap_sort_dimname(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::sort(self, dim, descending);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_SORT_DIMNAME, self, dim, descending);
+std::tuple<at::Tensor,at::Tensor> wrap_sort_dimname(const at::Tensor & self, at::Dimname dim, bool descending) {
+  ensure_materialized(self);
+  return at::redispatch::sort(self, dim, descending);
 }
 
-Tensor wrap_sort_dimname_stable(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::sort(self, stable, dim, descending);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_SORT_DIMNAME_STABLE, self, stable, dim, descending);
+std::tuple<at::Tensor,at::Tensor> wrap_sort_dimname_stable(const at::Tensor & self, c10::optional<bool> stable, at::Dimname dim, bool descending) {
+  ensure_materialized(self);
+  return at::redispatch::sort(self, stable, dim, descending);
 }
 
-Tensor wrap_msort_out(args...) {
+at::Tensor & wrap_msort_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::msort(out, self);
@@ -10770,7 +10158,7 @@ Tensor wrap_msort_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MSORT_OUT, out, self);
 }
 
-Tensor wrap_msort(args...) {
+at::Tensor wrap_msort(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::msort(self);
@@ -10778,7 +10166,7 @@ Tensor wrap_msort(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MSORT, self);
 }
 
-Tensor wrap_argsort(args...) {
+at::Tensor wrap_argsort(const at::Tensor & self, int64_t dim, bool descending) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::argsort(self, dim, descending);
@@ -10786,7 +10174,7 @@ Tensor wrap_argsort(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARGSORT, self, dim, descending);
 }
 
-Tensor wrap_argsort_dimname(args...) {
+at::Tensor wrap_argsort_dimname(const at::Tensor & self, at::Dimname dim, bool descending) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::argsort(self, dim, descending);
@@ -10794,23 +10182,17 @@ Tensor wrap_argsort_dimname(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ARGSORT_DIMNAME, self, dim, descending);
 }
 
-Tensor wrap_topk_values(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(values, indices, self);
-    return at::redispatch::topk(values, indices, self, k, dim, largest, sorted);
-  }
-  return MK_TORCHY(values.dtype(), values.device(), H_TOPK_VALUES, values, indices, self, k, dim, largest, sorted);
+std::tuple<at::Tensor &,at::Tensor &> wrap_topk_values(const at::Tensor & self, int64_t k, int64_t dim, bool largest, bool sorted, at::Tensor & values, at::Tensor & indices) {
+  ensure_materialized(values, indices, self);
+  return at::redispatch::topk(values, indices, self, k, dim, largest, sorted);
 }
 
-Tensor wrap_topk(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::topk(self, k, dim, largest, sorted);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_TOPK, self, k, dim, largest, sorted);
+std::tuple<at::Tensor,at::Tensor> wrap_topk(const at::Tensor & self, int64_t k, int64_t dim, bool largest, bool sorted) {
+  ensure_materialized(self);
+  return at::redispatch::topk(self, k, dim, largest, sorted);
 }
 
-Tensor wrap_all(args...) {
+at::Tensor wrap_all(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::all(self);
@@ -10818,7 +10200,7 @@ Tensor wrap_all(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ALL, self);
 }
 
-Tensor wrap_any(args...) {
+at::Tensor wrap_any(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::any(self);
@@ -10826,7 +10208,7 @@ Tensor wrap_any(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ANY, self);
 }
 
-Tensor wrap_renorm_out(args...) {
+at::Tensor & wrap_renorm_out(const at::Tensor & self, const at::Scalar & p, int64_t dim, const at::Scalar & maxnorm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::renorm(out, self, p, dim, maxnorm);
@@ -10834,7 +10216,7 @@ Tensor wrap_renorm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RENORM_OUT, out, self, p, dim, maxnorm);
 }
 
-Tensor wrap_renorm(args...) {
+at::Tensor wrap_renorm(const at::Tensor & self, const at::Scalar & p, int64_t dim, const at::Scalar & maxnorm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::renorm(self, p, dim, maxnorm);
@@ -10842,7 +10224,7 @@ Tensor wrap_renorm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RENORM, self, p, dim, maxnorm);
 }
 
-Tensor wrap_unfold(args...) {
+at::Tensor wrap_unfold(const at::Tensor & self, int64_t dimension, int64_t size, int64_t step) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::unfold(self, dimension, size, step);
@@ -10850,7 +10232,7 @@ Tensor wrap_unfold(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_UNFOLD, self, dimension, size, step);
 }
 
-Tensor wrap_unfold_backward(args...) {
+at::Tensor wrap_unfold_backward(const at::Tensor & grad_in, at::IntArrayRef input_sizes, int64_t dim, int64_t size, int64_t step) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_in);
     return at::redispatch::unfold_backward(grad_in, input_sizes, dim, size, step);
@@ -10858,12 +10240,12 @@ Tensor wrap_unfold_backward(args...) {
   return MK_TORCHY(grad_in.dtype(), grad_in.device(), H_UNFOLD_BACKWARD, grad_in, input_sizes, dim, size, step);
 }
 
-bool wrap_equal(args...) {
+bool wrap_equal(const at::Tensor & self, const at::Tensor & other) {
   ensure_materialized(self, other);
   return at::redispatch::equal(self, other);
 }
 
-Tensor wrap_pow_Tensor_Tensor_out(args...) {
+at::Tensor & wrap_pow_Tensor_Tensor_out(const at::Tensor & self, const at::Tensor & exponent, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, exponent);
     return at::redispatch::pow(out, self, exponent);
@@ -10871,7 +10253,7 @@ Tensor wrap_pow_Tensor_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_POW_TENSOR_TENSOR_OUT, out, self, exponent);
 }
 
-Tensor wrap_pow_Scalar_out(args...) {
+at::Tensor & wrap_pow_Scalar_out(const at::Scalar & self, const at::Tensor & exponent, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, exponent);
     return at::redispatch::pow(out, self, exponent);
@@ -10879,7 +10261,7 @@ Tensor wrap_pow_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_POW_SCALAR_OUT, out, self, exponent);
 }
 
-Tensor wrap_pow_Tensor_Scalar_out(args...) {
+at::Tensor & wrap_pow_Tensor_Scalar_out(const at::Tensor & self, const at::Scalar & exponent, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::pow(out, self, exponent);
@@ -10887,7 +10269,7 @@ Tensor wrap_pow_Tensor_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_POW_TENSOR_SCALAR_OUT, out, self, exponent);
 }
 
-Tensor wrap_pow_Tensor_Scalar(args...) {
+at::Tensor wrap_pow_Tensor_Scalar(const at::Tensor & self, const at::Scalar & exponent) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::pow(self, exponent);
@@ -10895,7 +10277,7 @@ Tensor wrap_pow_Tensor_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_POW_TENSOR_SCALAR, self, exponent);
 }
 
-Tensor wrap_float_power_Tensor_Tensor_out(args...) {
+at::Tensor & wrap_float_power_Tensor_Tensor_out(const at::Tensor & self, const at::Tensor & exponent, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, exponent);
     return at::redispatch::float_power(out, self, exponent);
@@ -10903,7 +10285,7 @@ Tensor wrap_float_power_Tensor_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FLOAT_POWER_TENSOR_TENSOR_OUT, out, self, exponent);
 }
 
-Tensor wrap_float_power_Tensor_Tensor(args...) {
+at::Tensor wrap_float_power_Tensor_Tensor(const at::Tensor & self, const at::Tensor & exponent) {
   if (trace.is_flushing()) {
     ensure_materialized(self, exponent);
     return at::redispatch::float_power(self, exponent);
@@ -10911,7 +10293,7 @@ Tensor wrap_float_power_Tensor_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLOAT_POWER_TENSOR_TENSOR, self, exponent);
 }
 
-Tensor wrap_float_power_Scalar_out(args...) {
+at::Tensor & wrap_float_power_Scalar_out(const at::Scalar & self, const at::Tensor & exponent, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, exponent);
     return at::redispatch::float_power(out, self, exponent);
@@ -10919,7 +10301,7 @@ Tensor wrap_float_power_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FLOAT_POWER_SCALAR_OUT, out, self, exponent);
 }
 
-Tensor wrap_float_power_Scalar(args...) {
+at::Tensor wrap_float_power_Scalar(const at::Scalar & self, const at::Tensor & exponent) {
   if (trace.is_flushing()) {
     ensure_materialized(exponent);
     return at::redispatch::float_power(self, exponent);
@@ -10927,7 +10309,7 @@ Tensor wrap_float_power_Scalar(args...) {
   return MK_TORCHY(exponent.dtype(), exponent.device(), H_FLOAT_POWER_SCALAR, self, exponent);
 }
 
-Tensor wrap_float_power_Tensor_Scalar_out(args...) {
+at::Tensor & wrap_float_power_Tensor_Scalar_out(const at::Tensor & self, const at::Scalar & exponent, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::float_power(out, self, exponent);
@@ -10935,7 +10317,7 @@ Tensor wrap_float_power_Tensor_Scalar_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FLOAT_POWER_TENSOR_SCALAR_OUT, out, self, exponent);
 }
 
-Tensor wrap_float_power_Tensor_Scalar(args...) {
+at::Tensor wrap_float_power_Tensor_Scalar(const at::Tensor & self, const at::Scalar & exponent) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::float_power(self, exponent);
@@ -10943,7 +10325,7 @@ Tensor wrap_float_power_Tensor_Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLOAT_POWER_TENSOR_SCALAR, self, exponent);
 }
 
-Tensor wrap_float_power__Scalar(args...) {
+at::Tensor & wrap_float_power__Scalar(at::Tensor & self, const at::Scalar & exponent) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::float_power_(self, exponent);
@@ -10951,7 +10333,7 @@ Tensor wrap_float_power__Scalar(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLOAT_POWER__SCALAR, self, exponent);
 }
 
-Tensor wrap_float_power__Tensor(args...) {
+at::Tensor & wrap_float_power__Tensor(at::Tensor & self, const at::Tensor & exponent) {
   if (trace.is_flushing()) {
     ensure_materialized(self, exponent);
     return at::redispatch::float_power_(self, exponent);
@@ -10959,7 +10341,7 @@ Tensor wrap_float_power__Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FLOAT_POWER__TENSOR, self, exponent);
 }
 
-Tensor wrap_normal_(args...) {
+at::Tensor & wrap_normal_(at::Tensor & self, double mean, double std, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::normal_(self, mean, std, generator);
@@ -10967,7 +10349,7 @@ Tensor wrap_normal_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NORMAL_, self, mean, std, generator);
 }
 
-Tensor wrap_normal_Tensor_float_out(args...) {
+at::Tensor & wrap_normal_Tensor_float_out(const at::Tensor & mean, double std, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, mean);
     return at::redispatch::normal(out, mean, std, generator);
@@ -10975,7 +10357,7 @@ Tensor wrap_normal_Tensor_float_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NORMAL_TENSOR_FLOAT_OUT, out, mean, std, generator);
 }
 
-Tensor wrap_normal_Tensor_float(args...) {
+at::Tensor wrap_normal_Tensor_float(const at::Tensor & mean, double std, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(mean);
     return at::redispatch::normal(mean, std, generator);
@@ -10983,7 +10365,7 @@ Tensor wrap_normal_Tensor_float(args...) {
   return MK_TORCHY(mean.dtype(), mean.device(), H_NORMAL_TENSOR_FLOAT, mean, std, generator);
 }
 
-Tensor wrap_normal_float_Tensor_out(args...) {
+at::Tensor & wrap_normal_float_Tensor_out(double mean, const at::Tensor & std, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, std);
     return at::redispatch::normal(out, mean, std, generator);
@@ -10991,7 +10373,7 @@ Tensor wrap_normal_float_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NORMAL_FLOAT_TENSOR_OUT, out, mean, std, generator);
 }
 
-Tensor wrap_normal_float_Tensor(args...) {
+at::Tensor wrap_normal_float_Tensor(double mean, const at::Tensor & std, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(std);
     return at::redispatch::normal(mean, std, generator);
@@ -10999,7 +10381,7 @@ Tensor wrap_normal_float_Tensor(args...) {
   return MK_TORCHY(std.dtype(), std.device(), H_NORMAL_FLOAT_TENSOR, mean, std, generator);
 }
 
-Tensor wrap_normal_Tensor_Tensor_out(args...) {
+at::Tensor & wrap_normal_Tensor_Tensor_out(const at::Tensor & mean, const at::Tensor & std, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, mean, std);
     return at::redispatch::normal(out, mean, std, generator);
@@ -11007,7 +10389,7 @@ Tensor wrap_normal_Tensor_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NORMAL_TENSOR_TENSOR_OUT, out, mean, std, generator);
 }
 
-Tensor wrap_normal_Tensor_Tensor(args...) {
+at::Tensor wrap_normal_Tensor_Tensor(const at::Tensor & mean, const at::Tensor & std, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(mean, std);
     return at::redispatch::normal(mean, std, generator);
@@ -11015,15 +10397,13 @@ Tensor wrap_normal_Tensor_Tensor(args...) {
   return MK_TORCHY(mean.dtype(), mean.device(), H_NORMAL_TENSOR_TENSOR, mean, std, generator);
 }
 
-Tensor wrap_normal_float_float(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::normal(mean, std, size, generator, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_NORMAL_FLOAT_FLOAT, mean, std, size, generator, dtype, layout, device, pin_memory);
+at::Tensor wrap_normal_float_float(double mean, double std, at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::normal(mean, std, size, generator, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_normal_float_float_out(args...) {
+at::Tensor & wrap_normal_float_float_out(double mean, double std, at::IntArrayRef size, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::normal(out, mean, std, size, generator);
@@ -11031,7 +10411,7 @@ Tensor wrap_normal_float_float_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NORMAL_FLOAT_FLOAT_OUT, out, mean, std, size, generator);
 }
 
-Tensor wrap_alias(args...) {
+at::Tensor wrap_alias(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::alias(self);
@@ -11039,7 +10419,7 @@ Tensor wrap_alias(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ALIAS, self);
 }
 
-Tensor wrap__index_copy_(args...) {
+at::Tensor & wrap__index_copy_(at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & source) {
   if (trace.is_flushing()) {
     ensure_materialized(self, index, source);
     return at::redispatch::_index_copy_(self, dim, index, source);
@@ -11047,7 +10427,7 @@ Tensor wrap__index_copy_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__INDEX_COPY_, self, dim, index, source);
 }
 
-Tensor wrap__cumsum(args...) {
+at::Tensor wrap__cumsum(const at::Tensor & self, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_cumsum(self, dim);
@@ -11055,7 +10435,7 @@ Tensor wrap__cumsum(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CUMSUM, self, dim);
 }
 
-Tensor wrap__cumsum_out(args...) {
+at::Tensor & wrap__cumsum_out(const at::Tensor & self, int64_t dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::_cumsum(out, self, dim);
@@ -11063,7 +10443,7 @@ Tensor wrap__cumsum_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H__CUMSUM_OUT, out, self, dim);
 }
 
-Tensor wrap__cumprod(args...) {
+at::Tensor wrap__cumprod(const at::Tensor & self, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_cumprod(self, dim);
@@ -11071,7 +10451,7 @@ Tensor wrap__cumprod(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__CUMPROD, self, dim);
 }
 
-Tensor wrap__cumprod_out(args...) {
+at::Tensor & wrap__cumprod_out(const at::Tensor & self, int64_t dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::_cumprod(out, self, dim);
@@ -11079,7 +10459,7 @@ Tensor wrap__cumprod_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H__CUMPROD_OUT, out, self, dim);
 }
 
-Tensor wrap__var(args...) {
+at::Tensor wrap__var(const at::Tensor & self, bool unbiased) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_var(self, unbiased);
@@ -11087,7 +10467,7 @@ Tensor wrap__var(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__VAR, self, unbiased);
 }
 
-Tensor wrap__std(args...) {
+at::Tensor wrap__std(const at::Tensor & self, bool unbiased) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_std(self, unbiased);
@@ -11095,12 +10475,12 @@ Tensor wrap__std(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__STD, self, unbiased);
 }
 
-void wrap__amp_foreach_non_finite_check_and_unscale_(args...) {
+void wrap__amp_foreach_non_finite_check_and_unscale_(at::TensorList self, at::Tensor & found_inf, const at::Tensor & inv_scale) {
   ensure_materialized(found_inf, inv_scale);
   return at::redispatch::_amp_foreach_non_finite_check_and_unscale_(self, found_inf, inv_scale);
 }
 
-Tensor wrap__amp_update_scale(args...) {
+at::Tensor wrap__amp_update_scale(at::Tensor & growth_tracker, const at::Tensor & current_scale, const at::Tensor & found_inf, double scale_growth_factor, double scale_backoff_factor, int64_t growth_interval) {
   if (trace.is_flushing()) {
     ensure_materialized(growth_tracker, current_scale, found_inf);
     return at::redispatch::_amp_update_scale(growth_tracker, current_scale, found_inf, scale_growth_factor, scale_backoff_factor, growth_interval);
@@ -11108,15 +10488,13 @@ Tensor wrap__amp_update_scale(args...) {
   return MK_TORCHY(growth_tracker.dtype(), growth_tracker.device(), H__AMP_UPDATE_SCALE, growth_tracker, current_scale, found_inf, scale_growth_factor, scale_backoff_factor, growth_interval);
 }
 
-Tensor wrap__cat(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::_cat(tensors, dim);
-  }
-  return MK_TORCHY(None, None, H__CAT, tensors, dim);
+at::Tensor wrap__cat(at::TensorList tensors, int64_t dim) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::_cat(tensors, dim));
 }
 
-Tensor wrap__cat_out(args...) {
+at::Tensor & wrap__cat_out(at::TensorList tensors, int64_t dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::_cat(out, tensors, dim);
@@ -11124,462 +10502,462 @@ Tensor wrap__cat_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H__CAT_OUT, out, tensors, dim);
 }
 
-Tensor[] wrap__foreach_add_Scalar(args...) {
+std::vector<at::Tensor> wrap__foreach_add_Scalar(at::TensorList tensors, const at::Scalar & scalar) {
   ensure_materialized();
   return at::redispatch::_foreach_add(tensors, scalar);
 }
 
-void wrap__foreach_add__Scalar(args...) {
+void wrap__foreach_add__Scalar(at::TensorList self, const at::Scalar & scalar) {
   ensure_materialized();
   return at::redispatch::_foreach_add_(self, scalar);
 }
 
-Tensor[] wrap__foreach_sub_Scalar(args...) {
+std::vector<at::Tensor> wrap__foreach_sub_Scalar(at::TensorList tensors, const at::Scalar & scalar) {
   ensure_materialized();
   return at::redispatch::_foreach_sub(tensors, scalar);
 }
 
-void wrap__foreach_sub__Scalar(args...) {
+void wrap__foreach_sub__Scalar(at::TensorList self, const at::Scalar & scalar) {
   ensure_materialized();
   return at::redispatch::_foreach_sub_(self, scalar);
 }
 
-Tensor[] wrap__foreach_mul_Scalar(args...) {
+std::vector<at::Tensor> wrap__foreach_mul_Scalar(at::TensorList tensors, const at::Scalar & scalar) {
   ensure_materialized();
   return at::redispatch::_foreach_mul(tensors, scalar);
 }
 
-void wrap__foreach_mul__Scalar(args...) {
+void wrap__foreach_mul__Scalar(at::TensorList self, const at::Scalar & scalar) {
   ensure_materialized();
   return at::redispatch::_foreach_mul_(self, scalar);
 }
 
-Tensor[] wrap__foreach_div_Scalar(args...) {
+std::vector<at::Tensor> wrap__foreach_div_Scalar(at::TensorList tensors, const at::Scalar & scalar) {
   ensure_materialized();
   return at::redispatch::_foreach_div(tensors, scalar);
 }
 
-void wrap__foreach_div__Scalar(args...) {
+void wrap__foreach_div__Scalar(at::TensorList self, const at::Scalar & scalar) {
   ensure_materialized();
   return at::redispatch::_foreach_div_(self, scalar);
 }
 
-Tensor[] wrap__foreach_add_List(args...) {
+std::vector<at::Tensor> wrap__foreach_add_List(at::TensorList tensors1, at::TensorList tensors2, const at::Scalar & alpha) {
   ensure_materialized();
   return at::redispatch::_foreach_add(tensors1, tensors2, alpha);
 }
 
-void wrap__foreach_add__List(args...) {
+void wrap__foreach_add__List(at::TensorList self, at::TensorList other, const at::Scalar & alpha) {
   ensure_materialized();
   return at::redispatch::_foreach_add_(self, other, alpha);
 }
 
-Tensor[] wrap__foreach_sub_List(args...) {
+std::vector<at::Tensor> wrap__foreach_sub_List(at::TensorList tensors1, at::TensorList tensors2, const at::Scalar & alpha) {
   ensure_materialized();
   return at::redispatch::_foreach_sub(tensors1, tensors2, alpha);
 }
 
-void wrap__foreach_sub__List(args...) {
+void wrap__foreach_sub__List(at::TensorList self, at::TensorList other, const at::Scalar & alpha) {
   ensure_materialized();
   return at::redispatch::_foreach_sub_(self, other, alpha);
 }
 
-Tensor[] wrap__foreach_mul_List(args...) {
+std::vector<at::Tensor> wrap__foreach_mul_List(at::TensorList tensors1, at::TensorList tensors2) {
   ensure_materialized();
   return at::redispatch::_foreach_mul(tensors1, tensors2);
 }
 
-void wrap__foreach_mul__List(args...) {
+void wrap__foreach_mul__List(at::TensorList self, at::TensorList other) {
   ensure_materialized();
   return at::redispatch::_foreach_mul_(self, other);
 }
 
-Tensor[] wrap__foreach_div_List(args...) {
+std::vector<at::Tensor> wrap__foreach_div_List(at::TensorList tensors1, at::TensorList tensors2) {
   ensure_materialized();
   return at::redispatch::_foreach_div(tensors1, tensors2);
 }
 
-void wrap__foreach_div__List(args...) {
+void wrap__foreach_div__List(at::TensorList self, at::TensorList other) {
   ensure_materialized();
   return at::redispatch::_foreach_div_(self, other);
 }
 
-Tensor[] wrap__foreach_add_ScalarList(args...) {
+std::vector<at::Tensor> wrap__foreach_add_ScalarList(at::TensorList tensors, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_add(tensors, scalars);
 }
 
-void wrap__foreach_add__ScalarList(args...) {
+void wrap__foreach_add__ScalarList(at::TensorList self, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_add_(self, scalars);
 }
 
-Tensor[] wrap__foreach_sub_ScalarList(args...) {
+std::vector<at::Tensor> wrap__foreach_sub_ScalarList(at::TensorList tensors, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_sub(tensors, scalars);
 }
 
-void wrap__foreach_sub__ScalarList(args...) {
+void wrap__foreach_sub__ScalarList(at::TensorList self, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_sub_(self, scalars);
 }
 
-Tensor[] wrap__foreach_div_ScalarList(args...) {
+std::vector<at::Tensor> wrap__foreach_div_ScalarList(at::TensorList tensors, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_div(tensors, scalars);
 }
 
-void wrap__foreach_div__ScalarList(args...) {
+void wrap__foreach_div__ScalarList(at::TensorList self, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_div_(self, scalars);
 }
 
-Tensor[] wrap__foreach_mul_ScalarList(args...) {
+std::vector<at::Tensor> wrap__foreach_mul_ScalarList(at::TensorList tensors, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_mul(tensors, scalars);
 }
 
-void wrap__foreach_mul__ScalarList(args...) {
+void wrap__foreach_mul__ScalarList(at::TensorList self, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_mul_(self, scalars);
 }
 
-Tensor[] wrap__foreach_exp(args...) {
+std::vector<at::Tensor> wrap__foreach_exp(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_exp(tensors);
 }
 
-void wrap__foreach_zero_(args...) {
+void wrap__foreach_zero_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_zero_(self);
 }
 
-void wrap__foreach_exp_(args...) {
+void wrap__foreach_exp_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_exp_(self);
 }
 
-Tensor[] wrap__foreach_sqrt(args...) {
+std::vector<at::Tensor> wrap__foreach_sqrt(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_sqrt(tensors);
 }
 
-void wrap__foreach_sqrt_(args...) {
+void wrap__foreach_sqrt_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_sqrt_(self);
 }
 
-Tensor[] wrap__foreach_abs(args...) {
+std::vector<at::Tensor> wrap__foreach_abs(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_abs(tensors);
 }
 
-void wrap__foreach_abs_(args...) {
+void wrap__foreach_abs_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_abs_(self);
 }
 
-Tensor[] wrap__foreach_acos(args...) {
+std::vector<at::Tensor> wrap__foreach_acos(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_acos(tensors);
 }
 
-void wrap__foreach_acos_(args...) {
+void wrap__foreach_acos_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_acos_(self);
 }
 
-Tensor[] wrap__foreach_asin(args...) {
+std::vector<at::Tensor> wrap__foreach_asin(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_asin(tensors);
 }
 
-void wrap__foreach_asin_(args...) {
+void wrap__foreach_asin_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_asin_(self);
 }
 
-Tensor[] wrap__foreach_atan(args...) {
+std::vector<at::Tensor> wrap__foreach_atan(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_atan(tensors);
 }
 
-void wrap__foreach_atan_(args...) {
+void wrap__foreach_atan_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_atan_(self);
 }
 
-Tensor[] wrap__foreach_ceil(args...) {
+std::vector<at::Tensor> wrap__foreach_ceil(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_ceil(tensors);
 }
 
-void wrap__foreach_ceil_(args...) {
+void wrap__foreach_ceil_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_ceil_(self);
 }
 
-Tensor[] wrap__foreach_cos(args...) {
+std::vector<at::Tensor> wrap__foreach_cos(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_cos(tensors);
 }
 
-void wrap__foreach_cos_(args...) {
+void wrap__foreach_cos_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_cos_(self);
 }
 
-Tensor[] wrap__foreach_cosh(args...) {
+std::vector<at::Tensor> wrap__foreach_cosh(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_cosh(tensors);
 }
 
-void wrap__foreach_cosh_(args...) {
+void wrap__foreach_cosh_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_cosh_(self);
 }
 
-Tensor[] wrap__foreach_erf(args...) {
+std::vector<at::Tensor> wrap__foreach_erf(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_erf(tensors);
 }
 
-void wrap__foreach_erf_(args...) {
+void wrap__foreach_erf_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_erf_(self);
 }
 
-Tensor[] wrap__foreach_erfc(args...) {
+std::vector<at::Tensor> wrap__foreach_erfc(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_erfc(tensors);
 }
 
-void wrap__foreach_erfc_(args...) {
+void wrap__foreach_erfc_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_erfc_(self);
 }
 
-Tensor[] wrap__foreach_expm1(args...) {
+std::vector<at::Tensor> wrap__foreach_expm1(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_expm1(tensors);
 }
 
-void wrap__foreach_expm1_(args...) {
+void wrap__foreach_expm1_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_expm1_(self);
 }
 
-Tensor[] wrap__foreach_floor(args...) {
+std::vector<at::Tensor> wrap__foreach_floor(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_floor(tensors);
 }
 
-void wrap__foreach_floor_(args...) {
+void wrap__foreach_floor_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_floor_(self);
 }
 
-Tensor[] wrap__foreach_log(args...) {
+std::vector<at::Tensor> wrap__foreach_log(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_log(tensors);
 }
 
-void wrap__foreach_log_(args...) {
+void wrap__foreach_log_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_log_(self);
 }
 
-Tensor[] wrap__foreach_log10(args...) {
+std::vector<at::Tensor> wrap__foreach_log10(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_log10(tensors);
 }
 
-void wrap__foreach_log10_(args...) {
+void wrap__foreach_log10_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_log10_(self);
 }
 
-Tensor[] wrap__foreach_log1p(args...) {
+std::vector<at::Tensor> wrap__foreach_log1p(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_log1p(tensors);
 }
 
-void wrap__foreach_log1p_(args...) {
+void wrap__foreach_log1p_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_log1p_(self);
 }
 
-Tensor[] wrap__foreach_log2(args...) {
+std::vector<at::Tensor> wrap__foreach_log2(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_log2(tensors);
 }
 
-void wrap__foreach_log2_(args...) {
+void wrap__foreach_log2_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_log2_(self);
 }
 
-Tensor[] wrap__foreach_neg(args...) {
+std::vector<at::Tensor> wrap__foreach_neg(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_neg(tensors);
 }
 
-void wrap__foreach_neg_(args...) {
+void wrap__foreach_neg_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_neg_(self);
 }
 
-Tensor[] wrap__foreach_tan(args...) {
+std::vector<at::Tensor> wrap__foreach_tan(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_tan(tensors);
 }
 
-void wrap__foreach_tan_(args...) {
+void wrap__foreach_tan_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_tan_(self);
 }
 
-Tensor[] wrap__foreach_tanh(args...) {
+std::vector<at::Tensor> wrap__foreach_tanh(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_tanh(tensors);
 }
 
-void wrap__foreach_tanh_(args...) {
+void wrap__foreach_tanh_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_tanh_(self);
 }
 
-Tensor[] wrap__foreach_sin(args...) {
+std::vector<at::Tensor> wrap__foreach_sin(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_sin(tensors);
 }
 
-void wrap__foreach_sin_(args...) {
+void wrap__foreach_sin_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_sin_(self);
 }
 
-Tensor[] wrap__foreach_sinh(args...) {
+std::vector<at::Tensor> wrap__foreach_sinh(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_sinh(tensors);
 }
 
-void wrap__foreach_sinh_(args...) {
+void wrap__foreach_sinh_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_sinh_(self);
 }
 
-Tensor[] wrap__foreach_round(args...) {
+std::vector<at::Tensor> wrap__foreach_round(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_round(tensors);
 }
 
-void wrap__foreach_round_(args...) {
+void wrap__foreach_round_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_round_(self);
 }
 
-Tensor[] wrap__foreach_lgamma(args...) {
+std::vector<at::Tensor> wrap__foreach_lgamma(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_lgamma(tensors);
 }
 
-void wrap__foreach_lgamma_(args...) {
+void wrap__foreach_lgamma_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_lgamma_(self);
 }
 
-Tensor[] wrap__foreach_frac(args...) {
+std::vector<at::Tensor> wrap__foreach_frac(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_frac(tensors);
 }
 
-void wrap__foreach_frac_(args...) {
+void wrap__foreach_frac_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_frac_(self);
 }
 
-Tensor[] wrap__foreach_reciprocal(args...) {
+std::vector<at::Tensor> wrap__foreach_reciprocal(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_reciprocal(tensors);
 }
 
-void wrap__foreach_reciprocal_(args...) {
+void wrap__foreach_reciprocal_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_reciprocal_(self);
 }
 
-Tensor[] wrap__foreach_sigmoid(args...) {
+std::vector<at::Tensor> wrap__foreach_sigmoid(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_sigmoid(tensors);
 }
 
-void wrap__foreach_sigmoid_(args...) {
+void wrap__foreach_sigmoid_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_sigmoid_(self);
 }
 
-Tensor[] wrap__foreach_trunc(args...) {
+std::vector<at::Tensor> wrap__foreach_trunc(at::TensorList tensors) {
   ensure_materialized();
   return at::redispatch::_foreach_trunc(tensors);
 }
 
-void wrap__foreach_trunc_(args...) {
+void wrap__foreach_trunc_(at::TensorList self) {
   ensure_materialized();
   return at::redispatch::_foreach_trunc_(self);
 }
 
-void wrap__foreach_addcdiv__Scalar(args...) {
+void wrap__foreach_addcdiv__Scalar(at::TensorList self, at::TensorList tensor1, at::TensorList tensor2, const at::Scalar & value) {
   ensure_materialized();
   return at::redispatch::_foreach_addcdiv_(self, tensor1, tensor2, value);
 }
 
-void wrap__foreach_addcmul__Scalar(args...) {
+void wrap__foreach_addcmul__Scalar(at::TensorList self, at::TensorList tensor1, at::TensorList tensor2, const at::Scalar & value) {
   ensure_materialized();
   return at::redispatch::_foreach_addcmul_(self, tensor1, tensor2, value);
 }
 
-void wrap__foreach_addcdiv__ScalarList(args...) {
+void wrap__foreach_addcdiv__ScalarList(at::TensorList self, at::TensorList tensor1, at::TensorList tensor2, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_addcdiv_(self, tensor1, tensor2, scalars);
 }
 
-void wrap__foreach_addcmul__ScalarList(args...) {
+void wrap__foreach_addcmul__ScalarList(at::TensorList self, at::TensorList tensor1, at::TensorList tensor2, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_addcmul_(self, tensor1, tensor2, scalars);
 }
 
-Tensor[] wrap__foreach_addcdiv_Scalar(args...) {
+std::vector<at::Tensor> wrap__foreach_addcdiv_Scalar(at::TensorList input, at::TensorList tensor1, at::TensorList tensor2, const at::Scalar & value) {
   ensure_materialized();
   return at::redispatch::_foreach_addcdiv(input, tensor1, tensor2, value);
 }
 
-Tensor[] wrap__foreach_addcmul_Scalar(args...) {
+std::vector<at::Tensor> wrap__foreach_addcmul_Scalar(at::TensorList input, at::TensorList tensor1, at::TensorList tensor2, const at::Scalar & value) {
   ensure_materialized();
   return at::redispatch::_foreach_addcmul(input, tensor1, tensor2, value);
 }
 
-Tensor[] wrap__foreach_addcdiv_ScalarList(args...) {
+std::vector<at::Tensor> wrap__foreach_addcdiv_ScalarList(at::TensorList input, at::TensorList tensor1, at::TensorList tensor2, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_addcdiv(input, tensor1, tensor2, scalars);
 }
 
-Tensor[] wrap__foreach_addcmul_ScalarList(args...) {
+std::vector<at::Tensor> wrap__foreach_addcmul_ScalarList(at::TensorList input, at::TensorList tensor1, at::TensorList tensor2, at::ArrayRef<at::Scalar> scalars) {
   ensure_materialized();
   return at::redispatch::_foreach_addcmul(input, tensor1, tensor2, scalars);
 }
 
-Tensor[] wrap__foreach_maximum_List(args...) {
+std::vector<at::Tensor> wrap__foreach_maximum_List(at::TensorList tensors1, at::TensorList tensors2) {
   ensure_materialized();
   return at::redispatch::_foreach_maximum(tensors1, tensors2);
 }
 
-Tensor[] wrap__foreach_minimum_List(args...) {
+std::vector<at::Tensor> wrap__foreach_minimum_List(at::TensorList tensors1, at::TensorList tensors2) {
   ensure_materialized();
   return at::redispatch::_foreach_minimum(tensors1, tensors2);
 }
 
-Tensor wrap_bucketize_Tensor(args...) {
+at::Tensor wrap_bucketize_Tensor(const at::Tensor & self, const at::Tensor & boundaries, bool out_int32, bool right) {
   if (trace.is_flushing()) {
     ensure_materialized(self, boundaries);
     return at::redispatch::bucketize(self, boundaries, out_int32, right);
@@ -11587,7 +10965,7 @@ Tensor wrap_bucketize_Tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_BUCKETIZE_TENSOR, self, boundaries, out_int32, right);
 }
 
-Tensor wrap_bucketize_Tensor_out(args...) {
+at::Tensor & wrap_bucketize_Tensor_out(const at::Tensor & self, const at::Tensor & boundaries, bool out_int32, bool right, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, boundaries);
     return at::redispatch::bucketize(out, self, boundaries, out_int32, right);
@@ -11595,7 +10973,7 @@ Tensor wrap_bucketize_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_BUCKETIZE_TENSOR_OUT, out, self, boundaries, out_int32, right);
 }
 
-Tensor wrap_bucketize_Scalar(args...) {
+at::Tensor wrap_bucketize_Scalar(const at::Scalar & self, const at::Tensor & boundaries, bool out_int32, bool right) {
   if (trace.is_flushing()) {
     ensure_materialized(boundaries);
     return at::redispatch::bucketize(self, boundaries, out_int32, right);
@@ -11603,7 +10981,7 @@ Tensor wrap_bucketize_Scalar(args...) {
   return MK_TORCHY(boundaries.dtype(), boundaries.device(), H_BUCKETIZE_SCALAR, self, boundaries, out_int32, right);
 }
 
-Tensor wrap_searchsorted_Tensor(args...) {
+at::Tensor wrap_searchsorted_Tensor(const at::Tensor & sorted_sequence, const at::Tensor & self, bool out_int32, bool right) {
   if (trace.is_flushing()) {
     ensure_materialized(sorted_sequence, self);
     return at::redispatch::searchsorted(sorted_sequence, self, out_int32, right);
@@ -11611,7 +10989,7 @@ Tensor wrap_searchsorted_Tensor(args...) {
   return MK_TORCHY(sorted_sequence.dtype(), sorted_sequence.device(), H_SEARCHSORTED_TENSOR, sorted_sequence, self, out_int32, right);
 }
 
-Tensor wrap_searchsorted_Tensor_out(args...) {
+at::Tensor & wrap_searchsorted_Tensor_out(const at::Tensor & sorted_sequence, const at::Tensor & self, bool out_int32, bool right, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, sorted_sequence, self);
     return at::redispatch::searchsorted(out, sorted_sequence, self, out_int32, right);
@@ -11619,7 +10997,7 @@ Tensor wrap_searchsorted_Tensor_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SEARCHSORTED_TENSOR_OUT, out, sorted_sequence, self, out_int32, right);
 }
 
-Tensor wrap_searchsorted_Scalar(args...) {
+at::Tensor wrap_searchsorted_Scalar(const at::Tensor & sorted_sequence, const at::Scalar & self, bool out_int32, bool right) {
   if (trace.is_flushing()) {
     ensure_materialized(sorted_sequence);
     return at::redispatch::searchsorted(sorted_sequence, self, out_int32, right);
@@ -11627,7 +11005,7 @@ Tensor wrap_searchsorted_Scalar(args...) {
   return MK_TORCHY(sorted_sequence.dtype(), sorted_sequence.device(), H_SEARCHSORTED_SCALAR, sorted_sequence, self, out_int32, right);
 }
 
-Tensor wrap_mse_loss_out(args...) {
+at::Tensor & wrap_mse_loss_out(const at::Tensor & self, const at::Tensor & target, int64_t reduction, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, target);
     return at::redispatch::mse_loss(out, self, target, reduction);
@@ -11635,7 +11013,7 @@ Tensor wrap_mse_loss_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MSE_LOSS_OUT, out, self, target, reduction);
 }
 
-Tensor wrap_mse_loss(args...) {
+at::Tensor wrap_mse_loss(const at::Tensor & self, const at::Tensor & target, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::mse_loss(self, target, reduction);
@@ -11643,7 +11021,7 @@ Tensor wrap_mse_loss(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MSE_LOSS, self, target, reduction);
 }
 
-Tensor wrap_mse_loss_backward_grad_input(args...) {
+at::Tensor & wrap_mse_loss_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, target);
     return at::redispatch::mse_loss_backward(grad_input, grad_output, self, target, reduction);
@@ -11651,7 +11029,7 @@ Tensor wrap_mse_loss_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_MSE_LOSS_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, target, reduction);
 }
 
-Tensor wrap_mse_loss_backward(args...) {
+at::Tensor wrap_mse_loss_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target);
     return at::redispatch::mse_loss_backward(grad_output, self, target, reduction);
@@ -11659,7 +11037,7 @@ Tensor wrap_mse_loss_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MSE_LOSS_BACKWARD, grad_output, self, target, reduction);
 }
 
-Tensor wrap_l1_loss_out(args...) {
+at::Tensor & wrap_l1_loss_out(const at::Tensor & self, const at::Tensor & target, int64_t reduction, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, target);
     return at::redispatch::l1_loss(out, self, target, reduction);
@@ -11667,7 +11045,7 @@ Tensor wrap_l1_loss_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_L1_LOSS_OUT, out, self, target, reduction);
 }
 
-Tensor wrap_l1_loss(args...) {
+at::Tensor wrap_l1_loss(const at::Tensor & self, const at::Tensor & target, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::l1_loss(self, target, reduction);
@@ -11675,7 +11053,7 @@ Tensor wrap_l1_loss(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_L1_LOSS, self, target, reduction);
 }
 
-Tensor wrap_l1_loss_backward_grad_input(args...) {
+at::Tensor & wrap_l1_loss_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, target);
     return at::redispatch::l1_loss_backward(grad_input, grad_output, self, target, reduction);
@@ -11683,7 +11061,7 @@ Tensor wrap_l1_loss_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_L1_LOSS_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, target, reduction);
 }
 
-Tensor wrap_l1_loss_backward(args...) {
+at::Tensor wrap_l1_loss_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target);
     return at::redispatch::l1_loss_backward(grad_output, self, target, reduction);
@@ -11691,7 +11069,7 @@ Tensor wrap_l1_loss_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_L1_LOSS_BACKWARD, grad_output, self, target, reduction);
 }
 
-Tensor wrap_multi_margin_loss_out(args...) {
+at::Tensor & wrap_multi_margin_loss_out(const at::Tensor & self, const at::Tensor & target, const at::Scalar & p, const at::Scalar & margin, const c10::optional<at::Tensor> & weight, int64_t reduction, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, target);
     return at::redispatch::multi_margin_loss(out, self, target, p, margin, weight, reduction);
@@ -11699,7 +11077,7 @@ Tensor wrap_multi_margin_loss_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MULTI_MARGIN_LOSS_OUT, out, self, target, p, margin, weight, reduction);
 }
 
-Tensor wrap_multi_margin_loss(args...) {
+at::Tensor wrap_multi_margin_loss(const at::Tensor & self, const at::Tensor & target, const at::Scalar & p, const at::Scalar & margin, const c10::optional<at::Tensor> & weight, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::multi_margin_loss(self, target, p, margin, weight, reduction);
@@ -11707,7 +11085,7 @@ Tensor wrap_multi_margin_loss(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MULTI_MARGIN_LOSS, self, target, p, margin, weight, reduction);
 }
 
-Tensor wrap_multi_margin_loss_backward_grad_input(args...) {
+at::Tensor & wrap_multi_margin_loss_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, const at::Scalar & p, const at::Scalar & margin, const c10::optional<at::Tensor> & weight, int64_t reduction, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, target);
     return at::redispatch::multi_margin_loss_backward(grad_input, grad_output, self, target, p, margin, weight, reduction);
@@ -11715,7 +11093,7 @@ Tensor wrap_multi_margin_loss_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_MULTI_MARGIN_LOSS_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, target, p, margin, weight, reduction);
 }
 
-Tensor wrap_multi_margin_loss_backward(args...) {
+at::Tensor wrap_multi_margin_loss_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, const at::Scalar & p, const at::Scalar & margin, const c10::optional<at::Tensor> & weight, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target);
     return at::redispatch::multi_margin_loss_backward(grad_output, self, target, p, margin, weight, reduction);
@@ -11723,7 +11101,7 @@ Tensor wrap_multi_margin_loss_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MULTI_MARGIN_LOSS_BACKWARD, grad_output, self, target, p, margin, weight, reduction);
 }
 
-Tensor wrap_multilabel_margin_loss_out(args...) {
+at::Tensor & wrap_multilabel_margin_loss_out(const at::Tensor & self, const at::Tensor & target, int64_t reduction, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, target);
     return at::redispatch::multilabel_margin_loss(out, self, target, reduction);
@@ -11731,7 +11109,7 @@ Tensor wrap_multilabel_margin_loss_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MULTILABEL_MARGIN_LOSS_OUT, out, self, target, reduction);
 }
 
-Tensor wrap_multilabel_margin_loss(args...) {
+at::Tensor wrap_multilabel_margin_loss(const at::Tensor & self, const at::Tensor & target, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::multilabel_margin_loss(self, target, reduction);
@@ -11739,23 +11117,17 @@ Tensor wrap_multilabel_margin_loss(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MULTILABEL_MARGIN_LOSS, self, target, reduction);
 }
 
-Tensor wrap_multilabel_margin_loss_forward_output(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(output, is_target, self, target);
-    return at::redispatch::multilabel_margin_loss_forward(output, is_target, self, target, reduction);
-  }
-  return MK_TORCHY(output.dtype(), output.device(), H_MULTILABEL_MARGIN_LOSS_FORWARD_OUTPUT, output, is_target, self, target, reduction);
+std::tuple<at::Tensor &,at::Tensor &> wrap_multilabel_margin_loss_forward_output(const at::Tensor & self, const at::Tensor & target, int64_t reduction, at::Tensor & output, at::Tensor & is_target) {
+  ensure_materialized(output, is_target, self, target);
+  return at::redispatch::multilabel_margin_loss_forward(output, is_target, self, target, reduction);
 }
 
-Tensor wrap_multilabel_margin_loss_forward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, target);
-    return at::redispatch::multilabel_margin_loss_forward(self, target, reduction);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MULTILABEL_MARGIN_LOSS_FORWARD, self, target, reduction);
+std::tuple<at::Tensor,at::Tensor> wrap_multilabel_margin_loss_forward(const at::Tensor & self, const at::Tensor & target, int64_t reduction) {
+  ensure_materialized(self, target);
+  return at::redispatch::multilabel_margin_loss_forward(self, target, reduction);
 }
 
-Tensor wrap_multilabel_margin_loss_backward_grad_input(args...) {
+at::Tensor & wrap_multilabel_margin_loss_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction, const at::Tensor & is_target, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, target, is_target);
     return at::redispatch::multilabel_margin_loss_backward(grad_input, grad_output, self, target, reduction, is_target);
@@ -11763,7 +11135,7 @@ Tensor wrap_multilabel_margin_loss_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_MULTILABEL_MARGIN_LOSS_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, target, reduction, is_target);
 }
 
-Tensor wrap_multilabel_margin_loss_backward(args...) {
+at::Tensor wrap_multilabel_margin_loss_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction, const at::Tensor & is_target) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target, is_target);
     return at::redispatch::multilabel_margin_loss_backward(grad_output, self, target, reduction, is_target);
@@ -11771,7 +11143,7 @@ Tensor wrap_multilabel_margin_loss_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MULTILABEL_MARGIN_LOSS_BACKWARD, grad_output, self, target, reduction, is_target);
 }
 
-Tensor wrap_nll_loss_out(args...) {
+at::Tensor & wrap_nll_loss_out(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, target);
     return at::redispatch::nll_loss(out, self, target, weight, reduction, ignore_index);
@@ -11779,7 +11151,7 @@ Tensor wrap_nll_loss_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NLL_LOSS_OUT, out, self, target, weight, reduction, ignore_index);
 }
 
-Tensor wrap_nll_loss_nd(args...) {
+at::Tensor wrap_nll_loss_nd(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::nll_loss_nd(self, target, weight, reduction, ignore_index);
@@ -11787,7 +11159,7 @@ Tensor wrap_nll_loss_nd(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NLL_LOSS_ND, self, target, weight, reduction, ignore_index);
 }
 
-Tensor wrap_nll_loss(args...) {
+at::Tensor wrap_nll_loss(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::nll_loss(self, target, weight, reduction, ignore_index);
@@ -11795,23 +11167,17 @@ Tensor wrap_nll_loss(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NLL_LOSS, self, target, weight, reduction, ignore_index);
 }
 
-Tensor wrap_nll_loss_forward_output(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(output, total_weight, self, target);
-    return at::redispatch::nll_loss_forward(output, total_weight, self, target, weight, reduction, ignore_index);
-  }
-  return MK_TORCHY(output.dtype(), output.device(), H_NLL_LOSS_FORWARD_OUTPUT, output, total_weight, self, target, weight, reduction, ignore_index);
+std::tuple<at::Tensor &,at::Tensor &> wrap_nll_loss_forward_output(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index, at::Tensor & output, at::Tensor & total_weight) {
+  ensure_materialized(output, total_weight, self, target);
+  return at::redispatch::nll_loss_forward(output, total_weight, self, target, weight, reduction, ignore_index);
 }
 
-Tensor wrap_nll_loss_forward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, target);
-    return at::redispatch::nll_loss_forward(self, target, weight, reduction, ignore_index);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_NLL_LOSS_FORWARD, self, target, weight, reduction, ignore_index);
+std::tuple<at::Tensor,at::Tensor> wrap_nll_loss_forward(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index) {
+  ensure_materialized(self, target);
+  return at::redispatch::nll_loss_forward(self, target, weight, reduction, ignore_index);
 }
 
-Tensor wrap_nll_loss_backward_grad_input(args...) {
+at::Tensor & wrap_nll_loss_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index, const at::Tensor & total_weight, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, target, total_weight);
     return at::redispatch::nll_loss_backward(grad_input, grad_output, self, target, weight, reduction, ignore_index, total_weight);
@@ -11819,7 +11185,7 @@ Tensor wrap_nll_loss_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_NLL_LOSS_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, target, weight, reduction, ignore_index, total_weight);
 }
 
-Tensor wrap_nll_loss_backward(args...) {
+at::Tensor wrap_nll_loss_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index, const at::Tensor & total_weight) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target, total_weight);
     return at::redispatch::nll_loss_backward(grad_output, self, target, weight, reduction, ignore_index, total_weight);
@@ -11827,7 +11193,7 @@ Tensor wrap_nll_loss_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_NLL_LOSS_BACKWARD, grad_output, self, target, weight, reduction, ignore_index, total_weight);
 }
 
-Tensor wrap_nll_loss2d_out(args...) {
+at::Tensor & wrap_nll_loss2d_out(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, target);
     return at::redispatch::nll_loss2d(out, self, target, weight, reduction, ignore_index);
@@ -11835,7 +11201,7 @@ Tensor wrap_nll_loss2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_NLL_LOSS2D_OUT, out, self, target, weight, reduction, ignore_index);
 }
 
-Tensor wrap_nll_loss2d(args...) {
+at::Tensor wrap_nll_loss2d(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::nll_loss2d(self, target, weight, reduction, ignore_index);
@@ -11843,23 +11209,17 @@ Tensor wrap_nll_loss2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_NLL_LOSS2D, self, target, weight, reduction, ignore_index);
 }
 
-Tensor wrap_nll_loss2d_forward_output(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(output, total_weight, self, target);
-    return at::redispatch::nll_loss2d_forward(output, total_weight, self, target, weight, reduction, ignore_index);
-  }
-  return MK_TORCHY(output.dtype(), output.device(), H_NLL_LOSS2D_FORWARD_OUTPUT, output, total_weight, self, target, weight, reduction, ignore_index);
+std::tuple<at::Tensor &,at::Tensor &> wrap_nll_loss2d_forward_output(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index, at::Tensor & output, at::Tensor & total_weight) {
+  ensure_materialized(output, total_weight, self, target);
+  return at::redispatch::nll_loss2d_forward(output, total_weight, self, target, weight, reduction, ignore_index);
 }
 
-Tensor wrap_nll_loss2d_forward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, target);
-    return at::redispatch::nll_loss2d_forward(self, target, weight, reduction, ignore_index);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_NLL_LOSS2D_FORWARD, self, target, weight, reduction, ignore_index);
+std::tuple<at::Tensor,at::Tensor> wrap_nll_loss2d_forward(const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index) {
+  ensure_materialized(self, target);
+  return at::redispatch::nll_loss2d_forward(self, target, weight, reduction, ignore_index);
 }
 
-Tensor wrap_nll_loss2d_backward_grad_input(args...) {
+at::Tensor & wrap_nll_loss2d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index, const at::Tensor & total_weight, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, target, total_weight);
     return at::redispatch::nll_loss2d_backward(grad_input, grad_output, self, target, weight, reduction, ignore_index, total_weight);
@@ -11867,7 +11227,7 @@ Tensor wrap_nll_loss2d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_NLL_LOSS2D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, target, weight, reduction, ignore_index, total_weight);
 }
 
-Tensor wrap_nll_loss2d_backward(args...) {
+at::Tensor wrap_nll_loss2d_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, const c10::optional<at::Tensor> & weight, int64_t reduction, int64_t ignore_index, const at::Tensor & total_weight) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target, total_weight);
     return at::redispatch::nll_loss2d_backward(grad_output, self, target, weight, reduction, ignore_index, total_weight);
@@ -11875,7 +11235,7 @@ Tensor wrap_nll_loss2d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_NLL_LOSS2D_BACKWARD, grad_output, self, target, weight, reduction, ignore_index, total_weight);
 }
 
-Tensor wrap_smooth_l1_loss_out(args...) {
+at::Tensor & wrap_smooth_l1_loss_out(const at::Tensor & self, const at::Tensor & target, int64_t reduction, double beta, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, target);
     return at::redispatch::smooth_l1_loss(out, self, target, reduction, beta);
@@ -11883,7 +11243,7 @@ Tensor wrap_smooth_l1_loss_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SMOOTH_L1_LOSS_OUT, out, self, target, reduction, beta);
 }
 
-Tensor wrap_smooth_l1_loss(args...) {
+at::Tensor wrap_smooth_l1_loss(const at::Tensor & self, const at::Tensor & target, int64_t reduction, double beta) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::smooth_l1_loss(self, target, reduction, beta);
@@ -11891,7 +11251,7 @@ Tensor wrap_smooth_l1_loss(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SMOOTH_L1_LOSS, self, target, reduction, beta);
 }
 
-Tensor wrap_smooth_l1_loss_backward_grad_input(args...) {
+at::Tensor & wrap_smooth_l1_loss_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction, double beta, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, target);
     return at::redispatch::smooth_l1_loss_backward(grad_input, grad_output, self, target, reduction, beta);
@@ -11899,7 +11259,7 @@ Tensor wrap_smooth_l1_loss_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_SMOOTH_L1_LOSS_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, target, reduction, beta);
 }
 
-Tensor wrap_smooth_l1_loss_backward(args...) {
+at::Tensor wrap_smooth_l1_loss_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction, double beta) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target);
     return at::redispatch::smooth_l1_loss_backward(grad_output, self, target, reduction, beta);
@@ -11907,7 +11267,7 @@ Tensor wrap_smooth_l1_loss_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_SMOOTH_L1_LOSS_BACKWARD, grad_output, self, target, reduction, beta);
 }
 
-Tensor wrap_huber_loss_out(args...) {
+at::Tensor & wrap_huber_loss_out(const at::Tensor & self, const at::Tensor & target, int64_t reduction, double delta, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, target);
     return at::redispatch::huber_loss(out, self, target, reduction, delta);
@@ -11915,7 +11275,7 @@ Tensor wrap_huber_loss_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_HUBER_LOSS_OUT, out, self, target, reduction, delta);
 }
 
-Tensor wrap_huber_loss(args...) {
+at::Tensor wrap_huber_loss(const at::Tensor & self, const at::Tensor & target, int64_t reduction, double delta) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::huber_loss(self, target, reduction, delta);
@@ -11923,7 +11283,7 @@ Tensor wrap_huber_loss(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HUBER_LOSS, self, target, reduction, delta);
 }
 
-Tensor wrap_huber_loss_backward_out(args...) {
+at::Tensor & wrap_huber_loss_backward_out(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction, double delta, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, target);
     return at::redispatch::huber_loss_backward(grad_input, grad_output, self, target, reduction, delta);
@@ -11931,7 +11291,7 @@ Tensor wrap_huber_loss_backward_out(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_HUBER_LOSS_BACKWARD_OUT, grad_input, grad_output, self, target, reduction, delta);
 }
 
-Tensor wrap_huber_loss_backward(args...) {
+at::Tensor wrap_huber_loss_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction, double delta) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target);
     return at::redispatch::huber_loss_backward(grad_output, self, target, reduction, delta);
@@ -11939,7 +11299,7 @@ Tensor wrap_huber_loss_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_HUBER_LOSS_BACKWARD, grad_output, self, target, reduction, delta);
 }
 
-Tensor wrap_soft_margin_loss_out(args...) {
+at::Tensor & wrap_soft_margin_loss_out(const at::Tensor & self, const at::Tensor & target, int64_t reduction, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, target);
     return at::redispatch::soft_margin_loss(out, self, target, reduction);
@@ -11947,7 +11307,7 @@ Tensor wrap_soft_margin_loss_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SOFT_MARGIN_LOSS_OUT, out, self, target, reduction);
 }
 
-Tensor wrap_soft_margin_loss(args...) {
+at::Tensor wrap_soft_margin_loss(const at::Tensor & self, const at::Tensor & target, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(self, target);
     return at::redispatch::soft_margin_loss(self, target, reduction);
@@ -11955,7 +11315,7 @@ Tensor wrap_soft_margin_loss(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SOFT_MARGIN_LOSS, self, target, reduction);
 }
 
-Tensor wrap_soft_margin_loss_backward_grad_input(args...) {
+at::Tensor & wrap_soft_margin_loss_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, target);
     return at::redispatch::soft_margin_loss_backward(grad_input, grad_output, self, target, reduction);
@@ -11963,7 +11323,7 @@ Tensor wrap_soft_margin_loss_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_SOFT_MARGIN_LOSS_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, target, reduction);
 }
 
-Tensor wrap_soft_margin_loss_backward(args...) {
+at::Tensor wrap_soft_margin_loss_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & target, int64_t reduction) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, target);
     return at::redispatch::soft_margin_loss_backward(grad_output, self, target, reduction);
@@ -11971,7 +11331,7 @@ Tensor wrap_soft_margin_loss_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_SOFT_MARGIN_LOSS_BACKWARD, grad_output, self, target, reduction);
 }
 
-Tensor wrap_elu_out(args...) {
+at::Tensor & wrap_elu_out(const at::Tensor & self, const at::Scalar & alpha, const at::Scalar & scale, const at::Scalar & input_scale, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::elu(out, self, alpha, scale, input_scale);
@@ -11979,7 +11339,7 @@ Tensor wrap_elu_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ELU_OUT, out, self, alpha, scale, input_scale);
 }
 
-Tensor wrap_elu(args...) {
+at::Tensor wrap_elu(const at::Tensor & self, const at::Scalar & alpha, const at::Scalar & scale, const at::Scalar & input_scale) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::elu(self, alpha, scale, input_scale);
@@ -11987,7 +11347,7 @@ Tensor wrap_elu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ELU, self, alpha, scale, input_scale);
 }
 
-Tensor wrap_elu_backward(args...) {
+at::Tensor wrap_elu_backward(const at::Tensor & grad_output, const at::Scalar & alpha, const at::Scalar & scale, const at::Scalar & input_scale, bool is_result, const at::Tensor & self_or_result) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self_or_result);
     return at::redispatch::elu_backward(grad_output, alpha, scale, input_scale, is_result, self_or_result);
@@ -11995,7 +11355,7 @@ Tensor wrap_elu_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_ELU_BACKWARD, grad_output, alpha, scale, input_scale, is_result, self_or_result);
 }
 
-Tensor wrap_elu_(args...) {
+at::Tensor & wrap_elu_(at::Tensor & self, const at::Scalar & alpha, const at::Scalar & scale, const at::Scalar & input_scale) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::elu_(self, alpha, scale, input_scale);
@@ -12003,7 +11363,7 @@ Tensor wrap_elu_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ELU_, self, alpha, scale, input_scale);
 }
 
-Tensor wrap_glu_out(args...) {
+at::Tensor & wrap_glu_out(const at::Tensor & self, int64_t dim, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::glu(out, self, dim);
@@ -12011,7 +11371,7 @@ Tensor wrap_glu_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GLU_OUT, out, self, dim);
 }
 
-Tensor wrap_glu(args...) {
+at::Tensor wrap_glu(const at::Tensor & self, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::glu(self, dim);
@@ -12019,7 +11379,7 @@ Tensor wrap_glu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GLU, self, dim);
 }
 
-Tensor wrap_glu_backward_grad_input(args...) {
+at::Tensor & wrap_glu_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, int64_t dim, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::glu_backward(grad_input, grad_output, self, dim);
@@ -12027,7 +11387,7 @@ Tensor wrap_glu_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_GLU_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, dim);
 }
 
-Tensor wrap_glu_backward(args...) {
+at::Tensor wrap_glu_backward(const at::Tensor & grad_output, const at::Tensor & self, int64_t dim) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::glu_backward(grad_output, self, dim);
@@ -12035,7 +11395,7 @@ Tensor wrap_glu_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_GLU_BACKWARD, grad_output, self, dim);
 }
 
-Tensor wrap_hardsigmoid_out(args...) {
+at::Tensor & wrap_hardsigmoid_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::hardsigmoid(out, self);
@@ -12043,7 +11403,7 @@ Tensor wrap_hardsigmoid_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_HARDSIGMOID_OUT, out, self);
 }
 
-Tensor wrap_hardsigmoid(args...) {
+at::Tensor wrap_hardsigmoid(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::hardsigmoid(self);
@@ -12051,7 +11411,7 @@ Tensor wrap_hardsigmoid(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HARDSIGMOID, self);
 }
 
-Tensor wrap_hardsigmoid_(args...) {
+at::Tensor & wrap_hardsigmoid_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::hardsigmoid_(self);
@@ -12059,7 +11419,7 @@ Tensor wrap_hardsigmoid_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HARDSIGMOID_, self);
 }
 
-Tensor wrap_hardsigmoid_backward(args...) {
+at::Tensor wrap_hardsigmoid_backward(const at::Tensor & grad_output, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::hardsigmoid_backward(grad_output, self);
@@ -12067,7 +11427,7 @@ Tensor wrap_hardsigmoid_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_HARDSIGMOID_BACKWARD, grad_output, self);
 }
 
-Tensor wrap_hardtanh_out(args...) {
+at::Tensor & wrap_hardtanh_out(const at::Tensor & self, const at::Scalar & min_val, const at::Scalar & max_val, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::hardtanh(out, self, min_val, max_val);
@@ -12075,7 +11435,7 @@ Tensor wrap_hardtanh_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_HARDTANH_OUT, out, self, min_val, max_val);
 }
 
-Tensor wrap_hardtanh(args...) {
+at::Tensor wrap_hardtanh(const at::Tensor & self, const at::Scalar & min_val, const at::Scalar & max_val) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::hardtanh(self, min_val, max_val);
@@ -12083,7 +11443,7 @@ Tensor wrap_hardtanh(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HARDTANH, self, min_val, max_val);
 }
 
-Tensor wrap_hardtanh_backward_grad_input(args...) {
+at::Tensor & wrap_hardtanh_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Scalar & min_val, const at::Scalar & max_val, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::hardtanh_backward(grad_input, grad_output, self, min_val, max_val);
@@ -12091,7 +11451,7 @@ Tensor wrap_hardtanh_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_HARDTANH_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, min_val, max_val);
 }
 
-Tensor wrap_hardtanh_backward(args...) {
+at::Tensor wrap_hardtanh_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Scalar & min_val, const at::Scalar & max_val) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::hardtanh_backward(grad_output, self, min_val, max_val);
@@ -12099,7 +11459,7 @@ Tensor wrap_hardtanh_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_HARDTANH_BACKWARD, grad_output, self, min_val, max_val);
 }
 
-Tensor wrap_hardtanh_(args...) {
+at::Tensor & wrap_hardtanh_(at::Tensor & self, const at::Scalar & min_val, const at::Scalar & max_val) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::hardtanh_(self, min_val, max_val);
@@ -12107,7 +11467,7 @@ Tensor wrap_hardtanh_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HARDTANH_, self, min_val, max_val);
 }
 
-Tensor wrap_hardswish_out(args...) {
+at::Tensor & wrap_hardswish_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::hardswish(out, self);
@@ -12115,7 +11475,7 @@ Tensor wrap_hardswish_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_HARDSWISH_OUT, out, self);
 }
 
-Tensor wrap_hardswish(args...) {
+at::Tensor wrap_hardswish(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::hardswish(self);
@@ -12123,7 +11483,7 @@ Tensor wrap_hardswish(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HARDSWISH, self);
 }
 
-Tensor wrap_hardswish_(args...) {
+at::Tensor & wrap_hardswish_(at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::hardswish_(self);
@@ -12131,7 +11491,7 @@ Tensor wrap_hardswish_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_HARDSWISH_, self);
 }
 
-Tensor wrap_hardswish_backward(args...) {
+at::Tensor wrap_hardswish_backward(const at::Tensor & grad_output, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::hardswish_backward(grad_output, self);
@@ -12139,7 +11499,7 @@ Tensor wrap_hardswish_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_HARDSWISH_BACKWARD, grad_output, self);
 }
 
-Tensor wrap_leaky_relu_out(args...) {
+at::Tensor & wrap_leaky_relu_out(const at::Tensor & self, const at::Scalar & negative_slope, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::leaky_relu(out, self, negative_slope);
@@ -12147,7 +11507,7 @@ Tensor wrap_leaky_relu_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LEAKY_RELU_OUT, out, self, negative_slope);
 }
 
-Tensor wrap_leaky_relu(args...) {
+at::Tensor wrap_leaky_relu(const at::Tensor & self, const at::Scalar & negative_slope) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::leaky_relu(self, negative_slope);
@@ -12155,7 +11515,7 @@ Tensor wrap_leaky_relu(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LEAKY_RELU, self, negative_slope);
 }
 
-Tensor wrap_leaky_relu_backward(args...) {
+at::Tensor wrap_leaky_relu_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Scalar & negative_slope, bool self_is_result) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::leaky_relu_backward(grad_output, self, negative_slope, self_is_result);
@@ -12163,7 +11523,7 @@ Tensor wrap_leaky_relu_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_LEAKY_RELU_BACKWARD, grad_output, self, negative_slope, self_is_result);
 }
 
-Tensor wrap_leaky_relu_(args...) {
+at::Tensor & wrap_leaky_relu_(at::Tensor & self, const at::Scalar & negative_slope) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::leaky_relu_(self, negative_slope);
@@ -12171,7 +11531,7 @@ Tensor wrap_leaky_relu_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LEAKY_RELU_, self, negative_slope);
 }
 
-Tensor wrap_log_sigmoid_out(args...) {
+at::Tensor & wrap_log_sigmoid_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::log_sigmoid(out, self);
@@ -12179,7 +11539,7 @@ Tensor wrap_log_sigmoid_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LOG_SIGMOID_OUT, out, self);
 }
 
-Tensor wrap_log_sigmoid(args...) {
+at::Tensor wrap_log_sigmoid(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::log_sigmoid(self);
@@ -12187,23 +11547,17 @@ Tensor wrap_log_sigmoid(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LOG_SIGMOID, self);
 }
 
-Tensor wrap_log_sigmoid_forward_output(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(output, buffer, self);
-    return at::redispatch::log_sigmoid_forward(output, buffer, self);
-  }
-  return MK_TORCHY(output.dtype(), output.device(), H_LOG_SIGMOID_FORWARD_OUTPUT, output, buffer, self);
+std::tuple<at::Tensor &,at::Tensor &> wrap_log_sigmoid_forward_output(const at::Tensor & self, at::Tensor & output, at::Tensor & buffer) {
+  ensure_materialized(output, buffer, self);
+  return at::redispatch::log_sigmoid_forward(output, buffer, self);
 }
 
-Tensor wrap_log_sigmoid_forward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::log_sigmoid_forward(self);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_LOG_SIGMOID_FORWARD, self);
+std::tuple<at::Tensor,at::Tensor> wrap_log_sigmoid_forward(const at::Tensor & self) {
+  ensure_materialized(self);
+  return at::redispatch::log_sigmoid_forward(self);
 }
 
-Tensor wrap_log_sigmoid_backward_grad_input(args...) {
+at::Tensor & wrap_log_sigmoid_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & buffer, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, buffer);
     return at::redispatch::log_sigmoid_backward(grad_input, grad_output, self, buffer);
@@ -12211,7 +11565,7 @@ Tensor wrap_log_sigmoid_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_LOG_SIGMOID_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, buffer);
 }
 
-Tensor wrap_log_sigmoid_backward(args...) {
+at::Tensor wrap_log_sigmoid_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & buffer) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, buffer);
     return at::redispatch::log_sigmoid_backward(grad_output, self, buffer);
@@ -12219,7 +11573,7 @@ Tensor wrap_log_sigmoid_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_LOG_SIGMOID_BACKWARD, grad_output, self, buffer);
 }
 
-Tensor wrap_rrelu_with_noise_out(args...) {
+at::Tensor & wrap_rrelu_with_noise_out(const at::Tensor & self, const at::Tensor & noise, const at::Scalar & lower, const at::Scalar & upper, bool training, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, noise);
     return at::redispatch::rrelu_with_noise(out, self, noise, lower, upper, training, generator);
@@ -12227,7 +11581,7 @@ Tensor wrap_rrelu_with_noise_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_RRELU_WITH_NOISE_OUT, out, self, noise, lower, upper, training, generator);
 }
 
-Tensor wrap_rrelu_with_noise(args...) {
+at::Tensor wrap_rrelu_with_noise(const at::Tensor & self, const at::Tensor & noise, const at::Scalar & lower, const at::Scalar & upper, bool training, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self, noise);
     return at::redispatch::rrelu_with_noise(self, noise, lower, upper, training, generator);
@@ -12235,7 +11589,7 @@ Tensor wrap_rrelu_with_noise(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RRELU_WITH_NOISE, self, noise, lower, upper, training, generator);
 }
 
-Tensor wrap_rrelu_with_noise_backward(args...) {
+at::Tensor wrap_rrelu_with_noise_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & noise, const at::Scalar & lower, const at::Scalar & upper, bool training, bool self_is_result) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, noise);
     return at::redispatch::rrelu_with_noise_backward(grad_output, self, noise, lower, upper, training, self_is_result);
@@ -12243,7 +11597,7 @@ Tensor wrap_rrelu_with_noise_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_RRELU_WITH_NOISE_BACKWARD, grad_output, self, noise, lower, upper, training, self_is_result);
 }
 
-Tensor wrap_rrelu_with_noise_(args...) {
+at::Tensor & wrap_rrelu_with_noise_(at::Tensor & self, const at::Tensor & noise, const at::Scalar & lower, const at::Scalar & upper, bool training, c10::optional<at::Generator> generator) {
   if (trace.is_flushing()) {
     ensure_materialized(self, noise);
     return at::redispatch::rrelu_with_noise_(self, noise, lower, upper, training, generator);
@@ -12251,7 +11605,7 @@ Tensor wrap_rrelu_with_noise_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_RRELU_WITH_NOISE_, self, noise, lower, upper, training, generator);
 }
 
-Tensor wrap_softplus_out(args...) {
+at::Tensor & wrap_softplus_out(const at::Tensor & self, const at::Scalar & beta, const at::Scalar & threshold, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::softplus(out, self, beta, threshold);
@@ -12259,7 +11613,7 @@ Tensor wrap_softplus_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SOFTPLUS_OUT, out, self, beta, threshold);
 }
 
-Tensor wrap_softplus(args...) {
+at::Tensor wrap_softplus(const at::Tensor & self, const at::Scalar & beta, const at::Scalar & threshold) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::softplus(self, beta, threshold);
@@ -12267,7 +11621,7 @@ Tensor wrap_softplus(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SOFTPLUS, self, beta, threshold);
 }
 
-Tensor wrap_softplus_backward_grad_input(args...) {
+at::Tensor & wrap_softplus_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Scalar & beta, const at::Scalar & threshold, const at::Tensor & output, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, output);
     return at::redispatch::softplus_backward(grad_input, grad_output, self, beta, threshold, output);
@@ -12275,7 +11629,7 @@ Tensor wrap_softplus_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_SOFTPLUS_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, beta, threshold, output);
 }
 
-Tensor wrap_softplus_backward(args...) {
+at::Tensor wrap_softplus_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Scalar & beta, const at::Scalar & threshold, const at::Tensor & output) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, output);
     return at::redispatch::softplus_backward(grad_output, self, beta, threshold, output);
@@ -12283,7 +11637,7 @@ Tensor wrap_softplus_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_SOFTPLUS_BACKWARD, grad_output, self, beta, threshold, output);
 }
 
-Tensor wrap_softshrink_out(args...) {
+at::Tensor & wrap_softshrink_out(const at::Tensor & self, const at::Scalar & lambd, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::softshrink(out, self, lambd);
@@ -12291,7 +11645,7 @@ Tensor wrap_softshrink_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SOFTSHRINK_OUT, out, self, lambd);
 }
 
-Tensor wrap_softshrink(args...) {
+at::Tensor wrap_softshrink(const at::Tensor & self, const at::Scalar & lambd) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::softshrink(self, lambd);
@@ -12299,7 +11653,7 @@ Tensor wrap_softshrink(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SOFTSHRINK, self, lambd);
 }
 
-Tensor wrap_softshrink_backward_grad_input(args...) {
+at::Tensor & wrap_softshrink_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Scalar & lambd, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::softshrink_backward(grad_input, grad_output, self, lambd);
@@ -12307,7 +11661,7 @@ Tensor wrap_softshrink_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_SOFTSHRINK_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, lambd);
 }
 
-Tensor wrap_softshrink_backward(args...) {
+at::Tensor wrap_softshrink_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Scalar & lambd) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::softshrink_backward(grad_output, self, lambd);
@@ -12315,7 +11669,7 @@ Tensor wrap_softshrink_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_SOFTSHRINK_BACKWARD, grad_output, self, lambd);
 }
 
-Tensor wrap_adaptive_avg_pool2d_out(args...) {
+at::Tensor & wrap_adaptive_avg_pool2d_out(const at::Tensor & self, at::IntArrayRef output_size, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::adaptive_avg_pool2d(out, self, output_size);
@@ -12323,7 +11677,7 @@ Tensor wrap_adaptive_avg_pool2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ADAPTIVE_AVG_POOL2D_OUT, out, self, output_size);
 }
 
-Tensor wrap_adaptive_avg_pool2d(args...) {
+at::Tensor wrap_adaptive_avg_pool2d(const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::adaptive_avg_pool2d(self, output_size);
@@ -12331,7 +11685,7 @@ Tensor wrap_adaptive_avg_pool2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADAPTIVE_AVG_POOL2D, self, output_size);
 }
 
-Tensor wrap_mkldnn_adaptive_avg_pool2d(args...) {
+at::Tensor wrap_mkldnn_adaptive_avg_pool2d(const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::mkldnn_adaptive_avg_pool2d(self, output_size);
@@ -12339,7 +11693,7 @@ Tensor wrap_mkldnn_adaptive_avg_pool2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MKLDNN_ADAPTIVE_AVG_POOL2D, self, output_size);
 }
 
-Tensor wrap_mkldnn_adaptive_avg_pool2d_backward(args...) {
+at::Tensor wrap_mkldnn_adaptive_avg_pool2d_backward(const at::Tensor & grad_output, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::mkldnn_adaptive_avg_pool2d_backward(grad_output, self);
@@ -12347,7 +11701,7 @@ Tensor wrap_mkldnn_adaptive_avg_pool2d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MKLDNN_ADAPTIVE_AVG_POOL2D_BACKWARD, grad_output, self);
 }
 
-Tensor wrap__adaptive_avg_pool2d(args...) {
+at::Tensor wrap__adaptive_avg_pool2d(const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_adaptive_avg_pool2d(self, output_size);
@@ -12355,7 +11709,7 @@ Tensor wrap__adaptive_avg_pool2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__ADAPTIVE_AVG_POOL2D, self, output_size);
 }
 
-Tensor wrap__adaptive_avg_pool2d_backward(args...) {
+at::Tensor wrap__adaptive_avg_pool2d_backward(const at::Tensor & grad_output, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::_adaptive_avg_pool2d_backward(grad_output, self);
@@ -12363,7 +11717,7 @@ Tensor wrap__adaptive_avg_pool2d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H__ADAPTIVE_AVG_POOL2D_BACKWARD, grad_output, self);
 }
 
-Tensor wrap_adaptive_avg_pool3d_out(args...) {
+at::Tensor & wrap_adaptive_avg_pool3d_out(const at::Tensor & self, at::IntArrayRef output_size, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::adaptive_avg_pool3d(out, self, output_size);
@@ -12371,7 +11725,7 @@ Tensor wrap_adaptive_avg_pool3d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ADAPTIVE_AVG_POOL3D_OUT, out, self, output_size);
 }
 
-Tensor wrap_adaptive_avg_pool3d(args...) {
+at::Tensor wrap_adaptive_avg_pool3d(const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::adaptive_avg_pool3d(self, output_size);
@@ -12379,7 +11733,7 @@ Tensor wrap_adaptive_avg_pool3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ADAPTIVE_AVG_POOL3D, self, output_size);
 }
 
-Tensor wrap__adaptive_avg_pool3d(args...) {
+at::Tensor wrap__adaptive_avg_pool3d(const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_adaptive_avg_pool3d(self, output_size);
@@ -12387,7 +11741,7 @@ Tensor wrap__adaptive_avg_pool3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__ADAPTIVE_AVG_POOL3D, self, output_size);
 }
 
-Tensor wrap_adaptive_avg_pool3d_backward_grad_input(args...) {
+at::Tensor & wrap_adaptive_avg_pool3d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::adaptive_avg_pool3d_backward(grad_input, grad_output, self);
@@ -12395,7 +11749,7 @@ Tensor wrap_adaptive_avg_pool3d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_ADAPTIVE_AVG_POOL3D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self);
 }
 
-Tensor wrap__adaptive_avg_pool3d_backward(args...) {
+at::Tensor wrap__adaptive_avg_pool3d_backward(const at::Tensor & grad_output, const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::_adaptive_avg_pool3d_backward(grad_output, self);
@@ -12403,15 +11757,12 @@ Tensor wrap__adaptive_avg_pool3d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H__ADAPTIVE_AVG_POOL3D_BACKWARD, grad_output, self);
 }
 
-Tensor wrap_adaptive_max_pool2d_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(out, indices, self);
-    return at::redispatch::adaptive_max_pool2d(out, indices, self, output_size);
-  }
-  return MK_TORCHY(out.dtype(), out.device(), H_ADAPTIVE_MAX_POOL2D_OUT, out, indices, self, output_size);
+std::tuple<at::Tensor &,at::Tensor &> wrap_adaptive_max_pool2d_out(const at::Tensor & self, at::IntArrayRef output_size, at::Tensor & out, at::Tensor & indices) {
+  ensure_materialized(out, indices, self);
+  return at::redispatch::adaptive_max_pool2d(out, indices, self, output_size);
 }
 
-Tensor wrap_adaptive_max_pool2d_backward_grad_input(args...) {
+at::Tensor & wrap_adaptive_max_pool2d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, indices);
     return at::redispatch::adaptive_max_pool2d_backward(grad_input, grad_output, self, indices);
@@ -12419,7 +11770,7 @@ Tensor wrap_adaptive_max_pool2d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_ADAPTIVE_MAX_POOL2D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, indices);
 }
 
-Tensor wrap_adaptive_max_pool2d_backward(args...) {
+at::Tensor wrap_adaptive_max_pool2d_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, indices);
     return at::redispatch::adaptive_max_pool2d_backward(grad_output, self, indices);
@@ -12427,15 +11778,12 @@ Tensor wrap_adaptive_max_pool2d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_ADAPTIVE_MAX_POOL2D_BACKWARD, grad_output, self, indices);
 }
 
-Tensor wrap_adaptive_max_pool3d_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(out, indices, self);
-    return at::redispatch::adaptive_max_pool3d(out, indices, self, output_size);
-  }
-  return MK_TORCHY(out.dtype(), out.device(), H_ADAPTIVE_MAX_POOL3D_OUT, out, indices, self, output_size);
+std::tuple<at::Tensor &,at::Tensor &> wrap_adaptive_max_pool3d_out(const at::Tensor & self, at::IntArrayRef output_size, at::Tensor & out, at::Tensor & indices) {
+  ensure_materialized(out, indices, self);
+  return at::redispatch::adaptive_max_pool3d(out, indices, self, output_size);
 }
 
-Tensor wrap_adaptive_max_pool3d_backward_grad_input(args...) {
+at::Tensor & wrap_adaptive_max_pool3d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, indices);
     return at::redispatch::adaptive_max_pool3d_backward(grad_input, grad_output, self, indices);
@@ -12443,7 +11791,7 @@ Tensor wrap_adaptive_max_pool3d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_ADAPTIVE_MAX_POOL3D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, indices);
 }
 
-Tensor wrap_adaptive_max_pool3d_backward(args...) {
+at::Tensor wrap_adaptive_max_pool3d_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, indices);
     return at::redispatch::adaptive_max_pool3d_backward(grad_output, self, indices);
@@ -12451,7 +11799,7 @@ Tensor wrap_adaptive_max_pool3d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_ADAPTIVE_MAX_POOL3D_BACKWARD, grad_output, self, indices);
 }
 
-Tensor wrap_avg_pool2d_out(args...) {
+at::Tensor & wrap_avg_pool2d_out(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::avg_pool2d(out, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
@@ -12459,7 +11807,7 @@ Tensor wrap_avg_pool2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_AVG_POOL2D_OUT, out, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
 }
 
-Tensor wrap_avg_pool2d(args...) {
+at::Tensor wrap_avg_pool2d(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::avg_pool2d(self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
@@ -12467,7 +11815,7 @@ Tensor wrap_avg_pool2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_AVG_POOL2D, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
 }
 
-Tensor wrap_avg_pool2d_backward_grad_input(args...) {
+at::Tensor & wrap_avg_pool2d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::avg_pool2d_backward(grad_input, grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
@@ -12475,7 +11823,7 @@ Tensor wrap_avg_pool2d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_AVG_POOL2D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
 }
 
-Tensor wrap_avg_pool2d_backward(args...) {
+at::Tensor wrap_avg_pool2d_backward(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::avg_pool2d_backward(grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
@@ -12483,7 +11831,7 @@ Tensor wrap_avg_pool2d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_AVG_POOL2D_BACKWARD, grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
 }
 
-Tensor wrap_avg_pool3d_out(args...) {
+at::Tensor & wrap_avg_pool3d_out(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::avg_pool3d(out, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
@@ -12491,7 +11839,7 @@ Tensor wrap_avg_pool3d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_AVG_POOL3D_OUT, out, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
 }
 
-Tensor wrap_avg_pool3d(args...) {
+at::Tensor wrap_avg_pool3d(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::avg_pool3d(self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
@@ -12499,7 +11847,7 @@ Tensor wrap_avg_pool3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_AVG_POOL3D, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
 }
 
-Tensor wrap_avg_pool3d_backward_grad_input(args...) {
+at::Tensor & wrap_avg_pool3d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::avg_pool3d_backward(grad_input, grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
@@ -12507,7 +11855,7 @@ Tensor wrap_avg_pool3d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_AVG_POOL3D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
 }
 
-Tensor wrap_avg_pool3d_backward(args...) {
+at::Tensor wrap_avg_pool3d_backward(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::avg_pool3d_backward(grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
@@ -12515,15 +11863,12 @@ Tensor wrap_avg_pool3d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_AVG_POOL3D_BACKWARD, grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
 }
 
-Tensor wrap_fractional_max_pool2d_output(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(output, indices, self, random_samples);
-    return at::redispatch::fractional_max_pool2d(output, indices, self, kernel_size, output_size, random_samples);
-  }
-  return MK_TORCHY(output.dtype(), output.device(), H_FRACTIONAL_MAX_POOL2D_OUTPUT, output, indices, self, kernel_size, output_size, random_samples);
+std::tuple<at::Tensor &,at::Tensor &> wrap_fractional_max_pool2d_output(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & random_samples, at::Tensor & output, at::Tensor & indices) {
+  ensure_materialized(output, indices, self, random_samples);
+  return at::redispatch::fractional_max_pool2d(output, indices, self, kernel_size, output_size, random_samples);
 }
 
-Tensor wrap_fractional_max_pool2d_backward_grad_input(args...) {
+at::Tensor & wrap_fractional_max_pool2d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & indices, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, indices);
     return at::redispatch::fractional_max_pool2d_backward(grad_input, grad_output, self, kernel_size, output_size, indices);
@@ -12531,7 +11876,7 @@ Tensor wrap_fractional_max_pool2d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_FRACTIONAL_MAX_POOL2D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, kernel_size, output_size, indices);
 }
 
-Tensor wrap_fractional_max_pool2d_backward(args...) {
+at::Tensor wrap_fractional_max_pool2d_backward(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & indices) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, indices);
     return at::redispatch::fractional_max_pool2d_backward(grad_output, self, kernel_size, output_size, indices);
@@ -12539,23 +11884,17 @@ Tensor wrap_fractional_max_pool2d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_FRACTIONAL_MAX_POOL2D_BACKWARD, grad_output, self, kernel_size, output_size, indices);
 }
 
-Tensor wrap_fractional_max_pool3d_output(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(output, indices, self, random_samples);
-    return at::redispatch::fractional_max_pool3d(output, indices, self, kernel_size, output_size, random_samples);
-  }
-  return MK_TORCHY(output.dtype(), output.device(), H_FRACTIONAL_MAX_POOL3D_OUTPUT, output, indices, self, kernel_size, output_size, random_samples);
+std::tuple<at::Tensor &,at::Tensor &> wrap_fractional_max_pool3d_output(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & random_samples, at::Tensor & output, at::Tensor & indices) {
+  ensure_materialized(output, indices, self, random_samples);
+  return at::redispatch::fractional_max_pool3d(output, indices, self, kernel_size, output_size, random_samples);
 }
 
-Tensor wrap_fractional_max_pool3d(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, random_samples);
-    return at::redispatch::fractional_max_pool3d(self, kernel_size, output_size, random_samples);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_FRACTIONAL_MAX_POOL3D, self, kernel_size, output_size, random_samples);
+std::tuple<at::Tensor,at::Tensor> wrap_fractional_max_pool3d(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & random_samples) {
+  ensure_materialized(self, random_samples);
+  return at::redispatch::fractional_max_pool3d(self, kernel_size, output_size, random_samples);
 }
 
-Tensor wrap_fractional_max_pool3d_backward_grad_input(args...) {
+at::Tensor & wrap_fractional_max_pool3d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & indices, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, indices);
     return at::redispatch::fractional_max_pool3d_backward(grad_input, grad_output, self, kernel_size, output_size, indices);
@@ -12563,7 +11902,7 @@ Tensor wrap_fractional_max_pool3d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_FRACTIONAL_MAX_POOL3D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, kernel_size, output_size, indices);
 }
 
-Tensor wrap_fractional_max_pool3d_backward(args...) {
+at::Tensor wrap_fractional_max_pool3d_backward(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & indices) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, indices);
     return at::redispatch::fractional_max_pool3d_backward(grad_output, self, kernel_size, output_size, indices);
@@ -12571,23 +11910,17 @@ Tensor wrap_fractional_max_pool3d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_FRACTIONAL_MAX_POOL3D_BACKWARD, grad_output, self, kernel_size, output_size, indices);
 }
 
-Tensor wrap_max_pool2d_with_indices_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(out, indices, self);
-    return at::redispatch::max_pool2d_with_indices(out, indices, self, kernel_size, stride, padding, dilation, ceil_mode);
-  }
-  return MK_TORCHY(out.dtype(), out.device(), H_MAX_POOL2D_WITH_INDICES_OUT, out, indices, self, kernel_size, stride, padding, dilation, ceil_mode);
+std::tuple<at::Tensor &,at::Tensor &> wrap_max_pool2d_with_indices_out(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, at::Tensor & out, at::Tensor & indices) {
+  ensure_materialized(out, indices, self);
+  return at::redispatch::max_pool2d_with_indices(out, indices, self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_max_pool2d_with_indices(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::max_pool2d_with_indices(self, kernel_size, stride, padding, dilation, ceil_mode);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MAX_POOL2D_WITH_INDICES, self, kernel_size, stride, padding, dilation, ceil_mode);
+std::tuple<at::Tensor,at::Tensor> wrap_max_pool2d_with_indices(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
+  ensure_materialized(self);
+  return at::redispatch::max_pool2d_with_indices(self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_max_pool2d_with_indices_backward_grad_input(args...) {
+at::Tensor & wrap_max_pool2d_with_indices_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, const at::Tensor & indices, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, indices);
     return at::redispatch::max_pool2d_with_indices_backward(grad_input, grad_output, self, kernel_size, stride, padding, dilation, ceil_mode, indices);
@@ -12595,7 +11928,7 @@ Tensor wrap_max_pool2d_with_indices_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_MAX_POOL2D_WITH_INDICES_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, kernel_size, stride, padding, dilation, ceil_mode, indices);
 }
 
-Tensor wrap_max_pool2d_with_indices_backward(args...) {
+at::Tensor wrap_max_pool2d_with_indices_backward(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, const at::Tensor & indices) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, indices);
     return at::redispatch::max_pool2d_with_indices_backward(grad_output, self, kernel_size, stride, padding, dilation, ceil_mode, indices);
@@ -12603,23 +11936,17 @@ Tensor wrap_max_pool2d_with_indices_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MAX_POOL2D_WITH_INDICES_BACKWARD, grad_output, self, kernel_size, stride, padding, dilation, ceil_mode, indices);
 }
 
-Tensor wrap_max_pool3d_with_indices_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(out, indices, self);
-    return at::redispatch::max_pool3d_with_indices(out, indices, self, kernel_size, stride, padding, dilation, ceil_mode);
-  }
-  return MK_TORCHY(out.dtype(), out.device(), H_MAX_POOL3D_WITH_INDICES_OUT, out, indices, self, kernel_size, stride, padding, dilation, ceil_mode);
+std::tuple<at::Tensor &,at::Tensor &> wrap_max_pool3d_with_indices_out(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, at::Tensor & out, at::Tensor & indices) {
+  ensure_materialized(out, indices, self);
+  return at::redispatch::max_pool3d_with_indices(out, indices, self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_max_pool3d_with_indices(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::max_pool3d_with_indices(self, kernel_size, stride, padding, dilation, ceil_mode);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_MAX_POOL3D_WITH_INDICES, self, kernel_size, stride, padding, dilation, ceil_mode);
+std::tuple<at::Tensor,at::Tensor> wrap_max_pool3d_with_indices(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
+  ensure_materialized(self);
+  return at::redispatch::max_pool3d_with_indices(self, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
-Tensor wrap_max_pool3d_with_indices_backward_grad_input(args...) {
+at::Tensor & wrap_max_pool3d_with_indices_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, const at::Tensor & indices, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, indices);
     return at::redispatch::max_pool3d_with_indices_backward(grad_input, grad_output, self, kernel_size, stride, padding, dilation, ceil_mode, indices);
@@ -12627,7 +11954,7 @@ Tensor wrap_max_pool3d_with_indices_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_MAX_POOL3D_WITH_INDICES_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, kernel_size, stride, padding, dilation, ceil_mode, indices);
 }
 
-Tensor wrap_max_pool3d_with_indices_backward(args...) {
+at::Tensor wrap_max_pool3d_with_indices_backward(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, const at::Tensor & indices) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, indices);
     return at::redispatch::max_pool3d_with_indices_backward(grad_output, self, kernel_size, stride, padding, dilation, ceil_mode, indices);
@@ -12635,7 +11962,7 @@ Tensor wrap_max_pool3d_with_indices_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MAX_POOL3D_WITH_INDICES_BACKWARD, grad_output, self, kernel_size, stride, padding, dilation, ceil_mode, indices);
 }
 
-Tensor wrap_max_unpool2d_out(args...) {
+at::Tensor & wrap_max_unpool2d_out(const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, indices);
     return at::redispatch::max_unpool2d(out, self, indices, output_size);
@@ -12643,7 +11970,7 @@ Tensor wrap_max_unpool2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MAX_UNPOOL2D_OUT, out, self, indices, output_size);
 }
 
-Tensor wrap_max_unpool2d(args...) {
+at::Tensor wrap_max_unpool2d(const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     ensure_materialized(self, indices);
     return at::redispatch::max_unpool2d(self, indices, output_size);
@@ -12651,7 +11978,7 @@ Tensor wrap_max_unpool2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MAX_UNPOOL2D, self, indices, output_size);
 }
 
-Tensor wrap_max_unpool2d_backward_grad_input(args...) {
+at::Tensor & wrap_max_unpool2d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, indices);
     return at::redispatch::max_unpool2d_backward(grad_input, grad_output, self, indices, output_size);
@@ -12659,7 +11986,7 @@ Tensor wrap_max_unpool2d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_MAX_UNPOOL2D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, indices, output_size);
 }
 
-Tensor wrap_max_unpool2d_backward(args...) {
+at::Tensor wrap_max_unpool2d_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, indices);
     return at::redispatch::max_unpool2d_backward(grad_output, self, indices, output_size);
@@ -12667,7 +11994,7 @@ Tensor wrap_max_unpool2d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MAX_UNPOOL2D_BACKWARD, grad_output, self, indices, output_size);
 }
 
-Tensor wrap_max_unpool3d_out(args...) {
+at::Tensor & wrap_max_unpool3d_out(const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, indices);
     return at::redispatch::max_unpool3d(out, self, indices, output_size, stride, padding);
@@ -12675,7 +12002,7 @@ Tensor wrap_max_unpool3d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_MAX_UNPOOL3D_OUT, out, self, indices, output_size, stride, padding);
 }
 
-Tensor wrap_max_unpool3d(args...) {
+at::Tensor wrap_max_unpool3d(const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::IntArrayRef stride, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(self, indices);
     return at::redispatch::max_unpool3d(self, indices, output_size, stride, padding);
@@ -12683,7 +12010,7 @@ Tensor wrap_max_unpool3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_MAX_UNPOOL3D, self, indices, output_size, stride, padding);
 }
 
-Tensor wrap_max_unpool3d_backward_grad_input(args...) {
+at::Tensor & wrap_max_unpool3d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self, indices);
     return at::redispatch::max_unpool3d_backward(grad_input, grad_output, self, indices, output_size, stride, padding);
@@ -12691,7 +12018,7 @@ Tensor wrap_max_unpool3d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_MAX_UNPOOL3D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, indices, output_size, stride, padding);
 }
 
-Tensor wrap_max_unpool3d_backward(args...) {
+at::Tensor wrap_max_unpool3d_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::IntArrayRef stride, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self, indices);
     return at::redispatch::max_unpool3d_backward(grad_output, self, indices, output_size, stride, padding);
@@ -12699,7 +12026,7 @@ Tensor wrap_max_unpool3d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_MAX_UNPOOL3D_BACKWARD, grad_output, self, indices, output_size, stride, padding);
 }
 
-Tensor wrap_reflection_pad1d_out(args...) {
+at::Tensor & wrap_reflection_pad1d_out(const at::Tensor & self, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::reflection_pad1d(out, self, padding);
@@ -12707,7 +12034,7 @@ Tensor wrap_reflection_pad1d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_REFLECTION_PAD1D_OUT, out, self, padding);
 }
 
-Tensor wrap_reflection_pad1d(args...) {
+at::Tensor wrap_reflection_pad1d(const at::Tensor & self, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::reflection_pad1d(self, padding);
@@ -12715,7 +12042,7 @@ Tensor wrap_reflection_pad1d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_REFLECTION_PAD1D, self, padding);
 }
 
-Tensor wrap_reflection_pad1d_backward_grad_input(args...) {
+at::Tensor & wrap_reflection_pad1d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::reflection_pad1d_backward(grad_input, grad_output, self, padding);
@@ -12723,7 +12050,7 @@ Tensor wrap_reflection_pad1d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_REFLECTION_PAD1D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, padding);
 }
 
-Tensor wrap_reflection_pad1d_backward(args...) {
+at::Tensor wrap_reflection_pad1d_backward(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::reflection_pad1d_backward(grad_output, self, padding);
@@ -12731,7 +12058,7 @@ Tensor wrap_reflection_pad1d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_REFLECTION_PAD1D_BACKWARD, grad_output, self, padding);
 }
 
-Tensor wrap_reflection_pad2d_out(args...) {
+at::Tensor & wrap_reflection_pad2d_out(const at::Tensor & self, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::reflection_pad2d(out, self, padding);
@@ -12739,7 +12066,7 @@ Tensor wrap_reflection_pad2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_REFLECTION_PAD2D_OUT, out, self, padding);
 }
 
-Tensor wrap_reflection_pad2d(args...) {
+at::Tensor wrap_reflection_pad2d(const at::Tensor & self, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::reflection_pad2d(self, padding);
@@ -12747,7 +12074,7 @@ Tensor wrap_reflection_pad2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_REFLECTION_PAD2D, self, padding);
 }
 
-Tensor wrap_reflection_pad2d_backward_grad_input(args...) {
+at::Tensor & wrap_reflection_pad2d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::reflection_pad2d_backward(grad_input, grad_output, self, padding);
@@ -12755,7 +12082,7 @@ Tensor wrap_reflection_pad2d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_REFLECTION_PAD2D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, padding);
 }
 
-Tensor wrap_reflection_pad2d_backward(args...) {
+at::Tensor wrap_reflection_pad2d_backward(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::reflection_pad2d_backward(grad_output, self, padding);
@@ -12763,7 +12090,7 @@ Tensor wrap_reflection_pad2d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_REFLECTION_PAD2D_BACKWARD, grad_output, self, padding);
 }
 
-Tensor wrap_replication_pad1d_out(args...) {
+at::Tensor & wrap_replication_pad1d_out(const at::Tensor & self, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::replication_pad1d(out, self, padding);
@@ -12771,7 +12098,7 @@ Tensor wrap_replication_pad1d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_REPLICATION_PAD1D_OUT, out, self, padding);
 }
 
-Tensor wrap_replication_pad1d_backward_grad_input(args...) {
+at::Tensor & wrap_replication_pad1d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::replication_pad1d_backward(grad_input, grad_output, self, padding);
@@ -12779,7 +12106,7 @@ Tensor wrap_replication_pad1d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_REPLICATION_PAD1D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, padding);
 }
 
-Tensor wrap_replication_pad2d_out(args...) {
+at::Tensor & wrap_replication_pad2d_out(const at::Tensor & self, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::replication_pad2d(out, self, padding);
@@ -12787,7 +12114,7 @@ Tensor wrap_replication_pad2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_REPLICATION_PAD2D_OUT, out, self, padding);
 }
 
-Tensor wrap_replication_pad2d_backward_grad_input(args...) {
+at::Tensor & wrap_replication_pad2d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::replication_pad2d_backward(grad_input, grad_output, self, padding);
@@ -12795,7 +12122,7 @@ Tensor wrap_replication_pad2d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_REPLICATION_PAD2D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, padding);
 }
 
-Tensor wrap_replication_pad2d_backward(args...) {
+at::Tensor wrap_replication_pad2d_backward(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::replication_pad2d_backward(grad_output, self, padding);
@@ -12803,7 +12130,7 @@ Tensor wrap_replication_pad2d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_REPLICATION_PAD2D_BACKWARD, grad_output, self, padding);
 }
 
-Tensor wrap_replication_pad3d_out(args...) {
+at::Tensor & wrap_replication_pad3d_out(const at::Tensor & self, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::replication_pad3d(out, self, padding);
@@ -12811,7 +12138,7 @@ Tensor wrap_replication_pad3d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_REPLICATION_PAD3D_OUT, out, self, padding);
 }
 
-Tensor wrap_replication_pad3d_backward_grad_input(args...) {
+at::Tensor & wrap_replication_pad3d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::replication_pad3d_backward(grad_input, grad_output, self, padding);
@@ -12819,7 +12146,7 @@ Tensor wrap_replication_pad3d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_REPLICATION_PAD3D_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, padding);
 }
 
-Tensor wrap_replication_pad3d_backward(args...) {
+at::Tensor wrap_replication_pad3d_backward(const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::replication_pad3d_backward(grad_output, self, padding);
@@ -12827,7 +12154,7 @@ Tensor wrap_replication_pad3d_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_REPLICATION_PAD3D_BACKWARD, grad_output, self, padding);
 }
 
-Tensor wrap_upsample_linear1d_vec(args...) {
+at::Tensor wrap_upsample_linear1d_vec(const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::upsample_linear1d(input, output_size, align_corners, scale_factors);
@@ -12835,7 +12162,7 @@ Tensor wrap_upsample_linear1d_vec(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_UPSAMPLE_LINEAR1D_VEC, input, output_size, align_corners, scale_factors);
 }
 
-Tensor wrap_upsample_linear1d_backward_vec(args...) {
+at::Tensor wrap_upsample_linear1d_backward_vec(const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output);
     return at::redispatch::upsample_linear1d_backward(grad_output, output_size, input_size, align_corners, scale_factors);
@@ -12843,7 +12170,7 @@ Tensor wrap_upsample_linear1d_backward_vec(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_UPSAMPLE_LINEAR1D_BACKWARD_VEC, grad_output, output_size, input_size, align_corners, scale_factors);
 }
 
-Tensor wrap_upsample_bilinear2d_vec(args...) {
+at::Tensor wrap_upsample_bilinear2d_vec(const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::upsample_bilinear2d(input, output_size, align_corners, scale_factors);
@@ -12851,7 +12178,7 @@ Tensor wrap_upsample_bilinear2d_vec(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_UPSAMPLE_BILINEAR2D_VEC, input, output_size, align_corners, scale_factors);
 }
 
-Tensor wrap_upsample_bilinear2d_backward_vec(args...) {
+at::Tensor wrap_upsample_bilinear2d_backward_vec(const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output);
     return at::redispatch::upsample_bilinear2d_backward(grad_output, output_size, input_size, align_corners, scale_factors);
@@ -12859,7 +12186,7 @@ Tensor wrap_upsample_bilinear2d_backward_vec(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_UPSAMPLE_BILINEAR2D_BACKWARD_VEC, grad_output, output_size, input_size, align_corners, scale_factors);
 }
 
-Tensor wrap_upsample_trilinear3d_vec(args...) {
+at::Tensor wrap_upsample_trilinear3d_vec(const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::upsample_trilinear3d(input, output_size, align_corners, scale_factors);
@@ -12867,7 +12194,7 @@ Tensor wrap_upsample_trilinear3d_vec(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_UPSAMPLE_TRILINEAR3D_VEC, input, output_size, align_corners, scale_factors);
 }
 
-Tensor wrap_upsample_trilinear3d_backward_vec(args...) {
+at::Tensor wrap_upsample_trilinear3d_backward_vec(const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output);
     return at::redispatch::upsample_trilinear3d_backward(grad_output, output_size, input_size, align_corners, scale_factors);
@@ -12875,7 +12202,7 @@ Tensor wrap_upsample_trilinear3d_backward_vec(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_UPSAMPLE_TRILINEAR3D_BACKWARD_VEC, grad_output, output_size, input_size, align_corners, scale_factors);
 }
 
-Tensor wrap_upsample_bicubic2d_vec(args...) {
+at::Tensor wrap_upsample_bicubic2d_vec(const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::upsample_bicubic2d(input, output_size, align_corners, scale_factors);
@@ -12883,7 +12210,7 @@ Tensor wrap_upsample_bicubic2d_vec(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_UPSAMPLE_BICUBIC2D_VEC, input, output_size, align_corners, scale_factors);
 }
 
-Tensor wrap_upsample_bicubic2d_backward_vec(args...) {
+at::Tensor wrap_upsample_bicubic2d_backward_vec(const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output);
     return at::redispatch::upsample_bicubic2d_backward(grad_output, output_size, input_size, align_corners, scale_factors);
@@ -12891,7 +12218,7 @@ Tensor wrap_upsample_bicubic2d_backward_vec(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_UPSAMPLE_BICUBIC2D_BACKWARD_VEC, grad_output, output_size, input_size, align_corners, scale_factors);
 }
 
-Tensor wrap_upsample_nearest1d_vec(args...) {
+at::Tensor wrap_upsample_nearest1d_vec(const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::upsample_nearest1d(input, output_size, scale_factors);
@@ -12899,7 +12226,7 @@ Tensor wrap_upsample_nearest1d_vec(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_UPSAMPLE_NEAREST1D_VEC, input, output_size, scale_factors);
 }
 
-Tensor wrap_upsample_nearest1d_backward_vec(args...) {
+at::Tensor wrap_upsample_nearest1d_backward_vec(const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output);
     return at::redispatch::upsample_nearest1d_backward(grad_output, output_size, input_size, scale_factors);
@@ -12907,7 +12234,7 @@ Tensor wrap_upsample_nearest1d_backward_vec(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_UPSAMPLE_NEAREST1D_BACKWARD_VEC, grad_output, output_size, input_size, scale_factors);
 }
 
-Tensor wrap_upsample_nearest2d_vec(args...) {
+at::Tensor wrap_upsample_nearest2d_vec(const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::upsample_nearest2d(input, output_size, scale_factors);
@@ -12915,7 +12242,7 @@ Tensor wrap_upsample_nearest2d_vec(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_UPSAMPLE_NEAREST2D_VEC, input, output_size, scale_factors);
 }
 
-Tensor wrap_upsample_nearest2d_backward_vec(args...) {
+at::Tensor wrap_upsample_nearest2d_backward_vec(const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output);
     return at::redispatch::upsample_nearest2d_backward(grad_output, output_size, input_size, scale_factors);
@@ -12923,7 +12250,7 @@ Tensor wrap_upsample_nearest2d_backward_vec(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_UPSAMPLE_NEAREST2D_BACKWARD_VEC, grad_output, output_size, input_size, scale_factors);
 }
 
-Tensor wrap_upsample_nearest3d_vec(args...) {
+at::Tensor wrap_upsample_nearest3d_vec(const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(input);
     return at::redispatch::upsample_nearest3d(input, output_size, scale_factors);
@@ -12931,7 +12258,7 @@ Tensor wrap_upsample_nearest3d_vec(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_UPSAMPLE_NEAREST3D_VEC, input, output_size, scale_factors);
 }
 
-Tensor wrap_upsample_nearest3d_backward_vec(args...) {
+at::Tensor wrap_upsample_nearest3d_backward_vec(const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output);
     return at::redispatch::upsample_nearest3d_backward(grad_output, output_size, input_size, scale_factors);
@@ -12939,7 +12266,7 @@ Tensor wrap_upsample_nearest3d_backward_vec(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_UPSAMPLE_NEAREST3D_BACKWARD_VEC, grad_output, output_size, input_size, scale_factors);
 }
 
-Tensor wrap_upsample_linear1d_out(args...) {
+at::Tensor & wrap_upsample_linear1d_out(const at::Tensor & self, at::IntArrayRef output_size, bool align_corners, c10::optional<double> scales, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::upsample_linear1d(out, self, output_size, align_corners, scales);
@@ -12947,7 +12274,7 @@ Tensor wrap_upsample_linear1d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_UPSAMPLE_LINEAR1D_OUT, out, self, output_size, align_corners, scales);
 }
 
-Tensor wrap_upsample_linear1d_backward_grad_input(args...) {
+at::Tensor & wrap_upsample_linear1d_backward_grad_input(const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<double> scales, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output);
     return at::redispatch::upsample_linear1d_backward(grad_input, grad_output, output_size, input_size, align_corners, scales);
@@ -12955,7 +12282,7 @@ Tensor wrap_upsample_linear1d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_UPSAMPLE_LINEAR1D_BACKWARD_GRAD_INPUT, grad_input, grad_output, output_size, input_size, align_corners, scales);
 }
 
-Tensor wrap_upsample_bilinear2d_out(args...) {
+at::Tensor & wrap_upsample_bilinear2d_out(const at::Tensor & self, at::IntArrayRef output_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::upsample_bilinear2d(out, self, output_size, align_corners, scales_h, scales_w);
@@ -12963,7 +12290,7 @@ Tensor wrap_upsample_bilinear2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_UPSAMPLE_BILINEAR2D_OUT, out, self, output_size, align_corners, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_bilinear2d(args...) {
+at::Tensor wrap_upsample_bilinear2d(const at::Tensor & self, at::IntArrayRef output_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::upsample_bilinear2d(self, output_size, align_corners, scales_h, scales_w);
@@ -12971,7 +12298,7 @@ Tensor wrap_upsample_bilinear2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_UPSAMPLE_BILINEAR2D, self, output_size, align_corners, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_bilinear2d_backward_grad_input(args...) {
+at::Tensor & wrap_upsample_bilinear2d_backward_grad_input(const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output);
     return at::redispatch::upsample_bilinear2d_backward(grad_input, grad_output, output_size, input_size, align_corners, scales_h, scales_w);
@@ -12979,7 +12306,7 @@ Tensor wrap_upsample_bilinear2d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_UPSAMPLE_BILINEAR2D_BACKWARD_GRAD_INPUT, grad_input, grad_output, output_size, input_size, align_corners, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_bicubic2d_out(args...) {
+at::Tensor & wrap_upsample_bicubic2d_out(const at::Tensor & self, at::IntArrayRef output_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::upsample_bicubic2d(out, self, output_size, align_corners, scales_h, scales_w);
@@ -12987,7 +12314,7 @@ Tensor wrap_upsample_bicubic2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_UPSAMPLE_BICUBIC2D_OUT, out, self, output_size, align_corners, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_bicubic2d_backward_grad_input(args...) {
+at::Tensor & wrap_upsample_bicubic2d_backward_grad_input(const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output);
     return at::redispatch::upsample_bicubic2d_backward(grad_input, grad_output, output_size, input_size, align_corners, scales_h, scales_w);
@@ -12995,7 +12322,7 @@ Tensor wrap_upsample_bicubic2d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_UPSAMPLE_BICUBIC2D_BACKWARD_GRAD_INPUT, grad_input, grad_output, output_size, input_size, align_corners, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_trilinear3d_out(args...) {
+at::Tensor & wrap_upsample_trilinear3d_out(const at::Tensor & self, at::IntArrayRef output_size, bool align_corners, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::upsample_trilinear3d(out, self, output_size, align_corners, scales_d, scales_h, scales_w);
@@ -13003,7 +12330,7 @@ Tensor wrap_upsample_trilinear3d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_UPSAMPLE_TRILINEAR3D_OUT, out, self, output_size, align_corners, scales_d, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_trilinear3d_backward_grad_input(args...) {
+at::Tensor & wrap_upsample_trilinear3d_backward_grad_input(const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output);
     return at::redispatch::upsample_trilinear3d_backward(grad_input, grad_output, output_size, input_size, align_corners, scales_d, scales_h, scales_w);
@@ -13011,7 +12338,7 @@ Tensor wrap_upsample_trilinear3d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_UPSAMPLE_TRILINEAR3D_BACKWARD_GRAD_INPUT, grad_input, grad_output, output_size, input_size, align_corners, scales_d, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_nearest1d_out(args...) {
+at::Tensor & wrap_upsample_nearest1d_out(const at::Tensor & self, at::IntArrayRef output_size, c10::optional<double> scales, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::upsample_nearest1d(out, self, output_size, scales);
@@ -13019,7 +12346,7 @@ Tensor wrap_upsample_nearest1d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_UPSAMPLE_NEAREST1D_OUT, out, self, output_size, scales);
 }
 
-Tensor wrap_upsample_nearest1d_backward_grad_input(args...) {
+at::Tensor & wrap_upsample_nearest1d_backward_grad_input(const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, c10::optional<double> scales, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output);
     return at::redispatch::upsample_nearest1d_backward(grad_input, grad_output, output_size, input_size, scales);
@@ -13027,7 +12354,7 @@ Tensor wrap_upsample_nearest1d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_UPSAMPLE_NEAREST1D_BACKWARD_GRAD_INPUT, grad_input, grad_output, output_size, input_size, scales);
 }
 
-Tensor wrap_upsample_nearest2d_out(args...) {
+at::Tensor & wrap_upsample_nearest2d_out(const at::Tensor & self, at::IntArrayRef output_size, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::upsample_nearest2d(out, self, output_size, scales_h, scales_w);
@@ -13035,7 +12362,7 @@ Tensor wrap_upsample_nearest2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_UPSAMPLE_NEAREST2D_OUT, out, self, output_size, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_nearest2d(args...) {
+at::Tensor wrap_upsample_nearest2d(const at::Tensor & self, at::IntArrayRef output_size, c10::optional<double> scales_h, c10::optional<double> scales_w) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::upsample_nearest2d(self, output_size, scales_h, scales_w);
@@ -13043,7 +12370,7 @@ Tensor wrap_upsample_nearest2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_UPSAMPLE_NEAREST2D, self, output_size, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_nearest2d_backward_grad_input(args...) {
+at::Tensor & wrap_upsample_nearest2d_backward_grad_input(const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output);
     return at::redispatch::upsample_nearest2d_backward(grad_input, grad_output, output_size, input_size, scales_h, scales_w);
@@ -13051,7 +12378,7 @@ Tensor wrap_upsample_nearest2d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_UPSAMPLE_NEAREST2D_BACKWARD_GRAD_INPUT, grad_input, grad_output, output_size, input_size, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_nearest3d_out(args...) {
+at::Tensor & wrap_upsample_nearest3d_out(const at::Tensor & self, at::IntArrayRef output_size, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::upsample_nearest3d(out, self, output_size, scales_d, scales_h, scales_w);
@@ -13059,7 +12386,7 @@ Tensor wrap_upsample_nearest3d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_UPSAMPLE_NEAREST3D_OUT, out, self, output_size, scales_d, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_nearest3d(args...) {
+at::Tensor wrap_upsample_nearest3d(const at::Tensor & self, at::IntArrayRef output_size, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::upsample_nearest3d(self, output_size, scales_d, scales_h, scales_w);
@@ -13067,7 +12394,7 @@ Tensor wrap_upsample_nearest3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_UPSAMPLE_NEAREST3D, self, output_size, scales_d, scales_h, scales_w);
 }
 
-Tensor wrap_upsample_nearest3d_backward_grad_input(args...) {
+at::Tensor & wrap_upsample_nearest3d_backward_grad_input(const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output);
     return at::redispatch::upsample_nearest3d_backward(grad_input, grad_output, output_size, input_size, scales_d, scales_h, scales_w);
@@ -13075,7 +12402,7 @@ Tensor wrap_upsample_nearest3d_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_UPSAMPLE_NEAREST3D_BACKWARD_GRAD_INPUT, grad_input, grad_output, output_size, input_size, scales_d, scales_h, scales_w);
 }
 
-Tensor wrap_sigmoid_backward_grad_input(args...) {
+at::Tensor & wrap_sigmoid_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & output, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, output);
     return at::redispatch::sigmoid_backward(grad_input, grad_output, output);
@@ -13083,7 +12410,7 @@ Tensor wrap_sigmoid_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_SIGMOID_BACKWARD_GRAD_INPUT, grad_input, grad_output, output);
 }
 
-Tensor wrap_sigmoid_backward(args...) {
+at::Tensor wrap_sigmoid_backward(const at::Tensor & grad_output, const at::Tensor & output) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, output);
     return at::redispatch::sigmoid_backward(grad_output, output);
@@ -13091,7 +12418,7 @@ Tensor wrap_sigmoid_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_SIGMOID_BACKWARD, grad_output, output);
 }
 
-Tensor wrap_logit_backward_grad_input(args...) {
+at::Tensor & wrap_logit_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, c10::optional<double> eps, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, self);
     return at::redispatch::logit_backward(grad_input, grad_output, self, eps);
@@ -13099,7 +12426,7 @@ Tensor wrap_logit_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_LOGIT_BACKWARD_GRAD_INPUT, grad_input, grad_output, self, eps);
 }
 
-Tensor wrap_logit_backward(args...) {
+at::Tensor wrap_logit_backward(const at::Tensor & grad_output, const at::Tensor & self, c10::optional<double> eps) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, self);
     return at::redispatch::logit_backward(grad_output, self, eps);
@@ -13107,7 +12434,7 @@ Tensor wrap_logit_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_LOGIT_BACKWARD, grad_output, self, eps);
 }
 
-Tensor wrap_tanh_backward_grad_input(args...) {
+at::Tensor & wrap_tanh_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & output, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output, output);
     return at::redispatch::tanh_backward(grad_input, grad_output, output);
@@ -13115,7 +12442,7 @@ Tensor wrap_tanh_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_TANH_BACKWARD_GRAD_INPUT, grad_input, grad_output, output);
 }
 
-Tensor wrap_tanh_backward(args...) {
+at::Tensor wrap_tanh_backward(const at::Tensor & grad_output, const at::Tensor & output) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output, output);
     return at::redispatch::tanh_backward(grad_output, output);
@@ -13123,7 +12450,7 @@ Tensor wrap_tanh_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_TANH_BACKWARD, grad_output, output);
 }
 
-Tensor wrap_slow_conv_transpose2d_out(args...) {
+at::Tensor & wrap_slow_conv_transpose2d_out(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, weight);
     return at::redispatch::slow_conv_transpose2d(out, self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
@@ -13131,7 +12458,7 @@ Tensor wrap_slow_conv_transpose2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SLOW_CONV_TRANSPOSE2D_OUT, out, self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
 }
 
-Tensor wrap_slow_conv_transpose2d(args...) {
+at::Tensor wrap_slow_conv_transpose2d(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::slow_conv_transpose2d(self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
@@ -13139,23 +12466,17 @@ Tensor wrap_slow_conv_transpose2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SLOW_CONV_TRANSPOSE2D, self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
 }
 
-Tensor wrap_slow_conv_transpose2d_backward_grad_output(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_input, grad_weight, grad_bias, grad_output, self, weight, columns, ones);
-    return at::redispatch::slow_conv_transpose2d_backward(grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, columns, ones);
-  }
-  return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_SLOW_CONV_TRANSPOSE2D_BACKWARD_GRAD_OUTPUT, grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, columns, ones);
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> wrap_slow_conv_transpose2d_backward_grad_output(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation, const at::Tensor & columns, const at::Tensor & ones, at::Tensor & grad_input, at::Tensor & grad_weight, at::Tensor & grad_bias) {
+  ensure_materialized(grad_input, grad_weight, grad_bias, grad_output, self, weight, columns, ones);
+  return at::redispatch::slow_conv_transpose2d_backward(grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, columns, ones);
 }
 
-Tensor wrap_slow_conv_transpose2d_backward_output_mask(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self, weight, columns, ones);
-    return at::redispatch::slow_conv_transpose2d_backward(grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, columns, ones, output_mask);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_SLOW_CONV_TRANSPOSE2D_BACKWARD_OUTPUT_MASK, grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, columns, ones, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_slow_conv_transpose2d_backward_output_mask(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation, const at::Tensor & columns, const at::Tensor & ones, std::array<bool,3> output_mask) {
+  ensure_materialized(grad_output, self, weight, columns, ones);
+  return at::redispatch::slow_conv_transpose2d_backward(grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, columns, ones, output_mask);
 }
 
-Tensor wrap_slow_conv_transpose3d_out(args...) {
+at::Tensor & wrap_slow_conv_transpose3d_out(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, weight);
     return at::redispatch::slow_conv_transpose3d(out, self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
@@ -13163,7 +12484,7 @@ Tensor wrap_slow_conv_transpose3d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SLOW_CONV_TRANSPOSE3D_OUT, out, self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
 }
 
-Tensor wrap_slow_conv_transpose3d(args...) {
+at::Tensor wrap_slow_conv_transpose3d(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::slow_conv_transpose3d(self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
@@ -13171,23 +12492,17 @@ Tensor wrap_slow_conv_transpose3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SLOW_CONV_TRANSPOSE3D, self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
 }
 
-Tensor wrap_slow_conv_transpose3d_backward_grad_output(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_input, grad_weight, grad_bias, grad_output, self, weight, finput, fgrad_input);
-    return at::redispatch::slow_conv_transpose3d_backward(grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, finput, fgrad_input);
-  }
-  return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_SLOW_CONV_TRANSPOSE3D_BACKWARD_GRAD_OUTPUT, grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, finput, fgrad_input);
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> wrap_slow_conv_transpose3d_backward_grad_output(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation, const at::Tensor & finput, const at::Tensor & fgrad_input, at::Tensor & grad_input, at::Tensor & grad_weight, at::Tensor & grad_bias) {
+  ensure_materialized(grad_input, grad_weight, grad_bias, grad_output, self, weight, finput, fgrad_input);
+  return at::redispatch::slow_conv_transpose3d_backward(grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, finput, fgrad_input);
 }
 
-Tensor wrap_slow_conv_transpose3d_backward_output_mask(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self, weight, finput, fgrad_input);
-    return at::redispatch::slow_conv_transpose3d_backward(grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, finput, fgrad_input, output_mask);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_SLOW_CONV_TRANSPOSE3D_BACKWARD_OUTPUT_MASK, grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, finput, fgrad_input, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_slow_conv_transpose3d_backward_output_mask(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation, const at::Tensor & finput, const at::Tensor & fgrad_input, std::array<bool,3> output_mask) {
+  ensure_materialized(grad_output, self, weight, finput, fgrad_input);
+  return at::redispatch::slow_conv_transpose3d_backward(grad_output, self, weight, kernel_size, stride, padding, output_padding, dilation, finput, fgrad_input, output_mask);
 }
 
-Tensor wrap_thnn_conv2d_out(args...) {
+at::Tensor & wrap_thnn_conv2d_out(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, weight);
     return at::redispatch::thnn_conv2d(out, self, weight, kernel_size, bias, stride, padding);
@@ -13195,7 +12510,7 @@ Tensor wrap_thnn_conv2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_THNN_CONV2D_OUT, out, self, weight, kernel_size, bias, stride, padding);
 }
 
-Tensor wrap_thnn_conv2d(args...) {
+at::Tensor wrap_thnn_conv2d(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::thnn_conv2d(self, weight, kernel_size, bias, stride, padding);
@@ -13203,39 +12518,27 @@ Tensor wrap_thnn_conv2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_THNN_CONV2D, self, weight, kernel_size, bias, stride, padding);
 }
 
-Tensor wrap_thnn_conv2d_forward_output(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(output, finput, fgrad_input, self, weight);
-    return at::redispatch::thnn_conv2d_forward(output, finput, fgrad_input, self, weight, kernel_size, bias, stride, padding);
-  }
-  return MK_TORCHY(output.dtype(), output.device(), H_THNN_CONV2D_FORWARD_OUTPUT, output, finput, fgrad_input, self, weight, kernel_size, bias, stride, padding);
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> wrap_thnn_conv2d_forward_output(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & output, at::Tensor & finput, at::Tensor & fgrad_input) {
+  ensure_materialized(output, finput, fgrad_input, self, weight);
+  return at::redispatch::thnn_conv2d_forward(output, finput, fgrad_input, self, weight, kernel_size, bias, stride, padding);
 }
 
-Tensor wrap_thnn_conv2d_forward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, weight);
-    return at::redispatch::thnn_conv2d_forward(self, weight, kernel_size, bias, stride, padding);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_THNN_CONV2D_FORWARD, self, weight, kernel_size, bias, stride, padding);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_thnn_conv2d_forward(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding) {
+  ensure_materialized(self, weight);
+  return at::redispatch::thnn_conv2d_forward(self, weight, kernel_size, bias, stride, padding);
 }
 
-Tensor wrap_thnn_conv2d_backward_grad_input(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_input, grad_weight, grad_bias, grad_output, self, weight, finput, fgrad_input);
-    return at::redispatch::thnn_conv2d_backward(grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input);
-  }
-  return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_THNN_CONV2D_BACKWARD_GRAD_INPUT, grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input);
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> wrap_thnn_conv2d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, const at::Tensor & finput, const at::Tensor & fgrad_input, at::Tensor & grad_input, at::Tensor & grad_weight, at::Tensor & grad_bias) {
+  ensure_materialized(grad_input, grad_weight, grad_bias, grad_output, self, weight, finput, fgrad_input);
+  return at::redispatch::thnn_conv2d_backward(grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input);
 }
 
-Tensor wrap_thnn_conv2d_backward_output_mask(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self, weight, finput, fgrad_input);
-    return at::redispatch::thnn_conv2d_backward(grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input, output_mask);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_THNN_CONV2D_BACKWARD_OUTPUT_MASK, grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_thnn_conv2d_backward_output_mask(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, const at::Tensor & finput, const at::Tensor & fgrad_input, std::array<bool,3> output_mask) {
+  ensure_materialized(grad_output, self, weight, finput, fgrad_input);
+  return at::redispatch::thnn_conv2d_backward(grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input, output_mask);
 }
 
-Tensor wrap_thnn_conv_depthwise2d_out(args...) {
+at::Tensor & wrap_thnn_conv_depthwise2d_out(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, weight);
     return at::redispatch::thnn_conv_depthwise2d(out, self, weight, kernel_size, bias, stride, padding, dilation);
@@ -13243,7 +12546,7 @@ Tensor wrap_thnn_conv_depthwise2d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_THNN_CONV_DEPTHWISE2D_OUT, out, self, weight, kernel_size, bias, stride, padding, dilation);
 }
 
-Tensor wrap_thnn_conv_depthwise2d(args...) {
+at::Tensor wrap_thnn_conv_depthwise2d(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::thnn_conv_depthwise2d(self, weight, kernel_size, bias, stride, padding, dilation);
@@ -13251,7 +12554,7 @@ Tensor wrap_thnn_conv_depthwise2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_THNN_CONV_DEPTHWISE2D, self, weight, kernel_size, bias, stride, padding, dilation);
 }
 
-Tensor wrap_thnn_conv_depthwise2d_forward_out(args...) {
+at::Tensor & wrap_thnn_conv_depthwise2d_forward_out(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, weight);
     return at::redispatch::thnn_conv_depthwise2d_forward(out, self, weight, kernel_size, bias, stride, padding, dilation);
@@ -13259,7 +12562,7 @@ Tensor wrap_thnn_conv_depthwise2d_forward_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_THNN_CONV_DEPTHWISE2D_FORWARD_OUT, out, self, weight, kernel_size, bias, stride, padding, dilation);
 }
 
-Tensor wrap_thnn_conv_depthwise2d_forward(args...) {
+at::Tensor wrap_thnn_conv_depthwise2d_forward(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::thnn_conv_depthwise2d_forward(self, weight, kernel_size, bias, stride, padding, dilation);
@@ -13267,23 +12570,17 @@ Tensor wrap_thnn_conv_depthwise2d_forward(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_THNN_CONV_DEPTHWISE2D_FORWARD, self, weight, kernel_size, bias, stride, padding, dilation);
 }
 
-Tensor wrap_thnn_conv_depthwise2d_backward_grad_input(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_input, grad_weight, grad_output, self, weight);
-    return at::redispatch::thnn_conv_depthwise2d_backward(grad_input, grad_weight, grad_output, self, weight, kernel_size, stride, padding, dilation);
-  }
-  return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_THNN_CONV_DEPTHWISE2D_BACKWARD_GRAD_INPUT, grad_input, grad_weight, grad_output, self, weight, kernel_size, stride, padding, dilation);
+std::tuple<at::Tensor &,at::Tensor &> wrap_thnn_conv_depthwise2d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, at::Tensor & grad_input, at::Tensor & grad_weight) {
+  ensure_materialized(grad_input, grad_weight, grad_output, self, weight);
+  return at::redispatch::thnn_conv_depthwise2d_backward(grad_input, grad_weight, grad_output, self, weight, kernel_size, stride, padding, dilation);
 }
 
-Tensor wrap_thnn_conv_depthwise2d_backward_output_mask(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self, weight);
-    return at::redispatch::thnn_conv_depthwise2d_backward(grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_THNN_CONV_DEPTHWISE2D_BACKWARD_OUTPUT_MASK, grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
+std::tuple<at::Tensor,at::Tensor> wrap_thnn_conv_depthwise2d_backward_output_mask(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, std::array<bool,2> output_mask) {
+  ensure_materialized(grad_output, self, weight);
+  return at::redispatch::thnn_conv_depthwise2d_backward(grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
 }
 
-Tensor wrap_conv_depthwise3d(args...) {
+at::Tensor wrap_conv_depthwise3d(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::conv_depthwise3d(self, weight, kernel_size, bias, stride, padding, dilation);
@@ -13291,23 +12588,17 @@ Tensor wrap_conv_depthwise3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_CONV_DEPTHWISE3D, self, weight, kernel_size, bias, stride, padding, dilation);
 }
 
-Tensor wrap_conv_depthwise3d_backward_grad_input(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_input, grad_weight, grad_bias, grad_output, self, weight);
-    return at::redispatch::conv_depthwise3d_backward(grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, dilation);
-  }
-  return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_CONV_DEPTHWISE3D_BACKWARD_GRAD_INPUT, grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, dilation);
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> wrap_conv_depthwise3d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, at::Tensor & grad_input, at::Tensor & grad_weight, at::Tensor & grad_bias) {
+  ensure_materialized(grad_input, grad_weight, grad_bias, grad_output, self, weight);
+  return at::redispatch::conv_depthwise3d_backward(grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, dilation);
 }
 
-Tensor wrap_conv_depthwise3d_backward_output_mask(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self, weight);
-    return at::redispatch::conv_depthwise3d_backward(grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_CONV_DEPTHWISE3D_BACKWARD_OUTPUT_MASK, grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_conv_depthwise3d_backward_output_mask(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, std::array<bool,3> output_mask) {
+  ensure_materialized(grad_output, self, weight);
+  return at::redispatch::conv_depthwise3d_backward(grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
 }
 
-Tensor wrap_slow_conv3d_out(args...) {
+at::Tensor & wrap_slow_conv3d_out(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, weight);
     return at::redispatch::slow_conv3d(out, self, weight, kernel_size, bias, stride, padding);
@@ -13315,7 +12606,7 @@ Tensor wrap_slow_conv3d_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SLOW_CONV3D_OUT, out, self, weight, kernel_size, bias, stride, padding);
 }
 
-Tensor wrap_slow_conv3d(args...) {
+at::Tensor wrap_slow_conv3d(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::slow_conv3d(self, weight, kernel_size, bias, stride, padding);
@@ -13323,39 +12614,27 @@ Tensor wrap_slow_conv3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SLOW_CONV3D, self, weight, kernel_size, bias, stride, padding);
 }
 
-Tensor wrap_slow_conv3d_forward_output(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(output, finput, fgrad_input, self, weight);
-    return at::redispatch::slow_conv3d_forward(output, finput, fgrad_input, self, weight, kernel_size, bias, stride, padding);
-  }
-  return MK_TORCHY(output.dtype(), output.device(), H_SLOW_CONV3D_FORWARD_OUTPUT, output, finput, fgrad_input, self, weight, kernel_size, bias, stride, padding);
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> wrap_slow_conv3d_forward_output(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & output, at::Tensor & finput, at::Tensor & fgrad_input) {
+  ensure_materialized(output, finput, fgrad_input, self, weight);
+  return at::redispatch::slow_conv3d_forward(output, finput, fgrad_input, self, weight, kernel_size, bias, stride, padding);
 }
 
-Tensor wrap_slow_conv3d_forward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, weight);
-    return at::redispatch::slow_conv3d_forward(self, weight, kernel_size, bias, stride, padding);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_SLOW_CONV3D_FORWARD, self, weight, kernel_size, bias, stride, padding);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_slow_conv3d_forward(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding) {
+  ensure_materialized(self, weight);
+  return at::redispatch::slow_conv3d_forward(self, weight, kernel_size, bias, stride, padding);
 }
 
-Tensor wrap_slow_conv3d_backward_grad_input(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_input, grad_weight, grad_bias, grad_output, self, weight, finput, fgrad_input);
-    return at::redispatch::slow_conv3d_backward(grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input);
-  }
-  return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_SLOW_CONV3D_BACKWARD_GRAD_INPUT, grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input);
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> wrap_slow_conv3d_backward_grad_input(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, const at::Tensor & finput, const at::Tensor & fgrad_input, at::Tensor & grad_input, at::Tensor & grad_weight, at::Tensor & grad_bias) {
+  ensure_materialized(grad_input, grad_weight, grad_bias, grad_output, self, weight, finput, fgrad_input);
+  return at::redispatch::slow_conv3d_backward(grad_input, grad_weight, grad_bias, grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input);
 }
 
-Tensor wrap_slow_conv3d_backward_output_mask(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self, weight, finput, fgrad_input);
-    return at::redispatch::slow_conv3d_backward(grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input, output_mask);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_SLOW_CONV3D_BACKWARD_OUTPUT_MASK, grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_slow_conv3d_backward_output_mask(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, const at::Tensor & finput, const at::Tensor & fgrad_input, std::array<bool,3> output_mask) {
+  ensure_materialized(grad_output, self, weight, finput, fgrad_input);
+  return at::redispatch::slow_conv3d_backward(grad_output, self, weight, kernel_size, stride, padding, finput, fgrad_input, output_mask);
 }
 
-Tensor wrap_slow_conv_dilated2d(args...) {
+at::Tensor wrap_slow_conv_dilated2d(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::slow_conv_dilated2d(self, weight, kernel_size, bias, stride, padding, dilation);
@@ -13363,15 +12642,12 @@ Tensor wrap_slow_conv_dilated2d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SLOW_CONV_DILATED2D, self, weight, kernel_size, bias, stride, padding, dilation);
 }
 
-Tensor wrap_slow_conv_dilated2d_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self, weight);
-    return at::redispatch::slow_conv_dilated2d_backward(grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_SLOW_CONV_DILATED2D_BACKWARD, grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_slow_conv_dilated2d_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, std::array<bool,3> output_mask) {
+  ensure_materialized(grad_output, self, weight);
+  return at::redispatch::slow_conv_dilated2d_backward(grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
 }
 
-Tensor wrap_slow_conv_dilated3d(args...) {
+at::Tensor wrap_slow_conv_dilated3d(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     ensure_materialized(self, weight);
     return at::redispatch::slow_conv_dilated3d(self, weight, kernel_size, bias, stride, padding, dilation);
@@ -13379,15 +12655,12 @@ Tensor wrap_slow_conv_dilated3d(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SLOW_CONV_DILATED3D, self, weight, kernel_size, bias, stride, padding, dilation);
 }
 
-Tensor wrap_slow_conv_dilated3d_backward(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self, weight);
-    return at::redispatch::slow_conv_dilated3d_backward(grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
-  }
-  return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_SLOW_CONV_DILATED3D_BACKWARD, grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_slow_conv_dilated3d_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, std::array<bool,3> output_mask) {
+  ensure_materialized(grad_output, self, weight);
+  return at::redispatch::slow_conv_dilated3d_backward(grad_output, self, weight, kernel_size, stride, padding, dilation, output_mask);
 }
 
-Tensor wrap_col2im_out(args...) {
+at::Tensor & wrap_col2im_out(const at::Tensor & self, at::IntArrayRef output_size, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::col2im(out, self, output_size, kernel_size, dilation, padding, stride);
@@ -13395,7 +12668,7 @@ Tensor wrap_col2im_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_COL2IM_OUT, out, self, output_size, kernel_size, dilation, padding, stride);
 }
 
-Tensor wrap_col2im(args...) {
+at::Tensor wrap_col2im(const at::Tensor & self, at::IntArrayRef output_size, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::col2im(self, output_size, kernel_size, dilation, padding, stride);
@@ -13403,7 +12676,7 @@ Tensor wrap_col2im(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_COL2IM, self, output_size, kernel_size, dilation, padding, stride);
 }
 
-Tensor wrap_col2im_backward_grad_input(args...) {
+at::Tensor & wrap_col2im_backward_grad_input(const at::Tensor & grad_output, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output);
     return at::redispatch::col2im_backward(grad_input, grad_output, kernel_size, dilation, padding, stride);
@@ -13411,7 +12684,7 @@ Tensor wrap_col2im_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_COL2IM_BACKWARD_GRAD_INPUT, grad_input, grad_output, kernel_size, dilation, padding, stride);
 }
 
-Tensor wrap_col2im_backward(args...) {
+at::Tensor wrap_col2im_backward(const at::Tensor & grad_output, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output);
     return at::redispatch::col2im_backward(grad_output, kernel_size, dilation, padding, stride);
@@ -13419,15 +12692,13 @@ Tensor wrap_col2im_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_COL2IM_BACKWARD, grad_output, kernel_size, dilation, padding, stride);
 }
 
-Tensor wrap_column_stack(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::column_stack(tensors);
-  }
-  return MK_TORCHY(None, None, H_COLUMN_STACK, tensors);
+at::Tensor wrap_column_stack(at::TensorList tensors) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::column_stack(tensors));
 }
 
-Tensor wrap_column_stack_out(args...) {
+at::Tensor & wrap_column_stack_out(at::TensorList tensors, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::column_stack(out, tensors);
@@ -13435,7 +12706,7 @@ Tensor wrap_column_stack_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_COLUMN_STACK_OUT, out, tensors);
 }
 
-Tensor wrap_im2col_out(args...) {
+at::Tensor & wrap_im2col_out(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::im2col(out, self, kernel_size, dilation, padding, stride);
@@ -13443,7 +12714,7 @@ Tensor wrap_im2col_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_IM2COL_OUT, out, self, kernel_size, dilation, padding, stride);
 }
 
-Tensor wrap_im2col(args...) {
+at::Tensor wrap_im2col(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::im2col(self, kernel_size, dilation, padding, stride);
@@ -13451,7 +12722,7 @@ Tensor wrap_im2col(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_IM2COL, self, kernel_size, dilation, padding, stride);
 }
 
-Tensor wrap_im2col_backward_grad_input(args...) {
+at::Tensor & wrap_im2col_backward_grad_input(const at::Tensor & grad_output, at::IntArrayRef input_size, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_input, grad_output);
     return at::redispatch::im2col_backward(grad_input, grad_output, input_size, kernel_size, dilation, padding, stride);
@@ -13459,7 +12730,7 @@ Tensor wrap_im2col_backward_grad_input(args...) {
   return MK_TORCHY(grad_input.dtype(), grad_input.device(), H_IM2COL_BACKWARD_GRAD_INPUT, grad_input, grad_output, input_size, kernel_size, dilation, padding, stride);
 }
 
-Tensor wrap_im2col_backward(args...) {
+at::Tensor wrap_im2col_backward(const at::Tensor & grad_output, at::IntArrayRef input_size, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     ensure_materialized(grad_output);
     return at::redispatch::im2col_backward(grad_output, input_size, kernel_size, dilation, padding, stride);
@@ -13467,7 +12738,7 @@ Tensor wrap_im2col_backward(args...) {
   return MK_TORCHY(grad_output.dtype(), grad_output.device(), H_IM2COL_BACKWARD, grad_output, input_size, kernel_size, dilation, padding, stride);
 }
 
-Tensor wrap_isfinite(args...) {
+at::Tensor wrap_isfinite(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::isfinite(self);
@@ -13475,7 +12746,7 @@ Tensor wrap_isfinite(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ISFINITE, self);
 }
 
-Tensor wrap_isinf(args...) {
+at::Tensor wrap_isinf(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::isinf(self);
@@ -13483,12 +12754,12 @@ Tensor wrap_isinf(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ISINF, self);
 }
 
-void wrap_record_stream(args...) {
+void wrap_record_stream(at::Tensor & self, at::Stream s) {
   ensure_materialized(self);
   return at::redispatch::record_stream(self, s);
 }
 
-Tensor wrap_isposinf(args...) {
+at::Tensor wrap_isposinf(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::isposinf(self);
@@ -13496,7 +12767,7 @@ Tensor wrap_isposinf(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ISPOSINF, self);
 }
 
-Tensor wrap_isposinf_out(args...) {
+at::Tensor & wrap_isposinf_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::isposinf(out, self);
@@ -13504,7 +12775,7 @@ Tensor wrap_isposinf_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ISPOSINF_OUT, out, self);
 }
 
-Tensor wrap_isneginf(args...) {
+at::Tensor wrap_isneginf(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::isneginf(self);
@@ -13512,7 +12783,7 @@ Tensor wrap_isneginf(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_ISNEGINF, self);
 }
 
-Tensor wrap_isneginf_out(args...) {
+at::Tensor & wrap_isneginf_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::isneginf(out, self);
@@ -13520,7 +12791,7 @@ Tensor wrap_isneginf_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_ISNEGINF_OUT, out, self);
 }
 
-Tensor wrap__add_batch_dim(args...) {
+at::Tensor wrap__add_batch_dim(const at::Tensor & self, int64_t batch_dim, int64_t level) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_add_batch_dim(self, batch_dim, level);
@@ -13528,7 +12799,7 @@ Tensor wrap__add_batch_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__ADD_BATCH_DIM, self, batch_dim, level);
 }
 
-Tensor wrap__remove_batch_dim(args...) {
+at::Tensor wrap__remove_batch_dim(const at::Tensor & self, int64_t level, int64_t batch_size, int64_t out_dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::_remove_batch_dim(self, level, batch_size, out_dim);
@@ -13536,7 +12807,7 @@ Tensor wrap__remove_batch_dim(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__REMOVE_BATCH_DIM, self, level, batch_size, out_dim);
 }
 
-Tensor wrap_special_entr_out(args...) {
+at::Tensor & wrap_special_entr_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::special_entr(out, self);
@@ -13544,7 +12815,7 @@ Tensor wrap_special_entr_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SPECIAL_ENTR_OUT, out, self);
 }
 
-Tensor wrap_special_expm1(args...) {
+at::Tensor wrap_special_expm1(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::special_expm1(self);
@@ -13552,7 +12823,7 @@ Tensor wrap_special_expm1(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SPECIAL_EXPM1, self);
 }
 
-Tensor wrap_special_expm1_out(args...) {
+at::Tensor & wrap_special_expm1_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::special_expm1(out, self);
@@ -13560,7 +12831,7 @@ Tensor wrap_special_expm1_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SPECIAL_EXPM1_OUT, out, self);
 }
 
-Tensor wrap_special_exp2(args...) {
+at::Tensor wrap_special_exp2(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::special_exp2(self);
@@ -13568,7 +12839,7 @@ Tensor wrap_special_exp2(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SPECIAL_EXP2, self);
 }
 
-Tensor wrap_special_exp2_out(args...) {
+at::Tensor & wrap_special_exp2_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::special_exp2(out, self);
@@ -13576,7 +12847,7 @@ Tensor wrap_special_exp2_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SPECIAL_EXP2_OUT, out, self);
 }
 
-Tensor wrap_special_gammaln(args...) {
+at::Tensor wrap_special_gammaln(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::special_gammaln(self);
@@ -13584,7 +12855,7 @@ Tensor wrap_special_gammaln(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SPECIAL_GAMMALN, self);
 }
 
-Tensor wrap_special_gammaln_out(args...) {
+at::Tensor & wrap_special_gammaln_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::special_gammaln(out, self);
@@ -13592,7 +12863,7 @@ Tensor wrap_special_gammaln_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SPECIAL_GAMMALN_OUT, out, self);
 }
 
-Tensor wrap_special_erf(args...) {
+at::Tensor wrap_special_erf(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::special_erf(self);
@@ -13600,7 +12871,7 @@ Tensor wrap_special_erf(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SPECIAL_ERF, self);
 }
 
-Tensor wrap_special_erf_out(args...) {
+at::Tensor & wrap_special_erf_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::special_erf(out, self);
@@ -13608,7 +12879,7 @@ Tensor wrap_special_erf_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SPECIAL_ERF_OUT, out, self);
 }
 
-Tensor wrap_special_erfc(args...) {
+at::Tensor wrap_special_erfc(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::special_erfc(self);
@@ -13616,7 +12887,7 @@ Tensor wrap_special_erfc(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SPECIAL_ERFC, self);
 }
 
-Tensor wrap_special_erfc_out(args...) {
+at::Tensor & wrap_special_erfc_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::special_erfc(out, self);
@@ -13624,7 +12895,7 @@ Tensor wrap_special_erfc_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SPECIAL_ERFC_OUT, out, self);
 }
 
-Tensor wrap_special_erfinv(args...) {
+at::Tensor wrap_special_erfinv(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::special_erfinv(self);
@@ -13632,7 +12903,7 @@ Tensor wrap_special_erfinv(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SPECIAL_ERFINV, self);
 }
 
-Tensor wrap_special_erfinv_out(args...) {
+at::Tensor & wrap_special_erfinv_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::special_erfinv(out, self);
@@ -13640,7 +12911,7 @@ Tensor wrap_special_erfinv_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SPECIAL_ERFINV_OUT, out, self);
 }
 
-Tensor wrap_special_i0e_out(args...) {
+at::Tensor & wrap_special_i0e_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::special_i0e(out, self);
@@ -13648,7 +12919,7 @@ Tensor wrap_special_i0e_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SPECIAL_I0E_OUT, out, self);
 }
 
-Tensor wrap_special_logit(args...) {
+at::Tensor wrap_special_logit(const at::Tensor & self, c10::optional<double> eps) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::special_logit(self, eps);
@@ -13656,7 +12927,7 @@ Tensor wrap_special_logit(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SPECIAL_LOGIT, self, eps);
 }
 
-Tensor wrap_special_logit_out(args...) {
+at::Tensor & wrap_special_logit_out(const at::Tensor & self, c10::optional<double> eps, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::special_logit(out, self, eps);
@@ -13664,7 +12935,7 @@ Tensor wrap_special_logit_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SPECIAL_LOGIT_OUT, out, self, eps);
 }
 
-Tensor wrap_special_expit(args...) {
+at::Tensor wrap_special_expit(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::special_expit(self);
@@ -13672,7 +12943,7 @@ Tensor wrap_special_expit(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_SPECIAL_EXPIT, self);
 }
 
-Tensor wrap_special_expit_out(args...) {
+at::Tensor & wrap_special_expit_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::special_expit(out, self);
@@ -13680,7 +12951,7 @@ Tensor wrap_special_expit_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_SPECIAL_EXPIT_OUT, out, self);
 }
 
-Tensor wrap_fft_fft(args...) {
+at::Tensor wrap_fft_fft(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_fft(self, n, dim, norm);
@@ -13688,7 +12959,7 @@ Tensor wrap_fft_fft(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_FFT, self, n, dim, norm);
 }
 
-Tensor wrap_fft_fft_out(args...) {
+at::Tensor & wrap_fft_fft_out(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_fft(out, self, n, dim, norm);
@@ -13696,7 +12967,7 @@ Tensor wrap_fft_fft_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_FFT_OUT, out, self, n, dim, norm);
 }
 
-Tensor wrap_fft_ifft(args...) {
+at::Tensor wrap_fft_ifft(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_ifft(self, n, dim, norm);
@@ -13704,7 +12975,7 @@ Tensor wrap_fft_ifft(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_IFFT, self, n, dim, norm);
 }
 
-Tensor wrap_fft_ifft_out(args...) {
+at::Tensor & wrap_fft_ifft_out(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_ifft(out, self, n, dim, norm);
@@ -13712,7 +12983,7 @@ Tensor wrap_fft_ifft_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_IFFT_OUT, out, self, n, dim, norm);
 }
 
-Tensor wrap_fft_rfft(args...) {
+at::Tensor wrap_fft_rfft(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_rfft(self, n, dim, norm);
@@ -13720,7 +12991,7 @@ Tensor wrap_fft_rfft(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_RFFT, self, n, dim, norm);
 }
 
-Tensor wrap_fft_rfft_out(args...) {
+at::Tensor & wrap_fft_rfft_out(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_rfft(out, self, n, dim, norm);
@@ -13728,7 +12999,7 @@ Tensor wrap_fft_rfft_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_RFFT_OUT, out, self, n, dim, norm);
 }
 
-Tensor wrap_fft_irfft(args...) {
+at::Tensor wrap_fft_irfft(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_irfft(self, n, dim, norm);
@@ -13736,7 +13007,7 @@ Tensor wrap_fft_irfft(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_IRFFT, self, n, dim, norm);
 }
 
-Tensor wrap_fft_irfft_out(args...) {
+at::Tensor & wrap_fft_irfft_out(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_irfft(out, self, n, dim, norm);
@@ -13744,7 +13015,7 @@ Tensor wrap_fft_irfft_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_IRFFT_OUT, out, self, n, dim, norm);
 }
 
-Tensor wrap_fft_hfft(args...) {
+at::Tensor wrap_fft_hfft(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_hfft(self, n, dim, norm);
@@ -13752,7 +13023,7 @@ Tensor wrap_fft_hfft(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_HFFT, self, n, dim, norm);
 }
 
-Tensor wrap_fft_hfft_out(args...) {
+at::Tensor & wrap_fft_hfft_out(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_hfft(out, self, n, dim, norm);
@@ -13760,7 +13031,7 @@ Tensor wrap_fft_hfft_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_HFFT_OUT, out, self, n, dim, norm);
 }
 
-Tensor wrap_fft_ihfft(args...) {
+at::Tensor wrap_fft_ihfft(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_ihfft(self, n, dim, norm);
@@ -13768,7 +13039,7 @@ Tensor wrap_fft_ihfft(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_IHFFT, self, n, dim, norm);
 }
 
-Tensor wrap_fft_ihfft_out(args...) {
+at::Tensor & wrap_fft_ihfft_out(const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_ihfft(out, self, n, dim, norm);
@@ -13776,7 +13047,7 @@ Tensor wrap_fft_ihfft_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_IHFFT_OUT, out, self, n, dim, norm);
 }
 
-Tensor wrap_fft_fft2(args...) {
+at::Tensor wrap_fft_fft2(const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_fft2(self, s, dim, norm);
@@ -13784,7 +13055,7 @@ Tensor wrap_fft_fft2(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_FFT2, self, s, dim, norm);
 }
 
-Tensor wrap_fft_fft2_out(args...) {
+at::Tensor & wrap_fft_fft2_out(const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_fft2(out, self, s, dim, norm);
@@ -13792,7 +13063,7 @@ Tensor wrap_fft_fft2_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_FFT2_OUT, out, self, s, dim, norm);
 }
 
-Tensor wrap_fft_ifft2(args...) {
+at::Tensor wrap_fft_ifft2(const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_ifft2(self, s, dim, norm);
@@ -13800,7 +13071,7 @@ Tensor wrap_fft_ifft2(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_IFFT2, self, s, dim, norm);
 }
 
-Tensor wrap_fft_ifft2_out(args...) {
+at::Tensor & wrap_fft_ifft2_out(const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_ifft2(out, self, s, dim, norm);
@@ -13808,7 +13079,7 @@ Tensor wrap_fft_ifft2_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_IFFT2_OUT, out, self, s, dim, norm);
 }
 
-Tensor wrap_fft_rfft2(args...) {
+at::Tensor wrap_fft_rfft2(const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_rfft2(self, s, dim, norm);
@@ -13816,7 +13087,7 @@ Tensor wrap_fft_rfft2(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_RFFT2, self, s, dim, norm);
 }
 
-Tensor wrap_fft_rfft2_out(args...) {
+at::Tensor & wrap_fft_rfft2_out(const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_rfft2(out, self, s, dim, norm);
@@ -13824,7 +13095,7 @@ Tensor wrap_fft_rfft2_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_RFFT2_OUT, out, self, s, dim, norm);
 }
 
-Tensor wrap_fft_irfft2(args...) {
+at::Tensor wrap_fft_irfft2(const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_irfft2(self, s, dim, norm);
@@ -13832,7 +13103,7 @@ Tensor wrap_fft_irfft2(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_IRFFT2, self, s, dim, norm);
 }
 
-Tensor wrap_fft_irfft2_out(args...) {
+at::Tensor & wrap_fft_irfft2_out(const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_irfft2(out, self, s, dim, norm);
@@ -13840,7 +13111,7 @@ Tensor wrap_fft_irfft2_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_IRFFT2_OUT, out, self, s, dim, norm);
 }
 
-Tensor wrap_fft_fftn(args...) {
+at::Tensor wrap_fft_fftn(const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_fftn(self, s, dim, norm);
@@ -13848,7 +13119,7 @@ Tensor wrap_fft_fftn(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_FFTN, self, s, dim, norm);
 }
 
-Tensor wrap_fft_fftn_out(args...) {
+at::Tensor & wrap_fft_fftn_out(const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_fftn(out, self, s, dim, norm);
@@ -13856,7 +13127,7 @@ Tensor wrap_fft_fftn_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_FFTN_OUT, out, self, s, dim, norm);
 }
 
-Tensor wrap_fft_ifftn(args...) {
+at::Tensor wrap_fft_ifftn(const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_ifftn(self, s, dim, norm);
@@ -13864,7 +13135,7 @@ Tensor wrap_fft_ifftn(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_IFFTN, self, s, dim, norm);
 }
 
-Tensor wrap_fft_ifftn_out(args...) {
+at::Tensor & wrap_fft_ifftn_out(const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_ifftn(out, self, s, dim, norm);
@@ -13872,7 +13143,7 @@ Tensor wrap_fft_ifftn_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_IFFTN_OUT, out, self, s, dim, norm);
 }
 
-Tensor wrap_fft_rfftn(args...) {
+at::Tensor wrap_fft_rfftn(const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_rfftn(self, s, dim, norm);
@@ -13880,7 +13151,7 @@ Tensor wrap_fft_rfftn(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_RFFTN, self, s, dim, norm);
 }
 
-Tensor wrap_fft_rfftn_out(args...) {
+at::Tensor & wrap_fft_rfftn_out(const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_rfftn(out, self, s, dim, norm);
@@ -13888,7 +13159,7 @@ Tensor wrap_fft_rfftn_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_RFFTN_OUT, out, self, s, dim, norm);
 }
 
-Tensor wrap_fft_irfftn(args...) {
+at::Tensor wrap_fft_irfftn(const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_irfftn(self, s, dim, norm);
@@ -13896,7 +13167,7 @@ Tensor wrap_fft_irfftn(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_IRFFTN, self, s, dim, norm);
 }
 
-Tensor wrap_fft_irfftn_out(args...) {
+at::Tensor & wrap_fft_irfftn_out(const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::fft_irfftn(out, self, s, dim, norm);
@@ -13904,15 +13175,13 @@ Tensor wrap_fft_irfftn_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_IRFFTN_OUT, out, self, s, dim, norm);
 }
 
-Tensor wrap_fft_fftfreq(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::fft_fftfreq(n, d, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_FFT_FFTFREQ, n, d, dtype, layout, device, pin_memory);
+at::Tensor wrap_fft_fftfreq(int64_t n, double d, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::fft_fftfreq(n, d, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_fft_fftfreq_out(args...) {
+at::Tensor & wrap_fft_fftfreq_out(int64_t n, double d, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::fft_fftfreq(out, n, d);
@@ -13920,15 +13189,13 @@ Tensor wrap_fft_fftfreq_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_FFTFREQ_OUT, out, n, d);
 }
 
-Tensor wrap_fft_rfftfreq(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::fft_rfftfreq(n, d, dtype, layout, device, pin_memory);
-  }
-  return MK_TORCHY(None, None, H_FFT_RFFTFREQ, n, d, dtype, layout, device, pin_memory);
+at::Tensor wrap_fft_rfftfreq(int64_t n, double d, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::fft_rfftfreq(n, d, dtype, layout, device, pin_memory));
 }
 
-Tensor wrap_fft_rfftfreq_out(args...) {
+at::Tensor & wrap_fft_rfftfreq_out(int64_t n, double d, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::fft_rfftfreq(out, n, d);
@@ -13936,7 +13203,7 @@ Tensor wrap_fft_rfftfreq_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_FFT_RFFTFREQ_OUT, out, n, d);
 }
 
-Tensor wrap_fft_fftshift(args...) {
+at::Tensor wrap_fft_fftshift(const at::Tensor & self, c10::optional<at::IntArrayRef> dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_fftshift(self, dim);
@@ -13944,7 +13211,7 @@ Tensor wrap_fft_fftshift(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_FFTSHIFT, self, dim);
 }
 
-Tensor wrap_fft_ifftshift(args...) {
+at::Tensor wrap_fft_ifftshift(const at::Tensor & self, c10::optional<at::IntArrayRef> dim) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::fft_ifftshift(self, dim);
@@ -13952,7 +13219,7 @@ Tensor wrap_fft_ifftshift(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_FFT_IFFTSHIFT, self, dim);
 }
 
-Tensor wrap_linalg_cholesky(args...) {
+at::Tensor wrap_linalg_cholesky(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_cholesky(self);
@@ -13960,7 +13227,7 @@ Tensor wrap_linalg_cholesky(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_CHOLESKY, self);
 }
 
-Tensor wrap_linalg_cholesky_out(args...) {
+at::Tensor & wrap_linalg_cholesky_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_cholesky(out, self);
@@ -13968,7 +13235,7 @@ Tensor wrap_linalg_cholesky_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_CHOLESKY_OUT, out, self);
 }
 
-Tensor wrap_linalg_det(args...) {
+at::Tensor wrap_linalg_det(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_det(self);
@@ -13976,7 +13243,7 @@ Tensor wrap_linalg_det(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_DET, self);
 }
 
-Tensor wrap_linalg_det_out(args...) {
+at::Tensor & wrap_linalg_det_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_det(out, self);
@@ -13984,7 +13251,7 @@ Tensor wrap_linalg_det_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_DET_OUT, out, self);
 }
 
-Tensor wrap_det(args...) {
+at::Tensor wrap_det(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::det(self);
@@ -13992,23 +13259,17 @@ Tensor wrap_det(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_DET, self);
 }
 
-Tensor wrap_linalg_lstsq(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, b);
-    return at::redispatch::linalg_lstsq(self, b, cond, driver);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_LINALG_LSTSQ, self, b, cond, driver);
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap_linalg_lstsq(const at::Tensor & self, const at::Tensor & b, c10::optional<double> cond, c10::optional<std::string> driver) {
+  ensure_materialized(self, b);
+  return at::redispatch::linalg_lstsq(self, b, cond, driver);
 }
 
-Tensor wrap_linalg_lstsq_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(solution, residuals, rank, singular_values, self, b);
-    return at::redispatch::linalg_lstsq(solution, residuals, rank, singular_values, self, b, cond, driver);
-  }
-  return MK_TORCHY(solution.dtype(), solution.device(), H_LINALG_LSTSQ_OUT, solution, residuals, rank, singular_values, self, b, cond, driver);
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &,at::Tensor &> wrap_linalg_lstsq_out(const at::Tensor & self, const at::Tensor & b, c10::optional<double> cond, c10::optional<std::string> driver, at::Tensor & solution, at::Tensor & residuals, at::Tensor & rank, at::Tensor & singular_values) {
+  ensure_materialized(solution, residuals, rank, singular_values, self, b);
+  return at::redispatch::linalg_lstsq(solution, residuals, rank, singular_values, self, b, cond, driver);
 }
 
-Tensor wrap__lstsq_helper_(args...) {
+at::Tensor & wrap__lstsq_helper_(at::Tensor & self, at::Tensor & rank, at::Tensor & singular_values, at::Tensor & infos, const at::Tensor & a, double cond, std::string driver_name) {
   if (trace.is_flushing()) {
     ensure_materialized(self, rank, singular_values, infos, a);
     return at::redispatch::_lstsq_helper_(self, rank, singular_values, infos, a, cond, driver_name);
@@ -14016,39 +13277,27 @@ Tensor wrap__lstsq_helper_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__LSTSQ_HELPER_, self, rank, singular_values, infos, a, cond, driver_name);
 }
 
-Tensor wrap_linalg_slogdet(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::linalg_slogdet(self);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_LINALG_SLOGDET, self);
+std::tuple<at::Tensor,at::Tensor> wrap_linalg_slogdet(const at::Tensor & self) {
+  ensure_materialized(self);
+  return at::redispatch::linalg_slogdet(self);
 }
 
-Tensor wrap_linalg_slogdet_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(sign, logabsdet, self);
-    return at::redispatch::linalg_slogdet(sign, logabsdet, self);
-  }
-  return MK_TORCHY(sign.dtype(), sign.device(), H_LINALG_SLOGDET_OUT, sign, logabsdet, self);
+std::tuple<at::Tensor &,at::Tensor &> wrap_linalg_slogdet_out(const at::Tensor & self, at::Tensor & sign, at::Tensor & logabsdet) {
+  ensure_materialized(sign, logabsdet, self);
+  return at::redispatch::linalg_slogdet(sign, logabsdet, self);
 }
 
-Tensor wrap_linalg_eig(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::linalg_eig(self);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_LINALG_EIG, self);
+std::tuple<at::Tensor,at::Tensor> wrap_linalg_eig(const at::Tensor & self) {
+  ensure_materialized(self);
+  return at::redispatch::linalg_eig(self);
 }
 
-Tensor wrap_linalg_eig_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(eigenvalues, eigenvectors, self);
-    return at::redispatch::linalg_eig(eigenvalues, eigenvectors, self);
-  }
-  return MK_TORCHY(eigenvalues.dtype(), eigenvalues.device(), H_LINALG_EIG_OUT, eigenvalues, eigenvectors, self);
+std::tuple<at::Tensor &,at::Tensor &> wrap_linalg_eig_out(const at::Tensor & self, at::Tensor & eigenvalues, at::Tensor & eigenvectors) {
+  ensure_materialized(eigenvalues, eigenvectors, self);
+  return at::redispatch::linalg_eig(eigenvalues, eigenvectors, self);
 }
 
-Tensor wrap_linalg_eigvals(args...) {
+at::Tensor wrap_linalg_eigvals(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_eigvals(self);
@@ -14056,7 +13305,7 @@ Tensor wrap_linalg_eigvals(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_EIGVALS, self);
 }
 
-Tensor wrap_linalg_eigvals_out(args...) {
+at::Tensor & wrap_linalg_eigvals_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_eigvals(out, self);
@@ -14064,23 +13313,17 @@ Tensor wrap_linalg_eigvals_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_EIGVALS_OUT, out, self);
 }
 
-Tensor wrap_linalg_eigh(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::linalg_eigh(self, UPLO);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_LINALG_EIGH, self, UPLO);
+std::tuple<at::Tensor,at::Tensor> wrap_linalg_eigh(const at::Tensor & self, std::string UPLO) {
+  ensure_materialized(self);
+  return at::redispatch::linalg_eigh(self, UPLO);
 }
 
-Tensor wrap_linalg_eigh_eigvals(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(eigvals, eigvecs, self);
-    return at::redispatch::linalg_eigh(eigvals, eigvecs, self, UPLO);
-  }
-  return MK_TORCHY(eigvals.dtype(), eigvals.device(), H_LINALG_EIGH_EIGVALS, eigvals, eigvecs, self, UPLO);
+std::tuple<at::Tensor &,at::Tensor &> wrap_linalg_eigh_eigvals(const at::Tensor & self, std::string UPLO, at::Tensor & eigvals, at::Tensor & eigvecs) {
+  ensure_materialized(eigvals, eigvecs, self);
+  return at::redispatch::linalg_eigh(eigvals, eigvecs, self, UPLO);
 }
 
-Tensor wrap_linalg_eigvalsh(args...) {
+at::Tensor wrap_linalg_eigvalsh(const at::Tensor & self, std::string UPLO) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_eigvalsh(self, UPLO);
@@ -14088,7 +13331,7 @@ Tensor wrap_linalg_eigvalsh(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_EIGVALSH, self, UPLO);
 }
 
-Tensor wrap_linalg_eigvalsh_out(args...) {
+at::Tensor & wrap_linalg_eigvalsh_out(const at::Tensor & self, std::string UPLO, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_eigvalsh(out, self, UPLO);
@@ -14096,7 +13339,7 @@ Tensor wrap_linalg_eigvalsh_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_EIGVALSH_OUT, out, self, UPLO);
 }
 
-Tensor wrap_linalg_householder_product(args...) {
+at::Tensor wrap_linalg_householder_product(const at::Tensor & input, const at::Tensor & tau) {
   if (trace.is_flushing()) {
     ensure_materialized(input, tau);
     return at::redispatch::linalg_householder_product(input, tau);
@@ -14104,7 +13347,7 @@ Tensor wrap_linalg_householder_product(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_LINALG_HOUSEHOLDER_PRODUCT, input, tau);
 }
 
-Tensor wrap_linalg_householder_product_out(args...) {
+at::Tensor & wrap_linalg_householder_product_out(const at::Tensor & input, const at::Tensor & tau, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, input, tau);
     return at::redispatch::linalg_householder_product(out, input, tau);
@@ -14112,7 +13355,7 @@ Tensor wrap_linalg_householder_product_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_HOUSEHOLDER_PRODUCT_OUT, out, input, tau);
 }
 
-Tensor wrap__linalg_inv_out_helper_(args...) {
+at::Tensor & wrap__linalg_inv_out_helper_(at::Tensor & self, at::Tensor & infos_lu, at::Tensor & infos_getri) {
   if (trace.is_flushing()) {
     ensure_materialized(self, infos_lu, infos_getri);
     return at::redispatch::_linalg_inv_out_helper_(self, infos_lu, infos_getri);
@@ -14120,7 +13363,7 @@ Tensor wrap__linalg_inv_out_helper_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__LINALG_INV_OUT_HELPER_, self, infos_lu, infos_getri);
 }
 
-Tensor wrap_linalg_inv(args...) {
+at::Tensor wrap_linalg_inv(const at::Tensor & self) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_inv(self);
@@ -14128,7 +13371,7 @@ Tensor wrap_linalg_inv(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_INV, self);
 }
 
-Tensor wrap_linalg_inv_out(args...) {
+at::Tensor & wrap_linalg_inv_out(const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_inv(out, self);
@@ -14136,7 +13379,7 @@ Tensor wrap_linalg_inv_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_INV_OUT, out, self);
 }
 
-Tensor wrap_inner(args...) {
+at::Tensor wrap_inner(const at::Tensor & self, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::inner(self, other);
@@ -14144,7 +13387,7 @@ Tensor wrap_inner(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_INNER, self, other);
 }
 
-Tensor wrap_inner_out(args...) {
+at::Tensor & wrap_inner_out(const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::inner(out, self, other);
@@ -14152,7 +13395,7 @@ Tensor wrap_inner_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_INNER_OUT, out, self, other);
 }
 
-Tensor wrap_outer(args...) {
+at::Tensor wrap_outer(const at::Tensor & self, const at::Tensor & vec2) {
   if (trace.is_flushing()) {
     ensure_materialized(self, vec2);
     return at::redispatch::outer(self, vec2);
@@ -14160,7 +13403,7 @@ Tensor wrap_outer(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_OUTER, self, vec2);
 }
 
-Tensor wrap_outer_out(args...) {
+at::Tensor & wrap_outer_out(const at::Tensor & self, const at::Tensor & vec2, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, vec2);
     return at::redispatch::outer(out, self, vec2);
@@ -14168,7 +13411,7 @@ Tensor wrap_outer_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_OUTER_OUT, out, self, vec2);
 }
 
-Tensor wrap_ger(args...) {
+at::Tensor wrap_ger(const at::Tensor & self, const at::Tensor & vec2) {
   if (trace.is_flushing()) {
     ensure_materialized(self, vec2);
     return at::redispatch::ger(self, vec2);
@@ -14176,7 +13419,7 @@ Tensor wrap_ger(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_GER, self, vec2);
 }
 
-Tensor wrap_ger_out(args...) {
+at::Tensor & wrap_ger_out(const at::Tensor & self, const at::Tensor & vec2, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, vec2);
     return at::redispatch::ger(out, self, vec2);
@@ -14184,7 +13427,7 @@ Tensor wrap_ger_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_GER_OUT, out, self, vec2);
 }
 
-Tensor wrap_linalg_norm(args...) {
+at::Tensor wrap_linalg_norm(const at::Tensor & self, const c10::optional<at::Scalar> & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_norm(self, ord, dim, keepdim, dtype);
@@ -14192,7 +13435,7 @@ Tensor wrap_linalg_norm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_NORM, self, ord, dim, keepdim, dtype);
 }
 
-Tensor wrap_linalg_norm_ord_str(args...) {
+at::Tensor wrap_linalg_norm_ord_str(const at::Tensor & self, std::string ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_norm(self, ord, dim, keepdim, dtype);
@@ -14200,7 +13443,7 @@ Tensor wrap_linalg_norm_ord_str(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_NORM_ORD_STR, self, ord, dim, keepdim, dtype);
 }
 
-Tensor wrap_linalg_norm_out(args...) {
+at::Tensor & wrap_linalg_norm_out(const at::Tensor & self, const c10::optional<at::Scalar> & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_norm(out, self, ord, dim, keepdim, dtype);
@@ -14208,7 +13451,7 @@ Tensor wrap_linalg_norm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_NORM_OUT, out, self, ord, dim, keepdim, dtype);
 }
 
-Tensor wrap_linalg_norm_ord_str_out(args...) {
+at::Tensor & wrap_linalg_norm_ord_str_out(const at::Tensor & self, std::string ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_norm(out, self, ord, dim, keepdim, dtype);
@@ -14216,7 +13459,7 @@ Tensor wrap_linalg_norm_ord_str_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_NORM_ORD_STR_OUT, out, self, ord, dim, keepdim, dtype);
 }
 
-Tensor wrap_linalg_vector_norm(args...) {
+at::Tensor wrap_linalg_vector_norm(const at::Tensor & self, const c10::optional<at::Scalar> & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_vector_norm(self, ord, dim, keepdim, dtype);
@@ -14224,7 +13467,7 @@ Tensor wrap_linalg_vector_norm(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_VECTOR_NORM, self, ord, dim, keepdim, dtype);
 }
 
-Tensor wrap_linalg_vector_norm_out(args...) {
+at::Tensor & wrap_linalg_vector_norm_out(const at::Tensor & self, const c10::optional<at::Scalar> & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_vector_norm(out, self, ord, dim, keepdim, dtype);
@@ -14232,23 +13475,17 @@ Tensor wrap_linalg_vector_norm_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_VECTOR_NORM_OUT, out, self, ord, dim, keepdim, dtype);
 }
 
-Tensor wrap_linalg_svd_U(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(U, S, V, self);
-    return at::redispatch::linalg_svd(U, S, V, self, full_matrices, compute_uv);
-  }
-  return MK_TORCHY(U.dtype(), U.device(), H_LINALG_SVD_U, U, S, V, self, full_matrices, compute_uv);
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> wrap_linalg_svd_U(const at::Tensor & self, bool full_matrices, bool compute_uv, at::Tensor & U, at::Tensor & S, at::Tensor & V) {
+  ensure_materialized(U, S, V, self);
+  return at::redispatch::linalg_svd(U, S, V, self, full_matrices, compute_uv);
 }
 
-Tensor wrap_linalg_svd(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::linalg_svd(self, full_matrices, compute_uv);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_LINALG_SVD, self, full_matrices, compute_uv);
+std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_linalg_svd(const at::Tensor & self, bool full_matrices, bool compute_uv) {
+  ensure_materialized(self);
+  return at::redispatch::linalg_svd(self, full_matrices, compute_uv);
 }
 
-Tensor wrap_linalg_cond(args...) {
+at::Tensor wrap_linalg_cond(const at::Tensor & self, const c10::optional<at::Scalar> & p) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_cond(self, p);
@@ -14256,7 +13493,7 @@ Tensor wrap_linalg_cond(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_COND, self, p);
 }
 
-Tensor wrap_linalg_cond_out(args...) {
+at::Tensor & wrap_linalg_cond_out(const at::Tensor & self, const c10::optional<at::Scalar> & p, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_cond(out, self, p);
@@ -14264,7 +13501,7 @@ Tensor wrap_linalg_cond_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_COND_OUT, out, self, p);
 }
 
-Tensor wrap_linalg_cond_p_str(args...) {
+at::Tensor wrap_linalg_cond_p_str(const at::Tensor & self, std::string p) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_cond(self, p);
@@ -14272,7 +13509,7 @@ Tensor wrap_linalg_cond_p_str(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_COND_P_STR, self, p);
 }
 
-Tensor wrap_linalg_cond_p_str_out(args...) {
+at::Tensor & wrap_linalg_cond_p_str_out(const at::Tensor & self, std::string p, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_cond(out, self, p);
@@ -14280,7 +13517,7 @@ Tensor wrap_linalg_cond_p_str_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_COND_P_STR_OUT, out, self, p);
 }
 
-Tensor wrap_linalg_pinv(args...) {
+at::Tensor wrap_linalg_pinv(const at::Tensor & self, double rcond, bool hermitian) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_pinv(self, rcond, hermitian);
@@ -14288,7 +13525,7 @@ Tensor wrap_linalg_pinv(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_PINV, self, rcond, hermitian);
 }
 
-Tensor wrap_linalg_pinv_rcond_tensor(args...) {
+at::Tensor wrap_linalg_pinv_rcond_tensor(const at::Tensor & self, const at::Tensor & rcond, bool hermitian) {
   if (trace.is_flushing()) {
     ensure_materialized(self, rcond);
     return at::redispatch::linalg_pinv(self, rcond, hermitian);
@@ -14296,7 +13533,7 @@ Tensor wrap_linalg_pinv_rcond_tensor(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_PINV_RCOND_TENSOR, self, rcond, hermitian);
 }
 
-Tensor wrap_linalg_pinv_out(args...) {
+at::Tensor & wrap_linalg_pinv_out(const at::Tensor & self, double rcond, bool hermitian, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_pinv(out, self, rcond, hermitian);
@@ -14304,7 +13541,7 @@ Tensor wrap_linalg_pinv_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_PINV_OUT, out, self, rcond, hermitian);
 }
 
-Tensor wrap_linalg_pinv_out_rcond_tensor(args...) {
+at::Tensor & wrap_linalg_pinv_out_rcond_tensor(const at::Tensor & self, const at::Tensor & rcond, bool hermitian, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, rcond);
     return at::redispatch::linalg_pinv(out, self, rcond, hermitian);
@@ -14312,7 +13549,7 @@ Tensor wrap_linalg_pinv_out_rcond_tensor(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_PINV_OUT_RCOND_TENSOR, out, self, rcond, hermitian);
 }
 
-Tensor wrap__linalg_solve_out_helper_(args...) {
+at::Tensor & wrap__linalg_solve_out_helper_(at::Tensor & self, at::Tensor & other, at::Tensor & infos) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other, infos);
     return at::redispatch::_linalg_solve_out_helper_(self, other, infos);
@@ -14320,7 +13557,7 @@ Tensor wrap__linalg_solve_out_helper_(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__LINALG_SOLVE_OUT_HELPER_, self, other, infos);
 }
 
-Tensor wrap_linalg_solve(args...) {
+at::Tensor wrap_linalg_solve(const at::Tensor & input, const at::Tensor & other) {
   if (trace.is_flushing()) {
     ensure_materialized(input, other);
     return at::redispatch::linalg_solve(input, other);
@@ -14328,7 +13565,7 @@ Tensor wrap_linalg_solve(args...) {
   return MK_TORCHY(input.dtype(), input.device(), H_LINALG_SOLVE, input, other);
 }
 
-Tensor wrap_linalg_solve_out(args...) {
+at::Tensor & wrap_linalg_solve_out(const at::Tensor & input, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, input, other);
     return at::redispatch::linalg_solve(out, input, other);
@@ -14336,7 +13573,7 @@ Tensor wrap_linalg_solve_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_SOLVE_OUT, out, input, other);
 }
 
-Tensor wrap_linalg_tensorinv(args...) {
+at::Tensor wrap_linalg_tensorinv(const at::Tensor & self, int64_t ind) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_tensorinv(self, ind);
@@ -14344,7 +13581,7 @@ Tensor wrap_linalg_tensorinv(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_TENSORINV, self, ind);
 }
 
-Tensor wrap_linalg_tensorinv_out(args...) {
+at::Tensor & wrap_linalg_tensorinv_out(const at::Tensor & self, int64_t ind, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_tensorinv(out, self, ind);
@@ -14352,7 +13589,7 @@ Tensor wrap_linalg_tensorinv_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_TENSORINV_OUT, out, self, ind);
 }
 
-Tensor wrap_linalg_tensorsolve(args...) {
+at::Tensor wrap_linalg_tensorsolve(const at::Tensor & self, const at::Tensor & other, c10::optional<at::IntArrayRef> dims) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::linalg_tensorsolve(self, other, dims);
@@ -14360,7 +13597,7 @@ Tensor wrap_linalg_tensorsolve(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_TENSORSOLVE, self, other, dims);
 }
 
-Tensor wrap_linalg_tensorsolve_out(args...) {
+at::Tensor & wrap_linalg_tensorsolve_out(const at::Tensor & self, const at::Tensor & other, c10::optional<at::IntArrayRef> dims, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self, other);
     return at::redispatch::linalg_tensorsolve(out, self, other, dims);
@@ -14368,31 +13605,22 @@ Tensor wrap_linalg_tensorsolve_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_TENSORSOLVE_OUT, out, self, other, dims);
 }
 
-Tensor wrap_linalg_qr(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::linalg_qr(self, mode);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H_LINALG_QR, self, mode);
+std::tuple<at::Tensor,at::Tensor> wrap_linalg_qr(const at::Tensor & self, std::string mode) {
+  ensure_materialized(self);
+  return at::redispatch::linalg_qr(self, mode);
 }
 
-Tensor wrap_linalg_qr_out(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(Q, R, self);
-    return at::redispatch::linalg_qr(Q, R, self, mode);
-  }
-  return MK_TORCHY(Q.dtype(), Q.device(), H_LINALG_QR_OUT, Q, R, self, mode);
+std::tuple<at::Tensor &,at::Tensor &> wrap_linalg_qr_out(const at::Tensor & self, std::string mode, at::Tensor & Q, at::Tensor & R) {
+  ensure_materialized(Q, R, self);
+  return at::redispatch::linalg_qr(Q, R, self, mode);
 }
 
-Tensor wrap__linalg_qr_helper(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return at::redispatch::_linalg_qr_helper(self, mode);
-  }
-  return MK_TORCHY(self.dtype(), self.device(), H__LINALG_QR_HELPER, self, mode);
+std::tuple<at::Tensor,at::Tensor> wrap__linalg_qr_helper(const at::Tensor & self, std::string mode) {
+  ensure_materialized(self);
+  return at::redispatch::_linalg_qr_helper(self, mode);
 }
 
-Tensor wrap_linalg_matrix_power(args...) {
+at::Tensor wrap_linalg_matrix_power(const at::Tensor & self, int64_t n) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_matrix_power(self, n);
@@ -14400,7 +13628,7 @@ Tensor wrap_linalg_matrix_power(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_MATRIX_POWER, self, n);
 }
 
-Tensor wrap_linalg_matrix_power_out(args...) {
+at::Tensor & wrap_linalg_matrix_power_out(const at::Tensor & self, int64_t n, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_matrix_power(out, self, n);
@@ -14408,7 +13636,7 @@ Tensor wrap_linalg_matrix_power_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_MATRIX_POWER_OUT, out, self, n);
 }
 
-Tensor wrap_linalg_matrix_rank(args...) {
+at::Tensor wrap_linalg_matrix_rank(const at::Tensor & self, c10::optional<double> tol, bool hermitian) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     return at::redispatch::linalg_matrix_rank(self, tol, hermitian);
@@ -14416,7 +13644,7 @@ Tensor wrap_linalg_matrix_rank(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H_LINALG_MATRIX_RANK, self, tol, hermitian);
 }
 
-Tensor wrap_linalg_matrix_rank_out(args...) {
+at::Tensor & wrap_linalg_matrix_rank_out(const at::Tensor & self, c10::optional<double> tol, bool hermitian, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out, self);
     return at::redispatch::linalg_matrix_rank(out, self, tol, hermitian);
@@ -14424,15 +13652,13 @@ Tensor wrap_linalg_matrix_rank_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_MATRIX_RANK_OUT, out, self, tol, hermitian);
 }
 
-Tensor wrap_linalg_multi_dot(args...) {
-  if (trace.is_flushing()) {
-    ensure_materialized();
-    return at::redispatch::linalg_multi_dot(tensors);
-  }
-  return MK_TORCHY(None, None, H_LINALG_MULTI_DOT, tensors);
+at::Tensor wrap_linalg_multi_dot(at::TensorList tensors) {
+  ensure_materialized();
+  return at::detail::make_tensor<TorchyTensor>(
+           at::redispatch::linalg_multi_dot(tensors));
 }
 
-Tensor wrap_linalg_multi_dot_out(args...) {
+at::Tensor & wrap_linalg_multi_dot_out(at::TensorList tensors, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(out);
     return at::redispatch::linalg_multi_dot(out, tensors);
@@ -14440,7 +13666,7 @@ Tensor wrap_linalg_multi_dot_out(args...) {
   return MK_TORCHY(out.dtype(), out.device(), H_LINALG_MULTI_DOT_OUT, out, tensors);
 }
 
-Tensor wrap__test_serialization_subcmul(args...) {
+at::Tensor wrap__test_serialization_subcmul(const at::Tensor & self, const at::Tensor & other, const at::Scalar & alpha) {
   if (trace.is_flushing()) {
     ensure_materialized(self, other);
     return at::redispatch::_test_serialization_subcmul(self, other, alpha);
@@ -14448,7 +13674,7 @@ Tensor wrap__test_serialization_subcmul(args...) {
   return MK_TORCHY(self.dtype(), self.device(), H__TEST_SERIALIZATION_SUBCMUL, self, other, alpha);
 }
 
-Tensor wrap__test_optional_intlist(args...) {
+at::Tensor wrap__test_optional_intlist(const at::Tensor & values, c10::optional<at::IntArrayRef> addends) {
   if (trace.is_flushing()) {
     ensure_materialized(values);
     return at::redispatch::_test_optional_intlist(values, addends);
@@ -14456,7 +13682,7 @@ Tensor wrap__test_optional_intlist(args...) {
   return MK_TORCHY(values.dtype(), values.device(), H__TEST_OPTIONAL_INTLIST, values, addends);
 }
 
-Tensor wrap__test_optional_filled_intlist(args...) {
+at::Tensor wrap__test_optional_filled_intlist(const at::Tensor & values, c10::optional<at::IntArrayRef> addends) {
   if (trace.is_flushing()) {
     ensure_materialized(values);
     return at::redispatch::_test_optional_filled_intlist(values, addends);
@@ -14464,7 +13690,7 @@ Tensor wrap__test_optional_filled_intlist(args...) {
   return MK_TORCHY(values.dtype(), values.device(), H__TEST_OPTIONAL_FILLED_INTLIST, values, addends);
 }
 
-Tensor wrap__test_optional_floatlist(args...) {
+at::Tensor wrap__test_optional_floatlist(const at::Tensor & values, c10::optional<at::ArrayRef<double>> addends) {
   if (trace.is_flushing()) {
     ensure_materialized(values);
     return at::redispatch::_test_optional_floatlist(values, addends);
@@ -14472,7 +13698,7 @@ Tensor wrap__test_optional_floatlist(args...) {
   return MK_TORCHY(values.dtype(), values.device(), H__TEST_OPTIONAL_FLOATLIST, values, addends);
 }
 
-Tensor wrap__test_string_default(args...) {
+at::Tensor wrap__test_string_default(const at::Tensor & dummy, std::string a, std::string b) {
   if (trace.is_flushing()) {
     ensure_materialized(dummy);
     return at::redispatch::_test_string_default(dummy, a, b);
@@ -14480,7 +13706,7 @@ Tensor wrap__test_string_default(args...) {
   return MK_TORCHY(dummy.dtype(), dummy.device(), H__TEST_STRING_DEFAULT, dummy, a, b);
 }
 
-Tensor wrap__test_ambiguous_defaults_a(args...) {
+at::Tensor wrap__test_ambiguous_defaults_a(const at::Tensor & dummy, int64_t a, int64_t b) {
   if (trace.is_flushing()) {
     ensure_materialized(dummy);
     return at::redispatch::_test_ambiguous_defaults(dummy, a, b);
@@ -14488,7 +13714,7 @@ Tensor wrap__test_ambiguous_defaults_a(args...) {
   return MK_TORCHY(dummy.dtype(), dummy.device(), H__TEST_AMBIGUOUS_DEFAULTS_A, dummy, a, b);
 }
 
-Tensor wrap__test_ambiguous_defaults_b(args...) {
+at::Tensor wrap__test_ambiguous_defaults_b(const at::Tensor & dummy, int64_t a, std::string b) {
   if (trace.is_flushing()) {
     ensure_materialized(dummy);
     return at::redispatch::_test_ambiguous_defaults(dummy, a, b);
@@ -14496,7 +13722,7 @@ Tensor wrap__test_ambiguous_defaults_b(args...) {
   return MK_TORCHY(dummy.dtype(), dummy.device(), H__TEST_AMBIGUOUS_DEFAULTS_B, dummy, a, b);
 }
 
-Tensor wrap_segment_reduce(args...) {
+at::Tensor wrap_segment_reduce(const at::Tensor & data, std::string reduce, const c10::optional<at::Tensor> & lengths, const c10::optional<at::Tensor> & indices, int64_t axis, bool unsafe) {
   if (trace.is_flushing()) {
     ensure_materialized(data);
     return at::redispatch::segment_reduce(data, reduce, lengths, indices, axis, unsafe);

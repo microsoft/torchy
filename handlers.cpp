@@ -558,20 +558,6 @@ void will_override(const Tensor &t) {
 #define MK_TORCHY(type, device, op, ...) \
   at::detail::make_tensor<TorchyTensor>(type, device, ks, op, __VA_ARGS__)
 
-Tensor empty_strided(c10::DispatchKeySet ks, IntArrayRef size,
-                     IntArrayRef stride,
-                     c10::optional<ScalarType> dtype,
-                     c10::optional<Layout> layout,
-                     c10::optional<Device> device,
-                     c10::optional<bool> pin_memory) {
-  ENTER("empty_strided");
-  return
-    at::detail::make_tensor<TorchyTensor>(
-      at::redispatch::empty_strided(
-        ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-        size, stride, dtype, layout, device, pin_memory));
-}
-
 Tensor& mul__Tensor(c10::DispatchKeySet ks, Tensor &self, const Tensor &other) {
   ENTER("mul_");
   auto tt = is_torchy(self);
