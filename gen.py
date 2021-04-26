@@ -41,6 +41,7 @@ def gen_dispatch_wrapper(fn):
   # returns a tensor and takes tensors as arguments
   # e.g. add(x, y)
   if rettype == 'at::Tensor' and tensor_args:
+    # FIXME: these should take dtype/device args into account + special cases
     dtype  = f'{tensor_args[0]}.dtype()'
     device = f'{tensor_args[0]}.device()'
     return f'''

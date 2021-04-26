@@ -4,7 +4,7 @@ from glob import glob
 
 extra_compile_args = ['-std=c++14']
 extra_link_args = extra_compile_args
-sources = glob('*.cpp')
+sources = glob('**/*.cpp', recursive=True)
 
 setup(
   name='torchy',

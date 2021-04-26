@@ -21,19 +21,16 @@
 using namespace at;
 using namespace std;
 
-namespace {
 
-class TorchyTensor;
-using TorchTensorImpl = c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>;
-
+/*
 unsigned trace_idx(const Tensor &t);
 void print(ostream &os, const TorchyTensor &tt);
 void set(TorchyTensor *tt, Tensor &&t);
 void init_update_in_place(TorchyTensor *tt);
 void end_update_in_place(TorchyTensor *tt);
+*/
 
-
-thread_local Trace trace;
+static thread_local Trace trace;
 
 #if 0
 class ScopedAutoFlush {
@@ -54,7 +51,7 @@ public:
 
 
 class TorchyTensor final : public TensorImpl {
-  TorchTensorImpl tensor;
+  c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl> tensor;
   unsigned trace_idx;
   bool materialized = false;
 
@@ -204,6 +201,8 @@ public:
     assert(0 && "TorchyTensor::shallow_copy_from");
   }
 };
+
+namespace {
 
 TorchyTensor* is_torchy(const Tensor &t) {
   return dynamic_cast<TorchyTensor*>(t.unsafeGetTensorImpl());

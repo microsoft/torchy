@@ -2,7 +2,6 @@
 // Distributed under the MIT license that can be found in the LICENSE file.
 
 #include "trace.h"
-#include <cstring>
 
 using namespace at;
 using namespace std;
@@ -20,6 +19,7 @@ void TensorOp::decref(TensorOp *ops) {
         if (idx != -1u)
           ops[idx].decref(ops);
       }
+      // TODO: handle optional tensors, tensors lists, etc
     }
   }
 }
@@ -45,22 +45,24 @@ void TensorOp::print(ostream &os,
                                   (unsigned)inputs.size()).first->second;
           os << "in<" << n << '>';
         }
-      } else if (auto s = get_if<Scalar>(&arg)) {
-        os << *s;
-      } else if (auto a = get_if<IntArrayRef>(&arg)) {
-        os << *a;
-      } else if (auto i = get_if<int64_t>(&arg)) {
-        os << *i;
-      } else if (auto o = get_if<c10::optional<int64_t>>(&arg)) {
-        if (*o)
-          os << **o;
-        else
-          os << "(null)";
-      } else if (auto s = get_if<c10::optional<ScalarType>>(&arg)) {
-        if (*s)
-          os << **s;
-        else
-          os << "(null)";
+
+#define OPTIONAL(type)                                         \
+      } else if (auto a = get_if<optional<type>>(&arg)) { \
+        if (*a) { os << **a; } else { os << "(null)"; }
+
+      OPTIONAL(bool)
+      OPTIONAL(double)
+      OPTIONAL(int64_t)
+      OPTIONAL(Scalar)
+      OPTIONAL(ScalarType)
+      OPTIONAL(string)
+
+      } else if (auto a = get_if<IntArrayRef>(&arg)) {  os << *a;
+      } else if (auto a = get_if<Scalar>(&arg)) {       os << *a;
+      } else if (auto a = get_if<bool>(&arg)) {         os << *a;
+      } else if (auto a = get_if<double>(&arg)) {       os << *a;
+      } else if (auto a = get_if<int64_t>(&arg)) {      os << *a;
+      } else if (auto a = get_if<string>(&arg)) {       os << *a;
       } else {
         assert(0 && "missing case in TensorOp::print");
       }
@@ -80,14 +82,6 @@ void Trace::incref(const Tensor &t) {
     assert(idx < next_op);
     ops[idx].incref();
   }
-}
-
-IntArrayRef Trace::deep_copy(IntArrayRef arr) {
-  size_t size = arr.size() * sizeof(int64_t);
-  auto ptr = new unsigned char[size];
-  memcpy(ptr, arr.data(), size);
-  deep_copies.emplace_back(ptr);
-  return { (int64_t*)ptr, arr.size() };
 }
 
 void Trace::flush() {

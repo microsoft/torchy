@@ -7,6 +7,7 @@
 #include <c10/core/DispatchKeySet.h>
 #include <c10/util/variant.h>
 #include <cassert>
+#include <cstring>
 #include <map>
 #include <memory>
 #include <vector>
@@ -16,12 +17,31 @@
 class TorchyTensor;
 
 using UnionInputTys = c10::variant<
+  bool,
+  double,
   int64_t,
+  at::Device,
+  at::Storage,
+  at::Tensor,
+  at::TensorList,
   c10::IntArrayRef,
+  c10::List<c10::optional<at::Tensor>>,
+  c10::optional<bool>,
+  c10::optional<double>,
   c10::optional<int64_t>,
+  c10::optional<at::ArrayRef<double>>,
+  c10::optional<at::DimnameList>,
+  c10::optional<at::Generator>,
+  c10::optional<at::IntArrayRef>,
+  c10::optional<at::MemoryFormat>,
+  c10::optional<at::Scalar>,
+  c10::optional<at::Tensor>,
+  c10::optional<c10::Device>,
+  c10::optional<c10::Layout>,
   c10::optional<c10::ScalarType>,
+  c10::optional<std::string>,
   c10::Scalar,
-  at::Tensor
+  std::string
 >;
 
 struct TensorOp {
@@ -63,16 +83,33 @@ class Trace {
   void incref(const at::Tensor &t);
 
   std::vector<std::unique_ptr<unsigned char[]>> deep_copies;
-  c10::IntArrayRef deep_copy(c10::IntArrayRef arr);
+
+  template<typename T>
+  at::ArrayRef<T> deep_copy(at::ArrayRef<T> arr) {
+    size_t size = arr.size() * sizeof(T);
+    auto ptr = new unsigned char[size];
+    memcpy(ptr, arr.data(), size);
+    deep_copies.emplace_back(ptr);
+    return { (T*)ptr, arr.size() };
+  }
 
   template<typename A>
   void registerOpArg(TensorOp &op, A arg) {
     op.args.emplace_back(std::move(arg));
   }
 
-  void registerOpArg(TensorOp &op, c10::IntArrayRef arg) {
+  template<typename T>
+  void registerOpArg(TensorOp &op, at::ArrayRef<T> arg) {
     op.args.emplace_back(deep_copy(arg));
   }
+
+  template<typename T>
+  void registerOpArg(TensorOp &op, c10::optional<at::ArrayRef<T>> arg) {
+    c10::optional<at::ArrayRef<T>> copy;
+    if (arg)
+      copy = deep_copy(*arg);
+    op.args.emplace_back(std::move(copy));
+   }
 
   template<typename A, typename... T>
   void registerOpArgs(TensorOp &op, const A &arg, T&... args) {
