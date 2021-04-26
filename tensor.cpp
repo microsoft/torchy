@@ -6,10 +6,10 @@
 
 #undef NDEBUG
 #include "dispatch.h"
+#include "ops.h"
+#include "trace.h"
 #include <ATen/NativeFunctions.h>
 #include <ATen/RedispatchFunctions.h>
-#include <ATen/Tensor.h>
-#include <c10/util/variant.h>
 #include <torch/library.h>
 #include <iostream>
 #include <map>
@@ -35,7 +35,7 @@ void end_update_in_place(TorchyTensor *tt);
 
 thread_local Trace trace;
 
-
+#if 0
 class ScopedAutoFlush {
   bool was_flushing;
 public:
@@ -50,6 +50,7 @@ public:
     trace.set_flushing(was_flushing);
   }
 };
+#endif
 
 
 class TorchyTensor final : public TensorImpl {
@@ -248,36 +249,17 @@ void will_override(const Tensor &t) {
 }
 
 
-Tensor& mul__Tensor(c10::DispatchKeySet ks, Tensor &self, const Tensor &other) {
-  ENTER("mul_");
-  auto tt = is_torchy(self);
-  if (tt && !trace.is_flushing()) {
-    tt->addInplace(ks, "mul__Tensor", self, other);
-    return self;
-  }
-  will_override(self);
-  ensure_materialized(self, other);
-  return at::redispatch::mul_(
-    ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-    self, other);
-}
-
+/*
+TODO:
 Tensor sum(c10::DispatchKeySet ks, const Tensor &self,
            c10::optional<ScalarType> dtype) {
-  ENTER("sum");
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    return
-      at::redispatch::sum(
-         ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY),
-         self, dtype);
-  }
   auto ty = self.dtype();
   if (ty == kBool)
     ty = scalarTypeToTypeMeta(kLong);
   return MK_TORCHY(dtype ? scalarTypeToTypeMeta(*dtype) : ty, self.device(),
                    "sum", self, dtype);
 }
+*/
 
 #include "autogen/dispatch_wrappers.h"
 
@@ -285,10 +267,12 @@ TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
 #include "autogen/torch_library_table.h"
 }
 
+#if 0
 TORCH_LIBRARY_IMPL(aten, AutogradPrivateUse1, m) {
   m.impl("isfinite", isfinite);
   m.impl("reshape", reshape);
   m.impl("to.device", to_device);
 }
+#endif
 
 }

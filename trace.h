@@ -4,9 +4,9 @@
 #pragma once
 
 #include <ATen/Tensor.h>
+#include <c10/core/DispatchKeySet.h>
 #include <c10/util/variant.h>
 #include <cassert>
-#include <cstring>
 #include <map>
 #include <memory>
 #include <vector>
@@ -17,17 +17,17 @@ class TorchyTensor;
 
 using UnionInputTys = c10::variant<
   int64_t,
-  IntArrayRef,
+  c10::IntArrayRef,
   c10::optional<int64_t>,
-  c10::optional<ScalarType>,
-  Scalar,
-  Tensor
+  c10::optional<c10::ScalarType>,
+  c10::Scalar,
+  at::Tensor
 >;
 
 struct TensorOp {
   TorchyTensor *tensor;
   std::vector<UnionInputTys> args;
-  DispatchKeySet dispatch_key;
+  c10::DispatchKeySet dispatch_key;
   unsigned id;
   unsigned refs;
 
@@ -36,20 +36,7 @@ struct TensorOp {
     ++refs;
   }
 
-  void decref(TensorOp *ops) {
-    assert(refs > 0);
-    --refs;
-
-    if (refs == 0) {
-      for (auto &arg : args) {
-        if (auto t = get_if<Tensor>(&arg)) {
-          auto idx = trace_idx(*t);
-          if (idx != -1u)
-            ops[idx].decref(ops);
-        }
-      }
-    }
-  }
+  void decref(TensorOp *ops);
 
   bool isObservable() const {
     assert(!tensor || refs > 0);
@@ -61,7 +48,7 @@ struct TensorOp {
   }
 
   void print(std::ostream &os,
-             std::map<const TensorImpl*, unsigned> &inputs) const;
+             std::map<const at::TensorImpl*, unsigned> &inputs) const;
 };
 
 
@@ -73,29 +60,17 @@ class Trace {
   template <typename T>
   void incref(T t) {}
 
-  void incref(const Tensor &t) {
-    auto idx = trace_idx(t);
-    if (idx != -1u) {
-      assert(idx < next_op);
-      ops[idx].incref();
-    }
-  }
+  void incref(const at::Tensor &t);
 
   std::vector<std::unique_ptr<unsigned char[]>> deep_copies;
-  IntArrayRef deep_copy(IntArrayRef arr) {
-    size_t size = arr.size() * sizeof(int64_t);
-    auto ptr = new unsigned char[size];
-    memcpy(ptr, arr.data(), size);
-    deep_copies.emplace_back(ptr);
-    return { (int64_t*)ptr, arr.size() };
-  }
+  c10::IntArrayRef deep_copy(c10::IntArrayRef arr);
 
   template<typename A>
   void registerOpArg(TensorOp &op, A arg) {
     op.args.emplace_back(std::move(arg));
   }
 
-  void registerOpArg(TensorOp &op, IntArrayRef arg) {
+  void registerOpArg(TensorOp &op, c10::IntArrayRef arg) {
     op.args.emplace_back(deep_copy(arg));
   }
 
@@ -119,7 +94,7 @@ public:
 
   template<typename... T>
   unsigned register_tensor(TorchyTensor *tensor, unsigned op_id,
-                           DispatchKeySet ks, T&... args) {
+                           c10::DispatchKeySet ks, T&... args) {
     assert(!flushing);
     if (next_op == MAX_TRACE_LENGTH)
       flush();
@@ -148,5 +123,5 @@ public:
 
   void flush();
 
-  friend ostream& operator<<(ostream &os, const Trace &t);
+  friend std::ostream& operator<<(std::ostream &os, const Trace &t);
 };

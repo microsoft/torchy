@@ -5,7 +5,7 @@
 
 using namespace std;
 
-static char *op_names[] = {
+static const char *op_names[] = {
 #include "autogen/ops_names.h"
 };
 

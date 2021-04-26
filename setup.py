@@ -10,7 +10,7 @@ setup(
   name='torchy',
   version='0.1',
   description='Tracing JIT for PyTorch',
-  packages=find_packages(exclude=['build']),
+  packages=['torchy'], #find_packages(exclude=['build']),
   ext_modules=[
     CppExtension(
       '_TORCHY',

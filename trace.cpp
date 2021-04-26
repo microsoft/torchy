@@ -2,10 +2,27 @@
 // Distributed under the MIT license that can be found in the LICENSE file.
 
 #include "trace.h"
+#include <cstring>
 
+using namespace at;
 using namespace std;
 
 namespace interpreter { void run(Trace &t); }
+
+void TensorOp::decref(TensorOp *ops) {
+  assert(refs > 0);
+  --refs;
+
+  if (refs == 0) {
+    for (auto &arg : args) {
+      if (auto t = get_if<Tensor>(&arg)) {
+        auto idx = trace_idx(*t);
+        if (idx != -1u)
+          ops[idx].decref(ops);
+      }
+    }
+  }
+}
 
 void TensorOp::print(ostream &os,
                      map<const TensorImpl*, unsigned> &inputs) const {
@@ -56,6 +73,22 @@ void TensorOp::print(ostream &os,
     os << " #output";
 }
 
+
+void Trace::incref(const Tensor &t) {
+  auto idx = trace_idx(t);
+  if (idx != -1u) {
+    assert(idx < next_op);
+    ops[idx].incref();
+  }
+}
+
+IntArrayRef Trace::deep_copy(IntArrayRef arr) {
+  size_t size = arr.size() * sizeof(int64_t);
+  auto ptr = new unsigned char[size];
+  memcpy(ptr, arr.data(), size);
+  deep_copies.emplace_back(ptr);
+  return { (int64_t*)ptr, arr.size() };
+}
 
 void Trace::flush() {
 #if 1

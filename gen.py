@@ -13,9 +13,6 @@ native_functions = parse_native_yaml(yaml_path)
 def skip_fn(fn):
   return not fn.dispatch or fn.manual_cpp_binding
 
-def in_place(fn):
-  return any(r.is_write for r in fn.func.returns)
-
 def wrapper_name(fn):
   return 'wrap_' + str(fn.func.name).replace('.', '_')
 
@@ -58,6 +55,7 @@ def gen_dispatch_wrapper(fn):
 
   # op that creates a new tensor. Redispatch right away, but wrap result
   # e.g. empty_strided
+  # TODO: can be made lazy, but we need the dtype & device
   if rettype == 'at::Tensor' and not tensor_args:
     return f'''
 {fndecl} {{
@@ -69,9 +67,25 @@ def gen_dispatch_wrapper(fn):
   # e.g. mul_ or mul_out
   if rettype == 'at::Tensor &':
     assert tensor_args
+    if fn.func.arguments.out:
+      assert len(fn.func.arguments.out) == 1
+      ret = fn.func.arguments.out[0].name
+    else:
+      assert fn.func.arguments.self_arg.argument.is_write
+      ret = fn.func.arguments.self_arg.argument.name
+
+    # TODO: we can also make it lazy if tensor is non-torchy but ref count == 1
     return f'''
 {fndecl} {{
-  //TODO
+  auto tt = is_torchy({ret});
+  if (tt && !trace.is_flushing()) {{
+    tt->addInplace({fn_enum(fn)}, {rargs});
+    return {ret};
+  }}
+  will_override({ret});
+  {materialize}
+  {dispatchkey}
+  return {redispatch};
 }}'''
 
   # returns e.g. a scalar. must materialize right away
@@ -97,13 +111,35 @@ def gen_ops_names(fn):
 
 @with_native_function
 def gen_interpreter_redispatch(fn):
-  sig = DispatcherSignature.from_schema(fn.func)
-  ret = f'case {fn_enum(fn)}: '
-  if in_place(fn):
-    ret += 'TODO'
-  else:
-    ret += f'set(op.tensor, at::redispatch::{fn.func.name.name}(ks, )); break;'
-  return ret
+  sig_group = CppSignatureGroup.from_native_function(fn, method=False, fallback_binding=fn.manual_cpp_binding)
+  sig = sig_group.faithful_signature if sig_group.faithful_signature else sig_group.signature
+  dispatcher_sig = DispatcherSignature.from_schema(fn.func)
+
+  dispatcher_exprs = translate(sig.arguments(), dispatcher_sig.arguments())
+  rargs = ', '.join(['ks'] + [a.expr for a in dispatcher_exprs])
+  redispatch = f'at::redispatch::{sig.name()}({rargs})'
+
+  rettype = dispatcher_sig.returns_type().cpp_type()
+  case = f'case {fn_enum(fn)}:'
+
+  if rettype == 'at::Tensor':
+    return f'''
+{case}
+  set(op.tensor, {redispatch});
+  break;
+'''
+
+  # in-place op
+  if rettype == 'at::Tensor &':
+    return f'''{case}
+  init_update_in_place(op.tensor);
+  {redispatch}
+  end_update_in_place(op.tensor);
+  break;
+'''
+
+  # nothing else gets interpreted
+  return ''
 
 
 fd1 = open('autogen/dispatch_wrappers.h', 'w')

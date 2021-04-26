@@ -24,6 +24,8 @@ void run(Trace &t) {
 
 #include "autogen/interpreter_redispatch.h"
 
+      default:
+        assert(0 && "Unhandled op");
     }
   }
 }
