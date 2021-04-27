@@ -21,6 +21,9 @@ using UnionInputTys = c10::variant<
   double,
   int64_t,
   at::Device,
+  at::Dimname,
+  at::DimnameList,
+  at::ScalarType,
   at::Storage,
   at::Tensor,
   at::TensorList,
@@ -131,9 +134,9 @@ class Trace {
   void registerOpArgs(TensorOp &op) {}
 
 public:
-  bool is_flushing() const {
-    return flushing;
-  }
+  bool is_flushing() const { return flushing; }
+  unsigned numOps() const { return next_op; }
+  TensorOp* getOps() { return ops; }
 
   template<typename... T>
   unsigned register_tensor(TorchyTensor *tensor, unsigned op_id,

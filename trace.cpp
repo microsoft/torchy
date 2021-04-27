@@ -11,10 +11,43 @@ using namespace std;
 
 namespace interpreter { void run(Trace &t); }
 
-static void decref(TensorOp *ops, const Tensor &t) {
-  auto idx = trace_idx(t);
-  if (idx != -1u)
-    ops[idx].decref(ops);
+namespace {
+class decrefer {
+  TensorOp *ops;
+
+public:
+  decrefer(TensorOp *ops) : ops(ops) {}
+
+  template <typename T>
+  void operator()(const T&) {}
+
+  void operator()(const Tensor &t) {
+    auto idx = trace_idx(t);
+    if (idx != -1u)
+      ops[idx].decref(ops);
+  }
+
+  template<typename T>
+  void operator()(const optional<T> &a) {
+    if (a)
+      (*this)(*a);
+  }
+
+  template<typename T>
+  void operator()(const ArrayRef<T> &l) {
+    for (const auto &elem : l) {
+      (*this)(elem);
+    }
+  }
+
+  template<typename T>
+  void operator()(const List<T> &l) {
+    for (const auto &it : l) {
+      const T &elem = it;
+      (*this)(elem);
+    }
+  }
+};
 }
 
 void TensorOp::decref(TensorOp *ops) {
@@ -23,28 +56,78 @@ void TensorOp::decref(TensorOp *ops) {
 
   if (refs == 0) {
     for (auto &arg : args) {
-      if (auto t = get_if<Tensor>(&arg)) {
-        ::decref(ops, *t);
-      } else if (auto t = get_if<optional<Tensor>>(&arg)) {
-        if (*t)
-          ::decref(ops, **t);
-      } else if (auto l = get_if<TensorList>(&arg)) {
-        for (auto &t : *l) {
-          ::decref(ops, t);
-        }
-      } else if (auto l = get_if<List<optional<Tensor>>>(&arg)) {
-        for (const auto &t : *l) {
-          const optional<Tensor> &opt = t;
-          if (opt)
-            ::decref(ops, *opt);
-        }
-      }
+      visit(decrefer(ops), arg);
     }
   }
 }
 
-void TensorOp::print(ostream &os,
-                     map<const TensorImpl*, unsigned> &inputs) const {
+namespace {
+using InputMap = map<const TensorImpl*, unsigned>;
+
+class printer {
+  ostream &os;
+  InputMap &inputs;
+
+public:
+  printer(ostream &os, InputMap &inputs) : os(os), inputs(inputs) {}
+
+  template<typename T>
+  ostream& operator()(const T &a) {
+    return os << a;
+  }
+
+  ostream& operator()(const Tensor &t) {
+    auto idx = trace_idx(t);
+    if (idx != -1u)
+      return os << '%' << idx;
+
+    auto n = inputs.emplace(t.unsafeGetTensorImpl(),
+                            (unsigned)inputs.size()).first->second;
+    return os << "in<" << n << '>';
+  }
+
+  template<typename T>
+  ostream& operator()(const optional<T> &a) {
+    if (!a)
+      return os << "(null)";
+    return (*this)(*a);
+  }
+
+  template<typename T>
+  ostream& operator()(const ArrayRef<T> &l) {
+    os << '[';
+    bool first = true;
+    for (const auto &elem : l) {
+      if (!first) os << ", ";
+      first = false;
+      (*this)(elem);
+    }
+    return os << ']';
+  }
+
+  template<typename T>
+  ostream& operator()(const List<T> &l) {
+    os << '(';
+    bool first = true;
+    for (const auto &it : l) {
+      if (!first) os << ", ";
+      first = false;
+
+      const T &elem = it;
+      (*this)(elem);
+    }
+    return os << ')';
+  }
+
+  ostream& operator()(const Generator &g) {
+    if (!g.defined())
+      return os << "generator(null)";
+    return os << "generator(" << g.current_seed() << ", " << g.device() << ")";
+  }
+};
+}
+
+void TensorOp::print(ostream &os, InputMap &inputs) const {
     if (!needsComputing()) {
       os << "[dead]";
       return;
@@ -55,36 +138,8 @@ void TensorOp::print(ostream &os,
     for (auto &arg : args) {
       os << (first ? " " : ", ");
       first = false;
-      if (auto t = get_if<Tensor>(&arg)) {
-        auto idx = trace_idx(*t);
-        if (idx != -1u) {
-          os << '%' << idx;
-        } else {
-          auto n = inputs.emplace(t->unsafeGetTensorImpl(),
-                                  (unsigned)inputs.size()).first->second;
-          os << "in<" << n << '>';
-        }
 
-#define OPTIONAL(type)                                     \
-      } else if (auto a = get_if<optional<type>>(&arg)) {  \
-        if (*a) { os << **a; } else { os << "(null)"; }
-
-      OPTIONAL(bool)
-      OPTIONAL(double)
-      OPTIONAL(int64_t)
-      OPTIONAL(Scalar)
-      OPTIONAL(ScalarType)
-      OPTIONAL(string)
-
-      } else if (auto a = get_if<IntArrayRef>(&arg)) {  os << *a;
-      } else if (auto a = get_if<Scalar>(&arg)) {       os << *a;
-      } else if (auto a = get_if<bool>(&arg)) {         os << *a;
-      } else if (auto a = get_if<double>(&arg)) {       os << *a;
-      } else if (auto a = get_if<int64_t>(&arg)) {      os << *a;
-      } else if (auto a = get_if<string>(&arg)) {       os << *a;
-      } else {
-        assert(0 && "missing case in TensorOp::print");
-      }
+      visit(printer(os, inputs), arg);
     }
 
   if (refs > 1)

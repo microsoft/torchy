@@ -118,15 +118,20 @@ def gen_interpreter_redispatch(fn):
   dispatcher_sig = DispatcherSignature.from_schema(fn.func)
 
   dispatcher_exprs = translate(sig.arguments(), dispatcher_sig.arguments())
-  rargs = ', '.join(['ks'] + [a.expr for a in dispatcher_exprs])
-  redispatch = f'at::redispatch::{sig.name()}({rargs})'
+  args = []
+  i = 0
+  for arg in dispatcher_exprs:
+    type = arg.type.cpp_type(strip_ref=True)
+    args.append(f'get<{type}>(op.args[{i}])')
+    i += 1
+
+  redispatch = f'at::redispatch::{sig.name()}(ks, {", ".join(args)})'
 
   rettype = dispatcher_sig.returns_type().cpp_type()
   case = f'case {fn_enum(fn)}:'
 
   if rettype == 'at::Tensor':
-    return f'''
-{case}
+    return f'''{case}
   set(op.tensor, {redispatch});
   break;
 '''
@@ -135,13 +140,13 @@ def gen_interpreter_redispatch(fn):
   if rettype == 'at::Tensor &':
     return f'''{case}
   init_update_in_place(op.tensor);
-  {redispatch}
+  {redispatch};
   end_update_in_place(op.tensor);
   break;
 '''
 
   # nothing else gets interpreted
-  return ''
+  return f'// skip {sig.defn()}\n'
 
 
 fd1 = open('autogen/dispatch_wrappers.h', 'w')

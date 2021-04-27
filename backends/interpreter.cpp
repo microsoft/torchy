@@ -2,12 +2,20 @@
 // Distributed under the MIT license that can be found in the LICENSE file.
 
 #include "dispatch.h"
+#include "ops.h"
+#include "tensor.h"
+#include "trace.h"
+#include <ATen/core/List.h>
 #include <ATen/RedispatchFunctions.h>
+
+using namespace at;
 
 namespace interpreter {
 
 void run(Trace &t) {
-  for (unsigned i = 0; i < next_op; ++i) {
+  auto *ops = t.getOps();
+
+  for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
     auto &op = ops[i];
     if (!op.needsComputing())
       continue;
@@ -15,7 +23,7 @@ void run(Trace &t) {
     auto ks = op.dispatch_key;
     for (auto &arg : op.args) {
       if (auto t = get_if<Tensor>(&arg)) {
-        ks = dispatch_key | t->key_set();
+        ks = ks | t->key_set();
       }
     }
     ks = ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
