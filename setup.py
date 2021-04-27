@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 from torch.utils.cpp_extension import CppExtension
 from glob import glob
 
-extra_compile_args = ['-std=c++14']
-extra_link_args = extra_compile_args
+extra_compile_args = ['-I.', '-std=c++14']
+extra_link_args = ['-std=c++14']
 sources = glob('**/*.cpp', recursive=True)
 
 setup(

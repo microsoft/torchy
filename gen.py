@@ -28,6 +28,7 @@ def gen_dispatch_wrapper(fn):
 
   rettype = dispatcher_sig.returns_type().cpp_type()
   fndecl = sig.defn(prefix='wrap_', is_redispatching_fn=True)
+  fndecl = fndecl.replace('wrap_' + sig.name(), wrapper_name(fn))
 
   dispatcher_exprs = translate(sig.arguments(), dispatcher_sig.arguments())
   rargs = ', '.join(['dispatchKeySet'] + [a.expr for a in dispatcher_exprs])

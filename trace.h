@@ -1,7 +1,7 @@
+#pragma once
+
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
-
-#pragma once
 
 #include <ATen/Tensor.h>
 #include <c10/core/DispatchKeySet.h>
@@ -81,11 +81,16 @@ class Trace {
   void incref(T t) {}
 
   void incref(const at::Tensor &t);
+  void incref(const c10::optional<at::Tensor> &t);
+  void incref(const at::TensorList &l);
+  void incref(const c10::List<c10::optional<at::Tensor>> &l);
 
   std::vector<std::unique_ptr<unsigned char[]>> deep_copies;
 
   template<typename T>
   at::ArrayRef<T> deep_copy(at::ArrayRef<T> arr) {
+    if (arr.empty())
+      return arr;
     size_t size = arr.size() * sizeof(T);
     auto ptr = new unsigned char[size];
     memcpy(ptr, arr.data(), size);
@@ -99,17 +104,22 @@ class Trace {
   }
 
   template<typename T>
-  void registerOpArg(TensorOp &op, at::ArrayRef<T> arg) {
+  void registerOpArg(TensorOp &op, const at::ArrayRef<T> &arg) {
     op.args.emplace_back(deep_copy(arg));
   }
 
   template<typename T>
-  void registerOpArg(TensorOp &op, c10::optional<at::ArrayRef<T>> arg) {
+  void registerOpArg(TensorOp &op, const c10::optional<at::ArrayRef<T>> &arg) {
     c10::optional<at::ArrayRef<T>> copy;
     if (arg)
       copy = deep_copy(*arg);
     op.args.emplace_back(std::move(copy));
    }
+
+  template<typename T>
+  void registerOpArg(TensorOp &op, const c10::List<T> &arg) {
+    op.args.emplace_back(arg.copy());
+  }
 
   template<typename A, typename... T>
   void registerOpArgs(TensorOp &op, const A &arg, T&... args) {
@@ -123,10 +133,6 @@ class Trace {
 public:
   bool is_flushing() const {
     return flushing;
-  }
-
-  void set_flushing(bool val) {
-    flushing = val;
   }
 
   template<typename... T>

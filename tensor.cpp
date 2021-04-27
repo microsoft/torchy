@@ -5,10 +5,10 @@
 // TODO: lazy in-place modification for torchy tensors. copy otherwise
 
 #undef NDEBUG
+#include "tensor.h"
 #include "dispatch.h"
 #include "ops.h"
 #include "trace.h"
-#include <ATen/NativeFunctions.h>
 #include <ATen/RedispatchFunctions.h>
 #include <torch/library.h>
 #include <iostream>
@@ -21,33 +21,7 @@
 using namespace at;
 using namespace std;
 
-
-/*
-unsigned trace_idx(const Tensor &t);
-void print(ostream &os, const TorchyTensor &tt);
-void set(TorchyTensor *tt, Tensor &&t);
-void init_update_in_place(TorchyTensor *tt);
-void end_update_in_place(TorchyTensor *tt);
-*/
-
 static thread_local Trace trace;
-
-#if 0
-class ScopedAutoFlush {
-  bool was_flushing;
-public:
-  ScopedAutoFlush() : was_flushing(trace.is_flushing()) {
-    if (!was_flushing) {
-      trace.flush();
-      trace.set_flushing(true);
-    }
-  }
-
-  ~ScopedAutoFlush() {
-    trace.set_flushing(was_flushing);
-  }
-};
-#endif
 
 
 class TorchyTensor final : public TensorImpl {
@@ -57,10 +31,9 @@ class TorchyTensor final : public TensorImpl {
 
 public:
   template<typename... T>
-  TorchyTensor(caffe2::TypeMeta dtype, c10::Device device, unsigned op_id,
-               DispatchKeySet ks, const T&... args)
+  TorchyTensor(caffe2::TypeMeta dtype, c10::Device device, const T&... args)
     : TensorImpl(DISPATCHKEY, dtype, device) {
-    trace_idx = trace.register_tensor(this, op_id, ks, args...);
+    trace_idx = trace.register_tensor(this, args...);
   }
 
   TorchyTensor(Tensor &&t) : TensorImpl(DISPATCHKEY, t.dtype(), t.device()) {
@@ -68,9 +41,9 @@ public:
   }
 
   template<typename... T>
-  void addInplace(unsigned op_id, DispatchKeySet ks, const T&... args) {
+  void addInplace(const T&... args) {
     materialized = false;
-    auto idx = trace.register_tensor(this, op_id, ks, args...);
+    auto idx = trace.register_tensor(this, args...);
     if (trace_idx == -1u)
       trace_idx = idx;
   }
@@ -202,9 +175,8 @@ public:
   }
 };
 
-namespace {
 
-TorchyTensor* is_torchy(const Tensor &t) {
+static TorchyTensor* is_torchy(const Tensor &t) {
   return dynamic_cast<TorchyTensor*>(t.unsafeGetTensorImpl());
 }
 
@@ -212,10 +184,6 @@ unsigned trace_idx(const Tensor &t) {
   if (auto tt = is_torchy(t))
     return tt->getTraceIdx();
   return -1u;
-}
-
-void print(ostream &os, const TorchyTensor &tensor) {
-  os << tensor;
 }
 
 void set(TorchyTensor *tt, Tensor &&t) {
@@ -230,6 +198,8 @@ void end_update_in_place(TorchyTensor *tt) {
   tt->endInPlaceUpdate();
 }
 
+
+namespace {
 void ensure_materialized() {}
 
 template<typename... T>
@@ -246,7 +216,6 @@ void will_override(const Tensor &t) {
       trace.flush();
   }
 }
-
 
 /*
 TODO:
