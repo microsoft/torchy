@@ -5,3 +5,5 @@
 
 #define DISPATCHKEY_NO_NS PrivateUse1
 #define DISPATCHKEY DispatchKey::DISPATCHKEY_NO_NS
+
+#define AUTOGRADDISPATCHKEY_NO_NS AutogradPrivateUse1

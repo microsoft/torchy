@@ -50,6 +50,11 @@ public:
 };
 }
 
+void TensorOp::incref() {
+  assert(isObservable());
+  ++refs;
+}
+
 void TensorOp::decref(TensorOp *ops) {
   assert(refs > 0);
   --refs;
@@ -173,6 +178,18 @@ void Trace::incref(const List<optional<Tensor>> &l) {
   for (const auto &t : l) {
     const optional<Tensor> &opt = t;
     incref(opt);
+  }
+}
+
+void Trace::set_unobservable(unsigned idx) {
+  auto &op = ops[idx];
+  assert(op.tensor);
+  op.tensor = nullptr;
+  op.decref(ops);
+
+  // reclaim slot if this was the last created tensor
+  if (op.refs == 0 && idx+1 == next_op) {
+    --next_op;
   }
 }
 

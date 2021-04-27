@@ -7,7 +7,6 @@
 #undef NDEBUG
 #include "tensor.h"
 #include "dispatch.h"
-#include "ops.h"
 #include "trace.h"
 #include <ATen/RedispatchFunctions.h>
 #include <torch/library.h>
@@ -235,12 +234,8 @@ TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
 #include "autogen/torch_library_table.h"
 }
 
-#if 0
-TORCH_LIBRARY_IMPL(aten, AutogradPrivateUse1, m) {
-  m.impl("isfinite", isfinite);
-  m.impl("reshape", reshape);
-  m.impl("to.device", to_device);
+TORCH_LIBRARY_IMPL(_, AUTOGRADDISPATCHKEY_NO_NS, m) {
+  m.fallback(torch::CppFunction::makeFallthrough());
 }
-#endif
 
 }

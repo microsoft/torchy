@@ -3,6 +3,7 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
+#include "ops.h"
 #include <ATen/Tensor.h>
 #include <c10/core/DispatchKeySet.h>
 #include <c10/util/variant.h>
@@ -51,18 +52,13 @@ struct TensorOp {
   TorchyTensor *tensor;
   std::vector<UnionInputTys> args;
   c10::DispatchKeySet dispatch_key;
-  unsigned id;
+  TorchOp id;
   unsigned refs;
 
-  void incref() {
-    assert(isObservable());
-    ++refs;
-  }
-
+  void incref();
   void decref(TensorOp *ops);
 
   bool isObservable() const {
-    assert(!tensor || refs > 0);
     return tensor;
   }
 
@@ -91,7 +87,7 @@ class Trace {
   std::vector<std::unique_ptr<unsigned char[]>> deep_copies;
 
   template<typename T>
-  at::ArrayRef<T> deep_copy(at::ArrayRef<T> arr) {
+  at::ArrayRef<T> deep_copy(const at::ArrayRef<T> &arr) {
     if (arr.empty())
       return arr;
     size_t size = arr.size() * sizeof(T);
@@ -139,7 +135,7 @@ public:
   TensorOp* getOps() { return ops; }
 
   template<typename... T>
-  unsigned register_tensor(TorchyTensor *tensor, unsigned op_id,
+  unsigned register_tensor(TorchyTensor *tensor, TorchOp op_id,
                            c10::DispatchKeySet ks, T&... args) {
     assert(!flushing);
     if (next_op == MAX_TRACE_LENGTH)
@@ -155,18 +151,7 @@ public:
     return next_op++;
   }
 
-  void set_unobservable(unsigned idx) {
-    auto &op = ops[idx];
-    assert(op.tensor);
-    op.tensor = nullptr;
-    op.decref(ops);
-
-    // reclaim slot if this was the last created tensor
-    if (op.refs == 0 && idx+1 == next_op) {
-      --next_op;
-    }
-  }
-
+  void set_unobservable(unsigned idx);
   void flush();
 
   friend std::ostream& operator<<(std::ostream &os, const Trace &t);
