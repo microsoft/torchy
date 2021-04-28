@@ -23,8 +23,60 @@ def fn_enum(fn):
 def get_arg_of_type(args, type):
   for arg in args:
     if arg.type.cpp_type(strip_ref=True) == type:
-      return arg.expr
+      return arg
   return None
+
+def maybe_tensor(type):
+  types = {
+    'at::Tensor',
+    'at::TensorList',
+    'c10::List<c10::optional<at::Tensor>>',
+    'c10::optional<at::Tensor>',
+  }
+  return type.remove_const_ref().cpp_type() in types
+
+# returns (dtype, device, init code)
+def get_dtype_arg(args, dtype, device):
+  uses_default = False
+  tensors = [a.expr for a in args if a.type.remove_const_ref().cpp_type() == 'at::Tensor']
+  if tensors:
+    dtype_default  = f'{tensors[0]}.dtype()'
+    device_default = f'{tensors[0]}.device()'
+    needs_init_code = False
+  else:
+    dtype_default  = 'default_dtype'
+    device_default = 'default_device'
+    needs_init_code = True
+
+  if not dtype:
+    dtype = dtype_default
+    uses_default = True
+  if not device:
+    device = device_default
+    uses_default = True
+
+  def fix_types(t, default, cast = None):
+    if isinstance(t, str):
+      return t, False
+    if 'c10::optional' in t.type.remove_const_ref().cpp_type():
+      if cast:
+        return f'{t.expr} ? {cast}(*{t.expr}) : {default}', True
+      return f'{t.expr} ? *{t.expr} : {default}', True
+    return f'{cast}({t.expr})' if cast else t.expr, False
+
+  dtype, tdef  = fix_types(dtype, dtype_default, 'scalarTypeToTypeMeta')
+  device, ddef = fix_types(device, device_default)
+  uses_default |= tdef or ddef
+
+  init_code = ''
+  if uses_default and needs_init_code:
+    args = ', '.join([a.expr for a in args])
+    init_code = f'''
+  auto defaults = compute_dtype({args});
+  auto &default_dtype = defaults.first;
+  auto &default_device = defaults.second;'''
+
+  return dtype, device, init_code
 
 
 @with_native_function
@@ -41,34 +93,25 @@ def gen_dispatch_wrapper(fn):
   rargs = ', '.join(['dispatchKeySet'] + [a.expr for a in args])
   redispatch = f'at::redispatch::{sig.name()}({rargs})'
 
-  tensor_args = [a.expr for a in args if a.type.remove_const_ref().cpp_type() == 'at::Tensor']
+  tensor_args = [a for a in args if maybe_tensor(a.type)]
+  materialize = f"ensure_materialized({', '.join([a.expr for a in tensor_args])});"
 
-  materialize = f"ensure_materialized({', '.join(tensor_args)});"
   dispatchkey = "dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);"
 
   # returns a tensor and takes tensors as arguments
   # e.g. add(x, y)
-  if rettype == 'at::Tensor' and tensor_args:
-    dtype = f'{tensor_args[0]}.dtype()'
+  if rettype == 'at::Tensor':
+    dtype = get_arg_of_type(args, 'at::ScalarType')
+    if not dtype:
+      dtype = get_arg_of_type(args, 'c10::optional<at::ScalarType>')
     if fn.func.name.name.base in always_returns_bool:
       dtype = 'scalarTypeToTypeMeta(kBool)'
-    else:
-      arg_dtype = get_arg_of_type(args, 'at::ScalarType')
-      if arg_dtype:
-        dtype = f'scalarTypeToTypeMeta({arg_dtype})'
-      else:
-        arg_dtype = get_arg_of_type(args, 'c10::optional<at::ScalarType>')
-        if arg_dtype:
-          dtype = f'{arg_dtype} ? scalarTypeToTypeMeta(*{arg_dtype}) : {dtype}'
 
-    device = f'{tensor_args[0]}.device()'
-    arg_device = get_arg_of_type(args, 'at::Device')
-    if arg_device:
-      device = arg_device
-    else:
-      arg_device = get_arg_of_type(args, 'c10::optional<at::Device>')
-      if arg_device:
-        device = f'{arg_device} ? *{arg_device} : {device}'
+    device = get_arg_of_type(args, 'at::Device')
+    if not device:
+      device = get_arg_of_type(args, 'c10::optional<at::Device>')
+
+    dtype, device, dtype_init = get_dtype_arg(tensor_args, dtype, device)
 
     return f'''
 {fndecl} {{
@@ -76,18 +119,8 @@ def gen_dispatch_wrapper(fn):
     {materialize}
     {dispatchkey}
     return {redispatch};
-  }}
+  }}{dtype_init}
   return at::detail::make_tensor<TorchyTensor>({dtype}, {device}, {fn_enum(fn)}, {rargs});
-}}'''
-
-  # op that creates a new tensor. Redispatch right away, but wrap result
-  # e.g. empty_strided
-  # TODO: can be made lazy, but we need the dtype & device
-  if rettype == 'at::Tensor' and not tensor_args:
-    return f'''
-{fndecl} {{
-  {dispatchkey}
-  return at::detail::make_tensor<TorchyTensor>({redispatch});
 }}'''
 
   # in-place op. returns one of the arguments

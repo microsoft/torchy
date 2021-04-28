@@ -203,10 +203,34 @@ void end_update_in_place(TorchyTensor *tt) {
 namespace {
 void ensure_materialized() {}
 
-template<typename... T>
-void ensure_materialized(const Tensor &t, T&... args) {
+void ensure_materialized(const Tensor &t) {
   if (auto tt = is_torchy(t))
     tt->ensure_materialized();
+}
+
+void ensure_materialized(const optional<Tensor> &t) {
+  if (t)
+    ensure_materialized(*t);
+}
+
+template<typename T>
+void ensure_materialized(const ArrayRef<T> &l) {
+  for (const auto &elem : l) {
+    ensure_materialized(elem);
+  }
+}
+
+template<typename T>
+void ensure_materialized(const List<T> &l) {
+  for (const auto &it : l) {
+    const T &elem = it;
+    ensure_materialized(elem);
+  }
+}
+
+template<typename A, typename... T>
+void ensure_materialized(const A &a, T&... args) {
+  ensure_materialized(a);
   ensure_materialized(args...);
 }
 
@@ -218,17 +242,16 @@ void will_override(const Tensor &t) {
   }
 }
 
-/*
-TODO:
-Tensor sum(c10::DispatchKeySet ks, const Tensor &self,
-           c10::optional<ScalarType> dtype) {
-  auto ty = self.dtype();
-  if (ty == kBool)
-    ty = scalarTypeToTypeMeta(kLong);
-  return MK_TORCHY(dtype ? scalarTypeToTypeMeta(*dtype) : ty, self.device(),
-                   "sum", self, dtype);
+// see build/aten/src/ATen/RegisterBackendSelect.cpp for redispatching logic
+pair<caffe2::TypeMeta, Device> compute_dtype() {
+  return { at::get_default_dtype(), Device(kCPU) };
 }
-*/
+
+pair<caffe2::TypeMeta, Device> compute_dtype(const TensorList &list) {
+  if (list.empty())
+    return compute_dtype();
+  return { list.front().dtype(), list.front().device() };
+}
 
 #include "autogen/dispatch_wrappers.h"
 
