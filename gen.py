@@ -3,6 +3,7 @@
 
 PYTORCH = '../pytorch'
 
+from special_fns import *
 import sys
 sys.path.append(PYTORCH)
 from tools.codegen.gen import *
@@ -19,6 +20,12 @@ def wrapper_name(fn):
 def fn_enum(fn):
   return 'H_' + str(fn.func.name).replace('.', '_').upper()
 
+def get_arg_of_type(args, type):
+  for arg in args:
+    if arg.type.cpp_type(strip_ref=True) == type:
+      return arg.expr
+  return None
+
 
 @with_native_function
 def gen_dispatch_wrapper(fn):
@@ -30,11 +37,11 @@ def gen_dispatch_wrapper(fn):
   fndecl = sig.defn(prefix='wrap_', is_redispatching_fn=True)
   fndecl = fndecl.replace('wrap_' + sig.name(), wrapper_name(fn))
 
-  dispatcher_exprs = translate(sig.arguments(), dispatcher_sig.arguments())
-  rargs = ', '.join(['dispatchKeySet'] + [a.expr for a in dispatcher_exprs])
+  args = translate(sig.arguments(), dispatcher_sig.arguments())
+  rargs = ', '.join(['dispatchKeySet'] + [a.expr for a in args])
   redispatch = f'at::redispatch::{sig.name()}({rargs})'
 
-  tensor_args = [a.expr for a in dispatcher_exprs if a.type.remove_const_ref().cpp_type() == 'at::Tensor']
+  tensor_args = [a.expr for a in args if a.type.remove_const_ref().cpp_type() == 'at::Tensor']
 
   materialize = f"ensure_materialized({', '.join(tensor_args)});"
   dispatchkey = "dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);"
@@ -42,9 +49,27 @@ def gen_dispatch_wrapper(fn):
   # returns a tensor and takes tensors as arguments
   # e.g. add(x, y)
   if rettype == 'at::Tensor' and tensor_args:
-    # FIXME: these should take dtype/device args into account + special cases
-    dtype  = f'{tensor_args[0]}.dtype()'
+    dtype = f'{tensor_args[0]}.dtype()'
+    if fn.func.name.name.base in always_returns_bool:
+      dtype = 'scalarTypeToTypeMeta(kBool)'
+    else:
+      arg_dtype = get_arg_of_type(args, 'at::ScalarType')
+      if arg_dtype:
+        dtype = f'scalarTypeToTypeMeta({arg_dtype})'
+      else:
+        arg_dtype = get_arg_of_type(args, 'c10::optional<at::ScalarType>')
+        if arg_dtype:
+          dtype = f'{arg_dtype} ? scalarTypeToTypeMeta(*{arg_dtype}) : {dtype}'
+
     device = f'{tensor_args[0]}.device()'
+    arg_device = get_arg_of_type(args, 'at::Device')
+    if arg_device:
+      device = arg_device
+    else:
+      arg_device = get_arg_of_type(args, 'c10::optional<at::Device>')
+      if arg_device:
+        device = f'{arg_device} ? *{arg_device} : {device}'
+
     return f'''
 {fndecl} {{
   if (trace.is_flushing()) {{

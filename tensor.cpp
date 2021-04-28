@@ -86,6 +86,8 @@ public:
   }
 
   void release_resources() override {
+    // FIXME: what if trace has references to this?
+    // can happen with in-place op
     if (tensor)
       tensor->release_resources();
     if (trace_idx != -1u)

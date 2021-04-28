@@ -2533,7 +2533,7 @@ at::Tensor wrap_cumprod(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::cumprod(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_CUMPROD, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_CUMPROD, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor & wrap_cumprod_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype) {
@@ -2566,7 +2566,7 @@ at::Tensor wrap_cumprod_dimname(c10::DispatchKeySet dispatchKeySet, const at::Te
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::cumprod(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_CUMPROD_DIMNAME, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_CUMPROD_DIMNAME, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor & wrap_cumprod__dimname(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
@@ -2608,7 +2608,7 @@ at::Tensor wrap_cumsum(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::cumsum(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_CUMSUM, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_CUMSUM, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor & wrap_cumsum_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, int64_t dim, c10::optional<at::ScalarType> dtype) {
@@ -2641,7 +2641,7 @@ at::Tensor wrap_cumsum_dimname(c10::DispatchKeySet dispatchKeySet, const at::Ten
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::cumsum(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_CUMSUM_DIMNAME, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_CUMSUM_DIMNAME, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor & wrap_cumsum__dimname(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
@@ -3222,7 +3222,7 @@ at::Tensor wrap_new_empty(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::new_empty(dispatchKeySet, self, size, dtype, layout, device, pin_memory);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NEW_EMPTY, dispatchKeySet, self, size, dtype, layout, device, pin_memory);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_NEW_EMPTY, dispatchKeySet, self, size, dtype, layout, device, pin_memory);
 }
 
 at::Tensor wrap_new_empty_strided(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -3231,7 +3231,7 @@ at::Tensor wrap_new_empty_strided(c10::DispatchKeySet dispatchKeySet, const at::
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::new_empty_strided(dispatchKeySet, self, size, stride, dtype, layout, device, pin_memory);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NEW_EMPTY_STRIDED, dispatchKeySet, self, size, stride, dtype, layout, device, pin_memory);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_NEW_EMPTY_STRIDED, dispatchKeySet, self, size, stride, dtype, layout, device, pin_memory);
 }
 
 at::Tensor wrap_new_full(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, const at::Scalar & fill_value, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -3240,7 +3240,7 @@ at::Tensor wrap_new_full(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::new_full(dispatchKeySet, self, size, fill_value, dtype, layout, device, pin_memory);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NEW_FULL, dispatchKeySet, self, size, fill_value, dtype, layout, device, pin_memory);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_NEW_FULL, dispatchKeySet, self, size, fill_value, dtype, layout, device, pin_memory);
 }
 
 at::Tensor wrap_new_zeros(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -3249,7 +3249,7 @@ at::Tensor wrap_new_zeros(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::new_zeros(dispatchKeySet, self, size, dtype, layout, device, pin_memory);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NEW_ZEROS, dispatchKeySet, self, size, dtype, layout, device, pin_memory);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_NEW_ZEROS, dispatchKeySet, self, size, dtype, layout, device, pin_memory);
 }
 
 at::Tensor wrap__empty_affine_quantized(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, double scale, int64_t zero_point, c10::optional<at::MemoryFormat> memory_format) {
@@ -3263,7 +3263,7 @@ at::Tensor wrap__empty_per_channel_affine_quantized(c10::DispatchKeySet dispatch
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_empty_per_channel_affine_quantized(dispatchKeySet, size, scales, zero_points, axis, dtype, layout, device, pin_memory, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(scales.dtype(), scales.device(), H__EMPTY_PER_CHANNEL_AFFINE_QUANTIZED, dispatchKeySet, size, scales, zero_points, axis, dtype, layout, device, pin_memory, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : scales.dtype(), device ? *device : scales.device(), H__EMPTY_PER_CHANNEL_AFFINE_QUANTIZED, dispatchKeySet, size, scales, zero_points, axis, dtype, layout, device, pin_memory, memory_format);
 }
 
 const at::Tensor & wrap_resize_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, c10::optional<at::MemoryFormat> memory_format) {
@@ -3299,7 +3299,7 @@ at::Tensor wrap_empty_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::empty_like(dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_EMPTY_LIKE, dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_EMPTY_LIKE, dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
 }
 
 at::Tensor wrap_empty_strided(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -3645,7 +3645,7 @@ at::Tensor wrap_full_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::full_like(dispatchKeySet, self, fill_value, dtype, layout, device, pin_memory, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_FULL_LIKE, dispatchKeySet, self, fill_value, dtype, layout, device, pin_memory, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_FULL_LIKE, dispatchKeySet, self, fill_value, dtype, layout, device, pin_memory, memory_format);
 }
 
 at::Tensor wrap_from_file(c10::DispatchKeySet dispatchKeySet, std::string filename, c10::optional<bool> shared, c10::optional<int64_t> size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -4073,7 +4073,7 @@ at::Tensor wrap_isnan(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::isnan(dispatchKeySet, self);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_ISNAN, dispatchKeySet, self);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_ISNAN, dispatchKeySet, self);
 }
 
 bool wrap_is_distributed(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
@@ -4608,7 +4608,7 @@ at::Tensor wrap_log_softmax_int(c10::DispatchKeySet dispatchKeySet, const at::Te
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::log_softmax(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_LOG_SOFTMAX_INT, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_LOG_SOFTMAX_INT, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor wrap_log_softmax_Dimname(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
@@ -4617,7 +4617,7 @@ at::Tensor wrap_log_softmax_Dimname(c10::DispatchKeySet dispatchKeySet, const at
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::log_softmax(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_LOG_SOFTMAX_DIMNAME, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_LOG_SOFTMAX_DIMNAME, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor wrap__log_softmax(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t dim, bool half_to_float) {
@@ -5010,7 +5010,7 @@ at::Tensor wrap_mean(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::mean(dispatchKeySet, self, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_MEAN, dispatchKeySet, self, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_MEAN, dispatchKeySet, self, dtype);
 }
 
 at::Tensor wrap_mean_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
@@ -5019,7 +5019,7 @@ at::Tensor wrap_mean_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::mean(dispatchKeySet, self, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_MEAN_DIM, dispatchKeySet, self, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_MEAN_DIM, dispatchKeySet, self, dim, keepdim, dtype);
 }
 
 at::Tensor & wrap_mean_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
@@ -5040,7 +5040,7 @@ at::Tensor wrap_mean_names_dim(c10::DispatchKeySet dispatchKeySet, const at::Ten
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::mean(dispatchKeySet, self, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_MEAN_NAMES_DIM, dispatchKeySet, self, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_MEAN_NAMES_DIM, dispatchKeySet, self, dim, keepdim, dtype);
 }
 
 at::Tensor & wrap_mean_names_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::DimnameList dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
@@ -5740,7 +5740,7 @@ at::Tensor wrap_ones_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::ones_like(dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_ONES_LIKE, dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_ONES_LIKE, dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
 }
 
 at::Tensor wrap_pairwise_distance(c10::DispatchKeySet dispatchKeySet, const at::Tensor & x1, const at::Tensor & x2, double p, double eps, bool keepdim) {
@@ -6059,7 +6059,7 @@ at::Tensor wrap_rand_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::rand_like(dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_RAND_LIKE, dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_RAND_LIKE, dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
 }
 
 at::Tensor wrap_randint(c10::DispatchKeySet dispatchKeySet, int64_t high, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -6136,7 +6136,7 @@ at::Tensor wrap_randint_like(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::randint_like(dispatchKeySet, self, high, dtype, layout, device, pin_memory, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_RANDINT_LIKE, dispatchKeySet, self, high, dtype, layout, device, pin_memory, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_RANDINT_LIKE, dispatchKeySet, self, high, dtype, layout, device, pin_memory, memory_format);
 }
 
 at::Tensor wrap_randint_like_low_dtype(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t low, int64_t high, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
@@ -6145,7 +6145,7 @@ at::Tensor wrap_randint_like_low_dtype(c10::DispatchKeySet dispatchKeySet, const
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::randint_like(dispatchKeySet, self, low, high, dtype, layout, device, pin_memory, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_RANDINT_LIKE_LOW_DTYPE, dispatchKeySet, self, low, high, dtype, layout, device, pin_memory, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_RANDINT_LIKE_LOW_DTYPE, dispatchKeySet, self, low, high, dtype, layout, device, pin_memory, memory_format);
 }
 
 at::Tensor wrap_randn(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -6198,7 +6198,7 @@ at::Tensor wrap_randn_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::randn_like(dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_RANDN_LIKE, dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_RANDN_LIKE, dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
 }
 
 at::Tensor wrap_randperm(c10::DispatchKeySet dispatchKeySet, int64_t n, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -6875,7 +6875,7 @@ at::Tensor wrap_softmax_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::softmax(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_SOFTMAX_INT, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_SOFTMAX_INT, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor wrap_softmax_Dimname(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
@@ -6884,7 +6884,7 @@ at::Tensor wrap_softmax_Dimname(c10::DispatchKeySet dispatchKeySet, const at::Te
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::softmax(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_SOFTMAX_DIMNAME, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_SOFTMAX_DIMNAME, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor wrap__softmax(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t dim, bool half_to_float) {
@@ -7128,7 +7128,7 @@ at::Tensor wrap_sum(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self,
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::sum(dispatchKeySet, self, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_SUM, dispatchKeySet, self, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_SUM, dispatchKeySet, self, dtype);
 }
 
 at::Tensor wrap_sum_dim_IntList(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
@@ -7137,7 +7137,7 @@ at::Tensor wrap_sum_dim_IntList(c10::DispatchKeySet dispatchKeySet, const at::Te
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::sum(dispatchKeySet, self, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_SUM_DIM_INTLIST, dispatchKeySet, self, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_SUM_DIM_INTLIST, dispatchKeySet, self, dim, keepdim, dtype);
 }
 
 at::Tensor wrap_sum_dim_DimnameList(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::DimnameList dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
@@ -7146,7 +7146,7 @@ at::Tensor wrap_sum_dim_DimnameList(c10::DispatchKeySet dispatchKeySet, const at
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::sum(dispatchKeySet, self, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_SUM_DIM_DIMNAMELIST, dispatchKeySet, self, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_SUM_DIM_DIMNAMELIST, dispatchKeySet, self, dim, keepdim, dtype);
 }
 
 at::Tensor & wrap_sum_IntList_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
@@ -7179,7 +7179,7 @@ at::Tensor wrap_nansum(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::nansum(dispatchKeySet, self, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NANSUM, dispatchKeySet, self, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_NANSUM, dispatchKeySet, self, dtype);
 }
 
 at::Tensor wrap_nansum_dim_IntList(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
@@ -7188,7 +7188,7 @@ at::Tensor wrap_nansum_dim_IntList(c10::DispatchKeySet dispatchKeySet, const at:
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::nansum(dispatchKeySet, self, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NANSUM_DIM_INTLIST, dispatchKeySet, self, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_NANSUM_DIM_INTLIST, dispatchKeySet, self, dim, keepdim, dtype);
 }
 
 at::Tensor & wrap_nansum_IntList_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
@@ -7341,7 +7341,7 @@ at::Tensor wrap_prod(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::prod(dispatchKeySet, self, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_PROD, dispatchKeySet, self, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_PROD, dispatchKeySet, self, dtype);
 }
 
 at::Tensor wrap_prod_dim_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
@@ -7350,7 +7350,7 @@ at::Tensor wrap_prod_dim_int(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::prod(dispatchKeySet, self, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_PROD_DIM_INT, dispatchKeySet, self, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_PROD_DIM_INT, dispatchKeySet, self, dim, keepdim, dtype);
 }
 
 at::Tensor & wrap_prod_int_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
@@ -7371,7 +7371,7 @@ at::Tensor wrap_prod_dim_Dimname(c10::DispatchKeySet dispatchKeySet, const at::T
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::prod(dispatchKeySet, self, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_PROD_DIM_DIMNAME, dispatchKeySet, self, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_PROD_DIM_DIMNAME, dispatchKeySet, self, dim, keepdim, dtype);
 }
 
 at::Tensor & wrap_prod_Dimname_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Dimname dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
@@ -8008,7 +8008,7 @@ at::Tensor wrap_zeros_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::zeros_like(dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_ZEROS_LIKE, dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_ZEROS_LIKE, dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
 }
 
 at::Tensor wrap__standard_gamma_grad(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & output) {
@@ -8080,7 +8080,7 @@ at::Tensor wrap_native_norm_ScalarOpt_dim_dtype(c10::DispatchKeySet dispatchKeyS
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::native_norm(dispatchKeySet, self, p, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NATIVE_NORM_SCALAROPT_DIM_DTYPE, dispatchKeySet, self, p, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_NATIVE_NORM_SCALAROPT_DIM_DTYPE, dispatchKeySet, self, p, dim, keepdim, dtype);
 }
 
 at::Tensor wrap__sparse_sum(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
@@ -8098,7 +8098,7 @@ at::Tensor wrap__sparse_sum_dtype(c10::DispatchKeySet dispatchKeySet, const at::
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_sparse_sum(dispatchKeySet, self, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H__SPARSE_SUM_DTYPE, dispatchKeySet, self, dtype);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(dtype), self.device(), H__SPARSE_SUM_DTYPE, dispatchKeySet, self, dtype);
 }
 
 at::Tensor wrap__sparse_sum_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim) {
@@ -8116,7 +8116,7 @@ at::Tensor wrap__sparse_sum_dim_dtype(c10::DispatchKeySet dispatchKeySet, const 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_sparse_sum(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H__SPARSE_SUM_DIM_DTYPE, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(dtype), self.device(), H__SPARSE_SUM_DIM_DTYPE, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor wrap__sparse_sum_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, const at::Tensor & self, at::IntArrayRef dim) {
@@ -8134,7 +8134,7 @@ at::Tensor wrap__sparse_softmax_int(c10::DispatchKeySet dispatchKeySet, const at
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_sparse_softmax(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H__SPARSE_SOFTMAX_INT, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H__SPARSE_SOFTMAX_INT, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor wrap__sparse_softmax_Dimname(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
@@ -8143,7 +8143,7 @@ at::Tensor wrap__sparse_softmax_Dimname(c10::DispatchKeySet dispatchKeySet, cons
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_sparse_softmax(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H__SPARSE_SOFTMAX_DIMNAME, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H__SPARSE_SOFTMAX_DIMNAME, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor wrap__sparse_softmax(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t dim, bool half_to_float) {
@@ -8170,7 +8170,7 @@ at::Tensor wrap__sparse_log_softmax_int(c10::DispatchKeySet dispatchKeySet, cons
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_sparse_log_softmax(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H__SPARSE_LOG_SOFTMAX_INT, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H__SPARSE_LOG_SOFTMAX_INT, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor wrap__sparse_log_softmax_Dimname(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Dimname dim, c10::optional<at::ScalarType> dtype) {
@@ -8179,7 +8179,7 @@ at::Tensor wrap__sparse_log_softmax_Dimname(c10::DispatchKeySet dispatchKeySet, 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_sparse_log_softmax(dispatchKeySet, self, dim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H__SPARSE_LOG_SOFTMAX_DIMNAME, dispatchKeySet, self, dim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H__SPARSE_LOG_SOFTMAX_DIMNAME, dispatchKeySet, self, dim, dtype);
 }
 
 at::Tensor wrap__sparse_log_softmax(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t dim, bool half_to_float) {
@@ -8206,7 +8206,7 @@ at::Tensor wrap_norm_ScalarOpt_dtype(c10::DispatchKeySet dispatchKeySet, const a
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::norm(dispatchKeySet, self, p, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NORM_SCALAROPT_DTYPE, dispatchKeySet, self, p, dtype);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(dtype), self.device(), H_NORM_SCALAROPT_DTYPE, dispatchKeySet, self, p, dtype);
 }
 
 at::Tensor wrap_norm_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & p) {
@@ -8224,7 +8224,7 @@ at::Tensor wrap_norm_ScalarOpt_dim_dtype(c10::DispatchKeySet dispatchKeySet, con
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::norm(dispatchKeySet, self, p, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NORM_SCALAROPT_DIM_DTYPE, dispatchKeySet, self, p, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(dtype), self.device(), H_NORM_SCALAROPT_DIM_DTYPE, dispatchKeySet, self, p, dim, keepdim, dtype);
 }
 
 at::Tensor wrap_norm_ScalarOpt_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & p, at::IntArrayRef dim, bool keepdim) {
@@ -8266,7 +8266,7 @@ at::Tensor wrap_norm_names_ScalarOpt_dim_dtype(c10::DispatchKeySet dispatchKeySe
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::norm(dispatchKeySet, self, p, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NORM_NAMES_SCALAROPT_DIM_DTYPE, dispatchKeySet, self, p, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(dtype), self.device(), H_NORM_NAMES_SCALAROPT_DIM_DTYPE, dispatchKeySet, self, p, dim, keepdim, dtype);
 }
 
 at::Tensor wrap_norm_names_ScalarOpt_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & p, at::DimnameList dim, bool keepdim) {
@@ -8626,7 +8626,7 @@ at::Tensor wrap_sparse_csr_tensor_crow_col_value_size(c10::DispatchKeySet dispat
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::sparse_csr_tensor(dispatchKeySet, crow_indices, col_indices, values, size, dtype, layout, device, pin_memory);
   }
-  return at::detail::make_tensor<TorchyTensor>(crow_indices.dtype(), crow_indices.device(), H_SPARSE_CSR_TENSOR_CROW_COL_VALUE_SIZE, dispatchKeySet, crow_indices, col_indices, values, size, dtype, layout, device, pin_memory);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : crow_indices.dtype(), device ? *device : crow_indices.device(), H_SPARSE_CSR_TENSOR_CROW_COL_VALUE_SIZE, dispatchKeySet, crow_indices, col_indices, values, size, dtype, layout, device, pin_memory);
 }
 
 at::Tensor wrap_sparse_csr_tensor_crow_col_value(c10::DispatchKeySet dispatchKeySet, const at::Tensor & crow_indices, const at::Tensor & col_indices, const at::Tensor & values, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -8635,7 +8635,7 @@ at::Tensor wrap_sparse_csr_tensor_crow_col_value(c10::DispatchKeySet dispatchKey
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::sparse_csr_tensor(dispatchKeySet, crow_indices, col_indices, values, dtype, layout, device, pin_memory);
   }
-  return at::detail::make_tensor<TorchyTensor>(crow_indices.dtype(), crow_indices.device(), H_SPARSE_CSR_TENSOR_CROW_COL_VALUE, dispatchKeySet, crow_indices, col_indices, values, dtype, layout, device, pin_memory);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : crow_indices.dtype(), device ? *device : crow_indices.device(), H_SPARSE_CSR_TENSOR_CROW_COL_VALUE, dispatchKeySet, crow_indices, col_indices, values, dtype, layout, device, pin_memory);
 }
 
 at::Tensor wrap_sparse_coo_tensor_size(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -8649,7 +8649,7 @@ at::Tensor wrap_sparse_coo_tensor_indices(c10::DispatchKeySet dispatchKeySet, co
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::sparse_coo_tensor(dispatchKeySet, indices, values, dtype, layout, device, pin_memory);
   }
-  return at::detail::make_tensor<TorchyTensor>(indices.dtype(), indices.device(), H_SPARSE_COO_TENSOR_INDICES, dispatchKeySet, indices, values, dtype, layout, device, pin_memory);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : indices.dtype(), device ? *device : indices.device(), H_SPARSE_COO_TENSOR_INDICES, dispatchKeySet, indices, values, dtype, layout, device, pin_memory);
 }
 
 at::Tensor wrap_sparse_coo_tensor_indices_size(c10::DispatchKeySet dispatchKeySet, const at::Tensor & indices, const at::Tensor & values, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -8658,7 +8658,7 @@ at::Tensor wrap_sparse_coo_tensor_indices_size(c10::DispatchKeySet dispatchKeySe
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::sparse_coo_tensor(dispatchKeySet, indices, values, size, dtype, layout, device, pin_memory);
   }
-  return at::detail::make_tensor<TorchyTensor>(indices.dtype(), indices.device(), H_SPARSE_COO_TENSOR_INDICES_SIZE, dispatchKeySet, indices, values, size, dtype, layout, device, pin_memory);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : indices.dtype(), device ? *device : indices.device(), H_SPARSE_COO_TENSOR_INDICES_SIZE, dispatchKeySet, indices, values, size, dtype, layout, device, pin_memory);
 }
 
 at::Tensor wrap__sparse_coo_tensor_unsafe(c10::DispatchKeySet dispatchKeySet, const at::Tensor & indices, const at::Tensor & values, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
@@ -8667,7 +8667,7 @@ at::Tensor wrap__sparse_coo_tensor_unsafe(c10::DispatchKeySet dispatchKeySet, co
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_sparse_coo_tensor_unsafe(dispatchKeySet, indices, values, size, dtype, layout, device, pin_memory);
   }
-  return at::detail::make_tensor<TorchyTensor>(indices.dtype(), indices.device(), H__SPARSE_COO_TENSOR_UNSAFE, dispatchKeySet, indices, values, size, dtype, layout, device, pin_memory);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : indices.dtype(), device ? *device : indices.device(), H__SPARSE_COO_TENSOR_UNSAFE, dispatchKeySet, indices, values, size, dtype, layout, device, pin_memory);
 }
 
 void wrap__validate_sparse_coo_tensor_args(c10::DispatchKeySet dispatchKeySet, const at::Tensor & indices, const at::Tensor & values, at::IntArrayRef size) {
@@ -8687,7 +8687,7 @@ at::Tensor wrap__sparse_coo_tensor_with_dims_and_tensors(c10::DispatchKeySet dis
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_sparse_coo_tensor_with_dims_and_tensors(dispatchKeySet, sparse_dim, dense_dim, size, indices, values, dtype, layout, device, pin_memory);
   }
-  return at::detail::make_tensor<TorchyTensor>(indices.dtype(), indices.device(), H__SPARSE_COO_TENSOR_WITH_DIMS_AND_TENSORS, dispatchKeySet, sparse_dim, dense_dim, size, indices, values, dtype, layout, device, pin_memory);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : indices.dtype(), device ? *device : indices.device(), H__SPARSE_COO_TENSOR_WITH_DIMS_AND_TENSORS, dispatchKeySet, sparse_dim, dense_dim, size, indices, values, dtype, layout, device, pin_memory);
 }
 
 const at::Tensor & wrap_sparse_resize_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, int64_t sparse_dim, int64_t dense_dim) {
@@ -8717,7 +8717,7 @@ at::Tensor wrap_to_dense(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::to_dense(dispatchKeySet, self, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_TO_DENSE, dispatchKeySet, self, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_TO_DENSE, dispatchKeySet, self, dtype);
 }
 
 at::Tensor wrap_to_dense_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, const at::Tensor & input) {
@@ -8918,7 +8918,7 @@ at::Tensor wrap_to_mkldnn(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::to_mkldnn(dispatchKeySet, self, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_TO_MKLDNN, dispatchKeySet, self, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_TO_MKLDNN, dispatchKeySet, self, dtype);
 }
 
 at::Tensor wrap_mkldnn_reorder_conv2d_weight(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups) {
@@ -8954,7 +8954,7 @@ at::Tensor wrap_quantize_per_tensor(c10::DispatchKeySet dispatchKeySet, const at
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::quantize_per_tensor(dispatchKeySet, self, scale, zero_point, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_QUANTIZE_PER_TENSOR, dispatchKeySet, self, scale, zero_point, dtype);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(dtype), self.device(), H_QUANTIZE_PER_TENSOR, dispatchKeySet, self, scale, zero_point, dtype);
 }
 
 std::vector<at::Tensor> wrap_quantize_per_tensor_tensors(c10::DispatchKeySet dispatchKeySet, at::TensorList tensors, const at::Tensor & scales, const at::Tensor & zero_points, at::ScalarType dtype) {
@@ -8969,7 +8969,7 @@ at::Tensor wrap_quantize_per_channel(c10::DispatchKeySet dispatchKeySet, const a
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::quantize_per_channel(dispatchKeySet, self, scales, zero_points, axis, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_QUANTIZE_PER_CHANNEL, dispatchKeySet, self, scales, zero_points, axis, dtype);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(dtype), self.device(), H_QUANTIZE_PER_CHANNEL, dispatchKeySet, self, scales, zero_points, axis, dtype);
 }
 
 at::Tensor wrap_dequantize_self(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
@@ -9161,7 +9161,7 @@ at::Tensor wrap_to_dtype_layout(c10::DispatchKeySet dispatchKeySet, const at::Te
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::to(dispatchKeySet, self, dtype, layout, device, pin_memory, non_blocking, copy, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_TO_DTYPE_LAYOUT, dispatchKeySet, self, dtype, layout, device, pin_memory, non_blocking, copy, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), device ? *device : self.device(), H_TO_DTYPE_LAYOUT, dispatchKeySet, self, dtype, layout, device, pin_memory, non_blocking, copy, memory_format);
 }
 
 at::Tensor wrap_to_device(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Device device, at::ScalarType dtype, bool non_blocking, bool copy, c10::optional<at::MemoryFormat> memory_format) {
@@ -9170,7 +9170,7 @@ at::Tensor wrap_to_device(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::to(dispatchKeySet, self, device, dtype, non_blocking, copy, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_TO_DEVICE, dispatchKeySet, self, device, dtype, non_blocking, copy, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(dtype), device, H_TO_DEVICE, dispatchKeySet, self, device, dtype, non_blocking, copy, memory_format);
 }
 
 at::Tensor wrap_to_dtype(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::ScalarType dtype, bool non_blocking, bool copy, c10::optional<at::MemoryFormat> memory_format) {
@@ -9179,7 +9179,7 @@ at::Tensor wrap_to_dtype(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::to(dispatchKeySet, self, dtype, non_blocking, copy, memory_format);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_TO_DTYPE, dispatchKeySet, self, dtype, non_blocking, copy, memory_format);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(dtype), self.device(), H_TO_DTYPE, dispatchKeySet, self, dtype, non_blocking, copy, memory_format);
 }
 
 at::Tensor wrap_to_other(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, bool non_blocking, bool copy, c10::optional<at::MemoryFormat> memory_format) {
@@ -9562,7 +9562,7 @@ at::Tensor wrap_view_dtype(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::view(dispatchKeySet, self, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_VIEW_DTYPE, dispatchKeySet, self, dtype);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(dtype), self.device(), H_VIEW_DTYPE, dispatchKeySet, self, dtype);
 }
 
 at::Tensor & wrap_put_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Tensor & index, const at::Tensor & source, bool accumulate) {
@@ -10655,7 +10655,7 @@ at::Tensor wrap_ne_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::ne(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NE_SCALAR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_NE_SCALAR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_ne_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
@@ -10676,7 +10676,7 @@ at::Tensor wrap_ne_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::ne(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_NE_TENSOR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_NE_TENSOR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_ne__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Scalar & other) {
@@ -10787,7 +10787,7 @@ at::Tensor wrap_eq_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::eq(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_EQ_SCALAR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_EQ_SCALAR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_eq_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
@@ -10808,7 +10808,7 @@ at::Tensor wrap_eq_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::eq(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_EQ_TENSOR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_EQ_TENSOR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_ge_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & other, at::Tensor & out) {
@@ -11093,7 +11093,7 @@ at::Tensor wrap_gt_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::gt(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_GT_SCALAR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_GT_SCALAR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_gt_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
@@ -11114,7 +11114,7 @@ at::Tensor wrap_gt_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::gt(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_GT_TENSOR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_GT_TENSOR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_gt__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Scalar & other) {
@@ -11159,7 +11159,7 @@ at::Tensor wrap_greater_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Ten
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::greater(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_GREATER_SCALAR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_GREATER_SCALAR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_greater_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
@@ -11180,7 +11180,7 @@ at::Tensor wrap_greater_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Ten
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::greater(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_GREATER_TENSOR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_GREATER_TENSOR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_greater__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Scalar & other) {
@@ -11225,7 +11225,7 @@ at::Tensor wrap_lt_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::lt(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_LT_SCALAR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_LT_SCALAR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_lt_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
@@ -11246,7 +11246,7 @@ at::Tensor wrap_lt_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::lt(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_LT_TENSOR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_LT_TENSOR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_lt__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Scalar & other) {
@@ -11291,7 +11291,7 @@ at::Tensor wrap_less_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::less(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_LESS_SCALAR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_LESS_SCALAR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_less_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
@@ -11312,7 +11312,7 @@ at::Tensor wrap_less_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::less(dispatchKeySet, self, other);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_LESS_TENSOR, dispatchKeySet, self, other);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_LESS_TENSOR, dispatchKeySet, self, other);
 }
 
 at::Tensor & wrap_less__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Scalar & other) {
@@ -16070,7 +16070,7 @@ at::Tensor wrap_isfinite(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::isfinite(dispatchKeySet, self);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_ISFINITE, dispatchKeySet, self);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_ISFINITE, dispatchKeySet, self);
 }
 
 at::Tensor wrap_isinf(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
@@ -16079,7 +16079,7 @@ at::Tensor wrap_isinf(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::isinf(dispatchKeySet, self);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_ISINF, dispatchKeySet, self);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_ISINF, dispatchKeySet, self);
 }
 
 void wrap_record_stream(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, at::Stream s) {
@@ -16094,7 +16094,7 @@ at::Tensor wrap_isposinf(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::isposinf(dispatchKeySet, self);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_ISPOSINF, dispatchKeySet, self);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_ISPOSINF, dispatchKeySet, self);
 }
 
 at::Tensor & wrap_isposinf_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Tensor & out) {
@@ -16115,7 +16115,7 @@ at::Tensor wrap_isneginf(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::isneginf(dispatchKeySet, self);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_ISNEGINF, dispatchKeySet, self);
+  return at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kBool), self.device(), H_ISNEGINF, dispatchKeySet, self);
 }
 
 at::Tensor & wrap_isneginf_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Tensor & out) {
@@ -16962,7 +16962,7 @@ at::Tensor wrap_linalg_norm(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::linalg_norm(dispatchKeySet, self, ord, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_LINALG_NORM, dispatchKeySet, self, ord, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_LINALG_NORM, dispatchKeySet, self, ord, dim, keepdim, dtype);
 }
 
 at::Tensor wrap_linalg_norm_ord_str(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
@@ -16971,7 +16971,7 @@ at::Tensor wrap_linalg_norm_ord_str(c10::DispatchKeySet dispatchKeySet, const at
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::linalg_norm(dispatchKeySet, self, ord, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_LINALG_NORM_ORD_STR, dispatchKeySet, self, ord, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_LINALG_NORM_ORD_STR, dispatchKeySet, self, ord, dim, keepdim, dtype);
 }
 
 at::Tensor & wrap_linalg_norm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
@@ -17004,7 +17004,7 @@ at::Tensor wrap_linalg_vector_norm(c10::DispatchKeySet dispatchKeySet, const at:
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::linalg_vector_norm(dispatchKeySet, self, ord, dim, keepdim, dtype);
   }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_LINALG_VECTOR_NORM, dispatchKeySet, self, ord, dim, keepdim, dtype);
+  return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_LINALG_VECTOR_NORM, dispatchKeySet, self, ord, dim, keepdim, dtype);
 }
 
 at::Tensor & wrap_linalg_vector_norm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
