@@ -199,7 +199,7 @@ void Trace::set_unobservable(unsigned idx) {
 
 void Trace::flush() {
 #if 1
-  cout << "Flush trace\n" << *this;
+  cerr << "Flush trace\n" << *this;
 #endif
 
   assert(!flushing);

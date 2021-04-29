@@ -10,8 +10,6 @@
 #include "trace.h"
 #include <ATen/RedispatchFunctions.h>
 #include <torch/library.h>
-#include <iostream>
-#include <map>
 
 #ifdef C10_DISABLE_TENSORIMPL_EXTENSIBILITY
 # error Cannot disable C10_DISABLE_TENSORIMPL_EXTENSIBILITY
