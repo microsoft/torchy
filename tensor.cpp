@@ -45,16 +45,28 @@ public:
     auto idx = trace.register_tensor(this, args...);
     if (trace_idx == -1u)
       trace_idx = idx;
+
+    // if our data is shared, we need to flush straight away, otherwise
+    // another tensor with the same data will miss that the tensor is not
+    // current anymore.
+    if (sharedImpl())
+      trace.flush();
   }
 
   unsigned getTraceIdx() const { return trace_idx; }
+  bool sharedImpl() const { return tensor && !tensor.unique(); }
 
   void set(Tensor &&t) {
     assert(!materialized && !tensor);
     assert(dtype() == t.dtype());
+    assert(device() == t.device());
+
     trace_idx    = -1u;
     materialized = true;
-    tensor       = t.unsafeReleaseIntrusivePtr();
+
+    // we need to keep a reference-counted tensor because tensors may be shared
+    // e.g. to() may return the input tensor
+    tensor = t.unsafeReleaseIntrusivePtr();
 
     auto my_ks = key_set_;
     TensorImpl::shallow_copy_from(tensor);
@@ -86,12 +98,9 @@ public:
   }
 
   void release_resources() override {
-    // FIXME: what if trace has references to this?
-    // can happen with in-place op
-    if (tensor)
-      tensor->release_resources();
     if (trace_idx != -1u)
       trace.set_unobservable(trace_idx);
+    tensor.reset();
     TensorImpl::release_resources();
   }
 
@@ -235,9 +244,8 @@ void ensure_materialized(const A &a, T&... args) {
 }
 
 void will_override(const Tensor &t) {
-  // TODO: refine this to account only for unprocessed references
-  if (is_torchy(t)) {
-    if (!trace.is_flushing())
+  if (auto tt = is_torchy(t)) {
+    if (tt->sharedImpl() && !trace.is_flushing())
       trace.flush();
   }
 }

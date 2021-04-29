@@ -3,6 +3,7 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
+#undef NDEBUG
 #include "ops.h"
 #include <ATen/Tensor.h>
 #include <c10/core/DispatchKeySet.h>
@@ -50,6 +51,8 @@ using UnionInputTys = c10::variant<
 
 struct TensorOp {
   TorchyTensor *tensor;
+  // TODO: investigate if specializing this for the common case
+  // e.g. 2 tensors makes sense (would save space + 1 mem alloc)
   std::vector<UnionInputTys> args;
   c10::DispatchKeySet dispatch_key;
   TorchOp id;
@@ -144,7 +147,7 @@ public:
     auto &op = ops[next_op];
     op.tensor = tensor;
     op.id = op_id;
-    op.args.clear();
+    assert(op.args.empty());
     registerOpArgs(op, args...);
     op.refs = 1;
     op.dispatch_key = ks;

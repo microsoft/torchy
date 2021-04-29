@@ -63,6 +63,8 @@ void TensorOp::decref(TensorOp *ops) {
     for (auto &arg : args) {
       visit(decrefer(ops), arg);
     }
+    args.clear();
+    assert(!tensor);
   }
 }
 
@@ -148,7 +150,7 @@ void TensorOp::print(ostream &os, InputMap &inputs) const {
     }
 
   if (refs > 1)
-    os << " #refs=" << (refs-1);
+    os << " #refs=" << (refs - isObservable());
 
   if (isObservable())
     os << " #output";
@@ -182,7 +184,9 @@ void Trace::incref(const List<optional<Tensor>> &l) {
 }
 
 void Trace::set_unobservable(unsigned idx) {
+  assert(idx < next_op);
   auto &op = ops[idx];
+
   assert(op.tensor);
   op.tensor = nullptr;
   op.decref(ops);
@@ -202,6 +206,11 @@ void Trace::flush() {
   flushing = true;
 
   interpreter::run(*this);
+
+  // reduce reference count on tensors s.t. they are deleted if possible
+  for (unsigned i = 0; i < next_op; ++i) {
+    ops[i].args.clear();
+  }
 
   next_op = 0;
   flushing = false;
