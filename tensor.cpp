@@ -203,6 +203,18 @@ void end_update_in_place(TorchyTensor *tt) {
 
 
 namespace {
+
+TorchyTensor* make_torchy(Tensor &t) {
+  if (auto *tt = is_torchy(t))
+    return tt;
+
+  if (!t.getIntrusivePtr().unique())
+    return nullptr;
+
+  t = at::detail::make_tensor<TorchyTensor>(move(t));
+  return static_cast<TorchyTensor*>(t.unsafeGetTensorImpl());
+}
+
 void ensure_materialized() {}
 
 void ensure_materialized(const Tensor &t) {

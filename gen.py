@@ -137,10 +137,11 @@ def gen_dispatch_wrapper(fn):
     # TODO: we can also make it lazy if tensor is non-torchy but ref count == 1
     return f'''
 {fndecl} {{
-  auto tt = is_torchy({ret});
-  if (tt && !trace.is_flushing()) {{
-    tt->addInplace({fn_enum(fn)}, {rargs});
-    return {ret};
+  if (!trace.is_flushing()) {{
+    if (auto tt = make_torchy({ret})) {{
+      tt->addInplace({fn_enum(fn)}, {rargs});
+      return {ret};
+    }}
   }}
   will_override({ret});
   {materialize}
