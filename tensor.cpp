@@ -1,10 +1,6 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
-// TODO: deep copy input tensors modified in place
-// TODO: lazy in-place modification for torchy tensors. copy otherwise
-
-#undef NDEBUG
 #include "tensor.h"
 #include "dispatch.h"
 #include "trace.h"
@@ -18,8 +14,7 @@
 using namespace at;
 using namespace std;
 
-static thread_local Trace trace;
-
+static /*thread_local*/ Trace trace;
 
 class TorchyTensor final : public TensorImpl {
   c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl> tensor;

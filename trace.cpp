@@ -198,12 +198,12 @@ void Trace::set_unobservable(unsigned idx) {
 }
 
 void Trace::flush() {
-#if 1
-  cerr << "Flush trace\n" << *this;
-#endif
-
   assert(!flushing);
   flushing = true;
+
+#ifdef TORCHY_PRINT_TRACE_ON_FLUSH
+  cerr << "Flush trace\n" << *this;
+#endif
 
   interpreter::run(*this);
 

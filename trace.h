@@ -3,7 +3,7 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
-#undef NDEBUG
+#include "config.h"
 #include "ops.h"
 #include <ATen/Tensor.h>
 #include <c10/core/DispatchKeySet.h>

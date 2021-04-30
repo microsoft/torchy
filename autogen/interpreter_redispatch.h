@@ -516,11 +516,7 @@ case H_AS_STRIDED:
   set(op.tensor, at::redispatch::as_strided(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<int64_t>>(op.args[3])));
   break;
 
-case H_AS_STRIDED_:
-  init_update_in_place(op.tensor);
-  at::redispatch::as_strided_(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<int64_t>>(op.args[3]));
-  end_update_in_place(op.tensor);
-  break;
+// skip const at::Tensor & as_strided_(const at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<int64_t> storage_offset)
 
 case H_ASIN:
   set(op.tensor, at::redispatch::asin(ks, get<at::Tensor>(op.args[0])));
@@ -696,16 +692,6 @@ case H_BINARY_CROSS_ENTROPY_WITH_LOGITS_BACKWARD:
 
 case H_BINCOUNT:
   set(op.tensor, at::redispatch::bincount(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Tensor>>(op.args[1]), get<int64_t>(op.args[2])));
-  break;
-
-case H_BITWISE_NOT:
-  set(op.tensor, at::redispatch::bitwise_not(ks, get<at::Tensor>(op.args[0])));
-  break;
-
-case H_BITWISE_NOT_:
-  init_update_in_place(op.tensor);
-  at::redispatch::bitwise_not_(ks, get<at::Tensor>(op.args[0]));
-  end_update_in_place(op.tensor);
   break;
 
 case H_BITWISE_NOT_OUT:
@@ -1683,16 +1669,6 @@ case H_FLOOR_DIVIDE_SCALAR:
 case H_FLOOR_DIVIDE__SCALAR:
   init_update_in_place(op.tensor);
   at::redispatch::floor_divide_(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]));
-  end_update_in_place(op.tensor);
-  break;
-
-case H_FRAC:
-  set(op.tensor, at::redispatch::frac(ks, get<at::Tensor>(op.args[0])));
-  break;
-
-case H_FRAC_:
-  init_update_in_place(op.tensor);
-  at::redispatch::frac_(ks, get<at::Tensor>(op.args[0]));
   end_update_in_place(op.tensor);
   break;
 
@@ -3008,16 +2984,6 @@ case H_RESHAPE_AS:
   set(op.tensor, at::redispatch::reshape_as(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
   break;
 
-case H_ROUND:
-  set(op.tensor, at::redispatch::round(ks, get<at::Tensor>(op.args[0])));
-  break;
-
-case H_ROUND_:
-  init_update_in_place(op.tensor);
-  at::redispatch::round_(ks, get<at::Tensor>(op.args[0]));
-  end_update_in_place(op.tensor);
-  break;
-
 case H_ROUND_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::round_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
@@ -3078,16 +3044,6 @@ case H_HARDSHRINK:
 
 case H_HARDSHRINK_BACKWARD:
   set(op.tensor, at::redispatch::hardshrink_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Scalar>(op.args[2])));
-  break;
-
-case H_RSQRT:
-  set(op.tensor, at::redispatch::rsqrt(ks, get<at::Tensor>(op.args[0])));
-  break;
-
-case H_RSQRT_:
-  init_update_in_place(op.tensor);
-  at::redispatch::rsqrt_(ks, get<at::Tensor>(op.args[0]));
-  end_update_in_place(op.tensor);
   break;
 
 case H_RSQRT_OUT:
@@ -3247,6 +3203,18 @@ case H__SOFTMAX_BACKWARD_DATA:
 // skip std::vector<at::Tensor> unsafe_split_with_sizes(const at::Tensor & self, at::IntArrayRef split_sizes, int64_t dim)
 
 // skip std::vector<at::Tensor> split_with_sizes(const at::Tensor & self, at::IntArrayRef split_sizes, int64_t dim)
+
+// skip std::vector<at::Tensor> hsplit(const at::Tensor & self, int64_t sections)
+
+// skip std::vector<at::Tensor> hsplit(const at::Tensor & self, at::IntArrayRef indices)
+
+// skip std::vector<at::Tensor> vsplit(const at::Tensor & self, int64_t sections)
+
+// skip std::vector<at::Tensor> vsplit(const at::Tensor & self, at::IntArrayRef indices)
+
+// skip std::vector<at::Tensor> dsplit(const at::Tensor & self, int64_t sections)
+
+// skip std::vector<at::Tensor> dsplit(const at::Tensor & self, at::IntArrayRef indices)
 
 case H_SQUEEZE:
   set(op.tensor, at::redispatch::squeeze(ks, get<at::Tensor>(op.args[0])));
@@ -3926,6 +3894,10 @@ case H_NUCLEAR_NORM_DIM_OUT:
 
 case H_CLONE:
   set(op.tensor, at::redispatch::clone(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::MemoryFormat>>(op.args[1])));
+  break;
+
+case H_POSITIVE:
+  set(op.tensor, at::redispatch::positive(ks, get<at::Tensor>(op.args[0])));
   break;
 
 // skip const at::Tensor & resize_as_(const at::Tensor & self, const at::Tensor & the_template, c10::optional<at::MemoryFormat> memory_format)
@@ -5596,16 +5568,6 @@ case H_ERFINV_OUT:
   end_update_in_place(op.tensor);
   break;
 
-case H_I0:
-  set(op.tensor, at::redispatch::i0(ks, get<at::Tensor>(op.args[0])));
-  break;
-
-case H_I0_:
-  init_update_in_place(op.tensor);
-  at::redispatch::i0_(ks, get<at::Tensor>(op.args[0]));
-  end_update_in_place(op.tensor);
-  break;
-
 case H_I0_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::i0_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
@@ -6834,20 +6796,12 @@ case H_ADAPTIVE_MAX_POOL2D_BACKWARD_GRAD_INPUT:
   end_update_in_place(op.tensor);
   break;
 
-case H_ADAPTIVE_MAX_POOL2D_BACKWARD:
-  set(op.tensor, at::redispatch::adaptive_max_pool2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2])));
-  break;
-
 // skip std::tuple<at::Tensor &,at::Tensor &> adaptive_max_pool3d_outf(const at::Tensor & self, at::IntArrayRef output_size, at::Tensor & out, at::Tensor & indices)
 
 case H_ADAPTIVE_MAX_POOL3D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op.tensor);
   at::redispatch::adaptive_max_pool3d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op.tensor);
-  break;
-
-case H_ADAPTIVE_MAX_POOL3D_BACKWARD:
-  set(op.tensor, at::redispatch::adaptive_max_pool3d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2])));
   break;
 
 case H_AVG_POOL2D_OUT:
@@ -7730,15 +7684,9 @@ case H_DET:
   set(op.tensor, at::redispatch::det(ks, get<at::Tensor>(op.args[0])));
   break;
 
-// skip std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> linalg_lstsq(const at::Tensor & self, const at::Tensor & b, c10::optional<double> cond, c10::optional<std::string> driver)
+// skip std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> linalg_lstsq(const at::Tensor & self, const at::Tensor & b, c10::optional<double> rcond, c10::optional<std::string> driver)
 
-// skip std::tuple<at::Tensor &,at::Tensor &,at::Tensor &,at::Tensor &> linalg_lstsq_outf(const at::Tensor & self, const at::Tensor & b, c10::optional<double> cond, c10::optional<std::string> driver, at::Tensor & solution, at::Tensor & residuals, at::Tensor & rank, at::Tensor & singular_values)
-
-case H__LSTSQ_HELPER_:
-  init_update_in_place(op.tensor);
-  at::redispatch::_lstsq_helper_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]), get<at::Tensor>(op.args[4]), get<double>(op.args[5]), get<std::string>(op.args[6]));
-  end_update_in_place(op.tensor);
-  break;
+// skip std::tuple<at::Tensor &,at::Tensor &,at::Tensor &,at::Tensor &> linalg_lstsq_outf(const at::Tensor & self, const at::Tensor & b, c10::optional<double> rcond, c10::optional<std::string> driver, at::Tensor & solution, at::Tensor & residuals, at::Tensor & rank, at::Tensor & singular_values)
 
 // skip std::tuple<at::Tensor,at::Tensor> linalg_slogdet(const at::Tensor & self)
 
@@ -7862,6 +7810,16 @@ case H_LINALG_VECTOR_NORM_OUT:
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> linalg_svd(const at::Tensor & self, bool full_matrices, bool compute_uv)
 
+case H_LINALG_SVDVALS:
+  set(op.tensor, at::redispatch::linalg_svdvals(ks, get<at::Tensor>(op.args[0])));
+  break;
+
+case H_LINALG_SVDVALS_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::linalg_svdvals_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
+  end_update_in_place(op.tensor);
+  break;
+
 case H_LINALG_COND:
   set(op.tensor, at::redispatch::linalg_cond(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1])));
   break;
@@ -7964,6 +7922,16 @@ case H_LINALG_MATRIX_RANK_OUT:
   end_update_in_place(op.tensor);
   break;
 
+case H_LINALG_MATRIX_RANK_TOL_TENSOR:
+  set(op.tensor, at::redispatch::linalg_matrix_rank(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<bool>(op.args[2])));
+  break;
+
+case H_LINALG_MATRIX_RANK_OUT_TOL_TENSOR:
+  init_update_in_place(op.tensor);
+  at::redispatch::linalg_matrix_rank_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
+  end_update_in_place(op.tensor);
+  break;
+
 case H_LINALG_MULTI_DOT:
   set(op.tensor, at::redispatch::linalg_multi_dot(ks, get<at::TensorList>(op.args[0])));
   break;
@@ -8004,5 +7972,9 @@ case H__TEST_AMBIGUOUS_DEFAULTS_B:
 
 case H_SEGMENT_REDUCE:
   set(op.tensor, at::redispatch::segment_reduce(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<int64_t>(op.args[4]), get<bool>(op.args[5])));
+  break;
+
+case H_SEGMENT_REDUCE_BACKWARD:
+  set(op.tensor, at::redispatch::segment_reduce_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3])));
   break;
 

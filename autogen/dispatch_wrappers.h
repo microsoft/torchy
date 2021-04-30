@@ -1133,13 +1133,7 @@ at::Tensor wrap_as_strided(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_AS_STRIDED, dispatchKeySet, self, size, stride, storage_offset);
 }
 
-at::Tensor & wrap_as_strided_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<int64_t> storage_offset) {
-  auto tt = is_torchy(self);
-  if (tt && !trace.is_flushing()) {
-    tt->addInplace(H_AS_STRIDED_, dispatchKeySet, self, size, stride, storage_offset);
-    return self;
-  }
-  will_override(self);
+const at::Tensor & wrap_as_strided_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<int64_t> storage_offset) {
   ensure_materialized(self);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
   return at::redispatch::as_strided_(dispatchKeySet, self, size, stride, storage_offset);
@@ -1530,27 +1524,6 @@ at::Tensor wrap_bincount(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::bincount(dispatchKeySet, self, weights, minlength);
   }
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_BINCOUNT, dispatchKeySet, self, weights, minlength);
-}
-
-at::Tensor wrap_bitwise_not(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::bitwise_not(dispatchKeySet, self);
-  }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_BITWISE_NOT, dispatchKeySet, self);
-}
-
-at::Tensor & wrap_bitwise_not_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
-  auto tt = is_torchy(self);
-  if (tt && !trace.is_flushing()) {
-    tt->addInplace(H_BITWISE_NOT_, dispatchKeySet, self);
-    return self;
-  }
-  will_override(self);
-  ensure_materialized(self);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::bitwise_not_(dispatchKeySet, self);
 }
 
 at::Tensor & wrap_bitwise_not_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Tensor & out) {
@@ -3729,27 +3702,6 @@ at::Tensor & wrap_floor_divide__Scalar(c10::DispatchKeySet dispatchKeySet, at::T
   ensure_materialized(self);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
   return at::redispatch::floor_divide_(dispatchKeySet, self, other);
-}
-
-at::Tensor wrap_frac(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::frac(dispatchKeySet, self);
-  }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_FRAC, dispatchKeySet, self);
-}
-
-at::Tensor & wrap_frac_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
-  auto tt = is_torchy(self);
-  if (tt && !trace.is_flushing()) {
-    tt->addInplace(H_FRAC_, dispatchKeySet, self);
-    return self;
-  }
-  will_override(self);
-  ensure_materialized(self);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::frac_(dispatchKeySet, self);
 }
 
 at::Tensor & wrap_frac_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Tensor & out) {
@@ -6785,27 +6737,6 @@ at::Tensor wrap_reshape_as(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_RESHAPE_AS, dispatchKeySet, self, other);
 }
 
-at::Tensor wrap_round(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::round(dispatchKeySet, self);
-  }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_ROUND, dispatchKeySet, self);
-}
-
-at::Tensor & wrap_round_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
-  auto tt = is_torchy(self);
-  if (tt && !trace.is_flushing()) {
-    tt->addInplace(H_ROUND_, dispatchKeySet, self);
-    return self;
-  }
-  will_override(self);
-  ensure_materialized(self);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::round_(dispatchKeySet, self);
-}
-
 at::Tensor & wrap_round_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Tensor & out) {
   auto tt = is_torchy(out);
   if (tt && !trace.is_flushing()) {
@@ -6939,27 +6870,6 @@ at::Tensor wrap_hardshrink_backward(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::hardshrink_backward(dispatchKeySet, grad_out, self, lambd);
   }
   return at::detail::make_tensor<TorchyTensor>(grad_out.dtype(), grad_out.device(), H_HARDSHRINK_BACKWARD, dispatchKeySet, grad_out, self, lambd);
-}
-
-at::Tensor wrap_rsqrt(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::rsqrt(dispatchKeySet, self);
-  }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_RSQRT, dispatchKeySet, self);
-}
-
-at::Tensor & wrap_rsqrt_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
-  auto tt = is_torchy(self);
-  if (tt && !trace.is_flushing()) {
-    tt->addInplace(H_RSQRT_, dispatchKeySet, self);
-    return self;
-  }
-  will_override(self);
-  ensure_materialized(self);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::rsqrt_(dispatchKeySet, self);
 }
 
 at::Tensor & wrap_rsqrt_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Tensor & out) {
@@ -7305,6 +7215,42 @@ std::vector<at::Tensor> wrap_split_with_sizes(c10::DispatchKeySet dispatchKeySet
   ensure_materialized(self);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
   return at::redispatch::split_with_sizes(dispatchKeySet, self, split_sizes, dim);
+}
+
+std::vector<at::Tensor> wrap_hsplit_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t sections) {
+  ensure_materialized(self);
+  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+  return at::redispatch::hsplit(dispatchKeySet, self, sections);
+}
+
+std::vector<at::Tensor> wrap_hsplit_array(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef indices) {
+  ensure_materialized(self);
+  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+  return at::redispatch::hsplit(dispatchKeySet, self, indices);
+}
+
+std::vector<at::Tensor> wrap_vsplit_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t sections) {
+  ensure_materialized(self);
+  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+  return at::redispatch::vsplit(dispatchKeySet, self, sections);
+}
+
+std::vector<at::Tensor> wrap_vsplit_array(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef indices) {
+  ensure_materialized(self);
+  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+  return at::redispatch::vsplit(dispatchKeySet, self, indices);
+}
+
+std::vector<at::Tensor> wrap_dsplit_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t sections) {
+  ensure_materialized(self);
+  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+  return at::redispatch::dsplit(dispatchKeySet, self, sections);
+}
+
+std::vector<at::Tensor> wrap_dsplit_array(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef indices) {
+  ensure_materialized(self);
+  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+  return at::redispatch::dsplit(dispatchKeySet, self, indices);
 }
 
 at::Tensor wrap_squeeze(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
@@ -8820,6 +8766,15 @@ at::Tensor wrap_clone(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::clone(dispatchKeySet, self, memory_format);
   }
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_CLONE, dispatchKeySet, self, memory_format);
+}
+
+at::Tensor wrap_positive(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
+  if (trace.is_flushing()) {
+    ensure_materialized(self);
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::positive(dispatchKeySet, self);
+  }
+  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_POSITIVE, dispatchKeySet, self);
 }
 
 const at::Tensor & wrap_resize_as_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & the_template, c10::optional<at::MemoryFormat> memory_format) {
@@ -12479,27 +12434,6 @@ at::Tensor & wrap_erfinv_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   return at::redispatch::erfinv_outf(dispatchKeySet, self, out);
 }
 
-at::Tensor wrap_i0(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::i0(dispatchKeySet, self);
-  }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_I0, dispatchKeySet, self);
-}
-
-at::Tensor & wrap_i0_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
-  auto tt = is_torchy(self);
-  if (tt && !trace.is_flushing()) {
-    tt->addInplace(H_I0_, dispatchKeySet, self);
-    return self;
-  }
-  will_override(self);
-  ensure_materialized(self);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::i0_(dispatchKeySet, self);
-}
-
 at::Tensor & wrap_i0_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Tensor & out) {
   auto tt = is_torchy(out);
   if (tt && !trace.is_flushing()) {
@@ -15290,15 +15224,6 @@ at::Tensor & wrap_adaptive_max_pool2d_backward_grad_input(c10::DispatchKeySet di
   return at::redispatch::adaptive_max_pool2d_backward_outf(dispatchKeySet, grad_output, self, indices, grad_input);
 }
 
-at::Tensor wrap_adaptive_max_pool2d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self, indices);
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::adaptive_max_pool2d_backward(dispatchKeySet, grad_output, self, indices);
-  }
-  return at::detail::make_tensor<TorchyTensor>(grad_output.dtype(), grad_output.device(), H_ADAPTIVE_MAX_POOL2D_BACKWARD, dispatchKeySet, grad_output, self, indices);
-}
-
 std::tuple<at::Tensor &,at::Tensor &> wrap_adaptive_max_pool3d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, at::Tensor & out, at::Tensor & indices) {
   ensure_materialized(self, out, indices);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
@@ -15315,15 +15240,6 @@ at::Tensor & wrap_adaptive_max_pool3d_backward_grad_input(c10::DispatchKeySet di
   ensure_materialized(grad_output, self, indices, grad_input);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
   return at::redispatch::adaptive_max_pool3d_backward_outf(dispatchKeySet, grad_output, self, indices, grad_input);
-}
-
-at::Tensor wrap_adaptive_max_pool3d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices) {
-  if (trace.is_flushing()) {
-    ensure_materialized(grad_output, self, indices);
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::adaptive_max_pool3d_backward(dispatchKeySet, grad_output, self, indices);
-  }
-  return at::detail::make_tensor<TorchyTensor>(grad_output.dtype(), grad_output.device(), H_ADAPTIVE_MAX_POOL3D_BACKWARD, dispatchKeySet, grad_output, self, indices);
 }
 
 at::Tensor & wrap_avg_pool2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override, at::Tensor & out) {
@@ -17234,28 +17150,16 @@ at::Tensor wrap_det(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_DET, dispatchKeySet, self);
 }
 
-std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap_linalg_lstsq(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & b, c10::optional<double> cond, c10::optional<std::string> driver) {
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap_linalg_lstsq(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & b, c10::optional<double> rcond, c10::optional<std::string> driver) {
   ensure_materialized(self, b);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::linalg_lstsq(dispatchKeySet, self, b, cond, driver);
+  return at::redispatch::linalg_lstsq(dispatchKeySet, self, b, rcond, driver);
 }
 
-std::tuple<at::Tensor &,at::Tensor &,at::Tensor &,at::Tensor &> wrap_linalg_lstsq_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & b, c10::optional<double> cond, c10::optional<std::string> driver, at::Tensor & solution, at::Tensor & residuals, at::Tensor & rank, at::Tensor & singular_values) {
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &,at::Tensor &> wrap_linalg_lstsq_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & b, c10::optional<double> rcond, c10::optional<std::string> driver, at::Tensor & solution, at::Tensor & residuals, at::Tensor & rank, at::Tensor & singular_values) {
   ensure_materialized(self, b, solution, residuals, rank, singular_values);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::linalg_lstsq_outf(dispatchKeySet, self, b, cond, driver, solution, residuals, rank, singular_values);
-}
-
-at::Tensor & wrap__lstsq_helper_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, at::Tensor & rank, at::Tensor & singular_values, at::Tensor & infos, const at::Tensor & a, double cond, std::string driver_name) {
-  auto tt = is_torchy(self);
-  if (tt && !trace.is_flushing()) {
-    tt->addInplace(H__LSTSQ_HELPER_, dispatchKeySet, self, rank, singular_values, infos, a, cond, driver_name);
-    return self;
-  }
-  will_override(self);
-  ensure_materialized(self, rank, singular_values, infos, a);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::_lstsq_helper_(dispatchKeySet, self, rank, singular_values, infos, a, cond, driver_name);
+  return at::redispatch::linalg_lstsq_outf(dispatchKeySet, self, b, rcond, driver, solution, residuals, rank, singular_values);
 }
 
 std::tuple<at::Tensor,at::Tensor> wrap_linalg_slogdet(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
@@ -17528,6 +17432,27 @@ std::tuple<at::Tensor,at::Tensor,at::Tensor> wrap_linalg_svd(c10::DispatchKeySet
   return at::redispatch::linalg_svd(dispatchKeySet, self, full_matrices, compute_uv);
 }
 
+at::Tensor wrap_linalg_svdvals(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input) {
+  if (trace.is_flushing()) {
+    ensure_materialized(input);
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::linalg_svdvals(dispatchKeySet, input);
+  }
+  return at::detail::make_tensor<TorchyTensor>(input.dtype(), input.device(), H_LINALG_SVDVALS, dispatchKeySet, input);
+}
+
+at::Tensor & wrap_linalg_svdvals_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, at::Tensor & out) {
+  auto tt = is_torchy(out);
+  if (tt && !trace.is_flushing()) {
+    tt->addInplace(H_LINALG_SVDVALS_OUT, dispatchKeySet, input, out);
+    return out;
+  }
+  will_override(out);
+  ensure_materialized(input, out);
+  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+  return at::redispatch::linalg_svdvals_outf(dispatchKeySet, input, out);
+}
+
 at::Tensor wrap_linalg_cond(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & p) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
@@ -17747,6 +17672,27 @@ at::Tensor & wrap_linalg_matrix_rank_out(c10::DispatchKeySet dispatchKeySet, con
   return at::redispatch::linalg_matrix_rank_outf(dispatchKeySet, self, tol, hermitian, out);
 }
 
+at::Tensor wrap_linalg_matrix_rank_tol_tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & tol, bool hermitian) {
+  if (trace.is_flushing()) {
+    ensure_materialized(input, tol);
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::linalg_matrix_rank(dispatchKeySet, input, tol, hermitian);
+  }
+  return at::detail::make_tensor<TorchyTensor>(input.dtype(), input.device(), H_LINALG_MATRIX_RANK_TOL_TENSOR, dispatchKeySet, input, tol, hermitian);
+}
+
+at::Tensor & wrap_linalg_matrix_rank_out_tol_tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & tol, bool hermitian, at::Tensor & out) {
+  auto tt = is_torchy(out);
+  if (tt && !trace.is_flushing()) {
+    tt->addInplace(H_LINALG_MATRIX_RANK_OUT_TOL_TENSOR, dispatchKeySet, input, tol, hermitian, out);
+    return out;
+  }
+  will_override(out);
+  ensure_materialized(input, tol, out);
+  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+  return at::redispatch::linalg_matrix_rank_outf(dispatchKeySet, input, tol, hermitian, out);
+}
+
 at::Tensor wrap_linalg_multi_dot(c10::DispatchKeySet dispatchKeySet, at::TensorList tensors) {
   if (trace.is_flushing()) {
     ensure_materialized(tensors);
@@ -17841,4 +17787,13 @@ at::Tensor wrap_segment_reduce(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::segment_reduce(dispatchKeySet, data, reduce, lengths, indices, axis, unsafe);
   }
   return at::detail::make_tensor<TorchyTensor>(data.dtype(), data.device(), H_SEGMENT_REDUCE, dispatchKeySet, data, reduce, lengths, indices, axis, unsafe);
+}
+
+at::Tensor wrap_segment_reduce_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, const at::Tensor & output, const at::Tensor & data, const c10::optional<at::Tensor> & lengths) {
+  if (trace.is_flushing()) {
+    ensure_materialized(grad, output, data, lengths);
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::segment_reduce_backward(dispatchKeySet, grad, output, data, lengths);
+  }
+  return at::detail::make_tensor<TorchyTensor>(grad.dtype(), grad.device(), H_SEGMENT_REDUCE_BACKWARD, dispatchKeySet, grad, output, data, lengths);
 }
