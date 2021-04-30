@@ -69,6 +69,6 @@ torchy.enable()
       return lit.Test.FAIL, err + f'\nexit code: {exit_code}'
 
     if out != out_torchy:
-      return lit.Test.XFAIL, f'{out}\nvs\n{out_torchy}'
+      return lit.Test.FAIL, f'{out}\nvs\n{out_torchy}'
 
     return lit.Test.PASS, ''

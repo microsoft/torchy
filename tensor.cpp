@@ -237,9 +237,15 @@ void ensure_materialized(const A &a, T&... args) {
 }
 
 void will_override(const Tensor &t) {
+  if (trace.is_flushing())
+    return;
+
   if (auto tt = is_torchy(t)) {
-    if (tt->sharedImpl() && !trace.is_flushing())
+    if (tt->sharedImpl())
       trace.flush();
+  // TODO: optimize this case to account for the refs in our trace
+  } else if (!t.getIntrusivePtr().unique()) {
+    trace.flush();
   }
 }
 

@@ -5,5 +5,5 @@ y = torch.tensor(((5.,6.), (7.,1.)))
 
 w = x.add(x)
 x.add_(y)
-w = add(w, x)
+w = torch.add(w, x)
 print(w)
