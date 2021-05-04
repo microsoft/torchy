@@ -30,10 +30,6 @@ def executeCommand(command):
     err = str(err)
   return out, err, exit_code
 
-def readFile(path):
-  fd = open(path, 'rb')
-  return fd.read()
-
 
 class TorchyTest(TestFormat):
   def getTestsInDirectory(self, testSuite, path_in_suite, litConfig,
@@ -53,18 +49,7 @@ class TorchyTest(TestFormat):
     if err or exit_code != 0:
       return lit.Test.FAIL, err + f'\nexit code: {exit_code}'
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.py') as fd:
-      fd.write(b'''
-import torch
-import torchy
-torchy.enable()
-''')
-      fd.write(readFile(test))
-      tmp_filename = fd.name
-
-    out_torchy, err, exit_code = executeCommand(['python', tmp_filename])
-    os.unlink(tmp_filename)
-
+    out_torchy, err, exit_code = executeCommand(['python', test, '--torchy'])
     if exit_code != 0:
       return lit.Test.FAIL, err + f'\nexit code: {exit_code}'
 

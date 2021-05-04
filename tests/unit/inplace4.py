@@ -1,4 +1,4 @@
-import torch
+from testdriver import *
 
 y = torch.tensor(((5.,6.), (7.,1.)))
 

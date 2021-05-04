@@ -884,9 +884,19 @@ case H_CLAMP:
   set(op.tensor, at::redispatch::clamp(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<c10::optional<at::Scalar>>(op.args[2])));
   break;
 
+case H_CLAMP_TENSOR:
+  set(op.tensor, at::redispatch::clamp(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Tensor>>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2])));
+  break;
+
 case H_CLAMP_:
   init_update_in_place(op.tensor);
   at::redispatch::clamp_(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<c10::optional<at::Scalar>>(op.args[2]));
+  end_update_in_place(op.tensor);
+  break;
+
+case H_CLAMP__TENSOR:
+  init_update_in_place(op.tensor);
+  at::redispatch::clamp_(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Tensor>>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]));
   end_update_in_place(op.tensor);
   break;
 
@@ -896,13 +906,29 @@ case H_CLAMP_OUT:
   end_update_in_place(op.tensor);
   break;
 
+case H_CLAMP_TENSOR_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::clamp_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Tensor>>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  end_update_in_place(op.tensor);
+  break;
+
 case H_CLAMP_MAX:
   set(op.tensor, at::redispatch::clamp_max(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1])));
+  break;
+
+case H_CLAMP_MAX_TENSOR:
+  set(op.tensor, at::redispatch::clamp_max(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
   break;
 
 case H_CLAMP_MAX_:
   init_update_in_place(op.tensor);
   at::redispatch::clamp_max_(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]));
+  end_update_in_place(op.tensor);
+  break;
+
+case H_CLAMP_MAX__TENSOR:
+  init_update_in_place(op.tensor);
+  at::redispatch::clamp_max_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
   end_update_in_place(op.tensor);
   break;
 
@@ -912,13 +938,29 @@ case H_CLAMP_MAX_OUT:
   end_update_in_place(op.tensor);
   break;
 
+case H_CLAMP_MAX_TENSOR_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::clamp_max_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]));
+  end_update_in_place(op.tensor);
+  break;
+
 case H_CLAMP_MIN:
   set(op.tensor, at::redispatch::clamp_min(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1])));
+  break;
+
+case H_CLAMP_MIN_TENSOR:
+  set(op.tensor, at::redispatch::clamp_min(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
   break;
 
 case H_CLAMP_MIN_:
   init_update_in_place(op.tensor);
   at::redispatch::clamp_min_(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]));
+  end_update_in_place(op.tensor);
+  break;
+
+case H_CLAMP_MIN__TENSOR:
+  init_update_in_place(op.tensor);
+  at::redispatch::clamp_min_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
   end_update_in_place(op.tensor);
   break;
 
@@ -928,8 +970,18 @@ case H_CLAMP_MIN_OUT:
   end_update_in_place(op.tensor);
   break;
 
+case H_CLAMP_MIN_TENSOR_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::clamp_min_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]));
+  end_update_in_place(op.tensor);
+  break;
+
 case H_CLIP:
   set(op.tensor, at::redispatch::clip(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<c10::optional<at::Scalar>>(op.args[2])));
+  break;
+
+case H_CLIP_TENSOR:
+  set(op.tensor, at::redispatch::clip(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Tensor>>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2])));
   break;
 
 case H_CLIP_:
@@ -938,9 +990,21 @@ case H_CLIP_:
   end_update_in_place(op.tensor);
   break;
 
+case H_CLIP__TENSOR:
+  init_update_in_place(op.tensor);
+  at::redispatch::clip_(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Tensor>>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]));
+  end_update_in_place(op.tensor);
+  break;
+
 case H_CLIP_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::clip_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<c10::optional<at::Scalar>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  end_update_in_place(op.tensor);
+  break;
+
+case H_CLIP_TENSOR_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::clip_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Tensor>>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op.tensor);
   break;
 
@@ -1295,6 +1359,16 @@ case H_DIV__TENSOR:
 case H_DIV_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::div_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]));
+  end_update_in_place(op.tensor);
+  break;
+
+case H_DIV_TENSOR_MODE:
+  set(op.tensor, at::redispatch::div(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<std::string>>(op.args[2])));
+  break;
+
+case H_DIV__TENSOR_MODE:
+  init_update_in_place(op.tensor);
+  at::redispatch::div_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<std::string>>(op.args[2]));
   end_update_in_place(op.tensor);
   break;
 
@@ -5446,10 +5520,6 @@ case H_CHOLESKY:
   set(op.tensor, at::redispatch::cholesky(ks, get<at::Tensor>(op.args[0]), get<bool>(op.args[1])));
   break;
 
-case H__CHOLESKY_HELPER:
-  set(op.tensor, at::redispatch::_cholesky_helper(ks, get<at::Tensor>(op.args[0]), get<bool>(op.args[1])));
-  break;
-
 case H_CHOLESKY_SOLVE_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::cholesky_solve_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
@@ -6108,8 +6178,10 @@ case H__STD:
 
 // skip void _amp_foreach_non_finite_check_and_unscale_(at::TensorList self, at::Tensor & found_inf, const at::Tensor & inv_scale)
 
-case H__AMP_UPDATE_SCALE:
-  set(op.tensor, at::redispatch::_amp_update_scale(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<double>(op.args[3]), get<double>(op.args[4]), get<int64_t>(op.args[5])));
+case H__AMP_UPDATE_SCALE_:
+  init_update_in_place(op.tensor);
+  at::redispatch::_amp_update_scale_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<double>(op.args[3]), get<double>(op.args[4]), get<int64_t>(op.args[5]));
+  end_update_in_place(op.tensor);
   break;
 
 case H__CAT:
@@ -6872,8 +6944,6 @@ case H_FRACTIONAL_MAX_POOL3D_BACKWARD:
 
 // skip std::tuple<at::Tensor &,at::Tensor &> max_pool2d_with_indices_outf(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, at::Tensor & out, at::Tensor & indices)
 
-// skip std::tuple<at::Tensor,at::Tensor> max_pool2d_with_indices(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode)
-
 case H_MAX_POOL2D_WITH_INDICES_BACKWARD_GRAD_INPUT:
   init_update_in_place(op.tensor);
   at::redispatch::max_pool2d_with_indices_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<bool>(op.args[6]), get<at::Tensor>(op.args[7]), get<at::Tensor>(op.args[8]));
@@ -7466,6 +7536,32 @@ case H_SPECIAL_ERFINV_OUT:
   end_update_in_place(op.tensor);
   break;
 
+case H_SPECIAL_XLOG1PY_SELF_SCALAR:
+  set(op.tensor, at::redispatch::special_xlog1py(ks, get<at::Scalar>(op.args[0]), get<at::Tensor>(op.args[1])));
+  break;
+
+case H_SPECIAL_XLOG1PY_OTHER_SCALAR:
+  set(op.tensor, at::redispatch::special_xlog1py(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1])));
+  break;
+
+case H_SPECIAL_XLOG1PY_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::special_xlog1py_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]));
+  end_update_in_place(op.tensor);
+  break;
+
+case H_SPECIAL_XLOG1PY_SELF_SCALAR_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::special_xlog1py_outf(ks, get<at::Scalar>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]));
+  end_update_in_place(op.tensor);
+  break;
+
+case H_SPECIAL_XLOG1PY_OTHER_SCALAR_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::special_xlog1py_outf(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Tensor>(op.args[2]));
+  end_update_in_place(op.tensor);
+  break;
+
 case H_SPECIAL_I0E_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::special_i0e_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
@@ -7659,6 +7755,10 @@ case H_FFT_FFTSHIFT:
 case H_FFT_IFFTSHIFT:
   set(op.tensor, at::redispatch::fft_ifftshift(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1])));
   break;
+
+// skip std::tuple<at::Tensor,at::Tensor> linalg_cholesky_ex(const at::Tensor & self, bool check_errors)
+
+// skip std::tuple<at::Tensor &,at::Tensor &> linalg_cholesky_ex_outf(const at::Tensor & self, bool check_errors, at::Tensor & L, at::Tensor & info)
 
 case H_LINALG_CHOLESKY:
   set(op.tensor, at::redispatch::linalg_cholesky(ks, get<at::Tensor>(op.args[0])));
@@ -7971,7 +8071,7 @@ case H__TEST_AMBIGUOUS_DEFAULTS_B:
   break;
 
 case H_SEGMENT_REDUCE:
-  set(op.tensor, at::redispatch::segment_reduce(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<int64_t>(op.args[4]), get<bool>(op.args[5])));
+  set(op.tensor, at::redispatch::segment_reduce(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<int64_t>(op.args[4]), get<bool>(op.args[5]), get<c10::optional<at::Scalar>>(op.args[6])));
   break;
 
 case H_SEGMENT_REDUCE_BACKWARD:

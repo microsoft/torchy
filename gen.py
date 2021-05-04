@@ -137,16 +137,13 @@ def gen_dispatch_wrapper(fn):
     # TODO: we can also make it lazy if tensor is non-torchy but ref count == 1
     return f'''
 {fndecl} {{
-  if (!trace.is_flushing()) {{
-    if (auto tt = make_torchy({ret})) {{
-      tt->addInplace({fn_enum(fn)}, {rargs});
-      return {ret};
-    }}
+  if (trace.is_flushing()) {{
+    {materialize}
+    {dispatchkey}
+    return {redispatch};
   }}
-  will_override({ret});
-  {materialize}
-  {dispatchkey}
-  return {redispatch};
+  make_torchy({ret}).addInplace({fn_enum(fn)}, {rargs});
+  return {ret};
 }}'''
 
   # returns e.g. a scalar. must materialize right away

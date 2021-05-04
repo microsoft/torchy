@@ -204,15 +204,12 @@ void end_update_in_place(TorchyTensor *tt) {
 
 namespace {
 
-TorchyTensor* make_torchy(Tensor &t) {
+TorchyTensor& make_torchy(Tensor &t) {
   if (auto *tt = is_torchy(t))
-    return tt;
-
-  if (!t.getIntrusivePtr().unique())
-    return nullptr;
+    return *tt;
 
   t = at::detail::make_tensor<TorchyTensor>(move(t));
-  return static_cast<TorchyTensor*>(t.unsafeGetTensorImpl());
+  return *static_cast<TorchyTensor*>(t.unsafeGetTensorImpl());
 }
 
 void ensure_materialized() {}
@@ -246,19 +243,6 @@ template<typename A, typename... T>
 void ensure_materialized(const A &a, T&... args) {
   ensure_materialized(a);
   ensure_materialized(args...);
-}
-
-void will_override(const Tensor &t) {
-  if (trace.is_flushing())
-    return;
-
-  if (auto tt = is_torchy(t)) {
-    if (tt->sharedImpl())
-      trace.flush();
-  // TODO: optimize this case to account for the refs in our trace
-  } else if (!t.getIntrusivePtr().unique()) {
-    trace.flush();
-  }
 }
 
 // see build/aten/src/ATen/RegisterBackendSelect.cpp for redispatching logic
