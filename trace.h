@@ -16,8 +16,6 @@
 
 #define MAX_TRACE_LENGTH 64
 
-class TorchyTensor;
-
 using UnionInputTys = c10::variant<
   bool,
   double,
@@ -50,7 +48,7 @@ using UnionInputTys = c10::variant<
 >;
 
 struct TensorOp {
-  TorchyTensor *tensor;
+  uintptr_t tensor;
   // TODO: investigate if specializing this for the common case
   // e.g. 2 tensors makes sense (would save space + 1 mem alloc)
   std::vector<UnionInputTys> args;
@@ -138,7 +136,7 @@ public:
   TensorOp* getOps() { return ops; }
 
   template<typename... T>
-  unsigned register_tensor(TorchyTensor *tensor, TorchOp op_id,
+  unsigned register_tensor(uintptr_t tensor, TorchOp op_id,
                            c10::DispatchKeySet ks, T&... args) {
     assert(!flushing);
     if (next_op == MAX_TRACE_LENGTH)

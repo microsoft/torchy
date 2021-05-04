@@ -142,7 +142,7 @@ def gen_dispatch_wrapper(fn):
     {dispatchkey}
     return {redispatch};
   }}
-  make_torchy({ret}).addInplace({fn_enum(fn)}, {rargs});
+  compute_in_place({ret}, {fn_enum(fn)}, {rargs});
   return {ret};
 }}'''
 

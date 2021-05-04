@@ -7,11 +7,9 @@
 #include <ostream>
 
 namespace at { class Tensor; }
-class TorchyTensor;
 
 unsigned trace_idx(const at::Tensor &t);
-std::ostream& operator<<(std::ostream &os, const TorchyTensor &tt);
 
-void set(TorchyTensor *tt, at::Tensor &&t);
-void init_update_in_place(TorchyTensor *tt);
-void end_update_in_place(TorchyTensor *tt);
+void set(uintptr_t torchy, at::Tensor &&t);
+void init_update_in_place(uintptr_t torchy);
+void end_update_in_place(uintptr_t torchy);
