@@ -188,7 +188,7 @@ void Trace::set_unobservable(unsigned idx) {
   auto &op = ops[idx];
 
   assert(op.tensor);
-  op.tensor = nullptr;
+  op.tensor = 0;
   op.decref(ops);
 
   // reclaim slot if this was the last created tensor

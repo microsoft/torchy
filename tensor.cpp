@@ -25,7 +25,8 @@ class TorchyStorage : public StorageImpl {
   bool materialized = false;
 
 public:
-  TorchyStorage(StorageImpl &&other) : materialized(true) {
+  TorchyStorage(StorageImpl &&other)
+    : StorageImpl({}, 0, {}, nullptr, false), materialized(true) {
     StorageImpl::operator=(move(other));
   }
 
@@ -93,10 +94,12 @@ public:
     TensorImpl::shallow_copy_from(t.getIntrusivePtr());
     key_set_ = key_set_ | my_ks;
 
-    t.storage_.reset();
-    assert(storage_ && storage_.unique());
-    unique_ptr<StorageImpl> storage_impl = storage_.unsafeReleaseStorageImpl();
-    storage_ = c10::make_intrusive<TorchyStorage>(*storage_impl);
+    assert(storage_);
+    auto storage_impl
+      = intrusive_ptr<StorageImpl>::reclaim(
+          storage_.unsafeReleaseStorageImpl());
+    assert(storage_impl.unique());
+    storage_ = Storage(c10::make_intrusive<TorchyStorage>(move(*storage_impl)));
     tstorage().materialized = true;
   }
 
@@ -284,7 +287,7 @@ void compute_in_place(Tensor &t, const T&... args) {
   }
 
   // If this happens in practice, then we could optimize it further
-  assert(!dynamic_cast<TorchyStorage*>(t.storage().unsafeGetStorageImpl());
+  assert(!dynamic_cast<TorchyStorage*>(t.storage().unsafeGetStorageImpl()));
 
   trace.register_tensor(DUMMY_TORCHY, args...);
   trace.flush();
