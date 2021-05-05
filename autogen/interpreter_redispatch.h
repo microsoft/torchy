@@ -5622,10 +5622,6 @@ case H_POLYGAMMA_OUT:
   end_update_in_place(op.tensor);
   break;
 
-case H_POLYGAMMA:
-  set(op.tensor, at::redispatch::polygamma(ks, get<int64_t>(op.args[0]), get<at::Tensor>(op.args[1])));
-  break;
-
 case H_POLYGAMMA_:
   init_update_in_place(op.tensor);
   at::redispatch::polygamma_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]));

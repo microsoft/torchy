@@ -88,7 +88,7 @@ public:
     if (idx != -1u)
       return os << '%' << idx;
 
-    auto n = inputs.emplace(t.unsafeGetTensorImpl(),
+    auto n = inputs.emplace(t.getIntrusivePtr().get(),
                             (unsigned)inputs.size()).first->second;
     return os << "in<" << n << '>';
   }

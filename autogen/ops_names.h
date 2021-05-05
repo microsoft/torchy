@@ -1302,7 +1302,6 @@
 "lgamma.out",
 "digamma.out",
 "polygamma.out",
-"polygamma",
 "polygamma_",
 "erfinv.out",
 "i0.out",

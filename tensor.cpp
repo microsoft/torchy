@@ -6,6 +6,7 @@
 #include "trace.h"
 #include <ATen/RedispatchFunctions.h>
 #include <torch/library.h>
+#include <cassert>
 
 #ifdef C10_DISABLE_TENSORIMPL_EXTENSIBILITY
 # error Cannot disable C10_DISABLE_TENSORIMPL_EXTENSIBILITY
@@ -28,14 +29,15 @@ public:
     StorageImpl::operator=(move(other));
   }
 
-  friend class class TorchyTensor;
+  friend class TorchyTensor;
 };
 
 
 class TorchyTensor final : public TensorImpl {
   unsigned trace_idx = -1u;
 
-  TorchyStorage& tstorage() {
+  TorchyStorage& tstorage() const {
+    assert(storage_);
     return *static_cast<TorchyStorage*>(storage_.unsafeGetStorageImpl());
   }
 
@@ -65,7 +67,7 @@ public:
   template<typename... T>
   void addInplace(const T&... args) {
     if (storage_)
-      storage_->materialized = false;
+      tstorage().materialized = false;
 
     auto idx = trace.register_tensor((uintptr_t)this, args...);
     if (trace_idx == -1u)
@@ -88,9 +90,10 @@ public:
     trace_idx = -1u;
 
     auto my_ks = key_set_;
-    TensorImpl::shallow_copy_from(t.unsafeGetIntrusivePtr());
+    TensorImpl::shallow_copy_from(t.getIntrusivePtr());
     key_set_ = key_set_ | my_ks;
 
+    t.storage_.reset();
     assert(storage_ && storage_.unique());
     unique_ptr<StorageImpl> storage_impl = storage_.unsafeReleaseStorageImpl();
     storage_ = c10::make_intrusive<TorchyStorage>(*storage_impl);
@@ -101,7 +104,6 @@ public:
     // The tensor is materialized; it just has an old value
     // which is needed to compute the in-place op. Let's pretend it's up-to-date
     // so the getters below work.
-    assert(storage_);
     tstorage().materialized = true;
   }
 
@@ -114,10 +116,6 @@ public:
       trace.flush();
       assert(materialized());
     }
-  }
-
-  friend ostream& operator<<(ostream &os, const TorchyTensor &tt) {
-    return os << Tensor(tt.tensor);
   }
 
   void release_resources() override {
@@ -144,6 +142,11 @@ public:
   int64_t dim() const override {
     ensure_materialized();
     return TensorImpl::dim();
+  }
+
+  bool has_storage() const override {
+    ensure_materialized();
+    return TensorImpl::has_storage();
   }
 
   const Storage& storage() const override {
@@ -225,7 +228,7 @@ public:
     TensorImpl::shallow_copy_from(impl);
 
     trace_idx = -1u;
-    if (auto tt = dynamic_cast<TorchyTensor*>(impl.get())
+    if (auto tt = dynamic_cast<TorchyTensor*>(impl.get()))
       trace_idx = tt->trace_idx;
   }
 };
@@ -233,7 +236,7 @@ public:
 
 
 static TorchyTensor* is_torchy(const Tensor &t) {
-  return dynamic_cast<TorchyTensor*>(t.unsafeGetTensorImpl());
+  return dynamic_cast<TorchyTensor*>(t.getIntrusivePtr().get());
 }
 
 unsigned trace_idx(const Tensor &t) {
@@ -267,7 +270,8 @@ void compute_in_place(Tensor &t, const T&... args) {
   // if the tensor's impl & storage aren't shared, replace them with
   // Torchy equivalents so we can intercept them in the future.
   if (!tt &&
-      t.unsafeGetTensorImpl().unique() &&
+      t.getIntrusivePtr().unique() &&
+      t.getIntrusivePtr()->unique_version() &&
       (!t.has_storage() || t.storage().unique())) {
     t = at::detail::make_tensor<TorchyTensor>(move(t));
     tt = is_torchy(t);
@@ -275,7 +279,7 @@ void compute_in_place(Tensor &t, const T&... args) {
   }
 
   if (tt) {
-    tt->addInPlace(args...);
+    tt->addInplace(args...);
     return;
   }
 

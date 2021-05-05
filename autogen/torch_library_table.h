@@ -1302,7 +1302,6 @@ m.impl("multinomial", wrap_multinomial);
 m.impl("lgamma.out", wrap_lgamma_out);
 m.impl("digamma.out", wrap_digamma_out);
 m.impl("polygamma.out", wrap_polygamma_out);
-m.impl("polygamma", wrap_polygamma);
 m.impl("polygamma_", wrap_polygamma_);
 m.impl("erfinv.out", wrap_erfinv_out);
 m.impl("i0.out", wrap_i0_out);

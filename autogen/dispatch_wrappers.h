@@ -11693,15 +11693,6 @@ at::Tensor & wrap_polygamma_out(c10::DispatchKeySet dispatchKeySet, int64_t n, c
   return out;
 }
 
-at::Tensor wrap_polygamma(c10::DispatchKeySet dispatchKeySet, int64_t n, const at::Tensor & self) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self);
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::polygamma(dispatchKeySet, n, self);
-  }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_POLYGAMMA, dispatchKeySet, n, self);
-}
-
 at::Tensor & wrap_polygamma_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, int64_t n) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
