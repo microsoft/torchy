@@ -3,55 +3,18 @@
 
 #include "trace.h"
 #include "tensor.h"
+#include "utils.h"
 #include <ATen/core/Formatting.h>
 #include <ATen/core/List.h>
+#include <unordered_map>
 
 using namespace at;
 using namespace std;
 
 namespace interpreter { void run(Trace &t); }
 
-namespace {
-class decrefer {
-  TensorOp *ops;
-
-public:
-  decrefer(TensorOp *ops) : ops(ops) {}
-
-  template <typename T>
-  void operator()(const T&) {}
-
-  void operator()(const Tensor &t) {
-    auto idx = trace_idx(t);
-    if (idx != -1u)
-      ops[idx].decref(ops);
-  }
-
-  template<typename T>
-  void operator()(const optional<T> &a) {
-    if (a)
-      (*this)(*a);
-  }
-
-  template<typename T>
-  void operator()(const ArrayRef<T> &l) {
-    for (const auto &elem : l) {
-      (*this)(elem);
-    }
-  }
-
-  template<typename T>
-  void operator()(const List<T> &l) {
-    for (const auto &it : l) {
-      const T &elem = it;
-      (*this)(elem);
-    }
-  }
-};
-}
-
 void TensorOp::incref() {
-  assert(isObservable());
+  assert(observable);
   ++refs;
 }
 
@@ -61,7 +24,11 @@ void TensorOp::decref(TensorOp *ops) {
 
   if (refs == 0) {
     for (auto &arg : args) {
-      visit(decrefer(ops), arg);
+      visit(TensorVisitor([&](const Tensor &t) {
+        auto idx = trace_idx(t);
+        if (idx != -1u)
+          ops[idx].decref(ops);
+      }), arg);
     }
     args.clear();
     assert(!tensor);
@@ -150,9 +117,9 @@ void TensorOp::print(ostream &os, InputMap &inputs) const {
     }
 
   if (refs > 1)
-    os << " #refs=" << (refs - isObservable());
+    os << " #refs=" << (refs - observable);
 
-  if (isObservable())
+  if (observable)
     os << " #output";
 }
 
@@ -189,6 +156,7 @@ void Trace::set_unobservable(unsigned idx) {
 
   assert(op.tensor);
   op.tensor = 0;
+  op.observable = false;
   op.decref(ops);
 
   // reclaim slot if this was the last created tensor
@@ -200,6 +168,41 @@ void Trace::set_unobservable(unsigned idx) {
 void Trace::flush() {
   assert(!flushing);
   flushing = true;
+
+  // trim set of observable tensors as the references in arguments keep the
+  // tensors alive and therefore we aren't notified the user's program
+  // can't observe these tensors anymore
+  // TODO: benchmark: should we skip this when running the interpreter that
+  // doesn't really benefit from this information?
+  {
+    // tensor impl -> (refs, trace idx)
+    unordered_map<uintptr_t, pair<uint16_t, uint16_t>> refs;
+    refs.reserve(next_op);
+
+    for (unsigned i = 0; i < next_op; ++i) {
+      auto &op = ops[i];
+
+      if (i > 0) {
+        for (auto &arg : op.args) {
+          visit(TensorVisitor([&](const Tensor &t) {
+            auto I = refs.find((uintptr_t)t.getIntrusivePtr().get());
+            // all refs are inputs -> not observable
+            if (I != refs.end() && --I->second.first == 0) {
+              refs.erase(I);
+              ops[I->second.second].observable = false;
+            }
+          }), arg);
+        }
+      }
+
+      if (op.observable && op.tensor != DUMMY_TORCHY)
+        refs.emplace(
+          op.tensor,
+          // -1 as reclaim adds +1 ref
+          make_pair(intrusive_ptr<TensorImpl>::unsafe_reclaim_from_nonowning(
+                      (TensorImpl*)op.tensor).use_count()-1, i));
+    }
+  }
 
 #ifdef TORCHY_PRINT_TRACE_ON_FLUSH
   cerr << "Flush trace\n" << *this;

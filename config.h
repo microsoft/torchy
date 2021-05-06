@@ -3,6 +3,8 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
+#define DUMMY_TORCHY 0x1
+
 #ifdef TORCHY_RELEASE
 
 #ifndef NDEBUG

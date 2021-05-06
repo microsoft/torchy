@@ -54,14 +54,11 @@ struct TensorOp {
   std::vector<UnionInputTys> args;
   c10::DispatchKeySet dispatch_key;
   TorchOp id;
-  unsigned refs;
+  uint16_t refs;
+  bool observable;
 
   void incref();
   void decref(TensorOp *ops);
-
-  bool isObservable() const {
-    return tensor;
-  }
 
   bool needsComputing() const {
     return refs > 0;
@@ -148,6 +145,7 @@ public:
     assert(op.args.empty());
     registerOpArgs(op, args...);
     op.refs = 1;
+    op.observable = true;
     op.dispatch_key = ks;
     return next_op++;
   }

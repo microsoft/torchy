@@ -12,8 +12,6 @@
 # error Cannot disable C10_DISABLE_TENSORIMPL_EXTENSIBILITY
 #endif
 
-#define DUMMY_TORCHY 0x1
-
 using namespace at;
 using namespace std;
 
