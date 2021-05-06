@@ -21,29 +21,21 @@ namespace {
 
 /*thread_local*/ Trace trace;
 
-class TorchyStorage : public StorageImpl {
-  bool materialized = false;
-
-public:
-  TorchyStorage(StorageImpl &&other)
-    : StorageImpl({}, 0, {}, nullptr, false), materialized(true) {
-    StorageImpl::operator=(move(other));
-  }
-
-  friend class TorchyTensor;
-};
-
 
 class TorchyTensor final : public TensorImpl {
   unsigned trace_idx = -1u;
 
-  TorchyStorage& tstorage() const {
+  bool& materialized_var() const {
     assert(storage_);
-    return *static_cast<TorchyStorage*>(storage_.unsafeGetStorageImpl());
+    return storage_.unsafeGetStorageImpl()->reserved();
   }
 
   bool materialized() const {
-    return storage_ && tstorage().materialized;
+    return storage_ && materialized_var();
+  }
+
+  void set_materialized(bool val) {
+    materialized_var() = val;
   }
 
   bool shared() const {
@@ -68,7 +60,7 @@ public:
   template<typename... T>
   void addInplace(const T&... args) {
     if (storage_)
-      tstorage().materialized = false;
+      set_materialized(false);
 
     auto idx = trace.register_tensor((uintptr_t)this, args...);
     if (trace_idx == -1u)
@@ -91,23 +83,24 @@ public:
     trace_idx = -1u;
 
     auto my_ks = key_set_;
-    TensorImpl::shallow_copy_from(t.getIntrusivePtr());
+    auto *other = t.getIntrusivePtr().get();
+    copy_tensor_metadata(other, this, other->version_counter(),
+                         other->allow_tensor_metadata_change());
     key_set_ = key_set_ | my_ks;
 
-    assert(storage_);
-    auto storage_impl
-      = intrusive_ptr<StorageImpl>::reclaim(
-          storage_.unsafeReleaseStorageImpl());
-    assert(storage_impl.unique());
-    storage_ = Storage(c10::make_intrusive<TorchyStorage>(move(*storage_impl)));
-    tstorage().materialized = true;
+    set_materialized(true);
+
+    // must be run after materialized is set to true, as these call the
+    // overriden methods below
+    refresh_numel();
+    refresh_contiguous();
   }
 
   void initInPlaceUpdate() {
     // The tensor is materialized; it just has an old value
     // which is needed to compute the in-place op. Let's pretend it's up-to-date
     // so the getters below work.
-    tstorage().materialized = true;
+    set_materialized(true);
   }
 
   void endInPlaceUpdate() {
@@ -267,7 +260,7 @@ void end_update_in_place(uintptr_t tt) {
 namespace {
 
 template<typename... T>
-void compute_in_place(Tensor &t, const T&... args) {
+Tensor& compute_in_place(Tensor &t, const T&... args) {
   TorchyTensor *tt = is_torchy(t);
 
   // if the tensor's impl & storage aren't shared, replace them with
@@ -283,14 +276,12 @@ void compute_in_place(Tensor &t, const T&... args) {
 
   if (tt) {
     tt->addInplace(args...);
-    return;
+    return t;
   }
-
-  // If this happens in practice, then we could optimize it further
-  assert(!dynamic_cast<TorchyStorage*>(t.storage().unsafeGetStorageImpl()));
 
   trace.register_tensor(DUMMY_TORCHY, args...);
   trace.flush();
+  return t;
 }
 
 void ensure_materialized() {}

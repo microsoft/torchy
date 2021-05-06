@@ -142,8 +142,7 @@ def gen_dispatch_wrapper(fn):
     {dispatchkey}
     return {redispatch};
   }}
-  compute_in_place({ret}, {fn_enum(fn)}, {rargs});
-  return {ret};
+  return compute_in_place({ret}, {fn_enum(fn)}, {rargs});
 }}'''
 
   # returns e.g. a scalar. must materialize right away
