@@ -46,6 +46,10 @@ class TorchyTest(TestFormat):
     test = test.getSourcePath()
 
     out, err, exit_code = executeCommand(['python', test])
+
+    if exit_code == 0x42 and 'UNSUPPORTED' in out:
+      return lit.Test.UNSUPPORTED, out
+
     if err or exit_code != 0:
       return lit.Test.FAIL, err + f'\nexit code: {exit_code}'
 
