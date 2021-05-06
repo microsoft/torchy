@@ -1002,9 +1002,12 @@ at::Tensor wrap_as_strided(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
 }
 
 const at::Tensor & wrap_as_strided_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<int64_t> storage_offset) {
-  ensure_materialized(self);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::as_strided_(dispatchKeySet, self, size, stride, storage_offset);
+  if (trace.is_flushing()) {
+    ensure_materialized(self);
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::as_strided_(dispatchKeySet, self, size, stride, storage_offset);
+  }
+  return compute_in_place(self, H_AS_STRIDED_, dispatchKeySet, self, size, stride, storage_offset);
 }
 
 at::Tensor wrap_asin(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
@@ -3135,9 +3138,12 @@ at::Tensor wrap__empty_per_channel_affine_quantized(c10::DispatchKeySet dispatch
 }
 
 const at::Tensor & wrap_resize_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, c10::optional<at::MemoryFormat> memory_format) {
-  ensure_materialized(self);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::resize_(dispatchKeySet, self, size, memory_format);
+  if (trace.is_flushing()) {
+    ensure_materialized(self);
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::resize_(dispatchKeySet, self, size, memory_format);
+  }
+  return compute_in_place(self, H_RESIZE_, dispatchKeySet, self, size, memory_format);
 }
 
 at::Tensor wrap_empty_quantized(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, const at::Tensor & qtensor) {
@@ -8091,15 +8097,21 @@ at::Tensor wrap_positive(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
 }
 
 const at::Tensor & wrap_resize_as_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & the_template, c10::optional<at::MemoryFormat> memory_format) {
-  ensure_materialized(self, the_template);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::resize_as_(dispatchKeySet, self, the_template, memory_format);
+  if (trace.is_flushing()) {
+    ensure_materialized(self, the_template);
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::resize_as_(dispatchKeySet, self, the_template, memory_format);
+  }
+  return compute_in_place(self, H_RESIZE_AS_, dispatchKeySet, self, the_template, memory_format);
 }
 
 const at::Tensor & wrap_resize_as_sparse_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & the_template) {
-  ensure_materialized(self, the_template);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::resize_as_sparse_(dispatchKeySet, self, the_template);
+  if (trace.is_flushing()) {
+    ensure_materialized(self, the_template);
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::resize_as_sparse_(dispatchKeySet, self, the_template);
+  }
+  return compute_in_place(self, H_RESIZE_AS_SPARSE_, dispatchKeySet, self, the_template);
 }
 
 at::Tensor & wrap_zero_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
@@ -8367,15 +8379,21 @@ at::Tensor wrap__sparse_coo_tensor_with_dims_and_tensors(c10::DispatchKeySet dis
 }
 
 const at::Tensor & wrap_sparse_resize_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, int64_t sparse_dim, int64_t dense_dim) {
-  ensure_materialized(self);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::sparse_resize_(dispatchKeySet, self, size, sparse_dim, dense_dim);
+  if (trace.is_flushing()) {
+    ensure_materialized(self);
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::sparse_resize_(dispatchKeySet, self, size, sparse_dim, dense_dim);
+  }
+  return compute_in_place(self, H_SPARSE_RESIZE_, dispatchKeySet, self, size, sparse_dim, dense_dim);
 }
 
 const at::Tensor & wrap_sparse_resize_and_clear_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, int64_t sparse_dim, int64_t dense_dim) {
-  ensure_materialized(self);
-  dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-  return at::redispatch::sparse_resize_and_clear_(dispatchKeySet, self, size, sparse_dim, dense_dim);
+  if (trace.is_flushing()) {
+    ensure_materialized(self);
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::sparse_resize_and_clear_(dispatchKeySet, self, size, sparse_dim, dense_dim);
+  }
+  return compute_in_place(self, H_SPARSE_RESIZE_AND_CLEAR_, dispatchKeySet, self, size, sparse_dim, dense_dim);
 }
 
 at::Tensor wrap_sparse_mask(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & mask) {

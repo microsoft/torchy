@@ -516,7 +516,11 @@ case H_AS_STRIDED:
   set(op.tensor, at::redispatch::as_strided(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<int64_t>>(op.args[3])));
   break;
 
-// skip const at::Tensor & as_strided_(const at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<int64_t> storage_offset)
+case H_AS_STRIDED_:
+  init_update_in_place(op.tensor);
+  at::redispatch::as_strided_(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<int64_t>>(op.args[3]));
+  end_update_in_place(op.tensor);
+  break;
 
 case H_ASIN:
   set(op.tensor, at::redispatch::asin(ks, get<at::Tensor>(op.args[0])));
@@ -1590,7 +1594,11 @@ case H__EMPTY_PER_CHANNEL_AFFINE_QUANTIZED:
   set(op.tensor, at::redispatch::_empty_per_channel_affine_quantized(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<int64_t>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<c10::optional<at::Layout>>(op.args[5]), get<c10::optional<at::Device>>(op.args[6]), get<c10::optional<bool>>(op.args[7]), get<c10::optional<at::MemoryFormat>>(op.args[8])));
   break;
 
-// skip const at::Tensor & resize_(const at::Tensor & self, at::IntArrayRef size, c10::optional<at::MemoryFormat> memory_format)
+case H_RESIZE_:
+  init_update_in_place(op.tensor);
+  at::redispatch::resize_(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<at::MemoryFormat>>(op.args[2]));
+  end_update_in_place(op.tensor);
+  break;
 
 case H_EMPTY_QUANTIZED:
   set(op.tensor, at::redispatch::empty_quantized(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1])));
@@ -3974,9 +3982,17 @@ case H_POSITIVE:
   set(op.tensor, at::redispatch::positive(ks, get<at::Tensor>(op.args[0])));
   break;
 
-// skip const at::Tensor & resize_as_(const at::Tensor & self, const at::Tensor & the_template, c10::optional<at::MemoryFormat> memory_format)
+case H_RESIZE_AS_:
+  init_update_in_place(op.tensor);
+  at::redispatch::resize_as_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::MemoryFormat>>(op.args[2]));
+  end_update_in_place(op.tensor);
+  break;
 
-// skip const at::Tensor & resize_as_sparse_(const at::Tensor & self, const at::Tensor & the_template)
+case H_RESIZE_AS_SPARSE_:
+  init_update_in_place(op.tensor);
+  at::redispatch::resize_as_sparse_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
+  end_update_in_place(op.tensor);
+  break;
 
 case H_ZERO_:
   init_update_in_place(op.tensor);
@@ -4114,9 +4130,17 @@ case H__SPARSE_COO_TENSOR_WITH_DIMS_AND_TENSORS:
   set(op.tensor, at::redispatch::_sparse_coo_tensor_with_dims_and_tensors(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::Tensor>(op.args[3]), get<at::Tensor>(op.args[4]), get<c10::optional<at::ScalarType>>(op.args[5]), get<c10::optional<at::Layout>>(op.args[6]), get<c10::optional<at::Device>>(op.args[7]), get<c10::optional<bool>>(op.args[8])));
   break;
 
-// skip const at::Tensor & sparse_resize_(const at::Tensor & self, at::IntArrayRef size, int64_t sparse_dim, int64_t dense_dim)
+case H_SPARSE_RESIZE_:
+  init_update_in_place(op.tensor);
+  at::redispatch::sparse_resize_(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]));
+  end_update_in_place(op.tensor);
+  break;
 
-// skip const at::Tensor & sparse_resize_and_clear_(const at::Tensor & self, at::IntArrayRef size, int64_t sparse_dim, int64_t dense_dim)
+case H_SPARSE_RESIZE_AND_CLEAR_:
+  init_update_in_place(op.tensor);
+  at::redispatch::sparse_resize_and_clear_(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]));
+  end_update_in_place(op.tensor);
+  break;
 
 case H_SPARSE_MASK:
   set(op.tensor, at::redispatch::sparse_mask(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));

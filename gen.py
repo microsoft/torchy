@@ -125,7 +125,8 @@ def gen_dispatch_wrapper(fn):
 
   # in-place op. returns one of the arguments
   # e.g. mul_ or mul_out
-  if rettype == 'at::Tensor &':
+  if rettype == 'at::Tensor &' or\
+     (fn.use_const_ref_for_mutable_tensors and rettype == 'const at::Tensor &'):
     assert tensor_args
     if fn.func.arguments.out:
       assert len(fn.func.arguments.out) == 1
@@ -192,7 +193,8 @@ def gen_interpreter_redispatch(fn):
 '''
 
   # in-place op
-  if rettype == 'at::Tensor &':
+  if rettype == 'at::Tensor &' or\
+     (fn.use_const_ref_for_mutable_tensors and rettype == 'const at::Tensor &'):
     return f'''{case}
   init_update_in_place(op.tensor);
   {redispatch};

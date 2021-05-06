@@ -258,7 +258,8 @@ void end_update_in_place(uintptr_t tt) {
 namespace {
 
 template<typename... T>
-Tensor& compute_in_place(Tensor &t, const T&... args) {
+Tensor& compute_in_place(const Tensor &t0, const T&... args) {
+  auto &t = const_cast<Tensor&>(t0);
   TorchyTensor *tt = is_torchy(t);
 
   // if the tensor's impl & storage aren't shared, replace them with
