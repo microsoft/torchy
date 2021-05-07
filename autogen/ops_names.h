@@ -1296,7 +1296,6 @@
 "_lu_with_info",
 "lu_solve.out",
 "lu_solve",
-"_lu_solve_helper",
 "multinomial.out",
 "multinomial",
 "lgamma.out",

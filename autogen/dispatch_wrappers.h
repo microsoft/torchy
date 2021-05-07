@@ -11231,15 +11231,6 @@ at::Tensor wrap_lu_solve(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
   return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H_LU_SOLVE, dispatchKeySet, self, LU_data, LU_pivots);
 }
 
-at::Tensor wrap__lu_solve_helper(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & LU_data, const at::Tensor & LU_pivots) {
-  if (trace.is_flushing()) {
-    ensure_materialized(self, LU_data, LU_pivots);
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_lu_solve_helper(dispatchKeySet, self, LU_data, LU_pivots);
-  }
-  return at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device(), H__LU_SOLVE_HELPER, dispatchKeySet, self, LU_data, LU_pivots);
-}
-
 at::Tensor & wrap_multinomial_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t num_samples, bool replacement, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(self, out);
@@ -15752,7 +15743,7 @@ at::Tensor & wrap_linalg_norm_ord_str_out(c10::DispatchKeySet dispatchKeySet, co
   return compute_in_place(out, H_LINALG_NORM_ORD_STR_OUT, dispatchKeySet, self, ord, dim, keepdim, dtype, out);
 }
 
-at::Tensor wrap_linalg_vector_norm(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
+at::Tensor wrap_linalg_vector_norm(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     ensure_materialized(self);
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
@@ -15761,7 +15752,7 @@ at::Tensor wrap_linalg_vector_norm(c10::DispatchKeySet dispatchKeySet, const at:
   return at::detail::make_tensor<TorchyTensor>(dtype ? scalarTypeToTypeMeta(*dtype) : self.dtype(), self.device(), H_LINALG_VECTOR_NORM, dispatchKeySet, self, ord, dim, keepdim, dtype);
 }
 
-at::Tensor & wrap_linalg_vector_norm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
+at::Tensor & wrap_linalg_vector_norm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     ensure_materialized(self, out);
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);

@@ -5614,10 +5614,6 @@ case H_LU_SOLVE:
   set(op.tensor, at::redispatch::lu_solve(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2])));
   break;
 
-case H__LU_SOLVE_HELPER:
-  set(op.tensor, at::redispatch::_lu_solve_helper(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2])));
-  break;
-
 case H_MULTINOMIAL_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::multinomial_outf(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3]), get<at::Tensor>(op.args[4]));
@@ -7917,12 +7913,12 @@ case H_LINALG_NORM_ORD_STR_OUT:
   break;
 
 case H_LINALG_VECTOR_NORM:
-  set(op.tensor, at::redispatch::linalg_vector_norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4])));
+  set(op.tensor, at::redispatch::linalg_vector_norm(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4])));
   break;
 
 case H_LINALG_VECTOR_NORM_OUT:
   init_update_in_place(op.tensor);
-  at::redispatch::linalg_vector_norm_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::linalg_vector_norm_outf(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<at::Tensor>(op.args[5]));
   end_update_in_place(op.tensor);
   break;
 

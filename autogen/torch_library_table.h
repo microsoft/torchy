@@ -1296,7 +1296,6 @@ m.impl("ormqr", wrap_ormqr);
 m.impl("_lu_with_info", wrap__lu_with_info);
 m.impl("lu_solve.out", wrap_lu_solve_out);
 m.impl("lu_solve", wrap_lu_solve);
-m.impl("_lu_solve_helper", wrap__lu_solve_helper);
 m.impl("multinomial.out", wrap_multinomial_out);
 m.impl("multinomial", wrap_multinomial);
 m.impl("lgamma.out", wrap_lgamma_out);
