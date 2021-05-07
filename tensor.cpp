@@ -200,8 +200,7 @@ public:
 
     copy_tensor_metadata(this, copy.get(), version_counter,
                          allow_tensor_metadata_change);
-    copy->refresh_numel();
-    copy->refresh_contiguous();
+    copy->numel_ = numel_;
     return copy;
   }
 
@@ -213,8 +212,7 @@ public:
 
     copy_tensor_metadata(this, copy.get(), move(version_counter),
                          allow_tensor_metadata_change);
-    copy->refresh_numel();
-    copy->refresh_contiguous();
+    copy->numel_ = numel_;
     return copy;
   }
 
