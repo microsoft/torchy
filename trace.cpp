@@ -116,7 +116,7 @@ void TensorOp::print(ostream &os, InputMap &inputs) const {
       visit(printer(os, inputs), arg);
     }
 
-  if (refs > 1)
+  if (refs > observable)
     os << " #refs=" << (refs - observable);
 
   if (observable)
@@ -189,7 +189,9 @@ void Trace::flush() {
             // all refs are inputs -> not observable
             if (I != refs.end() && --I->second.first == 0) {
               refs.erase(I);
-              ops[I->second.second].observable = false;
+              auto &argop = ops[I->second.second];
+              argop.observable = false;
+              argop.decref(ops);
             }
           }), arg);
         }
