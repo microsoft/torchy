@@ -106,10 +106,12 @@ public:
 
   void endInPlaceUpdate() {
     trace_idx = -1u;
+    set_materialized(true);
   }
 
   void ensure_materialized() const {
     if (!trace.is_flushing() && !materialized()) {
+      assert(trace_idx != -1u);
       trace.flush();
       assert(!storage_ || materialized());
     }
