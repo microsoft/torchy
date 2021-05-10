@@ -1788,29 +1788,9 @@ case H_GCD_OUT:
   end_update_in_place(op.tensor);
   break;
 
-case H_GCD:
-  set(op.tensor, at::redispatch::gcd(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
-  break;
-
-case H_GCD_:
-  init_update_in_place(op.tensor);
-  at::redispatch::gcd_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
-  end_update_in_place(op.tensor);
-  break;
-
 case H_LCM_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::lcm_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]));
-  end_update_in_place(op.tensor);
-  break;
-
-case H_LCM:
-  set(op.tensor, at::redispatch::lcm(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
-  break;
-
-case H_LCM_:
-  init_update_in_place(op.tensor);
-  at::redispatch::lcm_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
   end_update_in_place(op.tensor);
   break;
 
@@ -3474,15 +3454,29 @@ case H_STD_DIM:
   set(op.tensor, at::redispatch::std(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3])));
   break;
 
+case H_STD_CORRECTION:
+  set(op.tensor, at::redispatch::std(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
+  break;
+
 // skip std::tuple<at::Tensor,at::Tensor> std_mean(const at::Tensor & self, bool unbiased)
 
 // skip std::tuple<at::Tensor,at::Tensor> std_mean(const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim)
 
+// skip std::tuple<at::Tensor,at::Tensor> std_mean(const at::Tensor & self, c10::optional<at::IntArrayRef> dim, c10::optional<int64_t> correction, bool keepdim)
+
 // skip std::tuple<at::Tensor,at::Tensor> std_mean(const at::Tensor & self, at::DimnameList dim, bool unbiased, bool keepdim)
+
+// skip std::tuple<at::Tensor,at::Tensor> std_mean(const at::Tensor & self, at::DimnameList dim, c10::optional<int64_t> correction, bool keepdim)
 
 case H_STD_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  end_update_in_place(op.tensor);
+  break;
+
+case H_STD_CORRECTION_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op.tensor);
   break;
 
@@ -3493,6 +3487,16 @@ case H_STD_NAMES_DIM:
 case H_STD_NAMES_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  end_update_in_place(op.tensor);
+  break;
+
+case H_STD_CORRECTION_NAMES:
+  set(op.tensor, at::redispatch::std(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
+  break;
+
+case H_STD_CORRECTION_NAMES_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op.tensor);
   break;
 
@@ -3724,9 +3728,19 @@ case H_VAR_DIM:
   set(op.tensor, at::redispatch::var(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3])));
   break;
 
+case H_VAR_CORRECTION:
+  set(op.tensor, at::redispatch::var(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
+  break;
+
 case H_VAR_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::var_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  end_update_in_place(op.tensor);
+  break;
+
+case H_VAR_CORRECTION_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::var_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op.tensor);
   break;
 
@@ -3740,11 +3754,25 @@ case H_VAR_NAMES_OUT:
   end_update_in_place(op.tensor);
   break;
 
+case H_VAR_CORRECTION_NAMES:
+  set(op.tensor, at::redispatch::var(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
+  break;
+
+case H_VAR_CORRECTION_NAMES_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::var_outf(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  end_update_in_place(op.tensor);
+  break;
+
 // skip std::tuple<at::Tensor,at::Tensor> var_mean(const at::Tensor & self, bool unbiased)
 
 // skip std::tuple<at::Tensor,at::Tensor> var_mean(const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim)
 
+// skip std::tuple<at::Tensor,at::Tensor> var_mean(const at::Tensor & self, c10::optional<at::IntArrayRef> dim, c10::optional<int64_t> correction, bool keepdim)
+
 // skip std::tuple<at::Tensor,at::Tensor> var_mean(const at::Tensor & self, at::DimnameList dim, bool unbiased, bool keepdim)
+
+// skip std::tuple<at::Tensor,at::Tensor> var_mean(const at::Tensor & self, at::DimnameList dim, c10::optional<int64_t> correction, bool keepdim)
 
 case H_VIEW_AS:
   set(op.tensor, at::redispatch::view_as(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
@@ -5752,10 +5780,6 @@ case H_HYPOT_OUT:
   end_update_in_place(op.tensor);
   break;
 
-case H_HYPOT:
-  set(op.tensor, at::redispatch::hypot(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
-  break;
-
 case H_HYPOT_:
   init_update_in_place(op.tensor);
   at::redispatch::hypot_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
@@ -5768,29 +5792,9 @@ case H_IGAMMA_OUT:
   end_update_in_place(op.tensor);
   break;
 
-case H_IGAMMA:
-  set(op.tensor, at::redispatch::igamma(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
-  break;
-
-case H_IGAMMA_:
-  init_update_in_place(op.tensor);
-  at::redispatch::igamma_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
-  end_update_in_place(op.tensor);
-  break;
-
 case H_IGAMMAC_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::igammac_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]));
-  end_update_in_place(op.tensor);
-  break;
-
-case H_IGAMMAC:
-  set(op.tensor, at::redispatch::igammac(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
-  break;
-
-case H_IGAMMAC_:
-  init_update_in_place(op.tensor);
-  at::redispatch::igammac_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
   end_update_in_place(op.tensor);
   break;
 
@@ -5798,10 +5802,6 @@ case H_NEXTAFTER_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::nextafter_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]));
   end_update_in_place(op.tensor);
-  break;
-
-case H_NEXTAFTER:
-  set(op.tensor, at::redispatch::nextafter(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
   break;
 
 case H_NEXTAFTER_:
@@ -6182,14 +6182,6 @@ case H__CUMPROD_OUT:
   init_update_in_place(op.tensor);
   at::redispatch::_cumprod_outf(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]));
   end_update_in_place(op.tensor);
-  break;
-
-case H__VAR:
-  set(op.tensor, at::redispatch::_var(ks, get<at::Tensor>(op.args[0]), get<bool>(op.args[1])));
-  break;
-
-case H__STD:
-  set(op.tensor, at::redispatch::_std(ks, get<at::Tensor>(op.args[0]), get<bool>(op.args[1])));
   break;
 
 // skip void _amp_foreach_non_finite_check_and_unscale_(at::TensorList self, at::Tensor & found_inf, const at::Tensor & inv_scale)
@@ -7922,9 +7914,29 @@ case H_LINALG_VECTOR_NORM_OUT:
   end_update_in_place(op.tensor);
   break;
 
-// skip std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> linalg_svd_outf(const at::Tensor & self, bool full_matrices, bool compute_uv, at::Tensor & U, at::Tensor & S, at::Tensor & V)
+case H_LINALG_MATRIX_NORM:
+  set(op.tensor, at::redispatch::linalg_matrix_norm(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4])));
+  break;
 
-// skip std::tuple<at::Tensor,at::Tensor,at::Tensor> linalg_svd(const at::Tensor & self, bool full_matrices, bool compute_uv)
+case H_LINALG_MATRIX_NORM_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::linalg_matrix_norm_outf(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  end_update_in_place(op.tensor);
+  break;
+
+case H_LINALG_MATRIX_NORM_STR_ORD:
+  set(op.tensor, at::redispatch::linalg_matrix_norm(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4])));
+  break;
+
+case H_LINALG_MATRIX_NORM_STR_ORD_OUT:
+  init_update_in_place(op.tensor);
+  at::redispatch::linalg_matrix_norm_outf(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  end_update_in_place(op.tensor);
+  break;
+
+// skip std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> linalg_svd_outf(const at::Tensor & self, bool full_matrices, at::Tensor & U, at::Tensor & S, at::Tensor & Vh)
+
+// skip std::tuple<at::Tensor,at::Tensor,at::Tensor> linalg_svd(const at::Tensor & self, bool full_matrices)
 
 case H_LINALG_SVDVALS:
   set(op.tensor, at::redispatch::linalg_svdvals(ks, get<at::Tensor>(op.args[0])));
