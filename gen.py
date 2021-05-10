@@ -7,6 +7,7 @@ from special_fns import *
 import sys
 sys.path.append(PYTORCH)
 from tools.codegen.gen import *
+from tools.codegen.api import types
 
 yaml_path = PYTORCH + '/aten/src/ATen/native/native_functions.yaml'
 native_functions = parse_native_yaml(yaml_path)
@@ -79,6 +80,19 @@ def get_dtype_arg(args, dtype, device):
   return dtype, device, init_code
 
 
+def move_if_needed(arg):
+  no_move_needed = {
+    'bool',
+    'int64_t',
+    'double'
+  }
+  if isinstance(arg.type.type, (types.ConstRefCType, types.MutRefCType)) or \
+     arg.type.cpp_type() in no_move_needed or \
+     (isinstance(arg.type.type, types.OptionalCType) and arg.type.type.elem.cpp_type() in no_move_needed):
+    return arg.expr
+  return f'move({arg.expr})'
+
+
 @with_native_function
 def gen_dispatch_wrapper(fn):
   sig_group = CppSignatureGroup.from_native_function(fn, method=False, fallback_binding=fn.manual_cpp_binding)
@@ -90,7 +104,7 @@ def gen_dispatch_wrapper(fn):
   fndecl = fndecl.replace('wrap_' + sig.name(), wrapper_name(fn))
 
   args = translate(sig.arguments(), dispatcher_sig.arguments())
-  rargs = ', '.join(['dispatchKeySet'] + [a.expr for a in args])
+  rargs = ', '.join(['dispatchKeySet'] + [move_if_needed(a) for a in args])
   redispatch = f'at::redispatch::{sig.name()}({rargs})'
 
   tensor_args = [a for a in args if maybe_tensor(a.type)]
@@ -116,7 +130,6 @@ def gen_dispatch_wrapper(fn):
     return f'''
 {fndecl} {{
   if (trace.is_flushing()) {{
-    {materialize}
     {dispatchkey}
     return {redispatch};
   }}{dtype_init}
@@ -139,7 +152,6 @@ def gen_dispatch_wrapper(fn):
     return f'''
 {fndecl} {{
   if (trace.is_flushing()) {{
-    {materialize}
     {dispatchkey}
     return {redispatch};
   }}

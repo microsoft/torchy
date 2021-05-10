@@ -96,7 +96,7 @@ class Trace {
   }
 
   template<typename A>
-  void registerOpArg(TensorOp &op, A arg) {
+  void registerOpArg(TensorOp &op, A&& arg) {
     op.args.emplace_back(std::move(arg));
   }
 
@@ -119,10 +119,10 @@ class Trace {
   }
 
   template<typename A, typename... T>
-  void registerOpArgs(TensorOp &op, const A &arg, T&... args) {
-    registerOpArg(op, arg);
+  void registerOpArgs(TensorOp &op, A &&arg, T&&... args) {
+    registerOpArg(op, std::forward<A>(arg));
     incref(arg);
-    registerOpArgs(op, args...);
+    registerOpArgs(op, std::forward<T>(args)...);
   }
 
   void registerOpArgs(TensorOp &op) {}
@@ -134,7 +134,7 @@ public:
 
   template<typename... T>
   unsigned register_tensor(uintptr_t tensor, TorchOp op_id,
-                           c10::DispatchKeySet ks, T&... args) {
+                           c10::DispatchKeySet ks, T&&... args) {
     assert(!flushing);
     if (next_op == MAX_TRACE_LENGTH)
       flush();
@@ -143,7 +143,7 @@ public:
     op.tensor = tensor;
     op.id = op_id;
     assert(op.args.empty());
-    registerOpArgs(op, args...);
+    registerOpArgs(op, std::forward<T>(args)...);
     op.refs = 1;
     op.observable = true;
     op.dispatch_key = ks;

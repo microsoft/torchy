@@ -93,10 +93,16 @@ public:
     return os << ')';
   }
 
+  ostream& operator()(const Storage &s) {
+    if (!s)
+      return os << "storage(null)";
+    return os << "storage(" << s.nbytes() << ')';
+  }
+
   ostream& operator()(const Generator &g) {
     if (!g.defined())
       return os << "generator(null)";
-    return os << "generator(" << g.current_seed() << ", " << g.device() << ")";
+    return os << "generator(" << g.current_seed() << ", " << g.device() << ')';
   }
 };
 }

@@ -46,9 +46,9 @@ public:
     : TensorImpl(key_set, data_type, device_opt) {}
 
   template<typename... T>
-  TorchyTensor(caffe2::TypeMeta dtype, c10::Device device, const T&... args)
+  TorchyTensor(caffe2::TypeMeta dtype, c10::Device device, T&&... args)
     : TensorImpl(DISPATCHKEY, dtype, device) {
-    trace_idx = trace.register_tensor((uintptr_t)this, args...);
+    trace_idx = trace.register_tensor((uintptr_t)this, forward<T>(args)...);
   }
 
   TorchyTensor(Tensor &&t) : TensorImpl(DISPATCHKEY, t.dtype(), t.device()) {
@@ -56,19 +56,22 @@ public:
   }
 
   template<typename... T>
-  void addInplace(const T&... args) {
+  void addInplace(T&&... args) {
     if (storage_)
       set_materialized(false);
 
-    auto idx = trace.register_tensor((uintptr_t)this, args...);
+    auto idx = trace.register_tensor((uintptr_t)this, forward<T>(args)...);
     if (trace_idx == -1u)
       trace_idx = idx;
 
+#if 0
     // if our data is shared, we need to flush straight away, otherwise
     // another tensor with the same data will miss that the tensor is not
     // current anymore.
+    // NOTE: not needed as long as we observe all operations over tensors
     if (shared())
       trace.flush();
+#endif
   }
 
   unsigned getTraceIdx() const { return trace_idx; }
@@ -106,9 +109,9 @@ public:
   }
 
   void ensure_materialized() const {
-    if (!materialized()) {
+    if (!trace.is_flushing() && !materialized()) {
       trace.flush();
-      assert(materialized());
+      assert(!storage_ || materialized());
     }
   }
 
@@ -256,7 +259,7 @@ void end_update_in_place(uintptr_t tt) {
 namespace {
 
 template<typename... T>
-Tensor& compute_in_place(const Tensor &t0, const T&... args) {
+Tensor& compute_in_place(const Tensor &t0, T&&... args) {
   auto &t = const_cast<Tensor&>(t0);
   TorchyTensor *tt = is_torchy(t);
 
@@ -272,11 +275,11 @@ Tensor& compute_in_place(const Tensor &t0, const T&... args) {
   }
 
   if (tt) {
-    tt->addInplace(args...);
+    tt->addInplace(forward<T>(args)...);
     return t;
   }
 
-  trace.register_tensor(DUMMY_TORCHY, args...);
+  trace.register_tensor(DUMMY_TORCHY, forward<T>(args)...);
   trace.flush();
   return t;
 }
