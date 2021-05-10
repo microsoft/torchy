@@ -96,17 +96,17 @@ class Trace {
   }
 
   template<typename A>
-  void registerOpArg(TensorOp &op, A&& arg) {
-    op.args.emplace_back(std::move(arg));
+  void registerOpArg(TensorOp &op, A &&arg) {
+    op.args.emplace_back(std::forward<A>(arg));
   }
 
   template<typename T>
-  void registerOpArg(TensorOp &op, const at::ArrayRef<T> &arg) {
+  void registerOpArg(TensorOp &op, at::ArrayRef<T> &&arg) {
     op.args.emplace_back(deep_copy(arg));
   }
 
   template<typename T>
-  void registerOpArg(TensorOp &op, const c10::optional<at::ArrayRef<T>> &arg) {
+  void registerOpArg(TensorOp &op, c10::optional<at::ArrayRef<T>> &&arg) {
     c10::optional<at::ArrayRef<T>> copy;
     if (arg)
       copy = deep_copy(*arg);
