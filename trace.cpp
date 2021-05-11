@@ -6,6 +6,7 @@
 #include "utils.h"
 #include <ATen/core/Formatting.h>
 #include <ATen/core/List.h>
+#include <algorithm>
 #include <unordered_map>
 
 using namespace at;
@@ -15,6 +16,7 @@ namespace interpreter { void run(Trace &t); }
 
 void TensorOp::incref() {
   assert(observable);
+  // TODO: harden this for overflows
   ++refs;
 }
 
@@ -31,8 +33,13 @@ void TensorOp::decref(TensorOp *ops) {
       }), arg);
     }
     args.clear();
-    assert(!tensor);
+    assert(!observable && !hasTensors());
   }
+}
+
+bool TensorOp::hasTensors() const {
+  return find_if(tensors.begin(), tensors.end(), [](auto t) { return t != 0; })
+           != tensors.end();
 }
 
 namespace {
@@ -156,13 +163,37 @@ void Trace::incref(const List<optional<Tensor>> &l) {
   }
 }
 
-void Trace::set_unobservable(unsigned idx) {
+void Trace::add_shared(unsigned idx, uintptr_t ptr) {
   assert(idx < next_op);
   auto &op = ops[idx];
 
-  assert(op.tensor);
-  op.tensor = 0;
-  op.observable = false;
+  for (auto &tensor : op.tensors) {
+    if (tensor == 0) {
+      tensor = ptr;
+      op.incref();
+      return;
+    }
+  }
+
+  // no more space for additional observers; just flush
+  flush();
+}
+
+void Trace::set_unobservable(unsigned idx, uintptr_t ptr) {
+  assert(idx < next_op);
+  auto &op = ops[idx];
+
+  bool found = false;
+  for (auto &tensor : op.tensors) {
+    if (tensor == ptr) {
+      tensor = 0;
+      found = true;
+      break;
+    }
+  }
+  assert(found); (void)found;
+
+  op.observable = op.hasTensors();
   op.decref(ops);
 
   // reclaim slot if this was the last created tensor
@@ -203,12 +234,16 @@ void Trace::flush() {
         }
       }
 
-      if (op.observable && op.tensor != DUMMY_TORCHY)
-        refs.emplace(
-          op.tensor,
-          // -1 as reclaim adds +1 ref
-          make_pair(intrusive_ptr<TensorImpl>::unsafe_reclaim_from_nonowning(
-                      (TensorImpl*)op.tensor).use_count()-1, i));
+      if (op.observable) {
+        for (auto tensor : op.tensors) {
+          if (tensor == 0 || tensor == DUMMY_TORCHY)
+            continue;
+          refs.emplace(tensor,
+            // -1 as reclaim adds +1 ref
+            make_pair(intrusive_ptr<TensorImpl>::unsafe_reclaim_from_nonowning(
+                        (TensorImpl*)tensor).use_count()-1, i));
+        }
+      }
     }
   }
 

@@ -76,8 +76,7 @@ public:
 
   unsigned getTraceIdx() const { return trace_idx; }
 
-  void set(Tensor &&t) {
-    assert(!materialized());
+  void set(const Tensor &t) {
     assert(dtype() == t.dtype());
     assert(device() == t.device());
 
@@ -119,7 +118,7 @@ public:
 
   void release_resources() override {
     if (trace_idx != -1u)
-      trace.set_unobservable(trace_idx);
+      trace.set_unobservable(trace_idx, (uintptr_t)this);
     TensorImpl::release_resources();
   }
 
@@ -197,36 +196,50 @@ public:
     return TensorImpl::stride(d);
   }
 
+  template <typename T>
   c10::intrusive_ptr<TensorImpl>
-  shallow_copy_and_detach(const c10::VariableVersion &version_counter,
-                          bool allow_tensor_metadata_change) const override {
+  my_shallow_copy_and_detach(T version_counter,
+                             bool allow_tensor_metadata_change) const {
     auto copy
       = c10::make_intrusive<TorchyTensor>(key_set_, data_type_, device_opt_);
 
-    copy_tensor_metadata(this, copy.get(), version_counter,
+    if (trace_idx != -1u)
+      trace.add_shared(trace_idx, (uintptr_t)copy.get());
+    copy->trace_idx = trace_idx;
+
+    copy_tensor_metadata(this, copy.get(), forward<T>(version_counter),
                          allow_tensor_metadata_change);
     copy->numel_ = numel_;
     return copy;
+  }
+
+  c10::intrusive_ptr<TensorImpl>
+  shallow_copy_and_detach(const c10::VariableVersion &version_counter,
+                          bool allow_tensor_metadata_change) const override {
+    return
+      my_shallow_copy_and_detach(version_counter, allow_tensor_metadata_change);
   }
 
   c10::intrusive_ptr<TensorImpl>
   shallow_copy_and_detach(c10::VariableVersion &&version_counter,
                           bool allow_tensor_metadata_change) const override {
-    auto copy
-      = c10::make_intrusive<TorchyTensor>(key_set_, data_type_, device_opt_);
-
-    copy_tensor_metadata(this, copy.get(), move(version_counter),
-                         allow_tensor_metadata_change);
-    copy->numel_ = numel_;
-    return copy;
+    return my_shallow_copy_and_detach(move(version_counter),
+                                      allow_tensor_metadata_change);
   }
 
   void shallow_copy_from(const c10::intrusive_ptr<TensorImpl> &impl) override {
-    TensorImpl::shallow_copy_from(impl);
-
+    if (trace_idx != -1u)
+      trace.set_unobservable(trace_idx, (uintptr_t)this);
     trace_idx = -1u;
-    if (auto tt = dynamic_cast<TorchyTensor*>(impl.get()))
-      trace_idx = tt->trace_idx;
+
+    if (auto tt = dynamic_cast<TorchyTensor*>(impl.get())) {
+      if (tt->trace_idx != -1u) {
+        trace.add_shared(tt->trace_idx, (uintptr_t)this);
+        trace_idx = tt->trace_idx;
+      }
+    }
+
+    TensorImpl::shallow_copy_from(impl);
   }
 };
 }
@@ -242,9 +255,9 @@ unsigned trace_idx(const Tensor &t) {
   return -1u;
 }
 
-void set(uintptr_t tt, Tensor &&t) {
+void set(uintptr_t tt, const Tensor &t) {
   assert(tt != DUMMY_TORCHY);
-  ((TorchyTensor*)tt)->set(move(t));
+  ((TorchyTensor*)tt)->set(t);
 }
 
 void init_update_in_place(uintptr_t tt) {

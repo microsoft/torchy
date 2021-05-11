@@ -9,6 +9,27 @@
 
 using namespace at;
 
+static void init_update_in_place(TensorOp &op) {
+  for (auto tensor : op.tensors) {
+    if (tensor != 0)
+      init_update_in_place(tensor);
+  }
+}
+
+static void end_update_in_place(TensorOp &op) {
+  for (auto tensor : op.tensors) {
+    if (tensor != 0)
+      end_update_in_place(tensor);
+  }
+}
+
+static void set(TensorOp &op, const Tensor &t) {
+  for (auto tensor : op.tensors) {
+    if (tensor != 0)
+      set(tensor, t);
+  }
+}
+
 namespace interpreter {
 
 void run(Trace &t) {

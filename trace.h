@@ -8,10 +8,12 @@
 #include <ATen/Tensor.h>
 #include <c10/core/DispatchKeySet.h>
 #include <c10/util/variant.h>
+#include <array>
 #include <cassert>
 #include <cstring>
 #include <map>
 #include <memory>
+#include <ostream>
 #include <vector>
 
 #define MAX_TRACE_LENGTH 64
@@ -48,7 +50,8 @@ using UnionInputTys = c10::variant<
 >;
 
 struct TensorOp {
-  uintptr_t tensor;
+  // TODO: measure typical amount of sharing
+  std::array<uintptr_t, 3> tensors;
   // TODO: investigate if specializing this for the common case
   // e.g. 2 tensors makes sense (would save space + 1 mem alloc)
   std::vector<UnionInputTys> args;
@@ -63,6 +66,8 @@ struct TensorOp {
   bool needsComputing() const {
     return refs > 0;
   }
+
+  bool hasTensors() const;
 
   void print(std::ostream &os,
              std::map<const at::TensorImpl*, unsigned> &inputs) const;
@@ -140,7 +145,10 @@ public:
       flush();
 
     auto &op = ops[next_op];
-    op.tensor = tensor;
+    op.tensors[0] = tensor;
+    for (unsigned i = 1; i < op.tensors.size(); ++i) {
+      op.tensors[i] = 0;
+    }
     op.id = op_id;
     assert(op.args.empty());
     registerOpArgs(op, std::forward<T>(args)...);
@@ -150,7 +158,8 @@ public:
     return next_op++;
   }
 
-  void set_unobservable(unsigned idx);
+  void add_shared(unsigned idx, uintptr_t ptr);
+  void set_unobservable(unsigned idx, uintptr_t ptr);
   void flush();
 
   friend std::ostream& operator<<(std::ostream &os, const Trace &t);

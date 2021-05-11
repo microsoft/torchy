@@ -200,7 +200,7 @@ def gen_interpreter_redispatch(fn):
 
   if rettype == 'at::Tensor':
     return f'''{case}
-  set(op.tensor, {redispatch});
+  set(op, {redispatch});
   break;
 '''
 
@@ -208,9 +208,9 @@ def gen_interpreter_redispatch(fn):
   if rettype == 'at::Tensor &' or\
      (fn.use_const_ref_for_mutable_tensors and rettype == 'const at::Tensor &'):
     return f'''{case}
-  init_update_in_place(op.tensor);
+  init_update_in_place(op);
   {redispatch};
-  end_update_in_place(op.tensor);
+  end_update_in_place(op);
   break;
 '''
 
