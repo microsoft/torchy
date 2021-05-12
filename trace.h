@@ -60,17 +60,19 @@ struct TensorOp {
   uint16_t refs;
   bool observable;
 
-  void incref();
-  void decref(TensorOp *ops);
-
   bool needsComputing() const {
     return refs > 0;
   }
 
-  bool hasTensors() const;
-
   void print(std::ostream &os,
              std::map<const at::TensorImpl*, unsigned> &inputs) const;
+
+private:
+  void incref();
+  void decref(TensorOp *ops);
+  bool hasTensors() const;
+
+  friend class Trace;
 };
 
 
@@ -78,6 +80,7 @@ class Trace {
   TensorOp ops[MAX_TRACE_LENGTH];
   unsigned next_op = 0;
   bool flushing = false;
+  bool destroyed = false;
 
   template <typename T>
   void incref(T t) {}
@@ -133,6 +136,8 @@ class Trace {
   void registerOpArgs(TensorOp &op) {}
 
 public:
+  ~Trace();
+
   bool is_flushing() const { return flushing; }
   unsigned numOps() const { return next_op; }
   TensorOp* getOps() { return ops; }

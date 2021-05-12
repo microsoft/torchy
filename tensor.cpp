@@ -52,7 +52,7 @@ public:
   }
 
   TorchyTensor(Tensor &&t) : TensorImpl(DISPATCHKEY, t.dtype(), t.device()) {
-    set(move(t));
+    set(t);
   }
 
   template<typename... T>

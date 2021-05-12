@@ -137,6 +137,10 @@ void TensorOp::print(ostream &os, InputMap &inputs) const {
 }
 
 
+Trace::~Trace() {
+  destroyed = true;
+}
+
 void Trace::incref(const Tensor &t) {
   auto idx = trace_idx(t);
   if (idx != -1u) {
@@ -180,6 +184,11 @@ void Trace::add_shared(unsigned idx, uintptr_t ptr) {
 }
 
 void Trace::set_unobservable(unsigned idx, uintptr_t ptr) {
+  // technically this accesses memory that has been deallocated already
+  // but since it's a global and it's just a bool, whatever..
+  if (destroyed)
+    return;
+
   assert(idx < next_op);
   auto &op = ops[idx];
 
