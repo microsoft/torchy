@@ -80,17 +80,25 @@ def get_dtype_arg(args, dtype, device):
   return dtype, device, init_code
 
 
-def move_if_needed(arg):
-  no_move_needed = {
+def move_if_needed(str, arg):
+  basic_types = {
     'bool',
     'int64_t',
-    'double'
+    'double',
   }
-  if isinstance(arg.type.type, (types.ConstRefCType, types.MutRefCType)) or \
-     arg.type.cpp_type() in no_move_needed or \
-     (isinstance(arg.type.type, types.OptionalCType) and arg.type.type.elem.cpp_type() in no_move_needed):
-    return arg.expr
-  return f'move({arg.expr})'
+  free_copy_types = (
+    types.ArrayRefCType,
+    types.ConstRefCType,
+    types.MutRefCType,
+  )
+  def free(type):
+    return isinstance(type, free_copy_types) or \
+           type.cpp_type() in basic_types
+
+  if free(arg.type.type) or \
+     (isinstance(arg.type.type, types.OptionalCType) and free(arg.type.type.elem)):
+    return str
+  return f'std::move({str})'
 
 
 @with_native_function
@@ -104,9 +112,9 @@ def gen_dispatch_wrapper(fn):
   fndecl = fndecl.replace('wrap_' + sig.name(), wrapper_name(fn))
 
   args = translate(sig.arguments(), dispatcher_sig.arguments())
-  register_args = ''.join([f'trace.append_arg(trace_idx, {move_if_needed(a)});' for a in args])
+  register_args = ''.join([f'trace.append_arg(trace_idx, {move_if_needed(a.expr, a)});' for a in args])
 
-  rargs = ', '.join(['dispatchKeySet'] + [move_if_needed(a) for a in args])
+  rargs = ', '.join(['dispatchKeySet'] + [move_if_needed(a.expr, a) for a in args])
   redispatch = f'at::redispatch::{sig.name()}({rargs})'
 
   tensor_args = [a for a in args if maybe_tensor(a.type)]
@@ -201,7 +209,7 @@ def gen_interpreter_redispatch(fn):
   i = 0
   for arg in dispatcher_exprs:
     type = arg.type.cpp_type(strip_ref=True)
-    args.append(f'get<{type}>(op.args[{i}])')
+    args.append(move_if_needed(f'get<{type}>(op.args[{i}])', arg))
     i += 1
 
   redispatch = f'at::redispatch::{sig.name()}(ks, {", ".join(args)})'

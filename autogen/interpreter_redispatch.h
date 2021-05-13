@@ -42,20 +42,20 @@ case H__MAKE_DUAL:
 
 case H_RENAME_:
   init_update_in_place(op);
-  at::redispatch::rename_(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::DimnameList>>(op.args[1]));
+  at::redispatch::rename_(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::DimnameList>>(op.args[1])));
   end_update_in_place(op);
   break;
 
 case H_RENAME:
-  set(op, at::redispatch::rename(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::DimnameList>>(op.args[1])));
+  set(op, at::redispatch::rename(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::DimnameList>>(op.args[1]))));
   break;
 
 case H_ALIGN_TO:
-  set(op, at::redispatch::align_to(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1])));
+  set(op, at::redispatch::align_to(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1]))));
   break;
 
 case H_ALIGN_TO_ELLIPSIS_IDX:
-  set(op, at::redispatch::align_to(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<int64_t>(op.args[2])));
+  set(op, at::redispatch::align_to(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<int64_t>(op.args[2])));
   break;
 
 case H_ALIGN_AS:
@@ -67,7 +67,7 @@ case H_ALIGN_AS:
 // skip void _assert_async(const at::Tensor & self)
 
 case H_REFINE_NAMES:
-  set(op, at::redispatch::refine_names(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1])));
+  set(op, at::redispatch::refine_names(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1]))));
   break;
 
 // skip bool _use_cudnn_ctc_loss(const at::Tensor & log_probs, const at::Tensor & targets, at::IntArrayRef input_lengths, at::IntArrayRef target_lengths, int64_t blank)
@@ -77,7 +77,7 @@ case H_REFINE_NAMES:
 // skip bool _use_cudnn_rnn_flatten_weight()
 
 case H__CUDNN_RNN_FLATTEN_WEIGHT:
-  set(op, at::redispatch::_cudnn_rnn_flatten_weight(ks, get<at::TensorList>(op.args[0]), get<int64_t>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]), get<int64_t>(op.args[4]), get<int64_t>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::_cudnn_rnn_flatten_weight(ks, std::move(get<at::TensorList>(op.args[0])), get<int64_t>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]), get<int64_t>(op.args[4]), get<int64_t>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor,at::Tensor> _cudnn_rnn(const at::Tensor & input, at::TensorList weight, int64_t weight_stride0, const c10::optional<at::Tensor> & weight_buf, const at::Tensor & hx, const c10::optional<at::Tensor> & cx, int64_t mode, int64_t hidden_size, int64_t proj_size, int64_t num_layers, bool batch_first, double dropout, bool train, bool bidirectional, at::IntArrayRef batch_sizes, const c10::optional<at::Tensor> & dropout_state)
@@ -85,7 +85,7 @@ case H__CUDNN_RNN_FLATTEN_WEIGHT:
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor,std::vector<at::Tensor>> _cudnn_rnn_backward(const at::Tensor & input, at::TensorList weight, int64_t weight_stride0, const at::Tensor & weight_buf, const at::Tensor & hx, const c10::optional<at::Tensor> & cx, const at::Tensor & output, const c10::optional<at::Tensor> & grad_output, const c10::optional<at::Tensor> & grad_hy, const c10::optional<at::Tensor> & grad_cy, int64_t mode, int64_t hidden_size, int64_t proj_size, int64_t num_layers, bool batch_first, double dropout, bool train, bool bidirectional, at::IntArrayRef batch_sizes, const c10::optional<at::Tensor> & dropout_state, const at::Tensor & reserve, std::array<bool,4> output_mask)
 
 case H__CUDNN_INIT_DROPOUT_STATE:
-  set(op, at::redispatch::_cudnn_init_dropout_state(ks, get<double>(op.args[0]), get<bool>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::_cudnn_init_dropout_state(ks, get<double>(op.args[0]), get<bool>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 // skip int64_t _debug_has_internal_overlap(const at::Tensor & self)
@@ -275,11 +275,11 @@ case H_ARCCOS_OUT:
   break;
 
 case H_AVG_POOL1D:
-  set(op, at::redispatch::avg_pool1d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<bool>(op.args[4]), get<bool>(op.args[5])));
+  set(op, at::redispatch::avg_pool1d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<bool>(op.args[4]), get<bool>(op.args[5])));
   break;
 
 case H_ADAPTIVE_AVG_POOL1D:
-  set(op, at::redispatch::adaptive_avg_pool1d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::adaptive_avg_pool1d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor> adaptive_max_pool1d(const at::Tensor & self, at::IntArrayRef output_size)
@@ -349,11 +349,11 @@ case H_ADDR_OUT:
   break;
 
 case H_AFFINE_GRID_GENERATOR:
-  set(op, at::redispatch::affine_grid_generator(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::affine_grid_generator(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 case H_AFFINE_GRID_GENERATOR_BACKWARD:
-  set(op, at::redispatch::affine_grid_generator_backward(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::affine_grid_generator_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 case H_ALL_DIM:
@@ -367,12 +367,12 @@ case H_ALL_OUT:
   break;
 
 case H_ALL_DIMNAME:
-  set(op, at::redispatch::all(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::all(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 case H_ALL_DIMNAME_OUT:
   init_update_in_place(op);
-  at::redispatch::all_outf(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::all_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
@@ -389,25 +389,25 @@ case H_ANY_OUT:
   break;
 
 case H_ANY_DIMNAME:
-  set(op, at::redispatch::any(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::any(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 case H_ANY_DIMNAME_OUT:
   init_update_in_place(op);
-  at::redispatch::any_outf(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::any_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_ARANGE:
-  set(op, at::redispatch::arange(ks, get<at::Scalar>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::arange(ks, get<at::Scalar>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_ARANGE_START:
-  set(op, at::redispatch::arange(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::arange(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_ARANGE_START_STEP:
-  set(op, at::redispatch::arange(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::arange(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_ARANGE_OUT:
@@ -513,12 +513,12 @@ case H_ARCTANH_OUT:
   break;
 
 case H_AS_STRIDED:
-  set(op, at::redispatch::as_strided(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<int64_t>>(op.args[3])));
+  set(op, at::redispatch::as_strided(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<int64_t>>(op.args[3])));
   break;
 
 case H_AS_STRIDED_:
   init_update_in_place(op);
-  at::redispatch::as_strided_(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<int64_t>>(op.args[3]));
+  at::redispatch::as_strided_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<int64_t>>(op.args[3]));
   end_update_in_place(op);
   break;
 
@@ -617,11 +617,11 @@ case H_BADDBMM_OUT:
   break;
 
 case H_BARTLETT_WINDOW:
-  set(op, at::redispatch::bartlett_window(ks, get<int64_t>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::bartlett_window(ks, get<int64_t>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_BARTLETT_WINDOW_PERIODIC:
-  set(op, at::redispatch::bartlett_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::bartlett_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_BATCH_NORM:
@@ -637,29 +637,29 @@ case H_QUANTIZED_BATCH_NORM:
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> _batch_norm_impl_index_backward(int64_t impl_index, const at::Tensor & input, const at::Tensor & grad_output, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, const c10::optional<at::Tensor> & save_mean, const c10::optional<at::Tensor> & save_var_transform, bool train, double eps, std::array<bool,3> output_mask, const at::Tensor & reservedSpace)
 
 case H_BERNOULLI:
-  set(op, at::redispatch::bernoulli(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1])));
+  set(op, at::redispatch::bernoulli(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::Generator>>(op.args[1]))));
   break;
 
 case H_BERNOULLI_OUT:
   init_update_in_place(op);
-  at::redispatch::bernoulli_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::bernoulli_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::Generator>>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_BERNOULLI__TENSOR:
   init_update_in_place(op);
-  at::redispatch::bernoulli_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2]));
+  at::redispatch::bernoulli_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2])));
   end_update_in_place(op);
   break;
 
 case H_BERNOULLI__FLOAT:
   init_update_in_place(op);
-  at::redispatch::bernoulli_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2]));
+  at::redispatch::bernoulli_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2])));
   end_update_in_place(op);
   break;
 
 case H_BERNOULLI_P:
-  set(op, at::redispatch::bernoulli(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2])));
+  set(op, at::redispatch::bernoulli(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2]))));
   break;
 
 case H_BILINEAR:
@@ -791,11 +791,11 @@ case H_LOGICAL_OR_OUT:
   break;
 
 case H_BLACKMAN_WINDOW:
-  set(op, at::redispatch::blackman_window(ks, get<int64_t>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::blackman_window(ks, get<int64_t>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_BLACKMAN_WINDOW_PERIODIC:
-  set(op, at::redispatch::blackman_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::blackman_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_BMM:
@@ -821,31 +821,31 @@ case H__BMM_OUT:
 // skip std::vector<at::Tensor> broadcast_tensors(at::TensorList tensors)
 
 case H_BROADCAST_TO:
-  set(op, at::redispatch::broadcast_to(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::broadcast_to(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_CAT:
-  set(op, at::redispatch::cat(ks, get<at::TensorList>(op.args[0]), get<int64_t>(op.args[1])));
+  set(op, at::redispatch::cat(ks, std::move(get<at::TensorList>(op.args[0])), get<int64_t>(op.args[1])));
   break;
 
 case H_CAT_OUT:
   init_update_in_place(op);
-  at::redispatch::cat_outf(ks, get<at::TensorList>(op.args[0]), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::cat_outf(ks, std::move(get<at::TensorList>(op.args[0])), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_CAT_NAMES:
-  set(op, at::redispatch::cat(ks, get<at::TensorList>(op.args[0]), get<at::Dimname>(op.args[1])));
+  set(op, at::redispatch::cat(ks, std::move(get<at::TensorList>(op.args[0])), std::move(get<at::Dimname>(op.args[1]))));
   break;
 
 case H_CAT_NAMES_OUT:
   init_update_in_place(op);
-  at::redispatch::cat_outf(ks, get<at::TensorList>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::cat_outf(ks, std::move(get<at::TensorList>(op.args[0])), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_BLOCK_DIAG:
-  set(op, at::redispatch::block_diag(ks, get<at::TensorList>(op.args[0])));
+  set(op, at::redispatch::block_diag(ks, std::move(get<at::TensorList>(op.args[0]))));
   break;
 
 case H_CEIL:
@@ -865,12 +865,12 @@ case H_CEIL_OUT:
   break;
 
 case H_CHAIN_MATMUL:
-  set(op, at::redispatch::chain_matmul(ks, get<at::TensorList>(op.args[0])));
+  set(op, at::redispatch::chain_matmul(ks, std::move(get<at::TensorList>(op.args[0]))));
   break;
 
 case H_CHAIN_MATMUL_OUT:
   init_update_in_place(op);
-  at::redispatch::chain_matmul_outf(ks, get<at::TensorList>(op.args[0]), get<at::Tensor>(op.args[1]));
+  at::redispatch::chain_matmul_outf(ks, std::move(get<at::TensorList>(op.args[0])), get<at::Tensor>(op.args[1]));
   end_update_in_place(op);
   break;
 
@@ -1035,59 +1035,59 @@ case H_POLAR_OUT:
   break;
 
 case H_CONSTANT_PAD_ND:
-  set(op, at::redispatch::constant_pad_nd(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Scalar>(op.args[2])));
+  set(op, at::redispatch::constant_pad_nd(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Scalar>(op.args[2])));
   break;
 
 case H_CONVOLUTION:
-  set(op, at::redispatch::convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<bool>(op.args[6]), get<at::IntArrayRef>(op.args[7]), get<int64_t>(op.args[8])));
+  set(op, at::redispatch::convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), std::move(get<at::IntArrayRef>(op.args[7])), get<int64_t>(op.args[8])));
   break;
 
 case H_CONVOLUTION_OVERRIDEABLE:
-  set(op, at::redispatch::convolution_overrideable(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<bool>(op.args[6]), get<at::IntArrayRef>(op.args[7]), get<int64_t>(op.args[8])));
+  set(op, at::redispatch::convolution_overrideable(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), std::move(get<at::IntArrayRef>(op.args[7])), get<int64_t>(op.args[8])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> convolution_backward_overrideable(const at::Tensor & grad_output, const at::Tensor & input, const at::Tensor & weight, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups, std::array<bool,3> output_mask)
 
 case H__CONVOLUTION:
-  set(op, at::redispatch::_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<bool>(op.args[6]), get<at::IntArrayRef>(op.args[7]), get<int64_t>(op.args[8]), get<bool>(op.args[9]), get<bool>(op.args[10]), get<bool>(op.args[11]), get<bool>(op.args[12])));
+  set(op, at::redispatch::_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), std::move(get<at::IntArrayRef>(op.args[7])), get<int64_t>(op.args[8]), get<bool>(op.args[9]), get<bool>(op.args[10]), get<bool>(op.args[11]), get<bool>(op.args[12])));
   break;
 
 case H__CONVOLUTION_DEPRECATED:
-  set(op, at::redispatch::_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<bool>(op.args[6]), get<at::IntArrayRef>(op.args[7]), get<int64_t>(op.args[8]), get<bool>(op.args[9]), get<bool>(op.args[10]), get<bool>(op.args[11])));
+  set(op, at::redispatch::_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), std::move(get<at::IntArrayRef>(op.args[7])), get<int64_t>(op.args[8]), get<bool>(op.args[9]), get<bool>(op.args[10]), get<bool>(op.args[11])));
   break;
 
 case H__CONVOLUTION_MODE:
-  set(op, at::redispatch::_convolution_mode(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<std::string>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6])));
+  set(op, at::redispatch::_convolution_mode(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<std::string>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6])));
   break;
 
 case H__CONVOLUTION_NOGROUP:
-  set(op, at::redispatch::_convolution_nogroup(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<bool>(op.args[6]), get<at::IntArrayRef>(op.args[7])));
+  set(op, at::redispatch::_convolution_nogroup(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), std::move(get<at::IntArrayRef>(op.args[7]))));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> _convolution_double_backward(const c10::optional<at::Tensor> & ggI, const c10::optional<at::Tensor> & ggW, const c10::optional<at::Tensor> & ggb, const at::Tensor & gO, const at::Tensor & weight, const at::Tensor & self, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups, bool benchmark, bool deterministic, bool cudnn_enabled, bool allow_tf32, std::array<bool,3> output_mask)
 
 case H_CONV1D:
-  set(op, at::redispatch::conv1d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6])));
+  set(op, at::redispatch::conv1d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6])));
   break;
 
 case H_CONV2D:
-  set(op, at::redispatch::conv2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6])));
+  set(op, at::redispatch::conv2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6])));
   break;
 
 case H_CONV3D:
-  set(op, at::redispatch::conv3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6])));
+  set(op, at::redispatch::conv3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6])));
   break;
 
 case H_CONV1D_PADDING:
-  set(op, at::redispatch::conv1d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<std::string>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6])));
+  set(op, at::redispatch::conv1d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<std::string>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6])));
   break;
 
 case H_CONV2D_PADDING:
-  set(op, at::redispatch::conv2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<std::string>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6])));
+  set(op, at::redispatch::conv2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<std::string>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6])));
   break;
 
 case H_CONV3D_PADDING:
-  set(op, at::redispatch::conv3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<std::string>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6])));
+  set(op, at::redispatch::conv3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<std::string>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6])));
   break;
 
 case H_CONV_TBC:
@@ -1097,15 +1097,15 @@ case H_CONV_TBC:
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> conv_tbc_backward(const at::Tensor & self, const at::Tensor & input, const at::Tensor & weight, const at::Tensor & bias, int64_t pad)
 
 case H_CONV_TRANSPOSE1D:
-  set(op, at::redispatch::conv_transpose1d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<at::IntArrayRef>(op.args[7])));
+  set(op, at::redispatch::conv_transpose1d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), std::move(get<at::IntArrayRef>(op.args[7]))));
   break;
 
 case H_CONV_TRANSPOSE2D_INPUT:
-  set(op, at::redispatch::conv_transpose2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<at::IntArrayRef>(op.args[7])));
+  set(op, at::redispatch::conv_transpose2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), std::move(get<at::IntArrayRef>(op.args[7]))));
   break;
 
 case H_CONV_TRANSPOSE3D_INPUT:
-  set(op, at::redispatch::conv_transpose3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<at::IntArrayRef>(op.args[7])));
+  set(op, at::redispatch::conv_transpose3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), std::move(get<at::IntArrayRef>(op.args[7]))));
   break;
 
 case H_COPY_:
@@ -1131,7 +1131,7 @@ case H_COSINE_EMBEDDING_LOSS:
   break;
 
 case H_COUNT_NONZERO_DIM_INTLIST:
-  set(op, at::redispatch::count_nonzero(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::count_nonzero(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_COUNT_NONZERO:
@@ -1151,55 +1151,55 @@ case H_CUDNN_AFFINE_GRID_GENERATOR_BACKWARD:
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> cudnn_batch_norm_backward(const at::Tensor & input, const at::Tensor & grad_output, const at::Tensor & weight, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, const c10::optional<at::Tensor> & save_mean, const c10::optional<at::Tensor> & save_var, double epsilon, const at::Tensor & reserveSpace)
 
 case H_CUDNN_CONVOLUTION_DEPRECATED:
-  set(op, at::redispatch::cudnn_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::cudnn_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 case H_CUDNN_CONVOLUTION_DEPRECATED2:
-  set(op, at::redispatch::cudnn_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<int64_t>(op.args[5]), get<bool>(op.args[6]), get<bool>(op.args[7])));
+  set(op, at::redispatch::cudnn_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<int64_t>(op.args[5]), get<bool>(op.args[6]), get<bool>(op.args[7])));
   break;
 
 case H_CUDNN_CONVOLUTION:
-  set(op, at::redispatch::cudnn_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<int64_t>(op.args[5]), get<bool>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::cudnn_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<int64_t>(op.args[5]), get<bool>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 case H_CUDNN_CONVOLUTION_BACKWARD_INPUT:
-  set(op, at::redispatch::cudnn_convolution_backward_input(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
+  set(op, at::redispatch::cudnn_convolution_backward_input(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor> cudnn_convolution_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32, std::array<bool,2> output_mask)
 
 case H_CUDNN_CONVOLUTION_BACKWARD_WEIGHT:
-  set(op, at::redispatch::cudnn_convolution_backward_weight(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
+  set(op, at::redispatch::cudnn_convolution_backward_weight(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
   break;
 
 case H_CUDNN_CONVOLUTION_TRANSPOSE_DEPRECATED:
-  set(op, at::redispatch::cudnn_convolution_transpose(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<int64_t>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
+  set(op, at::redispatch::cudnn_convolution_transpose(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), get<int64_t>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
   break;
 
 case H_CUDNN_CONVOLUTION_TRANSPOSE_DEPRECATED2:
-  set(op, at::redispatch::cudnn_convolution_transpose(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::cudnn_convolution_transpose(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 case H_CUDNN_CONVOLUTION_TRANSPOSE:
-  set(op, at::redispatch::cudnn_convolution_transpose(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
+  set(op, at::redispatch::cudnn_convolution_transpose(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor> cudnn_convolution_transpose_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32, std::array<bool,2> output_mask)
 
 case H_CUDNN_CONVOLUTION_TRANSPOSE_BACKWARD_INPUT:
-  set(op, at::redispatch::cudnn_convolution_transpose_backward_input(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<int64_t>(op.args[5]), get<bool>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::cudnn_convolution_transpose_backward_input(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<int64_t>(op.args[5]), get<bool>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 case H_CUDNN_CONVOLUTION_TRANSPOSE_BACKWARD_WEIGHT:
-  set(op, at::redispatch::cudnn_convolution_transpose_backward_weight(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
+  set(op, at::redispatch::cudnn_convolution_transpose_backward_weight(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
   break;
 
 case H_CUDNN_CONVOLUTION_RELU:
-  set(op, at::redispatch::cudnn_convolution_relu(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6])));
+  set(op, at::redispatch::cudnn_convolution_relu(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6])));
   break;
 
 case H_CUDNN_CONVOLUTION_ADD_RELU:
-  set(op, at::redispatch::cudnn_convolution_add_relu(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<c10::optional<at::Scalar>>(op.args[3]), get<c10::optional<at::Tensor>>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<at::IntArrayRef>(op.args[7]), get<int64_t>(op.args[8])));
+  set(op, at::redispatch::cudnn_convolution_add_relu(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<c10::optional<at::Scalar>>(op.args[3]), get<c10::optional<at::Tensor>>(op.args[4]), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), std::move(get<at::IntArrayRef>(op.args[7])), get<int64_t>(op.args[8])));
   break;
 
 case H_CUDNN_GRID_SAMPLER:
@@ -1233,34 +1233,34 @@ case H_CUMMAXMIN_BACKWARD:
   break;
 
 case H_CUMPROD:
-  set(op, at::redispatch::cumprod(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::cumprod(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H_CUMPROD_:
   init_update_in_place(op);
-  at::redispatch::cumprod_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]));
+  at::redispatch::cumprod_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])));
   end_update_in_place(op);
   break;
 
 case H_CUMPROD_OUT:
   init_update_in_place(op);
-  at::redispatch::cumprod_outf(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::cumprod_outf(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_CUMPROD_DIMNAME:
-  set(op, at::redispatch::cumprod(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::cumprod(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H_CUMPROD__DIMNAME:
   init_update_in_place(op);
-  at::redispatch::cumprod_(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]));
+  at::redispatch::cumprod_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])));
   end_update_in_place(op);
   break;
 
 case H_CUMPROD_DIMNAME_OUT:
   init_update_in_place(op);
-  at::redispatch::cumprod_outf(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::cumprod_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
@@ -1269,39 +1269,39 @@ case H_CUMPROD_BACKWARD:
   break;
 
 case H_CUMSUM:
-  set(op, at::redispatch::cumsum(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::cumsum(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H_CUMSUM_:
   init_update_in_place(op);
-  at::redispatch::cumsum_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]));
+  at::redispatch::cumsum_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])));
   end_update_in_place(op);
   break;
 
 case H_CUMSUM_OUT:
   init_update_in_place(op);
-  at::redispatch::cumsum_outf(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::cumsum_outf(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_CUMSUM_DIMNAME:
-  set(op, at::redispatch::cumsum(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::cumsum(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H_CUMSUM__DIMNAME:
   init_update_in_place(op);
-  at::redispatch::cumsum_(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]));
+  at::redispatch::cumsum_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])));
   end_update_in_place(op);
   break;
 
 case H_CUMSUM_DIMNAME_OUT:
   init_update_in_place(op);
-  at::redispatch::cumsum_outf(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::cumsum_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_CTC_LOSS_INTLIST:
-  set(op, at::redispatch::ctc_loss(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<int64_t>(op.args[4]), get<int64_t>(op.args[5]), get<bool>(op.args[6])));
+  set(op, at::redispatch::ctc_loss(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<int64_t>(op.args[4]), get<int64_t>(op.args[5]), get<bool>(op.args[6])));
   break;
 
 case H_CTC_LOSS_TENSOR:
@@ -1311,7 +1311,7 @@ case H_CTC_LOSS_TENSOR:
 // skip std::tuple<at::Tensor,at::Tensor> _ctc_loss(const at::Tensor & log_probs, const at::Tensor & targets, at::IntArrayRef input_lengths, at::IntArrayRef target_lengths, int64_t blank, bool zero_infinity)
 
 case H__CTC_LOSS_BACKWARD:
-  set(op, at::redispatch::_ctc_loss_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::Tensor>(op.args[5]), get<at::Tensor>(op.args[6]), get<int64_t>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::_ctc_loss_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<at::Tensor>(op.args[5]), get<at::Tensor>(op.args[6]), get<int64_t>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 case H_DIAG_EMBED:
@@ -1327,11 +1327,11 @@ case H_DIAGONAL:
   break;
 
 case H_DIAGONAL_DIMNAME:
-  set(op, at::redispatch::diagonal(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Dimname>(op.args[2]), get<at::Dimname>(op.args[3]), get<int64_t>(op.args[4])));
+  set(op, at::redispatch::diagonal(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<at::Dimname>(op.args[2])), std::move(get<at::Dimname>(op.args[3])), get<int64_t>(op.args[4])));
   break;
 
 case H_DIAGONAL_BACKWARD:
-  set(op, at::redispatch::diagonal_backward(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]), get<int64_t>(op.args[4])));
+  set(op, at::redispatch::diagonal_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]), get<int64_t>(op.args[4])));
   break;
 
 case H_FILL_DIAGONAL_:
@@ -1367,18 +1367,18 @@ case H_DIV_OUT:
   break;
 
 case H_DIV_TENSOR_MODE:
-  set(op, at::redispatch::div(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<std::string>>(op.args[2])));
+  set(op, at::redispatch::div(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<std::string>>(op.args[2]))));
   break;
 
 case H_DIV__TENSOR_MODE:
   init_update_in_place(op);
-  at::redispatch::div_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<std::string>>(op.args[2]));
+  at::redispatch::div_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<std::string>>(op.args[2])));
   end_update_in_place(op);
   break;
 
 case H_DIV_OUT_MODE:
   init_update_in_place(op);
-  at::redispatch::div_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<std::string>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::div_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<std::string>>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
@@ -1393,12 +1393,12 @@ case H_DIV__SCALAR:
   break;
 
 case H_DIV_SCALAR_MODE:
-  set(op, at::redispatch::div(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<std::string>>(op.args[2])));
+  set(op, at::redispatch::div(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), std::move(get<c10::optional<std::string>>(op.args[2]))));
   break;
 
 case H_DIV__SCALAR_MODE:
   init_update_in_place(op);
-  at::redispatch::div_(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<std::string>>(op.args[2]));
+  at::redispatch::div_(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), std::move(get<c10::optional<std::string>>(op.args[2])));
   end_update_in_place(op);
   break;
 
@@ -1429,28 +1429,28 @@ case H_DIVIDE__SCALAR:
   break;
 
 case H_DIVIDE_TENSOR_MODE:
-  set(op, at::redispatch::divide(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<std::string>>(op.args[2])));
+  set(op, at::redispatch::divide(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<std::string>>(op.args[2]))));
   break;
 
 case H_DIVIDE__TENSOR_MODE:
   init_update_in_place(op);
-  at::redispatch::divide_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<std::string>>(op.args[2]));
+  at::redispatch::divide_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<std::string>>(op.args[2])));
   end_update_in_place(op);
   break;
 
 case H_DIVIDE_OUT_MODE:
   init_update_in_place(op);
-  at::redispatch::divide_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<std::string>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::divide_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<std::string>>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_DIVIDE_SCALAR_MODE:
-  set(op, at::redispatch::divide(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<std::string>>(op.args[2])));
+  set(op, at::redispatch::divide(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), std::move(get<c10::optional<std::string>>(op.args[2]))));
   break;
 
 case H_DIVIDE__SCALAR_MODE:
   init_update_in_place(op);
-  at::redispatch::divide_(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<std::string>>(op.args[2]));
+  at::redispatch::divide_(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), std::move(get<c10::optional<std::string>>(op.args[2])));
   end_update_in_place(op);
   break;
 
@@ -1501,7 +1501,7 @@ case H_VDOT_OUT:
   break;
 
 case H_EINSUM:
-  set(op, at::redispatch::einsum(ks, get<std::string>(op.args[0]), get<at::TensorList>(op.args[1])));
+  set(op, at::redispatch::einsum(ks, std::move(get<std::string>(op.args[0])), std::move(get<at::TensorList>(op.args[1]))));
   break;
 
 case H_EMBEDDING:
@@ -1531,12 +1531,12 @@ case H_EMBEDDING_SPARSE_BACKWARD:
 // skip std::tuple<at::Tensor,at::Tensor> _rowwise_prune(const at::Tensor & weight, const at::Tensor & mask, at::ScalarType compressed_indices_dtype)
 
 case H_ROW_STACK:
-  set(op, at::redispatch::row_stack(ks, get<at::TensorList>(op.args[0])));
+  set(op, at::redispatch::row_stack(ks, std::move(get<at::TensorList>(op.args[0]))));
   break;
 
 case H_ROW_STACK_OUT:
   init_update_in_place(op);
-  at::redispatch::row_stack_outf(ks, get<at::TensorList>(op.args[0]), get<at::Tensor>(op.args[1]));
+  at::redispatch::row_stack_outf(ks, std::move(get<at::TensorList>(op.args[0])), get<at::Tensor>(op.args[1]));
   end_update_in_place(op);
   break;
 
@@ -1563,59 +1563,59 @@ case H__EMBEDDING_BAG_PER_SAMPLE_WEIGHTS_BACKWARD:
   break;
 
 case H_EMPTY_NAMES:
-  set(op, at::redispatch::empty(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::DimnameList>>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5]), get<c10::optional<at::MemoryFormat>>(op.args[6])));
+  set(op, at::redispatch::empty(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::DimnameList>>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[6]))));
   break;
 
 case H_EMPTY_MEMORY_FORMAT:
-  set(op, at::redispatch::empty(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4]), get<c10::optional<at::MemoryFormat>>(op.args[5])));
+  set(op, at::redispatch::empty(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[5]))));
   break;
 
 case H_NEW_EMPTY:
-  set(op, at::redispatch::new_empty(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::new_empty(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_NEW_EMPTY_STRIDED:
-  set(op, at::redispatch::new_empty_strided(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::new_empty_strided(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_NEW_FULL:
-  set(op, at::redispatch::new_full(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Scalar>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::new_full(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Scalar>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_NEW_ZEROS:
-  set(op, at::redispatch::new_zeros(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::new_zeros(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H__EMPTY_AFFINE_QUANTIZED:
-  set(op, at::redispatch::_empty_affine_quantized(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4]), get<double>(op.args[5]), get<int64_t>(op.args[6]), get<c10::optional<at::MemoryFormat>>(op.args[7])));
+  set(op, at::redispatch::_empty_affine_quantized(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4]), get<double>(op.args[5]), get<int64_t>(op.args[6]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[7]))));
   break;
 
 case H__EMPTY_PER_CHANNEL_AFFINE_QUANTIZED:
-  set(op, at::redispatch::_empty_per_channel_affine_quantized(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<int64_t>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<c10::optional<at::Layout>>(op.args[5]), get<c10::optional<at::Device>>(op.args[6]), get<c10::optional<bool>>(op.args[7]), get<c10::optional<at::MemoryFormat>>(op.args[8])));
+  set(op, at::redispatch::_empty_per_channel_affine_quantized(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<int64_t>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4])), std::move(get<c10::optional<at::Layout>>(op.args[5])), std::move(get<c10::optional<at::Device>>(op.args[6])), get<c10::optional<bool>>(op.args[7]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[8]))));
   break;
 
 case H_RESIZE_:
   init_update_in_place(op);
-  at::redispatch::resize_(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<at::MemoryFormat>>(op.args[2]));
+  at::redispatch::resize_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<c10::optional<at::MemoryFormat>>(op.args[2])));
   end_update_in_place(op);
   break;
 
 case H_EMPTY_QUANTIZED:
-  set(op, at::redispatch::empty_quantized(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1])));
+  set(op, at::redispatch::empty_quantized(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1])));
   break;
 
 case H_EMPTY_OUT:
   init_update_in_place(op);
-  at::redispatch::empty_outf(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::MemoryFormat>>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::empty_outf(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::MemoryFormat>>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_EMPTY_LIKE:
-  set(op, at::redispatch::empty_like(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4]), get<c10::optional<at::MemoryFormat>>(op.args[5])));
+  set(op, at::redispatch::empty_like(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[5]))));
   break;
 
 case H_EMPTY_STRIDED:
-  set(op, at::redispatch::empty_strided(ks, get<at::IntArrayRef>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::empty_strided(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_ERF_OUT:
@@ -1649,7 +1649,7 @@ case H_EXPM1_OUT:
   break;
 
 case H_EXPAND:
-  set(op, at::redispatch::expand(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::expand(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 case H_EXPAND_AS:
@@ -1657,11 +1657,11 @@ case H_EXPAND_AS:
   break;
 
 case H_EYE:
-  set(op, at::redispatch::eye(ks, get<int64_t>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::eye(ks, get<int64_t>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_EYE_M:
-  set(op, at::redispatch::eye(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::eye(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_EYE_OUT:
@@ -1681,23 +1681,23 @@ case H_FLATTEN_USING_INTS:
   break;
 
 case H_FLATTEN_NAMED_OUT_DIM:
-  set(op, at::redispatch::flatten(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<int64_t>(op.args[2]), get<at::Dimname>(op.args[3])));
+  set(op, at::redispatch::flatten(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<at::Dimname>(op.args[3]))));
   break;
 
 case H_FLATTEN_USING_NAMES:
-  set(op, at::redispatch::flatten(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Dimname>(op.args[2]), get<at::Dimname>(op.args[3])));
+  set(op, at::redispatch::flatten(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<at::Dimname>(op.args[2])), std::move(get<at::Dimname>(op.args[3]))));
   break;
 
 case H_FLATTEN_DIMNAMELIST:
-  set(op, at::redispatch::flatten(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<at::Dimname>(op.args[2])));
+  set(op, at::redispatch::flatten(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), std::move(get<at::Dimname>(op.args[2]))));
   break;
 
 case H_UNFLATTEN_INT:
-  set(op, at::redispatch::unflatten(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::DimnameList>>(op.args[3])));
+  set(op, at::redispatch::unflatten(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<at::DimnameList>>(op.args[3]))));
   break;
 
 case H_UNFLATTEN_DIMNAME:
-  set(op, at::redispatch::unflatten(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::DimnameList>(op.args[3])));
+  set(op, at::redispatch::unflatten(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::DimnameList>(op.args[3]))));
   break;
 
 case H_FILL__SCALAR:
@@ -1761,25 +1761,25 @@ case H_FRAC_OUT:
   break;
 
 case H_FULL_NAMES:
-  set(op, at::redispatch::full(ks, get<at::IntArrayRef>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<at::DimnameList>>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::full(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Scalar>(op.args[1]), std::move(get<c10::optional<at::DimnameList>>(op.args[2])), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_FULL:
-  set(op, at::redispatch::full(ks, get<at::IntArrayRef>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::full(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Scalar>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_FULL_OUT:
   init_update_in_place(op);
-  at::redispatch::full_outf(ks, get<at::IntArrayRef>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::full_outf(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Scalar>(op.args[1]), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_FULL_LIKE:
-  set(op, at::redispatch::full_like(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5]), get<c10::optional<at::MemoryFormat>>(op.args[6])));
+  set(op, at::redispatch::full_like(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[6]))));
   break;
 
 case H_FROM_FILE:
-  set(op, at::redispatch::from_file(ks, get<std::string>(op.args[0]), get<c10::optional<bool>>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::from_file(ks, std::move(get<std::string>(op.args[0])), get<c10::optional<bool>>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_GCD_OUT:
@@ -1817,39 +1817,39 @@ case H_GRID_SAMPLER_3D:
 // skip std::tuple<at::Tensor,at::Tensor> grid_sampler_3d_backward(const at::Tensor & grad_output, const at::Tensor & input, const at::Tensor & grid, int64_t interpolation_mode, int64_t padding_mode, bool align_corners)
 
 case H_HANN_WINDOW:
-  set(op, at::redispatch::hann_window(ks, get<int64_t>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::hann_window(ks, get<int64_t>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_HANN_WINDOW_PERIODIC:
-  set(op, at::redispatch::hann_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::hann_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_HAMMING_WINDOW:
-  set(op, at::redispatch::hamming_window(ks, get<int64_t>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::hamming_window(ks, get<int64_t>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_HAMMING_WINDOW_PERIODIC:
-  set(op, at::redispatch::hamming_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::hamming_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_HAMMING_WINDOW_PERIODIC_ALPHA:
-  set(op, at::redispatch::hamming_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), get<double>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::hamming_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), get<double>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_HAMMING_WINDOW_PERIODIC_ALPHA_BETA:
-  set(op, at::redispatch::hamming_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), get<double>(op.args[2]), get<double>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<c10::optional<at::Layout>>(op.args[5]), get<c10::optional<at::Device>>(op.args[6]), get<c10::optional<bool>>(op.args[7])));
+  set(op, at::redispatch::hamming_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), get<double>(op.args[2]), get<double>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4])), std::move(get<c10::optional<at::Layout>>(op.args[5])), std::move(get<c10::optional<at::Device>>(op.args[6])), get<c10::optional<bool>>(op.args[7])));
   break;
 
 case H_KAISER_WINDOW:
-  set(op, at::redispatch::kaiser_window(ks, get<int64_t>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::kaiser_window(ks, get<int64_t>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_KAISER_WINDOW_PERIODIC:
-  set(op, at::redispatch::kaiser_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::kaiser_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_KAISER_WINDOW_BETA:
-  set(op, at::redispatch::kaiser_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), get<double>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::kaiser_window(ks, get<int64_t>(op.args[0]), get<bool>(op.args[1]), get<double>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_HINGE_EMBEDDING_LOSS:
@@ -1865,32 +1865,32 @@ case H_GROUP_NORM:
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> native_group_norm_backward(const at::Tensor & grad_out, const at::Tensor & input, const at::Tensor & mean, const at::Tensor & rstd, const c10::optional<at::Tensor> & weight, int64_t N, int64_t C, int64_t HxW, int64_t group, std::array<bool,3> output_mask)
 
 case H__FFT_R2C:
-  set(op, at::redispatch::_fft_r2c(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::_fft_r2c(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 case H__FFT_R2C_OUT:
   init_update_in_place(op);
-  at::redispatch::_fft_r2c_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::_fft_r2c_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H__FFT_C2R:
-  set(op, at::redispatch::_fft_c2r(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3])));
+  set(op, at::redispatch::_fft_c2r(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<int64_t>(op.args[3])));
   break;
 
 case H__FFT_C2R_OUT:
   init_update_in_place(op);
-  at::redispatch::_fft_c2r_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::_fft_c2r_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H__FFT_C2C:
-  set(op, at::redispatch::_fft_c2c(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::_fft_c2c(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 case H__FFT_C2C_OUT:
   init_update_in_place(op);
-  at::redispatch::_fft_c2c_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::_fft_c2c_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
@@ -1918,12 +1918,12 @@ case H_INDEX_COPY:
 
 case H_INDEX_COPY__DIMNAME:
   init_update_in_place(op);
-  at::redispatch::index_copy_(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::index_copy_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_INDEX_COPY_DIMNAME:
-  set(op, at::redispatch::index_copy(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3])));
+  set(op, at::redispatch::index_copy(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3])));
   break;
 
 case H_INDEX_PUT_:
@@ -2005,7 +2005,7 @@ case H_KRON_OUT:
 // skip std::tuple<at::Tensor &,at::Tensor &> kthvalue_outf(const at::Tensor & self, int64_t k, at::Dimname dim, bool keepdim, at::Tensor & values, at::Tensor & indices)
 
 case H_LAYER_NORM:
-  set(op, at::redispatch::layer_norm(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<double>(op.args[4]), get<bool>(op.args[5])));
+  set(op, at::redispatch::layer_norm(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<c10::optional<at::Tensor>>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<double>(op.args[4]), get<bool>(op.args[5])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> native_layer_norm(const at::Tensor & input, at::IntArrayRef normalized_shape, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, double eps)
@@ -2037,7 +2037,7 @@ case H_MKLDNN_LINEAR:
   break;
 
 case H_MKLDNN_LINEAR_BACKWARD_INPUT:
-  set(op, at::redispatch::mkldnn_linear_backward_input(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2])));
+  set(op, at::redispatch::mkldnn_linear_backward_input(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor> mkldnn_linear_backward_weights(const at::Tensor & grad_output, const at::Tensor & input, const at::Tensor & weight, bool bias_defined)
@@ -2091,7 +2091,7 @@ case H_LDEXP_OUT:
   break;
 
 case H_LINSPACE:
-  set(op, at::redispatch::linspace(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::linspace(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_LINSPACE_OUT:
@@ -2201,7 +2201,7 @@ case H_LOGDET:
   break;
 
 case H_LOGSPACE:
-  set(op, at::redispatch::logspace(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<double>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<c10::optional<at::Layout>>(op.args[5]), get<c10::optional<at::Device>>(op.args[6]), get<c10::optional<bool>>(op.args[7])));
+  set(op, at::redispatch::logspace(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<double>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4])), std::move(get<c10::optional<at::Layout>>(op.args[5])), std::move(get<c10::optional<at::Device>>(op.args[6])), get<c10::optional<bool>>(op.args[7])));
   break;
 
 case H_LOGSPACE_OUT:
@@ -2211,11 +2211,11 @@ case H_LOGSPACE_OUT:
   break;
 
 case H_LOG_SOFTMAX_INT:
-  set(op, at::redispatch::log_softmax(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::log_softmax(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H_LOG_SOFTMAX_DIMNAME:
-  set(op, at::redispatch::log_softmax(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::log_softmax(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H__LOG_SOFTMAX:
@@ -2247,32 +2247,32 @@ case H_LOGCUMSUMEXP_OUT:
   break;
 
 case H_LOGCUMSUMEXP_DIMNAME:
-  set(op, at::redispatch::logcumsumexp(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1])));
+  set(op, at::redispatch::logcumsumexp(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1]))));
   break;
 
 case H_LOGCUMSUMEXP_DIMNAME_OUT:
   init_update_in_place(op);
-  at::redispatch::logcumsumexp_outf(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::logcumsumexp_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_LOGSUMEXP:
-  set(op, at::redispatch::logsumexp(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::logsumexp(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 case H_LOGSUMEXP_OUT:
   init_update_in_place(op);
-  at::redispatch::logsumexp_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::logsumexp_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_LOGSUMEXP_NAMES:
-  set(op, at::redispatch::logsumexp(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::logsumexp(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 case H_LOGSUMEXP_NAMES_OUT:
   init_update_in_place(op);
-  at::redispatch::logsumexp_outf(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::logsumexp_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
@@ -2339,78 +2339,78 @@ case H__COMPUTE_LINEAR_COMBINATION_OUT:
 // skip std::tuple<at::Tensor &,at::Tensor &> max_outf(const at::Tensor & self, at::Dimname dim, bool keepdim, at::Tensor & max, at::Tensor & max_values)
 
 case H_VALUE_SELECTING_REDUCTION_BACKWARD:
-  set(op, at::redispatch::value_selecting_reduction_backward(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<bool>(op.args[4])));
+  set(op, at::redispatch::value_selecting_reduction_backward(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), get<bool>(op.args[4])));
   break;
 
 case H_AMAX:
-  set(op, at::redispatch::amax(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::amax(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 case H_AMAX_OUT:
   init_update_in_place(op);
-  at::redispatch::amax_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::amax_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor> max_pool1d_with_indices(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode)
 
 case H_MAX_POOL1D:
-  set(op, at::redispatch::max_pool1d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<bool>(op.args[5])));
+  set(op, at::redispatch::max_pool1d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<bool>(op.args[5])));
   break;
 
 case H_MAX_POOL2D:
-  set(op, at::redispatch::max_pool2d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<bool>(op.args[5])));
+  set(op, at::redispatch::max_pool2d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<bool>(op.args[5])));
   break;
 
 case H_MKLDNN_MAX_POOL2D:
-  set(op, at::redispatch::mkldnn_max_pool2d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<bool>(op.args[5])));
+  set(op, at::redispatch::mkldnn_max_pool2d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<bool>(op.args[5])));
   break;
 
 case H_MKLDNN_MAX_POOL2D_BACKWARD:
-  set(op, at::redispatch::mkldnn_max_pool2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<bool>(op.args[7])));
+  set(op, at::redispatch::mkldnn_max_pool2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), get<bool>(op.args[7])));
   break;
 
 case H_MKLDNN_MAX_POOL3D:
-  set(op, at::redispatch::mkldnn_max_pool3d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<bool>(op.args[5])));
+  set(op, at::redispatch::mkldnn_max_pool3d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<bool>(op.args[5])));
   break;
 
 case H_MKLDNN_MAX_POOL3D_BACKWARD:
-  set(op, at::redispatch::mkldnn_max_pool3d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<bool>(op.args[7])));
+  set(op, at::redispatch::mkldnn_max_pool3d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), get<bool>(op.args[7])));
   break;
 
 case H_QUANTIZED_MAX_POOL1D:
-  set(op, at::redispatch::quantized_max_pool1d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<bool>(op.args[5])));
+  set(op, at::redispatch::quantized_max_pool1d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<bool>(op.args[5])));
   break;
 
 case H_QUANTIZED_MAX_POOL2D:
-  set(op, at::redispatch::quantized_max_pool2d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<bool>(op.args[5])));
+  set(op, at::redispatch::quantized_max_pool2d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<bool>(op.args[5])));
   break;
 
 case H_MAX_POOL3D:
-  set(op, at::redispatch::max_pool3d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<bool>(op.args[5])));
+  set(op, at::redispatch::max_pool3d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<bool>(op.args[5])));
   break;
 
 case H_MEAN:
-  set(op, at::redispatch::mean(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1])));
+  set(op, at::redispatch::mean(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1]))));
   break;
 
 case H_MEAN_DIM:
-  set(op, at::redispatch::mean(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3])));
+  set(op, at::redispatch::mean(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3]))));
   break;
 
 case H_MEAN_OUT:
   init_update_in_place(op);
-  at::redispatch::mean_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::mean_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_MEAN_NAMES_DIM:
-  set(op, at::redispatch::mean(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3])));
+  set(op, at::redispatch::mean(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3]))));
   break;
 
 case H_MEAN_NAMES_OUT:
   init_update_in_place(op);
-  at::redispatch::mean_outf(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::mean_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
@@ -2447,21 +2447,21 @@ case H_NANMEDIAN:
 // skip std::tuple<at::Tensor &,at::Tensor &> min_outf(const at::Tensor & self, at::Dimname dim, bool keepdim, at::Tensor & min, at::Tensor & min_indices)
 
 case H_AMIN:
-  set(op, at::redispatch::amin(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::amin(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 case H_AMIN_OUT:
   init_update_in_place(op);
-  at::redispatch::amin_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::amin_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_MKLDNN_CONVOLUTION:
-  set(op, at::redispatch::mkldnn_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6])));
+  set(op, at::redispatch::mkldnn_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6])));
   break;
 
 case H_MKLDNN_CONVOLUTION_BACKWARD_INPUT:
-  set(op, at::redispatch::mkldnn_convolution_backward_input(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7])));
+  set(op, at::redispatch::mkldnn_convolution_backward_input(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor> mkldnn_convolution_backward_weights(at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool bias_defined)
@@ -2473,11 +2473,11 @@ case H_MKLDNN_CONVOLUTION_BACKWARD_INPUT:
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> miopen_batch_norm_backward(const at::Tensor & input, const at::Tensor & grad_output, const at::Tensor & weight, const c10::optional<at::Tensor> & running_mean, const c10::optional<at::Tensor> & running_var, const c10::optional<at::Tensor> & save_mean, const c10::optional<at::Tensor> & save_var, double epsilon)
 
 case H_MIOPEN_CONVOLUTION:
-  set(op, at::redispatch::miopen_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::miopen_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 case H_MIOPEN_CONVOLUTION_BACKWARD_INPUT:
-  set(op, at::redispatch::miopen_convolution_backward_input(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::miopen_convolution_backward_input(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> miopen_convolution_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, std::array<bool,3> output_mask)
@@ -2487,35 +2487,35 @@ case H_MIOPEN_CONVOLUTION_BACKWARD_BIAS:
   break;
 
 case H_MIOPEN_CONVOLUTION_BACKWARD_WEIGHT:
-  set(op, at::redispatch::miopen_convolution_backward_weight(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::miopen_convolution_backward_weight(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 case H_MIOPEN_CONVOLUTION_TRANSPOSE:
-  set(op, at::redispatch::miopen_convolution_transpose(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<int64_t>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
+  set(op, at::redispatch::miopen_convolution_transpose(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), get<int64_t>(op.args[7]), get<bool>(op.args[8]), get<bool>(op.args[9])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> miopen_convolution_transpose_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, std::array<bool,3> output_mask)
 
 case H_MIOPEN_CONVOLUTION_TRANSPOSE_BACKWARD_INPUT:
-  set(op, at::redispatch::miopen_convolution_transpose_backward_input(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<int64_t>(op.args[5]), get<bool>(op.args[6]), get<bool>(op.args[7])));
+  set(op, at::redispatch::miopen_convolution_transpose_backward_input(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<int64_t>(op.args[5]), get<bool>(op.args[6]), get<bool>(op.args[7])));
   break;
 
 case H_MIOPEN_CONVOLUTION_TRANSPOSE_BACKWARD_WEIGHT:
-  set(op, at::redispatch::miopen_convolution_transpose_backward_weight(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::miopen_convolution_transpose_backward_weight(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 case H_MIOPEN_DEPTHWISE_CONVOLUTION:
-  set(op, at::redispatch::miopen_depthwise_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::miopen_depthwise_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 case H_MIOPEN_DEPTHWISE_CONVOLUTION_BACKWARD_INPUT:
-  set(op, at::redispatch::miopen_depthwise_convolution_backward_input(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::miopen_depthwise_convolution_backward_input(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> miopen_depthwise_convolution_backward(const at::Tensor & self, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, std::array<bool,3> output_mask)
 
 case H_MIOPEN_DEPTHWISE_CONVOLUTION_BACKWARD_WEIGHT:
-  set(op, at::redispatch::miopen_depthwise_convolution_backward_weight(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
+  set(op, at::redispatch::miopen_depthwise_convolution_backward_weight(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<int64_t>(op.args[6]), get<bool>(op.args[7]), get<bool>(op.args[8])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor,at::Tensor> miopen_rnn(const at::Tensor & input, at::TensorList weight, int64_t weight_stride0, const at::Tensor & hx, const c10::optional<at::Tensor> & cx, int64_t mode, int64_t hidden_size, int64_t num_layers, bool batch_first, double dropout, bool train, bool bidirectional, at::IntArrayRef batch_sizes, const c10::optional<at::Tensor> & dropout_state)
@@ -2677,35 +2677,35 @@ case H_BATCH_NORM_BACKWARD_ELEMT:
 // skip bool _nnpack_available()
 
 case H__NNPACK_SPATIAL_CONVOLUTION:
-  set(op, at::redispatch::_nnpack_spatial_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4])));
+  set(op, at::redispatch::_nnpack_spatial_convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4]))));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> _nnpack_spatial_convolution_backward(const at::Tensor & input, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, std::array<bool,3> output_mask)
 
 case H__NNPACK_SPATIAL_CONVOLUTION_BACKWARD_INPUT:
-  set(op, at::redispatch::_nnpack_spatial_convolution_backward_input(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3])));
+  set(op, at::redispatch::_nnpack_spatial_convolution_backward_input(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3]))));
   break;
 
 case H__NNPACK_SPATIAL_CONVOLUTION_BACKWARD_WEIGHT:
-  set(op, at::redispatch::_nnpack_spatial_convolution_backward_weight(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3])));
+  set(op, at::redispatch::_nnpack_spatial_convolution_backward_weight(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3]))));
   break;
 
 case H_ONES_NAMES:
-  set(op, at::redispatch::ones(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::DimnameList>>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::ones(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::DimnameList>>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_ONES:
-  set(op, at::redispatch::ones(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::ones(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_ONES_OUT:
   init_update_in_place(op);
-  at::redispatch::ones_outf(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]));
+  at::redispatch::ones_outf(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]));
   end_update_in_place(op);
   break;
 
 case H_ONES_LIKE:
-  set(op, at::redispatch::ones_like(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4]), get<c10::optional<at::MemoryFormat>>(op.args[5])));
+  set(op, at::redispatch::ones_like(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[5]))));
   break;
 
 case H_PAIRWISE_DISTANCE:
@@ -2745,11 +2745,11 @@ case H_COSINE_SIMILARITY:
   break;
 
 case H_PERMUTE:
-  set(op, at::redispatch::permute(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::permute(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_MOVEDIM_INTLIST:
-  set(op, at::redispatch::movedim(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2])));
+  set(op, at::redispatch::movedim(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2]))));
   break;
 
 case H_MOVEDIM_INT:
@@ -2757,7 +2757,7 @@ case H_MOVEDIM_INT:
   break;
 
 case H_MOVEAXIS_INTLIST:
-  set(op, at::redispatch::moveaxis(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2])));
+  set(op, at::redispatch::moveaxis(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2]))));
   break;
 
 case H_MOVEAXIS_INT:
@@ -2827,127 +2827,127 @@ case H_DEG2RAD_OUT:
   break;
 
 case H_SCALAR_TENSOR:
-  set(op, at::redispatch::scalar_tensor(ks, get<at::Scalar>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::scalar_tensor(ks, get<at::Scalar>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_RAND_NAMES:
-  set(op, at::redispatch::rand(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::DimnameList>>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::rand(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::DimnameList>>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_RAND_GENERATOR_WITH_NAMES:
-  set(op, at::redispatch::rand(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1]), get<c10::optional<at::DimnameList>>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::rand(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::Generator>>(op.args[1])), std::move(get<c10::optional<at::DimnameList>>(op.args[2])), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_RAND:
-  set(op, at::redispatch::rand(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::rand(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_RAND_GENERATOR:
-  set(op, at::redispatch::rand(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::rand(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::Generator>>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_RAND_OUT:
   init_update_in_place(op);
-  at::redispatch::rand_outf(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]));
+  at::redispatch::rand_outf(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]));
   end_update_in_place(op);
   break;
 
 case H_RAND_GENERATOR_OUT:
   init_update_in_place(op);
-  at::redispatch::rand_outf(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::rand_outf(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::Generator>>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_RAND_LIKE:
-  set(op, at::redispatch::rand_like(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4]), get<c10::optional<at::MemoryFormat>>(op.args[5])));
+  set(op, at::redispatch::rand_like(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[5]))));
   break;
 
 case H_RANDINT:
-  set(op, at::redispatch::randint(ks, get<int64_t>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::randint(ks, get<int64_t>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_RANDINT_GENERATOR:
-  set(op, at::redispatch::randint(ks, get<int64_t>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::randint(ks, get<int64_t>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<c10::optional<at::Generator>>(op.args[2])), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_RANDINT_LOW:
-  set(op, at::redispatch::randint(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::randint(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_RANDINT_LOW_GENERATOR:
-  set(op, at::redispatch::randint(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<c10::optional<at::Layout>>(op.args[5]), get<c10::optional<at::Device>>(op.args[6]), get<c10::optional<bool>>(op.args[7])));
+  set(op, at::redispatch::randint(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<at::Generator>>(op.args[3])), std::move(get<c10::optional<at::ScalarType>>(op.args[4])), std::move(get<c10::optional<at::Layout>>(op.args[5])), std::move(get<c10::optional<at::Device>>(op.args[6])), get<c10::optional<bool>>(op.args[7])));
   break;
 
 case H_RANDINT_OUT:
   init_update_in_place(op);
-  at::redispatch::randint_outf(ks, get<int64_t>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::randint_outf(ks, get<int64_t>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_RANDINT_GENERATOR_OUT:
   init_update_in_place(op);
-  at::redispatch::randint_outf(ks, get<int64_t>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::randint_outf(ks, get<int64_t>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<c10::optional<at::Generator>>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_RANDINT_LOW_OUT:
   init_update_in_place(op);
-  at::redispatch::randint_outf(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::randint_outf(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_RANDINT_LOW_GENERATOR_OUT:
   init_update_in_place(op);
-  at::redispatch::randint_outf(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::randint_outf(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<at::Generator>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_RANDINT_LIKE:
-  set(op, at::redispatch::randint_like(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5]), get<c10::optional<at::MemoryFormat>>(op.args[6])));
+  set(op, at::redispatch::randint_like(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[6]))));
   break;
 
 case H_RANDINT_LIKE_LOW_DTYPE:
-  set(op, at::redispatch::randint_like(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6]), get<c10::optional<at::MemoryFormat>>(op.args[7])));
+  set(op, at::redispatch::randint_like(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[7]))));
   break;
 
 case H_RANDN:
-  set(op, at::redispatch::randn(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::randn(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_RANDN_GENERATOR:
-  set(op, at::redispatch::randn(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::randn(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::Generator>>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_RANDN_NAMES:
-  set(op, at::redispatch::randn(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::DimnameList>>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::randn(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::DimnameList>>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_RANDN_GENERATOR_WITH_NAMES:
-  set(op, at::redispatch::randn(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1]), get<c10::optional<at::DimnameList>>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::randn(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::Generator>>(op.args[1])), std::move(get<c10::optional<at::DimnameList>>(op.args[2])), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_RANDN_OUT:
   init_update_in_place(op);
-  at::redispatch::randn_outf(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]));
+  at::redispatch::randn_outf(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]));
   end_update_in_place(op);
   break;
 
 case H_RANDN_GENERATOR_OUT:
   init_update_in_place(op);
-  at::redispatch::randn_outf(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::randn_outf(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::Generator>>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_RANDN_LIKE:
-  set(op, at::redispatch::randn_like(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4]), get<c10::optional<at::MemoryFormat>>(op.args[5])));
+  set(op, at::redispatch::randn_like(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[5]))));
   break;
 
 case H_RANDPERM:
-  set(op, at::redispatch::randperm(ks, get<int64_t>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::randperm(ks, get<int64_t>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_RANDPERM_GENERATOR:
-  set(op, at::redispatch::randperm(ks, get<int64_t>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::randperm(ks, get<int64_t>(op.args[0]), std::move(get<c10::optional<at::Generator>>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_RANDPERM_OUT:
@@ -2958,16 +2958,16 @@ case H_RANDPERM_OUT:
 
 case H_RANDPERM_GENERATOR_OUT:
   init_update_in_place(op);
-  at::redispatch::randperm_outf(ks, get<int64_t>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::randperm_outf(ks, get<int64_t>(op.args[0]), std::move(get<c10::optional<at::Generator>>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_RANGE_STEP:
-  set(op, at::redispatch::range(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::range(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_RANGE:
-  set(op, at::redispatch::range(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::range(ks, get<at::Scalar>(op.args[0]), get<at::Scalar>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_RANGE_OUT:
@@ -3019,7 +3019,7 @@ case H_NEGATIVE_OUT:
   break;
 
 case H_REPEAT:
-  set(op, at::redispatch::repeat(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::repeat(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_REPEAT_INTERLEAVE_TENSOR:
@@ -3035,11 +3035,11 @@ case H_REPEAT_INTERLEAVE_SELF_INT:
   break;
 
 case H_RESHAPE:
-  set(op, at::redispatch::reshape(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::reshape(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H__MKLDNN_RESHAPE:
-  set(op, at::redispatch::_mkldnn_reshape(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::_mkldnn_reshape(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_RESHAPE_AS:
@@ -3053,12 +3053,12 @@ case H_ROUND_OUT:
   break;
 
 case H_RRELU:
-  set(op, at::redispatch::rrelu(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::Generator>>(op.args[4])));
+  set(op, at::redispatch::rrelu(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]), get<bool>(op.args[3]), std::move(get<c10::optional<at::Generator>>(op.args[4]))));
   break;
 
 case H_RRELU_:
   init_update_in_place(op);
-  at::redispatch::rrelu_(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::Generator>>(op.args[4]));
+  at::redispatch::rrelu_(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]), get<bool>(op.args[3]), std::move(get<c10::optional<at::Generator>>(op.args[4])));
   end_update_in_place(op);
   break;
 
@@ -3115,7 +3115,7 @@ case H_RSQRT_OUT:
   break;
 
 case H_SELECT_DIMNAME:
-  set(op, at::redispatch::select(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<int64_t>(op.args[2])));
+  set(op, at::redispatch::select(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<int64_t>(op.args[2])));
   break;
 
 case H_SELECT_INT:
@@ -3123,7 +3123,7 @@ case H_SELECT_INT:
   break;
 
 case H_SELECT_BACKWARD:
-  set(op, at::redispatch::select_backward(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3])));
+  set(op, at::redispatch::select_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<int64_t>(op.args[3])));
   break;
 
 case H_SELU:
@@ -3233,7 +3233,7 @@ case H_SLICE_TENSOR:
   break;
 
 case H_SLICE_BACKWARD:
-  set(op, at::redispatch::slice_backward(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]), get<int64_t>(op.args[4]), get<int64_t>(op.args[5])));
+  set(op, at::redispatch::slice_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]), get<int64_t>(op.args[4]), get<int64_t>(op.args[5])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor> slogdet(const at::Tensor & self)
@@ -3243,11 +3243,11 @@ case H_SMM:
   break;
 
 case H_SOFTMAX_INT:
-  set(op, at::redispatch::softmax(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::softmax(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H_SOFTMAX_DIMNAME:
-  set(op, at::redispatch::softmax(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::softmax(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H__SOFTMAX:
@@ -3287,7 +3287,7 @@ case H_SQUEEZE_DIM:
   break;
 
 case H_SQUEEZE_DIMNAME:
-  set(op, at::redispatch::squeeze(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1])));
+  set(op, at::redispatch::squeeze(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1]))));
   break;
 
 case H_SQUEEZE_:
@@ -3304,7 +3304,7 @@ case H_SQUEEZE__DIM:
 
 case H_SQUEEZE__DIMNAME:
   init_update_in_place(op);
-  at::redispatch::squeeze_(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]));
+  at::redispatch::squeeze_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])));
   end_update_in_place(op);
   break;
 
@@ -3319,52 +3319,52 @@ case H_SSPADDMM_OUT:
   break;
 
 case H_STACK:
-  set(op, at::redispatch::stack(ks, get<at::TensorList>(op.args[0]), get<int64_t>(op.args[1])));
+  set(op, at::redispatch::stack(ks, std::move(get<at::TensorList>(op.args[0])), get<int64_t>(op.args[1])));
   break;
 
 case H_STACK_OUT:
   init_update_in_place(op);
-  at::redispatch::stack_outf(ks, get<at::TensorList>(op.args[0]), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::stack_outf(ks, std::move(get<at::TensorList>(op.args[0])), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H__STACK:
-  set(op, at::redispatch::_stack(ks, get<at::TensorList>(op.args[0]), get<int64_t>(op.args[1])));
+  set(op, at::redispatch::_stack(ks, std::move(get<at::TensorList>(op.args[0])), get<int64_t>(op.args[1])));
   break;
 
 case H__STACK_OUT:
   init_update_in_place(op);
-  at::redispatch::_stack_outf(ks, get<at::TensorList>(op.args[0]), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::_stack_outf(ks, std::move(get<at::TensorList>(op.args[0])), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_HSTACK:
-  set(op, at::redispatch::hstack(ks, get<at::TensorList>(op.args[0])));
+  set(op, at::redispatch::hstack(ks, std::move(get<at::TensorList>(op.args[0]))));
   break;
 
 case H_HSTACK_OUT:
   init_update_in_place(op);
-  at::redispatch::hstack_outf(ks, get<at::TensorList>(op.args[0]), get<at::Tensor>(op.args[1]));
+  at::redispatch::hstack_outf(ks, std::move(get<at::TensorList>(op.args[0])), get<at::Tensor>(op.args[1]));
   end_update_in_place(op);
   break;
 
 case H_VSTACK:
-  set(op, at::redispatch::vstack(ks, get<at::TensorList>(op.args[0])));
+  set(op, at::redispatch::vstack(ks, std::move(get<at::TensorList>(op.args[0]))));
   break;
 
 case H_VSTACK_OUT:
   init_update_in_place(op);
-  at::redispatch::vstack_outf(ks, get<at::TensorList>(op.args[0]), get<at::Tensor>(op.args[1]));
+  at::redispatch::vstack_outf(ks, std::move(get<at::TensorList>(op.args[0])), get<at::Tensor>(op.args[1]));
   end_update_in_place(op);
   break;
 
 case H_DSTACK:
-  set(op, at::redispatch::dstack(ks, get<at::TensorList>(op.args[0])));
+  set(op, at::redispatch::dstack(ks, std::move(get<at::TensorList>(op.args[0]))));
   break;
 
 case H_DSTACK_OUT:
   init_update_in_place(op);
-  at::redispatch::dstack_outf(ks, get<at::TensorList>(op.args[0]), get<at::Tensor>(op.args[1]));
+  at::redispatch::dstack_outf(ks, std::move(get<at::TensorList>(op.args[0])), get<at::Tensor>(op.args[1]));
   end_update_in_place(op);
   break;
 
@@ -3379,45 +3379,45 @@ case H_ISTFT:
 // skip int64_t stride(const at::Tensor & self, at::Dimname dim)
 
 case H_SUM:
-  set(op, at::redispatch::sum(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1])));
+  set(op, at::redispatch::sum(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1]))));
   break;
 
 case H_SUM_DIM_INTLIST:
-  set(op, at::redispatch::sum(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3])));
+  set(op, at::redispatch::sum(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3]))));
   break;
 
 case H_SUM_DIM_DIMNAMELIST:
-  set(op, at::redispatch::sum(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3])));
+  set(op, at::redispatch::sum(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3]))));
   break;
 
 case H_SUM_INTLIST_OUT:
   init_update_in_place(op);
-  at::redispatch::sum_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::sum_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_SUM_DIMNAMELIST_OUT:
   init_update_in_place(op);
-  at::redispatch::sum_outf(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::sum_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_NANSUM:
-  set(op, at::redispatch::nansum(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1])));
+  set(op, at::redispatch::nansum(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1]))));
   break;
 
 case H_NANSUM_DIM_INTLIST:
-  set(op, at::redispatch::nansum(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3])));
+  set(op, at::redispatch::nansum(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3]))));
   break;
 
 case H_NANSUM_INTLIST_OUT:
   init_update_in_place(op);
-  at::redispatch::nansum_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::nansum_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_SUM_TO_SIZE:
-  set(op, at::redispatch::sum_to_size(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::sum_to_size(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_SQRT:
@@ -3451,11 +3451,11 @@ case H_STD:
   break;
 
 case H_STD_DIM:
-  set(op, at::redispatch::std(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::std(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 case H_STD_CORRECTION:
-  set(op, at::redispatch::std(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::std(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor> std_mean(const at::Tensor & self, bool unbiased)
@@ -3470,57 +3470,57 @@ case H_STD_CORRECTION:
 
 case H_STD_OUT:
   init_update_in_place(op);
-  at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_STD_CORRECTION_OUT:
   init_update_in_place(op);
-  at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_STD_NAMES_DIM:
-  set(op, at::redispatch::std(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::std(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<bool>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 case H_STD_NAMES_OUT:
   init_update_in_place(op);
-  at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<bool>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_STD_CORRECTION_NAMES:
-  set(op, at::redispatch::std(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::std(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 case H_STD_CORRECTION_NAMES_OUT:
   init_update_in_place(op);
-  at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::std_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_PROD:
-  set(op, at::redispatch::prod(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1])));
+  set(op, at::redispatch::prod(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1]))));
   break;
 
 case H_PROD_DIM_INT:
-  set(op, at::redispatch::prod(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3])));
+  set(op, at::redispatch::prod(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3]))));
   break;
 
 case H_PROD_INT_OUT:
   init_update_in_place(op);
-  at::redispatch::prod_outf(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::prod_outf(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_PROD_DIM_DIMNAME:
-  set(op, at::redispatch::prod(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3])));
+  set(op, at::redispatch::prod(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3]))));
   break;
 
 case H_PROD_DIMNAME_OUT:
   init_update_in_place(op);
-  at::redispatch::prod_outf(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::prod_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<bool>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
@@ -3557,12 +3557,12 @@ case H_TANH_OUT:
   break;
 
 case H_TENSORDOT:
-  set(op, at::redispatch::tensordot(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3])));
+  set(op, at::redispatch::tensordot(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3]))));
   break;
 
 case H_TENSORDOT_OUT:
   init_update_in_place(op);
-  at::redispatch::tensordot_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::tensordot_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
@@ -3587,7 +3587,7 @@ case H_THRESHOLD_BACKWARD:
   break;
 
 case H_TILE:
-  set(op, at::redispatch::tile(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::tile(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_TRANSPOSE_INT:
@@ -3595,7 +3595,7 @@ case H_TRANSPOSE_INT:
   break;
 
 case H_TRANSPOSE_DIMNAME:
-  set(op, at::redispatch::transpose(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Dimname>(op.args[2])));
+  set(op, at::redispatch::transpose(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<at::Dimname>(op.args[2]))));
   break;
 
 case H__MKLDNN_TRANSPOSE:
@@ -3619,7 +3619,7 @@ case H_ONE_HOT:
   break;
 
 case H_FLIP:
-  set(op, at::redispatch::flip(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::flip(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_FLIPLR:
@@ -3631,11 +3631,11 @@ case H_FLIPUD:
   break;
 
 case H_ROLL:
-  set(op, at::redispatch::roll(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2])));
+  set(op, at::redispatch::roll(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2]))));
   break;
 
 case H_ROT90:
-  set(op, at::redispatch::rot90(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<at::IntArrayRef>(op.args[2])));
+  set(op, at::redispatch::rot90(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2]))));
   break;
 
 case H_TRAPZ_X:
@@ -3647,7 +3647,7 @@ case H_TRAPZ_DX:
   break;
 
 case H__TRILINEAR:
-  set(op, at::redispatch::_trilinear(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<int64_t>(op.args[7])));
+  set(op, at::redispatch::_trilinear(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), get<int64_t>(op.args[7])));
   break;
 
 case H_TRIPLET_MARGIN_LOSS:
@@ -3703,7 +3703,7 @@ case H_TYPE_AS:
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> _unique2(const at::Tensor & self, bool sorted, bool return_inverse, bool return_counts)
 
 case H__UNSAFE_VIEW:
-  set(op, at::redispatch::_unsafe_view(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::_unsafe_view(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_UNSQUEEZE:
@@ -3725,42 +3725,42 @@ case H_VAR:
   break;
 
 case H_VAR_DIM:
-  set(op, at::redispatch::var(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::var(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 case H_VAR_CORRECTION:
-  set(op, at::redispatch::var(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::var(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 case H_VAR_OUT:
   init_update_in_place(op);
-  at::redispatch::var_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::var_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_VAR_CORRECTION_OUT:
   init_update_in_place(op);
-  at::redispatch::var_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::var_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_VAR_NAMES_DIM:
-  set(op, at::redispatch::var(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::var(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<bool>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 case H_VAR_NAMES_OUT:
   init_update_in_place(op);
-  at::redispatch::var_outf(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::var_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<bool>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_VAR_CORRECTION_NAMES:
-  set(op, at::redispatch::var(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::var(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 case H_VAR_CORRECTION_NAMES_OUT:
   init_update_in_place(op);
-  at::redispatch::var_outf(ks, get<at::Tensor>(op.args[0]), get<at::DimnameList>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::var_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::DimnameList>(op.args[1])), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
@@ -3815,21 +3815,21 @@ case H__WEIGHT_NORM:
 // skip std::tuple<at::Tensor,at::Tensor> _weight_norm_differentiable_backward(const at::Tensor & grad_w, const at::Tensor & saved_v, const at::Tensor & saved_g, const at::Tensor & saved_norms, int64_t dim)
 
 case H_ZEROS_NAMES:
-  set(op, at::redispatch::zeros(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::DimnameList>>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::zeros(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::DimnameList>>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_ZEROS:
-  set(op, at::redispatch::zeros(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::zeros(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_ZEROS_OUT:
   init_update_in_place(op);
-  at::redispatch::zeros_outf(ks, get<at::IntArrayRef>(op.args[0]), get<at::Tensor>(op.args[1]));
+  at::redispatch::zeros_outf(ks, std::move(get<at::IntArrayRef>(op.args[0])), get<at::Tensor>(op.args[1]));
   end_update_in_place(op);
   break;
 
 case H_ZEROS_LIKE:
-  set(op, at::redispatch::zeros_like(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4]), get<c10::optional<at::MemoryFormat>>(op.args[5])));
+  set(op, at::redispatch::zeros_like(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[5]))));
   break;
 
 case H__STANDARD_GAMMA_GRAD:
@@ -3837,7 +3837,7 @@ case H__STANDARD_GAMMA_GRAD:
   break;
 
 case H__STANDARD_GAMMA:
-  set(op, at::redispatch::_standard_gamma(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1])));
+  set(op, at::redispatch::_standard_gamma(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::Generator>>(op.args[1]))));
   break;
 
 case H__DIRICHLET_GRAD:
@@ -3845,15 +3845,15 @@ case H__DIRICHLET_GRAD:
   break;
 
 case H__SAMPLE_DIRICHLET:
-  set(op, at::redispatch::_sample_dirichlet(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1])));
+  set(op, at::redispatch::_sample_dirichlet(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::Generator>>(op.args[1]))));
   break;
 
 case H_POISSON:
-  set(op, at::redispatch::poisson(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1])));
+  set(op, at::redispatch::poisson(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::Generator>>(op.args[1]))));
   break;
 
 case H_BINOMIAL:
-  set(op, at::redispatch::binomial(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2])));
+  set(op, at::redispatch::binomial(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2]))));
   break;
 
 case H_NATIVE_NORM:
@@ -3861,7 +3861,7 @@ case H_NATIVE_NORM:
   break;
 
 case H_NATIVE_NORM_SCALAROPT_DIM_DTYPE:
-  set(op, at::redispatch::native_norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4])));
+  set(op, at::redispatch::native_norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4]))));
   break;
 
 case H__SPARSE_SUM:
@@ -3869,27 +3869,27 @@ case H__SPARSE_SUM:
   break;
 
 case H__SPARSE_SUM_DTYPE:
-  set(op, at::redispatch::_sparse_sum(ks, get<at::Tensor>(op.args[0]), get<at::ScalarType>(op.args[1])));
+  set(op, at::redispatch::_sparse_sum(ks, get<at::Tensor>(op.args[0]), std::move(get<at::ScalarType>(op.args[1]))));
   break;
 
 case H__SPARSE_SUM_DIM:
-  set(op, at::redispatch::_sparse_sum(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::_sparse_sum(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H__SPARSE_SUM_DIM_DTYPE:
-  set(op, at::redispatch::_sparse_sum(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::ScalarType>(op.args[2])));
+  set(op, at::redispatch::_sparse_sum(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::ScalarType>(op.args[2]))));
   break;
 
 case H__SPARSE_SUM_BACKWARD:
-  set(op, at::redispatch::_sparse_sum_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2])));
+  set(op, at::redispatch::_sparse_sum_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2]))));
   break;
 
 case H__SPARSE_SOFTMAX_INT:
-  set(op, at::redispatch::_sparse_softmax(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::_sparse_softmax(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H__SPARSE_SOFTMAX_DIMNAME:
-  set(op, at::redispatch::_sparse_softmax(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::_sparse_softmax(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H__SPARSE_SOFTMAX:
@@ -3901,11 +3901,11 @@ case H__SPARSE_SOFTMAX_BACKWARD_DATA:
   break;
 
 case H__SPARSE_LOG_SOFTMAX_INT:
-  set(op, at::redispatch::_sparse_log_softmax(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::_sparse_log_softmax(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H__SPARSE_LOG_SOFTMAX_DIMNAME:
-  set(op, at::redispatch::_sparse_log_softmax(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2])));
+  set(op, at::redispatch::_sparse_log_softmax(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2]))));
   break;
 
 case H__SPARSE_LOG_SOFTMAX:
@@ -3917,7 +3917,7 @@ case H__SPARSE_LOG_SOFTMAX_BACKWARD_DATA:
   break;
 
 case H_NORM_SCALAROPT_DTYPE:
-  set(op, at::redispatch::norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<at::ScalarType>(op.args[2])));
+  set(op, at::redispatch::norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<at::ScalarType>(op.args[2]))));
   break;
 
 case H_NORM_SCALAR:
@@ -3925,42 +3925,42 @@ case H_NORM_SCALAR:
   break;
 
 case H_NORM_SCALAROPT_DIM_DTYPE:
-  set(op, at::redispatch::norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<at::ScalarType>(op.args[4])));
+  set(op, at::redispatch::norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), std::move(get<at::ScalarType>(op.args[4]))));
   break;
 
 case H_NORM_SCALAROPT_DIM:
-  set(op, at::redispatch::norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3])));
   break;
 
 case H_NORM_DTYPE_OUT:
   init_update_in_place(op);
-  at::redispatch::norm_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<at::ScalarType>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::norm_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), std::move(get<at::ScalarType>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_NORM_OUT:
   init_update_in_place(op);
-  at::redispatch::norm_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::norm_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_NORM_NAMES_SCALAROPT_DIM_DTYPE:
-  set(op, at::redispatch::norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<at::DimnameList>(op.args[2]), get<bool>(op.args[3]), get<at::ScalarType>(op.args[4])));
+  set(op, at::redispatch::norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<at::DimnameList>(op.args[2])), get<bool>(op.args[3]), std::move(get<at::ScalarType>(op.args[4]))));
   break;
 
 case H_NORM_NAMES_SCALAROPT_DIM:
-  set(op, at::redispatch::norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<at::DimnameList>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<at::DimnameList>(op.args[2])), get<bool>(op.args[3])));
   break;
 
 case H_NORM_NAMES_DTYPE_OUT:
   init_update_in_place(op);
-  at::redispatch::norm_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<at::DimnameList>(op.args[2]), get<bool>(op.args[3]), get<at::ScalarType>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::norm_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<at::DimnameList>(op.args[2])), get<bool>(op.args[3]), std::move(get<at::ScalarType>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_NORM_NAMES_OUT:
   init_update_in_place(op);
-  at::redispatch::norm_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<at::DimnameList>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::norm_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<at::DimnameList>(op.args[2])), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
@@ -3973,12 +3973,12 @@ case H_FROBENIUS_NORM:
   break;
 
 case H_FROBENIUS_NORM_DIM:
-  set(op, at::redispatch::frobenius_norm(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::frobenius_norm(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 case H_FROBENIUS_NORM_OUT:
   init_update_in_place(op);
-  at::redispatch::frobenius_norm_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::frobenius_norm_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
@@ -3993,17 +3993,17 @@ case H_NUCLEAR_NORM_OUT:
   break;
 
 case H_NUCLEAR_NORM_DIM:
-  set(op, at::redispatch::nuclear_norm(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::nuclear_norm(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 case H_NUCLEAR_NORM_DIM_OUT:
   init_update_in_place(op);
-  at::redispatch::nuclear_norm_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::nuclear_norm_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_CLONE:
-  set(op, at::redispatch::clone(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::MemoryFormat>>(op.args[1])));
+  set(op, at::redispatch::clone(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[1]))));
   break;
 
 case H_POSITIVE:
@@ -4012,7 +4012,7 @@ case H_POSITIVE:
 
 case H_RESIZE_AS_:
   init_update_in_place(op);
-  at::redispatch::resize_as_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::MemoryFormat>>(op.args[2]));
+  at::redispatch::resize_as_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[2])));
   end_update_in_place(op);
   break;
 
@@ -4125,48 +4125,48 @@ case H_ADDMM_:
   break;
 
 case H_SPARSE_CSR_TENSOR_CROW_COL_VALUE_SIZE:
-  set(op, at::redispatch::sparse_csr_tensor(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<c10::optional<at::Layout>>(op.args[5]), get<c10::optional<at::Device>>(op.args[6]), get<c10::optional<bool>>(op.args[7])));
+  set(op, at::redispatch::sparse_csr_tensor(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<c10::optional<at::ScalarType>>(op.args[4])), std::move(get<c10::optional<at::Layout>>(op.args[5])), std::move(get<c10::optional<at::Device>>(op.args[6])), get<c10::optional<bool>>(op.args[7])));
   break;
 
 case H_SPARSE_CSR_TENSOR_CROW_COL_VALUE:
-  set(op, at::redispatch::sparse_csr_tensor(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::sparse_csr_tensor(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_SPARSE_COO_TENSOR_SIZE:
-  set(op, at::redispatch::sparse_coo_tensor(ks, get<at::IntArrayRef>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4])));
+  set(op, at::redispatch::sparse_coo_tensor(ks, std::move(get<at::IntArrayRef>(op.args[0])), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4])));
   break;
 
 case H_SPARSE_COO_TENSOR_INDICES:
-  set(op, at::redispatch::sparse_coo_tensor(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::sparse_coo_tensor(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_SPARSE_COO_TENSOR_INDICES_SIZE:
-  set(op, at::redispatch::sparse_coo_tensor(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::sparse_coo_tensor(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H__SPARSE_COO_TENSOR_UNSAFE:
-  set(op, at::redispatch::_sparse_coo_tensor_unsafe(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::_sparse_coo_tensor_unsafe(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 // skip void _validate_sparse_coo_tensor_args(const at::Tensor & indices, const at::Tensor & values, at::IntArrayRef size)
 
 case H__SPARSE_COO_TENSOR_WITH_DIMS:
-  set(op, at::redispatch::_sparse_coo_tensor_with_dims(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::_sparse_coo_tensor_with_dims(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H__SPARSE_COO_TENSOR_WITH_DIMS_AND_TENSORS:
-  set(op, at::redispatch::_sparse_coo_tensor_with_dims_and_tensors(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::Tensor>(op.args[3]), get<at::Tensor>(op.args[4]), get<c10::optional<at::ScalarType>>(op.args[5]), get<c10::optional<at::Layout>>(op.args[6]), get<c10::optional<at::Device>>(op.args[7]), get<c10::optional<bool>>(op.args[8])));
+  set(op, at::redispatch::_sparse_coo_tensor_with_dims_and_tensors(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<at::Tensor>(op.args[3]), get<at::Tensor>(op.args[4]), std::move(get<c10::optional<at::ScalarType>>(op.args[5])), std::move(get<c10::optional<at::Layout>>(op.args[6])), std::move(get<c10::optional<at::Device>>(op.args[7])), get<c10::optional<bool>>(op.args[8])));
   break;
 
 case H_SPARSE_RESIZE_:
   init_update_in_place(op);
-  at::redispatch::sparse_resize_(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]));
+  at::redispatch::sparse_resize_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_SPARSE_RESIZE_AND_CLEAR_:
   init_update_in_place(op);
-  at::redispatch::sparse_resize_and_clear_(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]));
+  at::redispatch::sparse_resize_and_clear_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]));
   end_update_in_place(op);
   break;
 
@@ -4175,7 +4175,7 @@ case H_SPARSE_MASK:
   break;
 
 case H_TO_DENSE:
-  set(op, at::redispatch::to_dense(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1])));
+  set(op, at::redispatch::to_dense(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1]))));
   break;
 
 case H_TO_DENSE_BACKWARD:
@@ -4261,15 +4261,15 @@ case H_TO_SPARSE:
   break;
 
 case H_TO_MKLDNN:
-  set(op, at::redispatch::to_mkldnn(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1])));
+  set(op, at::redispatch::to_mkldnn(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1]))));
   break;
 
 case H_MKLDNN_REORDER_CONV2D_WEIGHT:
-  set(op, at::redispatch::mkldnn_reorder_conv2d_weight(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<int64_t>(op.args[4])));
+  set(op, at::redispatch::mkldnn_reorder_conv2d_weight(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<int64_t>(op.args[4])));
   break;
 
 case H_MKLDNN_REORDER_CONV3D_WEIGHT:
-  set(op, at::redispatch::mkldnn_reorder_conv3d_weight(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<int64_t>(op.args[4])));
+  set(op, at::redispatch::mkldnn_reorder_conv3d_weight(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<int64_t>(op.args[4])));
   break;
 
 case H_TO_MKLDNN_BACKWARD:
@@ -4277,13 +4277,13 @@ case H_TO_MKLDNN_BACKWARD:
   break;
 
 case H_QUANTIZE_PER_TENSOR:
-  set(op, at::redispatch::quantize_per_tensor(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<int64_t>(op.args[2]), get<at::ScalarType>(op.args[3])));
+  set(op, at::redispatch::quantize_per_tensor(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<at::ScalarType>(op.args[3]))));
   break;
 
 // skip std::vector<at::Tensor> quantize_per_tensor(at::TensorList tensors, const at::Tensor & scales, const at::Tensor & zero_points, at::ScalarType dtype)
 
 case H_QUANTIZE_PER_CHANNEL:
-  set(op, at::redispatch::quantize_per_channel(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<int64_t>(op.args[3]), get<at::ScalarType>(op.args[4])));
+  set(op, at::redispatch::quantize_per_channel(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<int64_t>(op.args[3]), std::move(get<at::ScalarType>(op.args[4]))));
   break;
 
 case H_DEQUANTIZE_SELF:
@@ -4361,25 +4361,25 @@ case H__SATURATE_WEIGHT_TO_FP16:
 // skip std::tuple<at::Tensor,at::Tensor> choose_qparams_optimized(const at::Tensor & input, int64_t numel, int64_t n_bins, double ratio, int64_t bit_width)
 
 case H_TO_DTYPE_LAYOUT:
-  set(op, at::redispatch::to(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::ScalarType>>(op.args[1]), get<c10::optional<at::Layout>>(op.args[2]), get<c10::optional<at::Device>>(op.args[3]), get<c10::optional<bool>>(op.args[4]), get<bool>(op.args[5]), get<bool>(op.args[6]), get<c10::optional<at::MemoryFormat>>(op.args[7])));
+  set(op, at::redispatch::to(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1])), std::move(get<c10::optional<at::Layout>>(op.args[2])), std::move(get<c10::optional<at::Device>>(op.args[3])), get<c10::optional<bool>>(op.args[4]), get<bool>(op.args[5]), get<bool>(op.args[6]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[7]))));
   break;
 
 case H_TO_DEVICE:
-  set(op, at::redispatch::to(ks, get<at::Tensor>(op.args[0]), get<at::Device>(op.args[1]), get<at::ScalarType>(op.args[2]), get<bool>(op.args[3]), get<bool>(op.args[4]), get<c10::optional<at::MemoryFormat>>(op.args[5])));
+  set(op, at::redispatch::to(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Device>(op.args[1])), std::move(get<at::ScalarType>(op.args[2])), get<bool>(op.args[3]), get<bool>(op.args[4]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[5]))));
   break;
 
 case H_TO_DTYPE:
-  set(op, at::redispatch::to(ks, get<at::Tensor>(op.args[0]), get<at::ScalarType>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::MemoryFormat>>(op.args[4])));
+  set(op, at::redispatch::to(ks, get<at::Tensor>(op.args[0]), std::move(get<at::ScalarType>(op.args[1])), get<bool>(op.args[2]), get<bool>(op.args[3]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[4]))));
   break;
 
 case H_TO_OTHER:
-  set(op, at::redispatch::to(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::MemoryFormat>>(op.args[4])));
+  set(op, at::redispatch::to(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<bool>(op.args[2]), get<bool>(op.args[3]), std::move(get<c10::optional<at::MemoryFormat>>(op.args[4]))));
   break;
 
 // skip std::vector<at::Tensor> meshgrid(at::TensorList tensors)
 
 case H_CARTESIAN_PROD:
-  set(op, at::redispatch::cartesian_prod(ks, get<at::TensorList>(op.args[0])));
+  set(op, at::redispatch::cartesian_prod(ks, std::move(get<at::TensorList>(op.args[0]))));
   break;
 
 case H_COMBINATIONS:
@@ -4461,20 +4461,20 @@ case H_QUANTIZED_RNN_TANH_CELL:
 // skip std::tuple<at::Tensor,at::Tensor> _pack_padded_sequence(const at::Tensor & input, const at::Tensor & lengths, bool batch_first)
 
 case H__PACK_PADDED_SEQUENCE_BACKWARD:
-  set(op, at::redispatch::_pack_padded_sequence_backward(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Tensor>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::_pack_padded_sequence_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Tensor>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor> _pad_packed_sequence(const at::Tensor & data, const at::Tensor & batch_sizes, bool batch_first, const at::Scalar & padding_value, int64_t total_length)
 
 case H_SET__SOURCE_STORAGE:
   init_update_in_place(op);
-  at::redispatch::set_(ks, get<at::Tensor>(op.args[0]), get<at::Storage>(op.args[1]));
+  at::redispatch::set_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Storage>(op.args[1])));
   end_update_in_place(op);
   break;
 
 case H_SET__SOURCE_STORAGE_STORAGE_OFFSET:
   init_update_in_place(op);
-  at::redispatch::set_(ks, get<at::Tensor>(op.args[0]), get<at::Storage>(op.args[1]), get<int64_t>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]));
+  at::redispatch::set_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Storage>(op.args[1])), get<int64_t>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])));
   end_update_in_place(op);
   break;
 
@@ -4523,11 +4523,11 @@ case H_MASKED_SCATTER:
   break;
 
 case H_VIEW:
-  set(op, at::redispatch::view(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::view(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_VIEW_DTYPE:
-  set(op, at::redispatch::view(ks, get<at::Tensor>(op.args[0]), get<at::ScalarType>(op.args[1])));
+  set(op, at::redispatch::view(ks, get<at::Tensor>(op.args[0]), std::move(get<at::ScalarType>(op.args[1]))));
   break;
 
 case H_PUT_:
@@ -4561,7 +4561,7 @@ case H_INDEX_ADD_ALPHA:
   break;
 
 case H_INDEX_ADD_DIMNAME:
-  set(op, at::redispatch::index_add(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]), get<at::Scalar>(op.args[4])));
+  set(op, at::redispatch::index_add(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]), get<at::Scalar>(op.args[4])));
   break;
 
 case H_INDEX_FILL__INT_SCALAR:
@@ -4586,22 +4586,22 @@ case H_INDEX_FILL_INT_TENSOR:
 
 case H_INDEX_FILL__DIMNAME_SCALAR:
   init_update_in_place(op);
-  at::redispatch::index_fill_(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Scalar>(op.args[3]));
+  at::redispatch::index_fill_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<at::Scalar>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_INDEX_FILL__DIMNAME_TENSOR:
   init_update_in_place(op);
-  at::redispatch::index_fill_(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::index_fill_(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_INDEX_FILL_DIMNAME_SCALAR:
-  set(op, at::redispatch::index_fill(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Scalar>(op.args[3])));
+  set(op, at::redispatch::index_fill(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<at::Scalar>(op.args[3])));
   break;
 
 case H_INDEX_FILL_DIMNAME_TENSOR:
-  set(op, at::redispatch::index_fill(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3])));
+  set(op, at::redispatch::index_fill(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3])));
   break;
 
 case H_SCATTER__SRC:
@@ -4625,22 +4625,22 @@ case H_SCATTER_VALUE:
   break;
 
 case H_SCATTER_DIMNAME_SRC:
-  set(op, at::redispatch::scatter(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3])));
+  set(op, at::redispatch::scatter(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3])));
   break;
 
 case H_SCATTER_DIMNAME_VALUE:
-  set(op, at::redispatch::scatter(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Scalar>(op.args[3])));
+  set(op, at::redispatch::scatter(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<at::Scalar>(op.args[3])));
   break;
 
 case H_SCATTER__REDUCE:
   init_update_in_place(op);
-  at::redispatch::scatter_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]), get<std::string>(op.args[4]));
+  at::redispatch::scatter_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]), std::move(get<std::string>(op.args[4])));
   end_update_in_place(op);
   break;
 
 case H_SCATTER__VALUE_REDUCE:
   init_update_in_place(op);
-  at::redispatch::scatter_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Scalar>(op.args[3]), get<std::string>(op.args[4]));
+  at::redispatch::scatter_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Scalar>(op.args[3]), std::move(get<std::string>(op.args[4])));
   end_update_in_place(op);
   break;
 
@@ -4655,7 +4655,7 @@ case H_SCATTER_ADD:
   break;
 
 case H_SCATTER_ADD_DIMNAME:
-  set(op, at::redispatch::scatter_add(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3])));
+  set(op, at::redispatch::scatter_add(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3])));
   break;
 
 case H_EQ__SCALAR:
@@ -4944,49 +4944,49 @@ case H_ADDCDIV_:
 
 case H_RANDOM__FROM:
   init_update_in_place(op);
-  at::redispatch::random_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3]));
+  at::redispatch::random_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), std::move(get<c10::optional<at::Generator>>(op.args[3])));
   end_update_in_place(op);
   break;
 
 case H_RANDOM__TO:
   init_update_in_place(op);
-  at::redispatch::random_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2]));
+  at::redispatch::random_(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2])));
   end_update_in_place(op);
   break;
 
 case H_RANDOM_:
   init_update_in_place(op);
-  at::redispatch::random_(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Generator>>(op.args[1]));
+  at::redispatch::random_(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::Generator>>(op.args[1])));
   end_update_in_place(op);
   break;
 
 case H_UNIFORM_:
   init_update_in_place(op);
-  at::redispatch::uniform_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<double>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3]));
+  at::redispatch::uniform_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<double>(op.args[2]), std::move(get<c10::optional<at::Generator>>(op.args[3])));
   end_update_in_place(op);
   break;
 
 case H_CAUCHY_:
   init_update_in_place(op);
-  at::redispatch::cauchy_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<double>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3]));
+  at::redispatch::cauchy_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<double>(op.args[2]), std::move(get<c10::optional<at::Generator>>(op.args[3])));
   end_update_in_place(op);
   break;
 
 case H_LOG_NORMAL_:
   init_update_in_place(op);
-  at::redispatch::log_normal_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<double>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3]));
+  at::redispatch::log_normal_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<double>(op.args[2]), std::move(get<c10::optional<at::Generator>>(op.args[3])));
   end_update_in_place(op);
   break;
 
 case H_EXPONENTIAL_:
   init_update_in_place(op);
-  at::redispatch::exponential_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2]));
+  at::redispatch::exponential_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2])));
   end_update_in_place(op);
   break;
 
 case H_GEOMETRIC_:
   init_update_in_place(op);
-  at::redispatch::geometric_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2]));
+  at::redispatch::geometric_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2])));
   end_update_in_place(op);
   break;
 
@@ -5001,7 +5001,7 @@ case H_DIAG:
   break;
 
 case H_DIAG_BACKWARD:
-  set(op, at::redispatch::diag_backward(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2])));
+  set(op, at::redispatch::diag_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2])));
   break;
 
 case H_CROSS_OUT:
@@ -5035,11 +5035,11 @@ case H_TRIL:
   break;
 
 case H_TRIL_INDICES:
-  set(op, at::redispatch::tril_indices(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::tril_indices(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_TRIU_INDICES:
-  set(op, at::redispatch::triu_indices(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<at::ScalarType>>(op.args[3]), get<c10::optional<at::Layout>>(op.args[4]), get<c10::optional<at::Device>>(op.args[5]), get<c10::optional<bool>>(op.args[6])));
+  set(op, at::redispatch::triu_indices(ks, get<int64_t>(op.args[0]), get<int64_t>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<at::ScalarType>>(op.args[3])), std::move(get<c10::optional<at::Layout>>(op.args[4])), std::move(get<c10::optional<at::Device>>(op.args[5])), get<c10::optional<bool>>(op.args[6])));
   break;
 
 case H_TRACE:
@@ -5047,7 +5047,7 @@ case H_TRACE:
   break;
 
 case H_TRACE_BACKWARD:
-  set(op, at::redispatch::trace_backward(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::trace_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_NE_SCALAR_OUT:
@@ -5422,16 +5422,16 @@ case H_INDEX_SELECT:
 
 case H_INDEX_SELECT_DIMNAME_OUT:
   init_update_in_place(op);
-  at::redispatch::index_select_outf(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::index_select_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_INDEX_SELECT_DIMNAME:
-  set(op, at::redispatch::index_select(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2])));
+  set(op, at::redispatch::index_select(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2])));
   break;
 
 case H_INDEX_SELECT_BACKWARD:
-  set(op, at::redispatch::index_select_backward(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<at::Tensor>(op.args[3])));
+  set(op, at::redispatch::index_select_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<at::Tensor>(op.args[3])));
   break;
 
 case H_MASKED_SELECT_OUT:
@@ -5476,12 +5476,12 @@ case H_GATHER_BACKWARD:
 
 case H_GATHER_DIMNAME_OUT:
   init_update_in_place(op);
-  at::redispatch::gather_outf(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::gather_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<bool>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_GATHER_DIMNAME:
-  set(op, at::redispatch::gather(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<at::Tensor>(op.args[2]), get<bool>(op.args[3])));
+  set(op, at::redispatch::gather(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<at::Tensor>(op.args[2]), get<bool>(op.args[3])));
   break;
 
 case H__GATHER_SPARSE_BACKWARD:
@@ -5644,12 +5644,12 @@ case H_LU_SOLVE:
 
 case H_MULTINOMIAL_OUT:
   init_update_in_place(op);
-  at::redispatch::multinomial_outf(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::multinomial_outf(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<bool>(op.args[2]), std::move(get<c10::optional<at::Generator>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_MULTINOMIAL:
-  set(op, at::redispatch::multinomial(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3])));
+  set(op, at::redispatch::multinomial(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<bool>(op.args[2]), std::move(get<c10::optional<at::Generator>>(op.args[3]))));
   break;
 
 case H_LGAMMA_OUT:
@@ -5940,42 +5940,42 @@ case H_NANQUANTILE:
 
 case H_QUANTILE_NEW_SCALAR_OUT:
   init_update_in_place(op);
-  at::redispatch::quantile_outf(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<std::string>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::quantile_outf(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), std::move(get<std::string>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_QUANTILE_NEW_SCALAR:
-  set(op, at::redispatch::quantile(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<std::string>(op.args[4])));
+  set(op, at::redispatch::quantile(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), std::move(get<std::string>(op.args[4]))));
   break;
 
 case H_QUANTILE_NEW_OUT:
   init_update_in_place(op);
-  at::redispatch::quantile_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<std::string>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::quantile_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), std::move(get<std::string>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_QUANTILE_NEW:
-  set(op, at::redispatch::quantile(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<std::string>(op.args[4])));
+  set(op, at::redispatch::quantile(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), std::move(get<std::string>(op.args[4]))));
   break;
 
 case H_NANQUANTILE_NEW_SCALAR_OUT:
   init_update_in_place(op);
-  at::redispatch::nanquantile_outf(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<std::string>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::nanquantile_outf(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), std::move(get<std::string>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_NANQUANTILE_NEW_SCALAR:
-  set(op, at::redispatch::nanquantile(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<std::string>(op.args[4])));
+  set(op, at::redispatch::nanquantile(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), std::move(get<std::string>(op.args[4]))));
   break;
 
 case H_NANQUANTILE_NEW_OUT:
   init_update_in_place(op);
-  at::redispatch::nanquantile_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<std::string>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::nanquantile_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), std::move(get<std::string>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_NANQUANTILE_NEW:
-  set(op, at::redispatch::nanquantile(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), get<std::string>(op.args[4])));
+  set(op, at::redispatch::nanquantile(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<bool>(op.args[3]), std::move(get<std::string>(op.args[4]))));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &> sort_outf(const at::Tensor & self, int64_t dim, bool descending, at::Tensor & values, at::Tensor & indices)
@@ -6009,7 +6009,7 @@ case H_ARGSORT:
   break;
 
 case H_ARGSORT_DIMNAME:
-  set(op, at::redispatch::argsort(ks, get<at::Tensor>(op.args[0]), get<at::Dimname>(op.args[1]), get<bool>(op.args[2])));
+  set(op, at::redispatch::argsort(ks, get<at::Tensor>(op.args[0]), std::move(get<at::Dimname>(op.args[1])), get<bool>(op.args[2])));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &> topk_outf(const at::Tensor & self, int64_t k, int64_t dim, bool largest, bool sorted, at::Tensor & values, at::Tensor & indices)
@@ -6039,7 +6039,7 @@ case H_UNFOLD:
   break;
 
 case H_UNFOLD_BACKWARD:
-  set(op, at::redispatch::unfold_backward(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]), get<int64_t>(op.args[4])));
+  set(op, at::redispatch::unfold_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<int64_t>(op.args[2]), get<int64_t>(op.args[3]), get<int64_t>(op.args[4])));
   break;
 
 // skip bool equal(const at::Tensor & self, const at::Tensor & other)
@@ -6110,47 +6110,47 @@ case H_FLOAT_POWER__TENSOR:
 
 case H_NORMAL_:
   init_update_in_place(op);
-  at::redispatch::normal_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<double>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3]));
+  at::redispatch::normal_(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<double>(op.args[2]), std::move(get<c10::optional<at::Generator>>(op.args[3])));
   end_update_in_place(op);
   break;
 
 case H_NORMAL_TENSOR_FLOAT_OUT:
   init_update_in_place(op);
-  at::redispatch::normal_outf(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::normal_outf(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_NORMAL_TENSOR_FLOAT:
-  set(op, at::redispatch::normal(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2])));
+  set(op, at::redispatch::normal(ks, get<at::Tensor>(op.args[0]), get<double>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2]))));
   break;
 
 case H_NORMAL_FLOAT_TENSOR_OUT:
   init_update_in_place(op);
-  at::redispatch::normal_outf(ks, get<double>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::normal_outf(ks, get<double>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_NORMAL_FLOAT_TENSOR:
-  set(op, at::redispatch::normal(ks, get<double>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2])));
+  set(op, at::redispatch::normal(ks, get<double>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2]))));
   break;
 
 case H_NORMAL_TENSOR_TENSOR_OUT:
   init_update_in_place(op);
-  at::redispatch::normal_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::normal_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_NORMAL_TENSOR_TENSOR:
-  set(op, at::redispatch::normal(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Generator>>(op.args[2])));
+  set(op, at::redispatch::normal(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<at::Generator>>(op.args[2]))));
   break;
 
 case H_NORMAL_FLOAT_FLOAT:
-  set(op, at::redispatch::normal(ks, get<double>(op.args[0]), get<double>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<c10::optional<at::Layout>>(op.args[5]), get<c10::optional<at::Device>>(op.args[6]), get<c10::optional<bool>>(op.args[7])));
+  set(op, at::redispatch::normal(ks, get<double>(op.args[0]), get<double>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<at::Generator>>(op.args[3])), std::move(get<c10::optional<at::ScalarType>>(op.args[4])), std::move(get<c10::optional<at::Layout>>(op.args[5])), std::move(get<c10::optional<at::Device>>(op.args[6])), get<c10::optional<bool>>(op.args[7])));
   break;
 
 case H_NORMAL_FLOAT_FLOAT_OUT:
   init_update_in_place(op);
-  at::redispatch::normal_outf(ks, get<double>(op.args[0]), get<double>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Generator>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::normal_outf(ks, get<double>(op.args[0]), get<double>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<at::Generator>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
@@ -6193,12 +6193,12 @@ case H__AMP_UPDATE_SCALE_:
   break;
 
 case H__CAT:
-  set(op, at::redispatch::_cat(ks, get<at::TensorList>(op.args[0]), get<int64_t>(op.args[1])));
+  set(op, at::redispatch::_cat(ks, std::move(get<at::TensorList>(op.args[0])), get<int64_t>(op.args[1])));
   break;
 
 case H__CAT_OUT:
   init_update_in_place(op);
-  at::redispatch::_cat_outf(ks, get<at::TensorList>(op.args[0]), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::_cat_outf(ks, std::move(get<at::TensorList>(op.args[0])), get<int64_t>(op.args[1]), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
@@ -6760,12 +6760,12 @@ case H_LOG_SIGMOID_BACKWARD:
 
 case H_RRELU_WITH_NOISE_OUT:
   init_update_in_place(op);
-  at::redispatch::rrelu_with_noise_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Scalar>(op.args[2]), get<at::Scalar>(op.args[3]), get<bool>(op.args[4]), get<c10::optional<at::Generator>>(op.args[5]), get<at::Tensor>(op.args[6]));
+  at::redispatch::rrelu_with_noise_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Scalar>(op.args[2]), get<at::Scalar>(op.args[3]), get<bool>(op.args[4]), std::move(get<c10::optional<at::Generator>>(op.args[5])), get<at::Tensor>(op.args[6]));
   end_update_in_place(op);
   break;
 
 case H_RRELU_WITH_NOISE:
-  set(op, at::redispatch::rrelu_with_noise(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Scalar>(op.args[2]), get<at::Scalar>(op.args[3]), get<bool>(op.args[4]), get<c10::optional<at::Generator>>(op.args[5])));
+  set(op, at::redispatch::rrelu_with_noise(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Scalar>(op.args[2]), get<at::Scalar>(op.args[3]), get<bool>(op.args[4]), std::move(get<c10::optional<at::Generator>>(op.args[5]))));
   break;
 
 case H_RRELU_WITH_NOISE_BACKWARD:
@@ -6774,7 +6774,7 @@ case H_RRELU_WITH_NOISE_BACKWARD:
 
 case H_RRELU_WITH_NOISE_:
   init_update_in_place(op);
-  at::redispatch::rrelu_with_noise_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Scalar>(op.args[2]), get<at::Scalar>(op.args[3]), get<bool>(op.args[4]), get<c10::optional<at::Generator>>(op.args[5]));
+  at::redispatch::rrelu_with_noise_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Scalar>(op.args[2]), get<at::Scalar>(op.args[3]), get<bool>(op.args[4]), std::move(get<c10::optional<at::Generator>>(op.args[5])));
   end_update_in_place(op);
   break;
 
@@ -6820,16 +6820,16 @@ case H_SOFTSHRINK_BACKWARD:
 
 case H_ADAPTIVE_AVG_POOL2D_OUT:
   init_update_in_place(op);
-  at::redispatch::adaptive_avg_pool2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::adaptive_avg_pool2d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_ADAPTIVE_AVG_POOL2D:
-  set(op, at::redispatch::adaptive_avg_pool2d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::adaptive_avg_pool2d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_MKLDNN_ADAPTIVE_AVG_POOL2D:
-  set(op, at::redispatch::mkldnn_adaptive_avg_pool2d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::mkldnn_adaptive_avg_pool2d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_MKLDNN_ADAPTIVE_AVG_POOL2D_BACKWARD:
@@ -6837,7 +6837,7 @@ case H_MKLDNN_ADAPTIVE_AVG_POOL2D_BACKWARD:
   break;
 
 case H__ADAPTIVE_AVG_POOL2D:
-  set(op, at::redispatch::_adaptive_avg_pool2d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::_adaptive_avg_pool2d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H__ADAPTIVE_AVG_POOL2D_BACKWARD:
@@ -6846,16 +6846,16 @@ case H__ADAPTIVE_AVG_POOL2D_BACKWARD:
 
 case H_ADAPTIVE_AVG_POOL3D_OUT:
   init_update_in_place(op);
-  at::redispatch::adaptive_avg_pool3d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::adaptive_avg_pool3d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_ADAPTIVE_AVG_POOL3D:
-  set(op, at::redispatch::adaptive_avg_pool3d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::adaptive_avg_pool3d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H__ADAPTIVE_AVG_POOL3D:
-  set(op, at::redispatch::_adaptive_avg_pool3d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::_adaptive_avg_pool3d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_ADAPTIVE_AVG_POOL3D_BACKWARD_GRAD_INPUT:
@@ -6886,54 +6886,54 @@ case H_ADAPTIVE_MAX_POOL3D_BACKWARD_GRAD_INPUT:
 
 case H_AVG_POOL2D_OUT:
   init_update_in_place(op);
-  at::redispatch::avg_pool2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<bool>(op.args[4]), get<bool>(op.args[5]), get<c10::optional<int64_t>>(op.args[6]), get<at::Tensor>(op.args[7]));
+  at::redispatch::avg_pool2d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<bool>(op.args[4]), get<bool>(op.args[5]), get<c10::optional<int64_t>>(op.args[6]), get<at::Tensor>(op.args[7]));
   end_update_in_place(op);
   break;
 
 case H_AVG_POOL2D:
-  set(op, at::redispatch::avg_pool2d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<bool>(op.args[4]), get<bool>(op.args[5]), get<c10::optional<int64_t>>(op.args[6])));
+  set(op, at::redispatch::avg_pool2d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<bool>(op.args[4]), get<bool>(op.args[5]), get<c10::optional<int64_t>>(op.args[6])));
   break;
 
 case H_AVG_POOL2D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::avg_pool2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<bool>(op.args[5]), get<bool>(op.args[6]), get<c10::optional<int64_t>>(op.args[7]), get<at::Tensor>(op.args[8]));
+  at::redispatch::avg_pool2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<bool>(op.args[5]), get<bool>(op.args[6]), get<c10::optional<int64_t>>(op.args[7]), get<at::Tensor>(op.args[8]));
   end_update_in_place(op);
   break;
 
 case H_AVG_POOL2D_BACKWARD:
-  set(op, at::redispatch::avg_pool2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<bool>(op.args[5]), get<bool>(op.args[6]), get<c10::optional<int64_t>>(op.args[7])));
+  set(op, at::redispatch::avg_pool2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<bool>(op.args[5]), get<bool>(op.args[6]), get<c10::optional<int64_t>>(op.args[7])));
   break;
 
 case H_AVG_POOL3D_OUT:
   init_update_in_place(op);
-  at::redispatch::avg_pool3d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<bool>(op.args[4]), get<bool>(op.args[5]), get<c10::optional<int64_t>>(op.args[6]), get<at::Tensor>(op.args[7]));
+  at::redispatch::avg_pool3d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<bool>(op.args[4]), get<bool>(op.args[5]), get<c10::optional<int64_t>>(op.args[6]), get<at::Tensor>(op.args[7]));
   end_update_in_place(op);
   break;
 
 case H_AVG_POOL3D:
-  set(op, at::redispatch::avg_pool3d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<bool>(op.args[4]), get<bool>(op.args[5]), get<c10::optional<int64_t>>(op.args[6])));
+  set(op, at::redispatch::avg_pool3d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<bool>(op.args[4]), get<bool>(op.args[5]), get<c10::optional<int64_t>>(op.args[6])));
   break;
 
 case H_AVG_POOL3D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::avg_pool3d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<bool>(op.args[5]), get<bool>(op.args[6]), get<c10::optional<int64_t>>(op.args[7]), get<at::Tensor>(op.args[8]));
+  at::redispatch::avg_pool3d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<bool>(op.args[5]), get<bool>(op.args[6]), get<c10::optional<int64_t>>(op.args[7]), get<at::Tensor>(op.args[8]));
   end_update_in_place(op);
   break;
 
 case H_AVG_POOL3D_BACKWARD:
-  set(op, at::redispatch::avg_pool3d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<bool>(op.args[5]), get<bool>(op.args[6]), get<c10::optional<int64_t>>(op.args[7])));
+  set(op, at::redispatch::avg_pool3d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<bool>(op.args[5]), get<bool>(op.args[6]), get<c10::optional<int64_t>>(op.args[7])));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &> fractional_max_pool2d_outf(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & random_samples, at::Tensor & output, at::Tensor & indices)
 
 case H_FRACTIONAL_MAX_POOL2D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::fractional_max_pool2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::Tensor>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::fractional_max_pool2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<at::Tensor>(op.args[4]), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_FRACTIONAL_MAX_POOL2D_BACKWARD:
-  set(op, at::redispatch::fractional_max_pool2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::Tensor>(op.args[4])));
+  set(op, at::redispatch::fractional_max_pool2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<at::Tensor>(op.args[4])));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &> fractional_max_pool3d_outf(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & random_samples, at::Tensor & output, at::Tensor & indices)
@@ -6942,24 +6942,24 @@ case H_FRACTIONAL_MAX_POOL2D_BACKWARD:
 
 case H_FRACTIONAL_MAX_POOL3D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::fractional_max_pool3d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::Tensor>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::fractional_max_pool3d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<at::Tensor>(op.args[4]), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_FRACTIONAL_MAX_POOL3D_BACKWARD:
-  set(op, at::redispatch::fractional_max_pool3d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::Tensor>(op.args[4])));
+  set(op, at::redispatch::fractional_max_pool3d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), get<at::Tensor>(op.args[4])));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &> max_pool2d_with_indices_outf(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, at::Tensor & out, at::Tensor & indices)
 
 case H_MAX_POOL2D_WITH_INDICES_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::max_pool2d_with_indices_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<bool>(op.args[6]), get<at::Tensor>(op.args[7]), get<at::Tensor>(op.args[8]));
+  at::redispatch::max_pool2d_with_indices_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), get<at::Tensor>(op.args[7]), get<at::Tensor>(op.args[8]));
   end_update_in_place(op);
   break;
 
 case H_MAX_POOL2D_WITH_INDICES_BACKWARD:
-  set(op, at::redispatch::max_pool2d_with_indices_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<bool>(op.args[6]), get<at::Tensor>(op.args[7])));
+  set(op, at::redispatch::max_pool2d_with_indices_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), get<at::Tensor>(op.args[7])));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &> max_pool3d_with_indices_outf(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, at::Tensor & out, at::Tensor & indices)
@@ -6968,287 +6968,287 @@ case H_MAX_POOL2D_WITH_INDICES_BACKWARD:
 
 case H_MAX_POOL3D_WITH_INDICES_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::max_pool3d_with_indices_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<bool>(op.args[6]), get<at::Tensor>(op.args[7]), get<at::Tensor>(op.args[8]));
+  at::redispatch::max_pool3d_with_indices_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), get<at::Tensor>(op.args[7]), get<at::Tensor>(op.args[8]));
   end_update_in_place(op);
   break;
 
 case H_MAX_POOL3D_WITH_INDICES_BACKWARD:
-  set(op, at::redispatch::max_pool3d_with_indices_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<bool>(op.args[6]), get<at::Tensor>(op.args[7])));
+  set(op, at::redispatch::max_pool3d_with_indices_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), get<at::Tensor>(op.args[7])));
   break;
 
 case H_MAX_UNPOOL2D_OUT:
   init_update_in_place(op);
-  at::redispatch::max_unpool2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::max_unpool2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_MAX_UNPOOL2D:
-  set(op, at::redispatch::max_unpool2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2])));
+  set(op, at::redispatch::max_unpool2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2]))));
   break;
 
 case H_MAX_UNPOOL2D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::max_unpool2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::max_unpool2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_MAX_UNPOOL2D_BACKWARD:
-  set(op, at::redispatch::max_unpool2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3])));
+  set(op, at::redispatch::max_unpool2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3]))));
   break;
 
 case H_MAX_UNPOOL3D_OUT:
   init_update_in_place(op);
-  at::redispatch::max_unpool3d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::max_unpool3d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_MAX_UNPOOL3D:
-  set(op, at::redispatch::max_unpool3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4])));
+  set(op, at::redispatch::max_unpool3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4]))));
   break;
 
 case H_MAX_UNPOOL3D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::max_unpool3d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::Tensor>(op.args[6]));
+  at::redispatch::max_unpool3d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<at::Tensor>(op.args[6]));
   end_update_in_place(op);
   break;
 
 case H_MAX_UNPOOL3D_BACKWARD:
-  set(op, at::redispatch::max_unpool3d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5])));
+  set(op, at::redispatch::max_unpool3d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5]))));
   break;
 
 case H_REFLECTION_PAD1D_OUT:
   init_update_in_place(op);
-  at::redispatch::reflection_pad1d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::reflection_pad1d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_REFLECTION_PAD1D:
-  set(op, at::redispatch::reflection_pad1d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::reflection_pad1d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_REFLECTION_PAD1D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::reflection_pad1d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::reflection_pad1d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_REFLECTION_PAD1D_BACKWARD:
-  set(op, at::redispatch::reflection_pad1d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2])));
+  set(op, at::redispatch::reflection_pad1d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2]))));
   break;
 
 case H_REFLECTION_PAD2D_OUT:
   init_update_in_place(op);
-  at::redispatch::reflection_pad2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::reflection_pad2d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_REFLECTION_PAD2D:
-  set(op, at::redispatch::reflection_pad2d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1])));
+  set(op, at::redispatch::reflection_pad2d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1]))));
   break;
 
 case H_REFLECTION_PAD2D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::reflection_pad2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::reflection_pad2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_REFLECTION_PAD2D_BACKWARD:
-  set(op, at::redispatch::reflection_pad2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2])));
+  set(op, at::redispatch::reflection_pad2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2]))));
   break;
 
 case H_REPLICATION_PAD1D_OUT:
   init_update_in_place(op);
-  at::redispatch::replication_pad1d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::replication_pad1d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_REPLICATION_PAD1D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::replication_pad1d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::replication_pad1d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_REPLICATION_PAD2D_OUT:
   init_update_in_place(op);
-  at::redispatch::replication_pad2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::replication_pad2d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_REPLICATION_PAD2D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::replication_pad2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::replication_pad2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_REPLICATION_PAD2D_BACKWARD:
-  set(op, at::redispatch::replication_pad2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2])));
+  set(op, at::redispatch::replication_pad2d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2]))));
   break;
 
 case H_REPLICATION_PAD3D_OUT:
   init_update_in_place(op);
-  at::redispatch::replication_pad3d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::replication_pad3d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
 case H_REPLICATION_PAD3D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::replication_pad3d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::replication_pad3d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_REPLICATION_PAD3D_BACKWARD:
-  set(op, at::redispatch::replication_pad3d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2])));
+  set(op, at::redispatch::replication_pad3d_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2]))));
   break;
 
 case H_UPSAMPLE_LINEAR1D_VEC:
-  set(op, at::redispatch::upsample_linear1d(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
+  set(op, at::redispatch::upsample_linear1d(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), get<bool>(op.args[2]), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
   break;
 
 case H_UPSAMPLE_LINEAR1D_BACKWARD_VEC:
-  set(op, at::redispatch::upsample_linear1d_backward(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ArrayRef<double>>>(op.args[4])));
+  set(op, at::redispatch::upsample_linear1d_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), get<c10::optional<at::ArrayRef<double>>>(op.args[4])));
   break;
 
 case H_UPSAMPLE_BILINEAR2D_VEC:
-  set(op, at::redispatch::upsample_bilinear2d(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
+  set(op, at::redispatch::upsample_bilinear2d(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), get<bool>(op.args[2]), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
   break;
 
 case H_UPSAMPLE_BILINEAR2D_BACKWARD_VEC:
-  set(op, at::redispatch::upsample_bilinear2d_backward(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ArrayRef<double>>>(op.args[4])));
+  set(op, at::redispatch::upsample_bilinear2d_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), get<c10::optional<at::ArrayRef<double>>>(op.args[4])));
   break;
 
 case H_UPSAMPLE_TRILINEAR3D_VEC:
-  set(op, at::redispatch::upsample_trilinear3d(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
+  set(op, at::redispatch::upsample_trilinear3d(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), get<bool>(op.args[2]), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
   break;
 
 case H_UPSAMPLE_TRILINEAR3D_BACKWARD_VEC:
-  set(op, at::redispatch::upsample_trilinear3d_backward(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ArrayRef<double>>>(op.args[4])));
+  set(op, at::redispatch::upsample_trilinear3d_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), get<c10::optional<at::ArrayRef<double>>>(op.args[4])));
   break;
 
 case H_UPSAMPLE_BICUBIC2D_VEC:
-  set(op, at::redispatch::upsample_bicubic2d(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
+  set(op, at::redispatch::upsample_bicubic2d(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), get<bool>(op.args[2]), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
   break;
 
 case H_UPSAMPLE_BICUBIC2D_BACKWARD_VEC:
-  set(op, at::redispatch::upsample_bicubic2d_backward(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ArrayRef<double>>>(op.args[4])));
+  set(op, at::redispatch::upsample_bicubic2d_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), get<c10::optional<at::ArrayRef<double>>>(op.args[4])));
   break;
 
 case H_UPSAMPLE_NEAREST1D_VEC:
-  set(op, at::redispatch::upsample_nearest1d(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<at::ArrayRef<double>>>(op.args[2])));
+  set(op, at::redispatch::upsample_nearest1d(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), get<c10::optional<at::ArrayRef<double>>>(op.args[2])));
   break;
 
 case H_UPSAMPLE_NEAREST1D_BACKWARD_VEC:
-  set(op, at::redispatch::upsample_nearest1d_backward(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
+  set(op, at::redispatch::upsample_nearest1d_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
   break;
 
 case H_UPSAMPLE_NEAREST2D_VEC:
-  set(op, at::redispatch::upsample_nearest2d(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<at::ArrayRef<double>>>(op.args[2])));
+  set(op, at::redispatch::upsample_nearest2d(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), get<c10::optional<at::ArrayRef<double>>>(op.args[2])));
   break;
 
 case H_UPSAMPLE_NEAREST2D_BACKWARD_VEC:
-  set(op, at::redispatch::upsample_nearest2d_backward(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
+  set(op, at::redispatch::upsample_nearest2d_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
   break;
 
 case H_UPSAMPLE_NEAREST3D_VEC:
-  set(op, at::redispatch::upsample_nearest3d(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<at::ArrayRef<double>>>(op.args[2])));
+  set(op, at::redispatch::upsample_nearest3d(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), get<c10::optional<at::ArrayRef<double>>>(op.args[2])));
   break;
 
 case H_UPSAMPLE_NEAREST3D_BACKWARD_VEC:
-  set(op, at::redispatch::upsample_nearest3d_backward(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
+  set(op, at::redispatch::upsample_nearest3d_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::ArrayRef<double>>>(op.args[3])));
   break;
 
 case H_UPSAMPLE_LINEAR1D_OUT:
   init_update_in_place(op);
-  at::redispatch::upsample_linear1d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::upsample_linear1d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_LINEAR1D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::upsample_linear1d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::upsample_linear1d_backward_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_BILINEAR2D_OUT:
   init_update_in_place(op);
-  at::redispatch::upsample_bilinear2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::upsample_bilinear2d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_BILINEAR2D:
-  set(op, at::redispatch::upsample_bilinear2d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4])));
+  set(op, at::redispatch::upsample_bilinear2d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4])));
   break;
 
 case H_UPSAMPLE_BILINEAR2D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::upsample_bilinear2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<c10::optional<double>>(op.args[5]), get<at::Tensor>(op.args[6]));
+  at::redispatch::upsample_bilinear2d_backward_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<c10::optional<double>>(op.args[5]), get<at::Tensor>(op.args[6]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_BICUBIC2D_OUT:
   init_update_in_place(op);
-  at::redispatch::upsample_bicubic2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::upsample_bicubic2d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_BICUBIC2D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::upsample_bicubic2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<c10::optional<double>>(op.args[5]), get<at::Tensor>(op.args[6]));
+  at::redispatch::upsample_bicubic2d_backward_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<c10::optional<double>>(op.args[5]), get<at::Tensor>(op.args[6]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_TRILINEAR3D_OUT:
   init_update_in_place(op);
-  at::redispatch::upsample_trilinear3d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<bool>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<c10::optional<double>>(op.args[5]), get<at::Tensor>(op.args[6]));
+  at::redispatch::upsample_trilinear3d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<bool>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<c10::optional<double>>(op.args[5]), get<at::Tensor>(op.args[6]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_TRILINEAR3D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::upsample_trilinear3d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<c10::optional<double>>(op.args[5]), get<c10::optional<double>>(op.args[6]), get<at::Tensor>(op.args[7]));
+  at::redispatch::upsample_trilinear3d_backward_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<c10::optional<double>>(op.args[5]), get<c10::optional<double>>(op.args[6]), get<at::Tensor>(op.args[7]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_NEAREST1D_OUT:
   init_update_in_place(op);
-  at::redispatch::upsample_nearest1d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<double>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::upsample_nearest1d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<c10::optional<double>>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_NEAREST1D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::upsample_nearest1d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::upsample_nearest1d_backward_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<double>>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_NEAREST2D_OUT:
   init_update_in_place(op);
-  at::redispatch::upsample_nearest2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<double>>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::upsample_nearest2d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<c10::optional<double>>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_NEAREST2D:
-  set(op, at::redispatch::upsample_nearest2d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<double>>(op.args[2]), get<c10::optional<double>>(op.args[3])));
+  set(op, at::redispatch::upsample_nearest2d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<c10::optional<double>>(op.args[2]), get<c10::optional<double>>(op.args[3])));
   break;
 
 case H_UPSAMPLE_NEAREST2D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::upsample_nearest2d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::upsample_nearest2d_backward_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_NEAREST3D_OUT:
   init_update_in_place(op);
-  at::redispatch::upsample_nearest3d_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<double>>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::upsample_nearest3d_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<c10::optional<double>>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_UPSAMPLE_NEAREST3D:
-  set(op, at::redispatch::upsample_nearest3d(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<c10::optional<double>>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4])));
+  set(op, at::redispatch::upsample_nearest3d(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<c10::optional<double>>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4])));
   break;
 
 case H_UPSAMPLE_NEAREST3D_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::upsample_nearest3d_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<c10::optional<double>>(op.args[5]), get<at::Tensor>(op.args[6]));
+  at::redispatch::upsample_nearest3d_backward_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<double>>(op.args[3]), get<c10::optional<double>>(op.args[4]), get<c10::optional<double>>(op.args[5]), get<at::Tensor>(op.args[6]));
   end_update_in_place(op);
   break;
 
@@ -7284,12 +7284,12 @@ case H_TANH_BACKWARD:
 
 case H_SLOW_CONV_TRANSPOSE2D_OUT:
   init_update_in_place(op);
-  at::redispatch::slow_conv_transpose2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<at::IntArrayRef>(op.args[7]), get<at::Tensor>(op.args[8]));
+  at::redispatch::slow_conv_transpose2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), std::move(get<at::IntArrayRef>(op.args[7])), get<at::Tensor>(op.args[8]));
   end_update_in_place(op);
   break;
 
 case H_SLOW_CONV_TRANSPOSE2D:
-  set(op, at::redispatch::slow_conv_transpose2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<at::IntArrayRef>(op.args[7])));
+  set(op, at::redispatch::slow_conv_transpose2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), std::move(get<at::IntArrayRef>(op.args[7]))));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> slow_conv_transpose2d_backward_outf(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation, const at::Tensor & columns, const at::Tensor & ones, at::Tensor & grad_input, at::Tensor & grad_weight, at::Tensor & grad_bias)
@@ -7298,12 +7298,12 @@ case H_SLOW_CONV_TRANSPOSE2D:
 
 case H_SLOW_CONV_TRANSPOSE3D_OUT:
   init_update_in_place(op);
-  at::redispatch::slow_conv_transpose3d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<at::IntArrayRef>(op.args[7]), get<at::Tensor>(op.args[8]));
+  at::redispatch::slow_conv_transpose3d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), std::move(get<at::IntArrayRef>(op.args[7])), get<at::Tensor>(op.args[8]));
   end_update_in_place(op);
   break;
 
 case H_SLOW_CONV_TRANSPOSE3D:
-  set(op, at::redispatch::slow_conv_transpose3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<at::IntArrayRef>(op.args[7])));
+  set(op, at::redispatch::slow_conv_transpose3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), std::move(get<at::IntArrayRef>(op.args[7]))));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> slow_conv_transpose3d_backward_outf(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation, const at::Tensor & finput, const at::Tensor & fgrad_input, at::Tensor & grad_input, at::Tensor & grad_weight, at::Tensor & grad_bias)
@@ -7312,12 +7312,12 @@ case H_SLOW_CONV_TRANSPOSE3D:
 
 case H_THNN_CONV2D_OUT:
   init_update_in_place(op);
-  at::redispatch::thnn_conv2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::Tensor>(op.args[6]));
+  at::redispatch::thnn_conv2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<at::Tensor>(op.args[6]));
   end_update_in_place(op);
   break;
 
 case H_THNN_CONV2D:
-  set(op, at::redispatch::thnn_conv2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5])));
+  set(op, at::redispatch::thnn_conv2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5]))));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> thnn_conv2d_forward_outf(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & output, at::Tensor & finput, at::Tensor & fgrad_input)
@@ -7330,22 +7330,22 @@ case H_THNN_CONV2D:
 
 case H_THNN_CONV_DEPTHWISE2D_OUT:
   init_update_in_place(op);
-  at::redispatch::thnn_conv_depthwise2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<at::Tensor>(op.args[7]));
+  at::redispatch::thnn_conv_depthwise2d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), get<at::Tensor>(op.args[7]));
   end_update_in_place(op);
   break;
 
 case H_THNN_CONV_DEPTHWISE2D:
-  set(op, at::redispatch::thnn_conv_depthwise2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6])));
+  set(op, at::redispatch::thnn_conv_depthwise2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6]))));
   break;
 
 case H_THNN_CONV_DEPTHWISE2D_FORWARD_OUT:
   init_update_in_place(op);
-  at::redispatch::thnn_conv_depthwise2d_forward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6]), get<at::Tensor>(op.args[7]));
+  at::redispatch::thnn_conv_depthwise2d_forward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6])), get<at::Tensor>(op.args[7]));
   end_update_in_place(op);
   break;
 
 case H_THNN_CONV_DEPTHWISE2D_FORWARD:
-  set(op, at::redispatch::thnn_conv_depthwise2d_forward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6])));
+  set(op, at::redispatch::thnn_conv_depthwise2d_forward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6]))));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &> thnn_conv_depthwise2d_backward_outf(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, at::Tensor & grad_input, at::Tensor & grad_weight)
@@ -7353,7 +7353,7 @@ case H_THNN_CONV_DEPTHWISE2D_FORWARD:
 // skip std::tuple<at::Tensor,at::Tensor> thnn_conv_depthwise2d_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, std::array<bool,2> output_mask)
 
 case H_CONV_DEPTHWISE3D:
-  set(op, at::redispatch::conv_depthwise3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6])));
+  set(op, at::redispatch::conv_depthwise3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6]))));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> conv_depthwise3d_backward_outf(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, at::Tensor & grad_input, at::Tensor & grad_weight, at::Tensor & grad_bias)
@@ -7362,12 +7362,12 @@ case H_CONV_DEPTHWISE3D:
 
 case H_SLOW_CONV3D_OUT:
   init_update_in_place(op);
-  at::redispatch::slow_conv3d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::Tensor>(op.args[6]));
+  at::redispatch::slow_conv3d_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<at::Tensor>(op.args[6]));
   end_update_in_place(op);
   break;
 
 case H_SLOW_CONV3D:
-  set(op, at::redispatch::slow_conv3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5])));
+  set(op, at::redispatch::slow_conv3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5]))));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> slow_conv3d_forward_outf(const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & output, at::Tensor & finput, at::Tensor & fgrad_input)
@@ -7379,65 +7379,65 @@ case H_SLOW_CONV3D:
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> slow_conv3d_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, const at::Tensor & finput, const at::Tensor & fgrad_input, std::array<bool,3> output_mask)
 
 case H_SLOW_CONV_DILATED2D:
-  set(op, at::redispatch::slow_conv_dilated2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6])));
+  set(op, at::redispatch::slow_conv_dilated2d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6]))));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> slow_conv_dilated2d_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, std::array<bool,3> output_mask)
 
 case H_SLOW_CONV_DILATED3D:
-  set(op, at::redispatch::slow_conv_dilated3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::IntArrayRef>(op.args[6])));
+  set(op, at::redispatch::slow_conv_dilated3d(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<c10::optional<at::Tensor>>(op.args[3]), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), std::move(get<at::IntArrayRef>(op.args[6]))));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor,at::Tensor> slow_conv_dilated3d_backward(const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, std::array<bool,3> output_mask)
 
 case H_COL2IM_OUT:
   init_update_in_place(op);
-  at::redispatch::col2im_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::Tensor>(op.args[6]));
+  at::redispatch::col2im_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<at::Tensor>(op.args[6]));
   end_update_in_place(op);
   break;
 
 case H_COL2IM:
-  set(op, at::redispatch::col2im(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5])));
+  set(op, at::redispatch::col2im(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5]))));
   break;
 
 case H_COL2IM_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::col2im_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::col2im_backward_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_COL2IM_BACKWARD:
-  set(op, at::redispatch::col2im_backward(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4])));
+  set(op, at::redispatch::col2im_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4]))));
   break;
 
 case H_COLUMN_STACK:
-  set(op, at::redispatch::column_stack(ks, get<at::TensorList>(op.args[0])));
+  set(op, at::redispatch::column_stack(ks, std::move(get<at::TensorList>(op.args[0]))));
   break;
 
 case H_COLUMN_STACK_OUT:
   init_update_in_place(op);
-  at::redispatch::column_stack_outf(ks, get<at::TensorList>(op.args[0]), get<at::Tensor>(op.args[1]));
+  at::redispatch::column_stack_outf(ks, std::move(get<at::TensorList>(op.args[0])), get<at::Tensor>(op.args[1]));
   end_update_in_place(op);
   break;
 
 case H_IM2COL_OUT:
   init_update_in_place(op);
-  at::redispatch::im2col_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::im2col_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_IM2COL:
-  set(op, at::redispatch::im2col(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4])));
+  set(op, at::redispatch::im2col(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4]))));
   break;
 
 case H_IM2COL_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
-  at::redispatch::im2col_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5]), get<at::Tensor>(op.args[6]));
+  at::redispatch::im2col_backward_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<at::Tensor>(op.args[6]));
   end_update_in_place(op);
   break;
 
 case H_IM2COL_BACKWARD:
-  set(op, at::redispatch::im2col_backward(ks, get<at::Tensor>(op.args[0]), get<at::IntArrayRef>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<at::IntArrayRef>(op.args[3]), get<at::IntArrayRef>(op.args[4]), get<at::IntArrayRef>(op.args[5])));
+  set(op, at::redispatch::im2col_backward(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5]))));
   break;
 
 case H_ISFINITE:
@@ -7597,147 +7597,147 @@ case H_SPECIAL_EXPIT_OUT:
   break;
 
 case H_FFT_FFT:
-  set(op, at::redispatch::fft_fft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_fft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_FFT_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_fft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_fft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_IFFT:
-  set(op, at::redispatch::fft_ifft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_ifft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_IFFT_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_ifft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_ifft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_RFFT:
-  set(op, at::redispatch::fft_rfft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_rfft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_RFFT_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_rfft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_rfft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_IRFFT:
-  set(op, at::redispatch::fft_irfft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_irfft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_IRFFT_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_irfft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_irfft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_HFFT:
-  set(op, at::redispatch::fft_hfft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_hfft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_HFFT_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_hfft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_hfft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_IHFFT:
-  set(op, at::redispatch::fft_ihfft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_ihfft(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_IHFFT_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_ihfft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_ihfft_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<int64_t>>(op.args[1]), get<int64_t>(op.args[2]), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_FFT2:
-  set(op, at::redispatch::fft_fft2(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_fft2(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_FFT2_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_fft2_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_fft2_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_IFFT2:
-  set(op, at::redispatch::fft_ifft2(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_ifft2(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_IFFT2_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_ifft2_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_ifft2_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_RFFT2:
-  set(op, at::redispatch::fft_rfft2(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_rfft2(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_RFFT2_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_rfft2_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_rfft2_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_IRFFT2:
-  set(op, at::redispatch::fft_irfft2(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_irfft2(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_IRFFT2_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_irfft2_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_irfft2_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_FFTN:
-  set(op, at::redispatch::fft_fftn(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_fftn(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_FFTN_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_fftn_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_fftn_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_IFFTN:
-  set(op, at::redispatch::fft_ifftn(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_ifftn(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_IFFTN_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_ifftn_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_ifftn_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_RFFTN:
-  set(op, at::redispatch::fft_rfftn(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_rfftn(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_RFFTN_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_rfftn_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_rfftn_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_IRFFTN:
-  set(op, at::redispatch::fft_irfftn(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<c10::optional<std::string>>(op.args[3])));
+  set(op, at::redispatch::fft_irfftn(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3]))));
   break;
 
 case H_FFT_IRFFTN_OUT:
   init_update_in_place(op);
-  at::redispatch::fft_irfftn_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<c10::optional<std::string>>(op.args[3]), get<at::Tensor>(op.args[4]));
+  at::redispatch::fft_irfftn_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1])), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), std::move(get<c10::optional<std::string>>(op.args[3])), get<at::Tensor>(op.args[4]));
   end_update_in_place(op);
   break;
 
 case H_FFT_FFTFREQ:
-  set(op, at::redispatch::fft_fftfreq(ks, get<int64_t>(op.args[0]), get<double>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::fft_fftfreq(ks, get<int64_t>(op.args[0]), get<double>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_FFT_FFTFREQ_OUT:
@@ -7747,7 +7747,7 @@ case H_FFT_FFTFREQ_OUT:
   break;
 
 case H_FFT_RFFTFREQ:
-  set(op, at::redispatch::fft_rfftfreq(ks, get<int64_t>(op.args[0]), get<double>(op.args[1]), get<c10::optional<at::ScalarType>>(op.args[2]), get<c10::optional<at::Layout>>(op.args[3]), get<c10::optional<at::Device>>(op.args[4]), get<c10::optional<bool>>(op.args[5])));
+  set(op, at::redispatch::fft_rfftfreq(ks, get<int64_t>(op.args[0]), get<double>(op.args[1]), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H_FFT_RFFTFREQ_OUT:
@@ -7757,11 +7757,11 @@ case H_FFT_RFFTFREQ_OUT:
   break;
 
 case H_FFT_FFTSHIFT:
-  set(op, at::redispatch::fft_fftshift(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1])));
+  set(op, at::redispatch::fft_fftshift(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1]))));
   break;
 
 case H_FFT_IFFTSHIFT:
-  set(op, at::redispatch::fft_ifftshift(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1])));
+  set(op, at::redispatch::fft_ifftshift(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1]))));
   break;
 
 // skip std::tuple<at::Tensor,at::Tensor> linalg_cholesky_ex(const at::Tensor & self, bool check_errors)
@@ -7819,12 +7819,12 @@ case H_LINALG_EIGVALS_OUT:
 // skip std::tuple<at::Tensor &,at::Tensor &> linalg_eigh_outf(const at::Tensor & self, std::string UPLO, at::Tensor & eigvals, at::Tensor & eigvecs)
 
 case H_LINALG_EIGVALSH:
-  set(op, at::redispatch::linalg_eigvalsh(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1])));
+  set(op, at::redispatch::linalg_eigvalsh(ks, get<at::Tensor>(op.args[0]), std::move(get<std::string>(op.args[1]))));
   break;
 
 case H_LINALG_EIGVALSH_OUT:
   init_update_in_place(op);
-  at::redispatch::linalg_eigvalsh_outf(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::linalg_eigvalsh_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<std::string>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
@@ -7885,52 +7885,52 @@ case H_GER_OUT:
   break;
 
 case H_LINALG_NORM:
-  set(op, at::redispatch::linalg_norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4])));
+  set(op, at::redispatch::linalg_norm(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), get<bool>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4]))));
   break;
 
 case H_LINALG_NORM_ORD_STR:
-  set(op, at::redispatch::linalg_norm(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4])));
+  set(op, at::redispatch::linalg_norm(ks, get<at::Tensor>(op.args[0]), std::move(get<std::string>(op.args[1])), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), get<bool>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4]))));
   break;
 
 case H_LINALG_NORM_OUT:
   init_update_in_place(op);
-  at::redispatch::linalg_norm_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::linalg_norm_outf(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::Scalar>>(op.args[1]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), get<bool>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_LINALG_NORM_ORD_STR_OUT:
   init_update_in_place(op);
-  at::redispatch::linalg_norm_outf(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::linalg_norm_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<std::string>(op.args[1])), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), get<bool>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_LINALG_VECTOR_NORM:
-  set(op, at::redispatch::linalg_vector_norm(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4])));
+  set(op, at::redispatch::linalg_vector_norm(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), get<bool>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4]))));
   break;
 
 case H_LINALG_VECTOR_NORM_OUT:
   init_update_in_place(op);
-  at::redispatch::linalg_vector_norm_outf(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::linalg_vector_norm_outf(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), get<bool>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_LINALG_MATRIX_NORM:
-  set(op, at::redispatch::linalg_matrix_norm(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4])));
+  set(op, at::redispatch::linalg_matrix_norm(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4]))));
   break;
 
 case H_LINALG_MATRIX_NORM_OUT:
   init_update_in_place(op);
-  at::redispatch::linalg_matrix_norm_outf(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::linalg_matrix_norm_outf(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
 case H_LINALG_MATRIX_NORM_STR_ORD:
-  set(op, at::redispatch::linalg_matrix_norm(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4])));
+  set(op, at::redispatch::linalg_matrix_norm(ks, get<at::Tensor>(op.args[0]), std::move(get<std::string>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4]))));
   break;
 
 case H_LINALG_MATRIX_NORM_STR_ORD_OUT:
   init_update_in_place(op);
-  at::redispatch::linalg_matrix_norm_outf(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<at::IntArrayRef>(op.args[2]), get<bool>(op.args[3]), get<c10::optional<at::ScalarType>>(op.args[4]), get<at::Tensor>(op.args[5]));
+  at::redispatch::linalg_matrix_norm_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<std::string>(op.args[1])), std::move(get<at::IntArrayRef>(op.args[2])), get<bool>(op.args[3]), std::move(get<c10::optional<at::ScalarType>>(op.args[4])), get<at::Tensor>(op.args[5]));
   end_update_in_place(op);
   break;
 
@@ -7959,12 +7959,12 @@ case H_LINALG_COND_OUT:
   break;
 
 case H_LINALG_COND_P_STR:
-  set(op, at::redispatch::linalg_cond(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1])));
+  set(op, at::redispatch::linalg_cond(ks, get<at::Tensor>(op.args[0]), std::move(get<std::string>(op.args[1]))));
   break;
 
 case H_LINALG_COND_P_STR_OUT:
   init_update_in_place(op);
-  at::redispatch::linalg_cond_outf(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<at::Tensor>(op.args[2]));
+  at::redispatch::linalg_cond_outf(ks, get<at::Tensor>(op.args[0]), std::move(get<std::string>(op.args[1])), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
   break;
 
@@ -8015,12 +8015,12 @@ case H_LINALG_TENSORINV_OUT:
   break;
 
 case H_LINALG_TENSORSOLVE:
-  set(op, at::redispatch::linalg_tensorsolve(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2])));
+  set(op, at::redispatch::linalg_tensorsolve(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2]))));
   break;
 
 case H_LINALG_TENSORSOLVE_OUT:
   init_update_in_place(op);
-  at::redispatch::linalg_tensorsolve_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::IntArrayRef>>(op.args[2]), get<at::Tensor>(op.args[3]));
+  at::redispatch::linalg_tensorsolve_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[2])), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
@@ -8061,12 +8061,12 @@ case H_LINALG_MATRIX_RANK_OUT_TOL_TENSOR:
   break;
 
 case H_LINALG_MULTI_DOT:
-  set(op, at::redispatch::linalg_multi_dot(ks, get<at::TensorList>(op.args[0])));
+  set(op, at::redispatch::linalg_multi_dot(ks, std::move(get<at::TensorList>(op.args[0]))));
   break;
 
 case H_LINALG_MULTI_DOT_OUT:
   init_update_in_place(op);
-  at::redispatch::linalg_multi_dot_outf(ks, get<at::TensorList>(op.args[0]), get<at::Tensor>(op.args[1]));
+  at::redispatch::linalg_multi_dot_outf(ks, std::move(get<at::TensorList>(op.args[0])), get<at::Tensor>(op.args[1]));
   end_update_in_place(op);
   break;
 
@@ -8075,11 +8075,11 @@ case H__TEST_SERIALIZATION_SUBCMUL:
   break;
 
 case H__TEST_OPTIONAL_INTLIST:
-  set(op, at::redispatch::_test_optional_intlist(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1])));
+  set(op, at::redispatch::_test_optional_intlist(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1]))));
   break;
 
 case H__TEST_OPTIONAL_FILLED_INTLIST:
-  set(op, at::redispatch::_test_optional_filled_intlist(ks, get<at::Tensor>(op.args[0]), get<c10::optional<at::IntArrayRef>>(op.args[1])));
+  set(op, at::redispatch::_test_optional_filled_intlist(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::IntArrayRef>>(op.args[1]))));
   break;
 
 case H__TEST_OPTIONAL_FLOATLIST:
@@ -8087,7 +8087,7 @@ case H__TEST_OPTIONAL_FLOATLIST:
   break;
 
 case H__TEST_STRING_DEFAULT:
-  set(op, at::redispatch::_test_string_default(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<std::string>(op.args[2])));
+  set(op, at::redispatch::_test_string_default(ks, get<at::Tensor>(op.args[0]), std::move(get<std::string>(op.args[1])), std::move(get<std::string>(op.args[2]))));
   break;
 
 case H__TEST_AMBIGUOUS_DEFAULTS_A:
@@ -8095,11 +8095,11 @@ case H__TEST_AMBIGUOUS_DEFAULTS_A:
   break;
 
 case H__TEST_AMBIGUOUS_DEFAULTS_B:
-  set(op, at::redispatch::_test_ambiguous_defaults(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<std::string>(op.args[2])));
+  set(op, at::redispatch::_test_ambiguous_defaults(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), std::move(get<std::string>(op.args[2]))));
   break;
 
 case H_SEGMENT_REDUCE:
-  set(op, at::redispatch::segment_reduce(ks, get<at::Tensor>(op.args[0]), get<std::string>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<int64_t>(op.args[4]), get<bool>(op.args[5]), get<c10::optional<at::Scalar>>(op.args[6])));
+  set(op, at::redispatch::segment_reduce(ks, get<at::Tensor>(op.args[0]), std::move(get<std::string>(op.args[1])), get<c10::optional<at::Tensor>>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3]), get<int64_t>(op.args[4]), get<bool>(op.args[5]), get<c10::optional<at::Scalar>>(op.args[6])));
   break;
 
 case H_SEGMENT_REDUCE_BACKWARD:
