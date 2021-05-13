@@ -108,7 +108,7 @@ def gen_dispatch_wrapper(fn):
   redispatch = f'at::redispatch::{sig.name()}({rargs})'
 
   tensor_args = [a for a in args if maybe_tensor(a.type)]
-  materialize = f"ensure_materialized({', '.join([a.expr for a in tensor_args])});"
+  materialize = ''.join([f'ensure_materialized({a.expr});' for a in tensor_args])
 
   dispatchkey = "dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);"
 
@@ -133,7 +133,10 @@ def gen_dispatch_wrapper(fn):
     {dispatchkey}
     return {redispatch};
   }}{dtype_init}
-  return at::detail::make_tensor<TorchyTensor>({dtype}, {device}, {fn_enum(fn)}, {rargs});
+  auto tt = at::detail::make_tensor<TorchyTensor>({dtype}, {device});
+  auto tt_ptr = tt.getIntrusivePtr().get();
+  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace.register_tensor((uintptr_t)tt_ptr, {fn_enum(fn)}, {rargs}));
+  return tt;
 }}'''
 
   # in-place op. returns one of the arguments
@@ -155,7 +158,9 @@ def gen_dispatch_wrapper(fn):
     {dispatchkey}
     return {redispatch};
   }}
-  return compute_in_place({ret}, {fn_enum(fn)}, {rargs});
+  TorchyTensor *tt = prepare_in_place({ret});
+  finish_in_place(tt, trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, {fn_enum(fn)}, {rargs}));
+  return {ret};
 }}'''
 
   # returns e.g. a scalar. must materialize right away

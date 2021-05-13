@@ -32,46 +32,37 @@ class TorchyTensor final : public TensorImpl {
     return storage_ && materialized_var();
   }
 
-  void set_materialized(bool val) {
-    materialized_var() = val;
-  }
-
+#if 0
   bool shared() const {
     return storage_ && !storage_.unique();
   }
+#endif
 
 public:
-  TorchyTensor(DispatchKeySet key_set, caffe2::TypeMeta data_type,
+  TorchyTensor(DispatchKeySet key_set, caffe2::TypeMeta dtype,
                const c10::optional<c10::Device> &device_opt)
-    : TensorImpl(key_set, data_type, device_opt) {}
+    : TensorImpl(key_set, dtype, device_opt) {}
 
-  template<typename... T>
-  TorchyTensor(caffe2::TypeMeta dtype, c10::Device device, T&&... args)
-    : TensorImpl(DISPATCHKEY, dtype, device) {
-    trace_idx = trace.register_tensor((uintptr_t)this, forward<T>(args)...);
-  }
+  TorchyTensor(caffe2::TypeMeta dtype, c10::Device device)
+    : TensorImpl(DISPATCHKEY, dtype, device) {}
 
   TorchyTensor(Tensor &&t) : TensorImpl(DISPATCHKEY, t.dtype(), t.device()) {
     set(t);
   }
 
-  template<typename... T>
-  void addInplace(T&&... args) {
+  void set_materialized(bool val) {
     if (storage_)
-      set_materialized(false);
+      materialized_var() = val;
+  }
 
-    auto idx = trace.register_tensor((uintptr_t)this, forward<T>(args)...);
+  void set_idx(unsigned idx) {
+    assert(trace_idx == -1u);
+    trace_idx = idx;
+  }
+
+  void update_idx(unsigned idx) {
     if (trace_idx == -1u)
       trace_idx = idx;
-
-#if 0
-    // if our data is shared, we need to flush straight away, otherwise
-    // another tensor with the same data will miss that the tensor is not
-    // current anymore.
-    // NOTE: not needed as long as we observe all operations over tensors
-    if (shared())
-      trace.flush();
-#endif
   }
 
   unsigned getTraceIdx() const { return trace_idx; }
@@ -273,8 +264,7 @@ void end_update_in_place(uintptr_t tt) {
 
 namespace {
 
-template<typename... T>
-Tensor& compute_in_place(const Tensor &t0, T&&... args) {
+TorchyTensor* prepare_in_place(const Tensor &t0) {
   auto &t = const_cast<Tensor&>(t0);
   TorchyTensor *tt = is_torchy(t);
 
@@ -288,18 +278,18 @@ Tensor& compute_in_place(const Tensor &t0, T&&... args) {
     tt = is_torchy(t);
     assert(tt);
   }
-
-  if (tt) {
-    tt->addInplace(forward<T>(args)...);
-    return t;
-  }
-
-  trace.register_tensor(DUMMY_TORCHY, forward<T>(args)...);
-  trace.flush();
-  return t;
+  if (tt)
+    tt->set_materialized(false);
+  return tt;
 }
 
-void ensure_materialized() {}
+void finish_in_place(TorchyTensor *tt, unsigned idx) {
+  if (tt) {
+    tt->update_idx(idx);
+  } else {
+    trace.flush();
+  }
+}
 
 void ensure_materialized(const Tensor &t) {
   if (auto tt = is_torchy(t))
@@ -324,12 +314,6 @@ void ensure_materialized(const List<T> &l) {
     const T &elem = it;
     ensure_materialized(elem);
   }
-}
-
-template<typename A, typename... T>
-void ensure_materialized(const A &a, T&... args) {
-  ensure_materialized(a);
-  ensure_materialized(args...);
 }
 
 // see build/aten/src/ATen/RegisterBackendSelect.cpp for redispatching logic
