@@ -83,7 +83,7 @@ class Trace {
   bool destroyed = false;
 
   template <typename T>
-  void incref(T t) {}
+  void incref(const T &t) {}
 
   void incref(const at::Tensor &t);
   void incref(const c10::optional<at::Tensor> &t);
