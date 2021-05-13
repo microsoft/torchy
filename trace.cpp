@@ -167,6 +167,25 @@ void Trace::incref(const List<optional<Tensor>> &l) {
   }
 }
 
+unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
+                                c10::DispatchKeySet ks) {
+  assert(!flushing);
+  if (next_op == MAX_TRACE_LENGTH)
+    flush();
+
+  auto &op = ops[next_op];
+  op.tensors[0] = tensor;
+  for (unsigned i = 1; i < op.tensors.size(); ++i) {
+    op.tensors[i] = 0;
+  }
+  op.id = op_id;
+  assert(op.args.empty());
+  op.refs = 1;
+  op.observable = true;
+  op.dispatch_key = ks;
+  return next_op++;
+}
+
 void Trace::add_shared(unsigned idx, uintptr_t ptr) {
   assert(idx < next_op);
   auto &op = ops[idx];

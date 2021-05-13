@@ -104,6 +104,8 @@ def gen_dispatch_wrapper(fn):
   fndecl = fndecl.replace('wrap_' + sig.name(), wrapper_name(fn))
 
   args = translate(sig.arguments(), dispatcher_sig.arguments())
+  register_args = ''.join([f'trace.append_arg(trace_idx, {move_if_needed(a)});' for a in args])
+
   rargs = ', '.join(['dispatchKeySet'] + [move_if_needed(a) for a in args])
   redispatch = f'at::redispatch::{sig.name()}({rargs})'
 
@@ -135,7 +137,9 @@ def gen_dispatch_wrapper(fn):
   }}{dtype_init}
   auto tt = at::detail::make_tensor<TorchyTensor>({dtype}, {device});
   auto tt_ptr = tt.getIntrusivePtr().get();
-  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace.register_tensor((uintptr_t)tt_ptr, {fn_enum(fn)}, {rargs}));
+  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, {fn_enum(fn)}, dispatchKeySet);
+  {register_args}
+  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
   return tt;
 }}'''
 
@@ -159,7 +163,9 @@ def gen_dispatch_wrapper(fn):
     return {redispatch};
   }}
   TorchyTensor *tt = prepare_in_place({ret});
-  finish_in_place(tt, trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, {fn_enum(fn)}, {rargs}));
+  unsigned trace_idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, {fn_enum(fn)}, dispatchKeySet);
+  {register_args}
+  finish_in_place(tt, trace_idx);
   return {ret};
 }}'''
 

@@ -103,38 +103,6 @@ class Trace {
     return { (T*)ptr, arr.size() };
   }
 
-  template<typename A>
-  void registerOpArg(TensorOp &op, A &&arg) {
-    op.args.emplace_back(std::forward<A>(arg));
-  }
-
-  template<typename T>
-  void registerOpArg(TensorOp &op, at::ArrayRef<T> &&arg) {
-    op.args.emplace_back(deep_copy(arg));
-  }
-
-  template<typename T>
-  void registerOpArg(TensorOp &op, c10::optional<at::ArrayRef<T>> &&arg) {
-    c10::optional<at::ArrayRef<T>> copy;
-    if (arg)
-      copy = deep_copy(*arg);
-    op.args.emplace_back(std::move(copy));
-   }
-
-  template<typename T>
-  void registerOpArg(TensorOp &op, const c10::List<T> &arg) {
-    op.args.emplace_back(arg.copy());
-  }
-
-  template<typename A, typename... T>
-  void registerOpArgs(TensorOp &op, A &&arg, T&&... args) {
-    registerOpArg(op, std::forward<A>(arg));
-    incref(arg);
-    registerOpArgs(op, std::forward<T>(args)...);
-  }
-
-  void registerOpArgs(TensorOp &op) {}
-
 public:
   ~Trace();
 
@@ -142,26 +110,35 @@ public:
   unsigned numOps() const { return next_op; }
   TensorOp* getOps() { return ops; }
 
-  template<typename... T>
-  unsigned register_tensor(uintptr_t tensor, TorchOp op_id,
-                           c10::DispatchKeySet ks, T&&... args) {
-    assert(!flushing);
-    if (next_op == MAX_TRACE_LENGTH)
-      flush();
-
-    auto &op = ops[next_op];
-    op.tensors[0] = tensor;
-    for (unsigned i = 1; i < op.tensors.size(); ++i) {
-      op.tensors[i] = 0;
-    }
-    op.id = op_id;
-    assert(op.args.empty());
-    registerOpArgs(op, std::forward<T>(args)...);
-    op.refs = 1;
-    op.observable = true;
-    op.dispatch_key = ks;
-    return next_op++;
+  template<typename A>
+  void append_arg(unsigned idx, A &&arg) {
+    incref(arg);
+    ops[idx].args.emplace_back(std::forward<A>(arg));
   }
+
+  template<typename T>
+  void append_arg(unsigned idx, at::ArrayRef<T> &&arg) {
+    incref(arg);
+    ops[idx].args.emplace_back(deep_copy(arg));
+  }
+
+  template<typename T>
+  void append_arg(unsigned idx, c10::optional<at::ArrayRef<T>> &&arg) {
+    incref(arg);
+    c10::optional<at::ArrayRef<T>> copy;
+    if (arg)
+      copy = deep_copy(*arg);
+    ops[idx].args.emplace_back(std::move(copy));
+   }
+
+  template<typename T>
+  void append_arg(unsigned idx, const c10::List<T> &arg) {
+    incref(arg);
+    ops[idx].args.emplace_back(arg.copy());
+  }
+
+  unsigned register_tensor(uintptr_t tensor, TorchOp op_id,
+                           c10::DispatchKeySet ks);
 
   void add_shared(unsigned idx, uintptr_t ptr);
   void set_unobservable(unsigned idx, uintptr_t ptr);
