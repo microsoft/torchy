@@ -96,9 +96,8 @@ class Trace {
   at::ArrayRef<T> deep_copy(const at::ArrayRef<T> &arr) {
     if (arr.empty())
       return arr;
-    size_t size = arr.size() * sizeof(T);
-    auto ptr = new unsigned char[size];
-    memcpy(ptr, arr.data(), size);
+    auto ptr = new unsigned char[arr.size() * sizeof(T)];
+    std::uninitialized_copy(arr.begin(), arr.end(), (T*)ptr);
     deep_copies.emplace_back(ptr);
     return { (T*)ptr, arr.size() };
   }
