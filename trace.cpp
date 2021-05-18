@@ -7,6 +7,7 @@
 #include <ATen/core/Formatting.h>
 #include <ATen/core/List.h>
 #include <algorithm>
+#include <cstdlib>
 #include <unordered_map>
 
 using namespace at;
@@ -170,6 +171,24 @@ void Trace::incref(const List<optional<Tensor>> &l) {
 unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
                                 c10::DispatchKeySet ks) {
   assert(!flushing);
+#ifndef TORCHY_RELEASE
+  // FOR DEBUGGING ONLY. Can be used to binary search a trace that goes wrong
+  static unsigned call_count = 0;
+  ++call_count;
+  if (auto *limit = getenv("TORCHY_FLUSH_BEFORE")) {
+    if (call_count <= (unsigned)atoi(limit))
+      flush();
+  }
+  if (auto *limit = getenv("TORCHY_FLUSH_AFTER")) {
+    if (call_count > (unsigned)atoi(limit))
+      flush();
+  }
+  if (auto *limit = getenv("TORCHY_MAX_TRACE_LENGTH")) {
+    if (next_op == (unsigned)atoi(limit))
+      flush();
+  }
+#endif
+
   if (next_op == MAX_TRACE_LENGTH)
     flush();
 
