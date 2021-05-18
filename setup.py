@@ -10,7 +10,6 @@ sanitizers = [
 
 extra_compile_args = [
   '-I' + os.path.realpath('.'),
-  '-O2',
   '-march=native',
   '-mtune=native',
   '-fvisibility=hidden',
