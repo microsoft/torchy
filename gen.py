@@ -80,6 +80,15 @@ def get_dtype_arg(args, dtype, device):
   return dtype, device, init_code
 
 
+def fn_output(fn):
+  if fn.func.arguments.out:
+    assert len(fn.func.arguments.out) == 1
+    return fn.func.arguments.out[0].name
+  else:
+    assert fn.func.arguments.self_arg.argument.is_write
+    return fn.func.arguments.self_arg.argument.name
+
+
 def move_if_needed(str, arg):
   basic_types = {
     'bool',
@@ -156,12 +165,7 @@ def gen_dispatch_wrapper(fn):
   if rettype == 'at::Tensor &' or\
      (fn.use_const_ref_for_mutable_tensors and rettype == 'const at::Tensor &'):
     assert tensor_args
-    if fn.func.arguments.out:
-      assert len(fn.func.arguments.out) == 1
-      ret = fn.func.arguments.out[0].name
-    else:
-      assert fn.func.arguments.self_arg.argument.is_write
-      ret = fn.func.arguments.self_arg.argument.name
+    ret = fn_output(fn)
 
     # TODO: we can also make it lazy if tensor is non-torchy but ref count == 1
     return f'''
@@ -206,11 +210,9 @@ def gen_interpreter_redispatch(fn):
 
   dispatcher_exprs = translate(sig.arguments(), dispatcher_sig.arguments())
   args = []
-  i = 0
-  for arg in dispatcher_exprs:
+  for i, arg in enumerate(dispatcher_exprs):
     type = arg.type.cpp_type(strip_ref=True)
     args.append(move_if_needed(f'get<{type}>(op.args[{i}])', arg))
-    i += 1
 
   redispatch = f'at::redispatch::{sig.name()}(ks, {", ".join(args)})'
 

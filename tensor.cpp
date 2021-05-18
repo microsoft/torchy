@@ -189,7 +189,7 @@ public:
 
   template <typename T>
   c10::intrusive_ptr<TensorImpl>
-  my_shallow_copy_and_detach(T version_counter,
+  my_shallow_copy_and_detach(T &&version_counter,
                              bool allow_tensor_metadata_change) const {
     auto copy
       = c10::make_intrusive<TorchyTensor>(key_set_, data_type_, device_opt_);
