@@ -13,6 +13,9 @@ yaml_path = PYTORCH + '/aten/src/ATen/native/native_functions.yaml'
 native_functions = parse_native_yaml(yaml_path)
 
 def skip_fn(fn):
+  # TODO: benchmark if we really want to skip these
+  # plus check if we want to skip is_generic_dispatch_key(key) as well
+  # as those don't have real kernels, just autograd
   return not any(d.has_kernel(fn) for d in native_functions.backend_indices.values())
 
 def wrapper_name(fn):
