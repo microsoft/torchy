@@ -30,6 +30,28 @@ case H__CAST_HALF:
   set(op, at::redispatch::_cast_Half(ks, get<at::Tensor>(op.args[0]), get<bool>(op.args[1])));
   break;
 
+// skip void __dispatch__backward(const at::Tensor & self, at::TensorList inputs, const c10::optional<at::Tensor> & gradient, c10::optional<bool> retain_graph, bool create_graph)
+
+// skip void __dispatch_set_data(at::Tensor & self, const at::Tensor & new_data)
+
+case H_DATA:
+  set(op, at::redispatch::__dispatch_data(ks, get<at::Tensor>(op.args[0])));
+  break;
+
+// skip bool __dispatch_is_leaf(const at::Tensor & self)
+
+// skip int64_t __dispatch_output_nr(const at::Tensor & self)
+
+// skip int64_t __dispatch__version(const at::Tensor & self)
+
+case H_REQUIRES_GRAD_:
+  init_update_in_place(op);
+  at::redispatch::__dispatch_requires_grad_(ks, get<at::Tensor>(op.args[0]), get<bool>(op.args[1]));
+  end_update_in_place(op);
+  break;
+
+// skip void __dispatch_retain_grad(at::Tensor & self)
+
 case H__FW_PRIMAL:
   set(op, at::redispatch::_fw_primal(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1])));
   break;
@@ -1038,6 +1060,10 @@ case H_CONSTANT_PAD_ND:
   set(op, at::redispatch::constant_pad_nd(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), get<at::Scalar>(op.args[2])));
   break;
 
+case H_CONTIGUOUS:
+  set(op, at::redispatch::__dispatch_contiguous(ks, get<at::Tensor>(op.args[0]), std::move(get<at::MemoryFormat>(op.args[1]))));
+  break;
+
 case H_CONVOLUTION:
   set(op, at::redispatch::convolution(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<c10::optional<at::Tensor>>(op.args[2]), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), std::move(get<at::IntArrayRef>(op.args[7])), get<int64_t>(op.args[8])));
   break;
@@ -1350,6 +1376,20 @@ case H_DIFF_OUT:
   end_update_in_place(op);
   break;
 
+// skip std::vector<at::Tensor> gradient(const at::Tensor & self, const c10::optional<at::Scalar> & spacing, c10::optional<int64_t> dim, int64_t edge_order)
+
+// skip std::vector<at::Tensor> gradient(const at::Tensor & self, const at::Scalar & spacing, at::IntArrayRef dim, int64_t edge_order)
+
+// skip std::vector<at::Tensor> gradient(const at::Tensor & self, at::IntArrayRef dim, int64_t edge_order)
+
+// skip std::vector<at::Tensor> gradient(const at::Tensor & self, at::ArrayRef<at::Scalar> spacing, c10::optional<int64_t> dim, int64_t edge_order)
+
+// skip std::vector<at::Tensor> gradient(const at::Tensor & self, at::ArrayRef<at::Scalar> spacing, at::IntArrayRef dim, int64_t edge_order)
+
+// skip std::vector<at::Tensor> gradient(const at::Tensor & self, at::TensorList spacing, c10::optional<int64_t> dim, int64_t edge_order)
+
+// skip std::vector<at::Tensor> gradient(const at::Tensor & self, at::TensorList spacing, at::IntArrayRef dim, int64_t edge_order)
+
 case H_DIV_TENSOR:
   set(op, at::redispatch::div(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
   break;
@@ -1584,6 +1624,10 @@ case H_NEW_FULL:
 
 case H_NEW_ZEROS:
   set(op, at::redispatch::new_zeros(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
+  break;
+
+case H_NEW_ONES:
+  set(op, at::redispatch::new_ones(ks, get<at::Tensor>(op.args[0]), std::move(get<at::IntArrayRef>(op.args[1])), std::move(get<c10::optional<at::ScalarType>>(op.args[2])), std::move(get<c10::optional<at::Layout>>(op.args[3])), std::move(get<c10::optional<at::Device>>(op.args[4])), get<c10::optional<bool>>(op.args[5])));
   break;
 
 case H__EMPTY_AFFINE_QUANTIZED:
@@ -1970,6 +2014,10 @@ case H_ISNAN:
 
 // skip bool is_distributed(const at::Tensor & self)
 
+// skip bool __dispatch_is_floating_point(const at::Tensor & self)
+
+// skip bool __dispatch_is_complex(const at::Tensor & self)
+
 case H_ISREAL:
   set(op, at::redispatch::isreal(ks, get<at::Tensor>(op.args[0])));
   break;
@@ -1977,6 +2025,8 @@ case H_ISREAL:
 // skip bool is_nonzero(const at::Tensor & self)
 
 // skip bool is_same_size(const at::Tensor & self, const at::Tensor & other)
+
+// skip bool __dispatch_is_signed(const at::Tensor & self)
 
 case H_KL_DIV:
   set(op, at::redispatch::kl_div(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<int64_t>(op.args[2]), get<bool>(op.args[3])));
@@ -3226,6 +3276,8 @@ case H_DETACH_:
   end_update_in_place(op);
   break;
 
+// skip int64_t __dispatch_size(const at::Tensor & self, int64_t dim)
+
 // skip int64_t size(const at::Tensor & self, at::Dimname dim)
 
 case H_SLICE_TENSOR:
@@ -3375,6 +3427,8 @@ case H_STFT:
 case H_ISTFT:
   set(op, at::redispatch::istft(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<c10::optional<int64_t>>(op.args[2]), get<c10::optional<int64_t>>(op.args[3]), get<c10::optional<at::Tensor>>(op.args[4]), get<bool>(op.args[5]), get<bool>(op.args[6]), get<c10::optional<bool>>(op.args[7]), get<c10::optional<int64_t>>(op.args[8]), get<bool>(op.args[9])));
   break;
+
+// skip int64_t __dispatch_stride(const at::Tensor & self, int64_t dim)
 
 // skip int64_t stride(const at::Tensor & self, at::Dimname dim)
 
@@ -3570,15 +3624,15 @@ case H_THRESHOLD:
   set(op, at::redispatch::threshold(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2])));
   break;
 
-case H_THRESHOLD_:
-  init_update_in_place(op);
-  at::redispatch::threshold_(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]));
-  end_update_in_place(op);
-  break;
-
 case H_THRESHOLD_OUT:
   init_update_in_place(op);
   at::redispatch::threshold_outf(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]), get<at::Tensor>(op.args[3]));
+  end_update_in_place(op);
+  break;
+
+case H_THRESHOLD_BACKWARD_GRAD_INPUT:
+  init_update_in_place(op);
+  at::redispatch::threshold_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Scalar>(op.args[2]), get<at::Tensor>(op.args[3]));
   end_update_in_place(op);
   break;
 
@@ -4090,16 +4144,6 @@ case H_HEAVISIDE_OUT:
   end_update_in_place(op);
   break;
 
-case H_HEAVISIDE:
-  set(op, at::redispatch::heaviside(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
-  break;
-
-case H_HEAVISIDE_:
-  init_update_in_place(op);
-  at::redispatch::heaviside_(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
-  end_update_in_place(op);
-  break;
-
 case H_RSUB_SCALAR:
   set(op, at::redispatch::rsub(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2])));
   break;
@@ -4173,6 +4217,8 @@ case H_SPARSE_RESIZE_AND_CLEAR_:
 case H_SPARSE_MASK:
   set(op, at::redispatch::sparse_mask(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
   break;
+
+// skip std::vector<at::Tensor> _to_cpu(at::TensorList tensors)
 
 case H_TO_DENSE:
   set(op, at::redispatch::to_dense(ks, get<at::Tensor>(op.args[0]), std::move(get<c10::optional<at::ScalarType>>(op.args[1]))));
@@ -5642,6 +5688,10 @@ case H_LU_SOLVE:
   set(op, at::redispatch::lu_solve(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2])));
   break;
 
+// skip std::tuple<at::Tensor,at::Tensor,at::Tensor> lu_unpack(const at::Tensor & LU_data, const at::Tensor & LU_pivots, bool unpack_data, bool unpack_pivots)
+
+// skip std::tuple<at::Tensor &,at::Tensor &,at::Tensor &> lu_unpack_outf(const at::Tensor & LU_data, const at::Tensor & LU_pivots, bool unpack_data, bool unpack_pivots, at::Tensor & P, at::Tensor & L, at::Tensor & U)
+
 case H_MULTINOMIAL_OUT:
   init_update_in_place(op);
   at::redispatch::multinomial_outf(ks, get<at::Tensor>(op.args[0]), get<int64_t>(op.args[1]), get<bool>(op.args[2]), std::move(get<c10::optional<at::Generator>>(op.args[3])), get<at::Tensor>(op.args[4]));
@@ -5858,10 +5908,6 @@ case H_FMAX_OUT:
   end_update_in_place(op);
   break;
 
-case H_MAXIMUM:
-  set(op, at::redispatch::maximum(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
-  break;
-
 case H_MAXIMUM_OUT:
   init_update_in_place(op);
   at::redispatch::maximum_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]));
@@ -5876,10 +5922,6 @@ case H_MAX_OUT:
   init_update_in_place(op);
   at::redispatch::max_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
-  break;
-
-case H_MINIMUM:
-  set(op, at::redispatch::minimum(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
   break;
 
 case H_MINIMUM_OUT:
@@ -6614,10 +6656,6 @@ case H_ELU_OUT:
   end_update_in_place(op);
   break;
 
-case H_ELU:
-  set(op, at::redispatch::elu(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]), get<at::Scalar>(op.args[3])));
-  break;
-
 case H_ELU_BACKWARD:
   set(op, at::redispatch::elu_backward(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2]), get<at::Scalar>(op.args[3]), get<bool>(op.args[4]), get<at::Tensor>(op.args[5])));
   break;
@@ -6656,12 +6694,6 @@ case H_HARDSIGMOID_OUT:
 
 case H_HARDSIGMOID:
   set(op, at::redispatch::hardsigmoid(ks, get<at::Tensor>(op.args[0])));
-  break;
-
-case H_HARDSIGMOID_:
-  init_update_in_place(op);
-  at::redispatch::hardsigmoid_(ks, get<at::Tensor>(op.args[0]));
-  end_update_in_place(op);
   break;
 
 case H_HARDSIGMOID_BACKWARD:
@@ -6784,10 +6816,6 @@ case H_SOFTPLUS_OUT:
   end_update_in_place(op);
   break;
 
-case H_SOFTPLUS:
-  set(op, at::redispatch::softplus(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Scalar>(op.args[2])));
-  break;
-
 case H_SOFTPLUS_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
   at::redispatch::softplus_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Scalar>(op.args[2]), get<at::Scalar>(op.args[3]), get<at::Tensor>(op.args[4]), get<at::Tensor>(op.args[5]));
@@ -6802,10 +6830,6 @@ case H_SOFTSHRINK_OUT:
   init_update_in_place(op);
   at::redispatch::softshrink_outf(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1]), get<at::Tensor>(op.args[2]));
   end_update_in_place(op);
-  break;
-
-case H_SOFTSHRINK:
-  set(op, at::redispatch::softshrink(ks, get<at::Tensor>(op.args[0]), get<at::Scalar>(op.args[1])));
   break;
 
 case H_SOFTSHRINK_BACKWARD_GRAD_INPUT:
@@ -6956,10 +6980,6 @@ case H_MAX_POOL2D_WITH_INDICES_BACKWARD_GRAD_INPUT:
   init_update_in_place(op);
   at::redispatch::max_pool2d_with_indices_backward_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), get<at::Tensor>(op.args[7]), get<at::Tensor>(op.args[8]));
   end_update_in_place(op);
-  break;
-
-case H_MAX_POOL2D_WITH_INDICES_BACKWARD:
-  set(op, at::redispatch::max_pool2d_with_indices_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), std::move(get<at::IntArrayRef>(op.args[2])), std::move(get<at::IntArrayRef>(op.args[3])), std::move(get<at::IntArrayRef>(op.args[4])), std::move(get<at::IntArrayRef>(op.args[5])), get<bool>(op.args[6]), get<at::Tensor>(op.args[7])));
   break;
 
 // skip std::tuple<at::Tensor &,at::Tensor &> max_pool3d_with_indices_outf(const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, at::Tensor & out, at::Tensor & indices)
@@ -7844,6 +7864,10 @@ case H__LINALG_INV_OUT_HELPER_:
   end_update_in_place(op);
   break;
 
+// skip std::tuple<at::Tensor,at::Tensor> linalg_inv_ex(const at::Tensor & self, bool check_errors)
+
+// skip std::tuple<at::Tensor &,at::Tensor &> linalg_inv_ex_outf(const at::Tensor & self, bool check_errors, at::Tensor & inverse, at::Tensor & info)
+
 case H_LINALG_INV:
   set(op, at::redispatch::linalg_inv(ks, get<at::Tensor>(op.args[0])));
   break;
@@ -8105,4 +8129,14 @@ case H_SEGMENT_REDUCE:
 case H_SEGMENT_REDUCE_BACKWARD:
   set(op, at::redispatch::segment_reduce_backward(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]), get<c10::optional<at::Tensor>>(op.args[3])));
   break;
+
+case H_PAD_SEQUENCE:
+  set(op, at::redispatch::pad_sequence(ks, std::move(get<at::TensorList>(op.args[0])), get<bool>(op.args[1]), get<double>(op.args[2])));
+  break;
+
+case H_FLATTEN_DENSE_TENSORS:
+  set(op, at::redispatch::flatten_dense_tensors(ks, std::move(get<at::TensorList>(op.args[0]))));
+  break;
+
+// skip std::vector<at::Tensor> unflatten_dense_tensors(const at::Tensor & flat, at::TensorList tensors)
 

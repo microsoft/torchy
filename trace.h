@@ -25,6 +25,7 @@ using UnionInputTys = c10::variant<
   at::Device,
   at::Dimname,
   at::DimnameList,
+  at::MemoryFormat,
   at::ScalarType,
   at::Storage,
   at::Tensor,

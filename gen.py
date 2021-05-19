@@ -13,7 +13,7 @@ yaml_path = PYTORCH + '/aten/src/ATen/native/native_functions.yaml'
 native_functions = parse_native_yaml(yaml_path)
 
 def skip_fn(fn):
-  return not fn.dispatch or fn.manual_cpp_binding
+  return not any(d.has_kernel(fn) for d in native_functions.backend_indices.values())
 
 def wrapper_name(fn):
   return 'wrap_' + str(fn.func.name).replace('.', '_')
@@ -245,7 +245,7 @@ fd3 = open('autogen/ops_enum.h', 'w')
 fd4 = open('autogen/ops_names.h', 'w')
 fd5 = open('autogen/interpreter_redispatch.h', 'w')
 
-for fn in native_functions:
+for fn in native_functions.native_functions:
   if skip_fn(fn):
     continue
   print(gen_dispatch_wrapper(fn), file=fd1)
