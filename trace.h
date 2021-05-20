@@ -91,16 +91,20 @@ class Trace {
   void incref(const at::TensorList &l);
   void incref(const c10::List<c10::optional<at::Tensor>> &l);
 
-  std::vector<std::unique_ptr<unsigned char[]>> deep_copies;
+  std::vector<c10::variant<
+    std::vector<long>,
+    std::vector<at::Dimname>,
+    std::vector<at::Tensor>
+  >> deep_copies;
 
   template<typename T>
   at::ArrayRef<T> deep_copy(const at::ArrayRef<T> &arr) {
     if (arr.empty())
       return arr;
-    auto ptr = new unsigned char[arr.size() * sizeof(T)];
-    std::uninitialized_copy(arr.begin(), arr.end(), (T*)ptr);
-    deep_copies.emplace_back(ptr);
-    return { (T*)ptr, arr.size() };
+    auto v = arr.vec();
+    auto ptr = v.data();
+    deep_copies.emplace_back(std::move(v));
+    return { ptr, arr.size() };
   }
 
 public:
