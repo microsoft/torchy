@@ -665,31 +665,6 @@ at::Tensor wrap_view_as_complex(c10::DispatchKeySet dispatchKeySet, const at::Te
   return tt;
 }
 
-at::Tensor wrap_sgn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
-  if (trace.is_flushing()) {
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::sgn(dispatchKeySet, self);
-  }
-  auto tt = at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device());
-  auto tt_ptr = tt.getIntrusivePtr().get();
-  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_SGN, dispatchKeySet);
-  trace.append_arg(trace_idx, self);
-  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
-  return tt;
-}
-
-at::Tensor & wrap_sgn_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
-  if (trace.is_flushing()) {
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::sgn_(dispatchKeySet, self);
-  }
-  TorchyTensor *tt = prepare_in_place(self);
-  unsigned trace_idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, H_SGN_, dispatchKeySet);
-  trace.append_arg(trace_idx, self);
-  finish_in_place(tt, trace_idx);
-  return self;
-}
-
 at::Tensor & wrap_sgn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
@@ -15801,19 +15776,6 @@ at::Tensor wrap_min(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
   return tt;
 }
 
-at::Tensor wrap_fmin(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other) {
-  if (trace.is_flushing()) {
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fmin(dispatchKeySet, self, other);
-  }
-  auto tt = at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device());
-  auto tt_ptr = tt.getIntrusivePtr().get();
-  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_FMIN, dispatchKeySet);
-  trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, other);
-  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
-  return tt;
-}
-
 at::Tensor & wrap_fmin_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
@@ -15835,19 +15797,6 @@ at::Tensor wrap_max(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
   auto tt_ptr = tt.getIntrusivePtr().get();
   unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_MAX, dispatchKeySet);
   trace.append_arg(trace_idx, self);
-  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
-  return tt;
-}
-
-at::Tensor wrap_fmax(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other) {
-  if (trace.is_flushing()) {
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fmax(dispatchKeySet, self, other);
-  }
-  auto tt = at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device());
-  auto tt_ptr = tt.getIntrusivePtr().get();
-  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_FMAX, dispatchKeySet);
-  trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, other);
   static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
   return tt;
 }

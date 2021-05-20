@@ -236,16 +236,6 @@ case H_VIEW_AS_COMPLEX:
   set(op, at::redispatch::view_as_complex(ks, get<at::Tensor>(op.args[0])));
   break;
 
-case H_SGN:
-  set(op, at::redispatch::sgn(ks, get<at::Tensor>(op.args[0])));
-  break;
-
-case H_SGN_:
-  init_update_in_place(op);
-  at::redispatch::sgn_(ks, get<at::Tensor>(op.args[0]));
-  end_update_in_place(op);
-  break;
-
 case H_SGN_OUT:
   init_update_in_place(op);
   at::redispatch::sgn_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]));
@@ -5884,10 +5874,6 @@ case H_MIN:
   set(op, at::redispatch::min(ks, get<at::Tensor>(op.args[0])));
   break;
 
-case H_FMIN:
-  set(op, at::redispatch::fmin(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
-  break;
-
 case H_FMIN_OUT:
   init_update_in_place(op);
   at::redispatch::fmin_outf(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1]), get<at::Tensor>(op.args[2]));
@@ -5896,10 +5882,6 @@ case H_FMIN_OUT:
 
 case H_MAX:
   set(op, at::redispatch::max(ks, get<at::Tensor>(op.args[0])));
-  break;
-
-case H_FMAX:
-  set(op, at::redispatch::fmax(ks, get<at::Tensor>(op.args[0]), get<at::Tensor>(op.args[1])));
   break;
 
 case H_FMAX_OUT:
