@@ -73,11 +73,9 @@ public:
 
     trace_idx = -1u;
 
-    auto my_ks = key_set_;
     auto *other = t.getIntrusivePtr().get();
     copy_tensor_metadata(other, this, other->version_counter(),
                          other->allow_tensor_metadata_change());
-    key_set_ = key_set_ | my_ks;
 
     set_materialized(true);
 
