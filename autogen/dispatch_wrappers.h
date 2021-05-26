@@ -2785,7 +2785,7 @@ at::Tensor wrap__convolution_deprecated(c10::DispatchKeySet dispatchKeySet, cons
   return tt;
 }
 
-at::Tensor wrap__convolution_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, std::string padding, at::IntArrayRef dilation, int64_t groups) {
+at::Tensor wrap__convolution_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, c10::string_view padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_convolution_mode(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
@@ -2856,7 +2856,7 @@ at::Tensor wrap_conv3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & in
   return tt;
 }
 
-at::Tensor wrap_conv1d_padding(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, std::string padding, at::IntArrayRef dilation, int64_t groups) {
+at::Tensor wrap_conv1d_padding(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, c10::string_view padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::conv1d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
@@ -2869,7 +2869,7 @@ at::Tensor wrap_conv1d_padding(c10::DispatchKeySet dispatchKeySet, const at::Ten
   return tt;
 }
 
-at::Tensor wrap_conv2d_padding(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, std::string padding, at::IntArrayRef dilation, int64_t groups) {
+at::Tensor wrap_conv2d_padding(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, c10::string_view padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::conv2d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
@@ -2882,7 +2882,7 @@ at::Tensor wrap_conv2d_padding(c10::DispatchKeySet dispatchKeySet, const at::Ten
   return tt;
 }
 
-at::Tensor wrap_conv3d_padding(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, std::string padding, at::IntArrayRef dilation, int64_t groups) {
+at::Tensor wrap_conv3d_padding(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, c10::string_view padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::conv3d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
@@ -3713,7 +3713,7 @@ at::Tensor & wrap_div_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   return out;
 }
 
-at::Tensor wrap_div_Tensor_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, c10::optional<std::string> rounding_mode) {
+at::Tensor wrap_div_Tensor_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, c10::optional<c10::string_view> rounding_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::div(dispatchKeySet, self, other, std::move(rounding_mode));
@@ -3726,7 +3726,7 @@ at::Tensor wrap_div_Tensor_mode(c10::DispatchKeySet dispatchKeySet, const at::Te
   return tt;
 }
 
-at::Tensor & wrap_div__Tensor_mode(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Tensor & other, c10::optional<std::string> rounding_mode) {
+at::Tensor & wrap_div__Tensor_mode(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Tensor & other, c10::optional<c10::string_view> rounding_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::div_(dispatchKeySet, self, other, std::move(rounding_mode));
@@ -3738,7 +3738,7 @@ at::Tensor & wrap_div__Tensor_mode(c10::DispatchKeySet dispatchKeySet, at::Tenso
   return self;
 }
 
-at::Tensor & wrap_div_out_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, c10::optional<std::string> rounding_mode, at::Tensor & out) {
+at::Tensor & wrap_div_out_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, c10::optional<c10::string_view> rounding_mode, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::div_outf(dispatchKeySet, self, other, std::move(rounding_mode), out);
@@ -3775,7 +3775,7 @@ at::Tensor & wrap_div__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   return self;
 }
 
-at::Tensor wrap_div_Scalar_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & other, c10::optional<std::string> rounding_mode) {
+at::Tensor wrap_div_Scalar_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & other, c10::optional<c10::string_view> rounding_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::div(dispatchKeySet, self, other, std::move(rounding_mode));
@@ -3788,7 +3788,7 @@ at::Tensor wrap_div_Scalar_mode(c10::DispatchKeySet dispatchKeySet, const at::Te
   return tt;
 }
 
-at::Tensor & wrap_div__Scalar_mode(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Scalar & other, c10::optional<std::string> rounding_mode) {
+at::Tensor & wrap_div__Scalar_mode(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Scalar & other, c10::optional<c10::string_view> rounding_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::div_(dispatchKeySet, self, other, std::move(rounding_mode));
@@ -3862,7 +3862,7 @@ at::Tensor & wrap_divide__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor 
   return self;
 }
 
-at::Tensor wrap_divide_Tensor_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, c10::optional<std::string> rounding_mode) {
+at::Tensor wrap_divide_Tensor_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, c10::optional<c10::string_view> rounding_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::divide(dispatchKeySet, self, other, std::move(rounding_mode));
@@ -3875,7 +3875,7 @@ at::Tensor wrap_divide_Tensor_mode(c10::DispatchKeySet dispatchKeySet, const at:
   return tt;
 }
 
-at::Tensor & wrap_divide__Tensor_mode(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Tensor & other, c10::optional<std::string> rounding_mode) {
+at::Tensor & wrap_divide__Tensor_mode(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Tensor & other, c10::optional<c10::string_view> rounding_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::divide_(dispatchKeySet, self, other, std::move(rounding_mode));
@@ -3887,7 +3887,7 @@ at::Tensor & wrap_divide__Tensor_mode(c10::DispatchKeySet dispatchKeySet, at::Te
   return self;
 }
 
-at::Tensor & wrap_divide_out_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, c10::optional<std::string> rounding_mode, at::Tensor & out) {
+at::Tensor & wrap_divide_out_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, c10::optional<c10::string_view> rounding_mode, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::divide_outf(dispatchKeySet, self, other, std::move(rounding_mode), out);
@@ -3899,7 +3899,7 @@ at::Tensor & wrap_divide_out_mode(c10::DispatchKeySet dispatchKeySet, const at::
   return out;
 }
 
-at::Tensor wrap_divide_Scalar_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & other, c10::optional<std::string> rounding_mode) {
+at::Tensor wrap_divide_Scalar_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & other, c10::optional<c10::string_view> rounding_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::divide(dispatchKeySet, self, other, std::move(rounding_mode));
@@ -3912,7 +3912,7 @@ at::Tensor wrap_divide_Scalar_mode(c10::DispatchKeySet dispatchKeySet, const at:
   return tt;
 }
 
-at::Tensor & wrap_divide__Scalar_mode(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Scalar & other, c10::optional<std::string> rounding_mode) {
+at::Tensor & wrap_divide__Scalar_mode(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Scalar & other, c10::optional<c10::string_view> rounding_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::divide_(dispatchKeySet, self, other, std::move(rounding_mode));
@@ -4036,7 +4036,7 @@ at::Tensor & wrap_vdot_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   return out;
 }
 
-at::Tensor wrap_einsum(c10::DispatchKeySet dispatchKeySet, std::string equation, at::TensorList tensors) {
+at::Tensor wrap_einsum(c10::DispatchKeySet dispatchKeySet, c10::string_view equation, at::TensorList tensors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::einsum(dispatchKeySet, std::move(equation), std::move(tensors));
@@ -4830,7 +4830,7 @@ at::Tensor wrap_full_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   return tt;
 }
 
-at::Tensor wrap_from_file(c10::DispatchKeySet dispatchKeySet, std::string filename, c10::optional<bool> shared, c10::optional<int64_t> size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
+at::Tensor wrap_from_file(c10::DispatchKeySet dispatchKeySet, c10::string_view filename, c10::optional<bool> shared, c10::optional<int64_t> size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::from_file(dispatchKeySet, std::move(filename), shared, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
@@ -8404,41 +8404,41 @@ at::Tensor wrap_repeat(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
   return tt;
 }
 
-at::Tensor wrap_repeat_interleave_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor & repeats) {
+at::Tensor wrap_repeat_interleave_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor & repeats, c10::optional<int64_t> output_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::repeat_interleave(dispatchKeySet, repeats);
+    return at::redispatch::repeat_interleave(dispatchKeySet, repeats, output_size);
   }
   auto tt = at::detail::make_tensor<TorchyTensor>(repeats.dtype(), repeats.device());
   auto tt_ptr = tt.getIntrusivePtr().get();
   unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_REPEAT_INTERLEAVE_TENSOR, dispatchKeySet);
-  trace.append_arg(trace_idx, repeats);
+  trace.append_arg(trace_idx, repeats);trace.append_arg(trace_idx, output_size);
   static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
   return tt;
 }
 
-at::Tensor wrap_repeat_interleave_self_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & repeats, c10::optional<int64_t> dim) {
+at::Tensor wrap_repeat_interleave_self_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & repeats, c10::optional<int64_t> dim, c10::optional<int64_t> output_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::repeat_interleave(dispatchKeySet, self, repeats, dim);
+    return at::redispatch::repeat_interleave(dispatchKeySet, self, repeats, dim, output_size);
   }
   auto tt = at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device());
   auto tt_ptr = tt.getIntrusivePtr().get();
   unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_REPEAT_INTERLEAVE_SELF_TENSOR, dispatchKeySet);
-  trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, repeats);trace.append_arg(trace_idx, dim);
+  trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, repeats);trace.append_arg(trace_idx, dim);trace.append_arg(trace_idx, output_size);
   static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
   return tt;
 }
 
-at::Tensor wrap_repeat_interleave_self_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t repeats, c10::optional<int64_t> dim) {
+at::Tensor wrap_repeat_interleave_self_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t repeats, c10::optional<int64_t> dim, c10::optional<int64_t> output_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::repeat_interleave(dispatchKeySet, self, repeats, dim);
+    return at::redispatch::repeat_interleave(dispatchKeySet, self, repeats, dim, output_size);
   }
   auto tt = at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device());
   auto tt_ptr = tt.getIntrusivePtr().get();
   unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_REPEAT_INTERLEAVE_SELF_INT, dispatchKeySet);
-  trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, repeats);trace.append_arg(trace_idx, dim);
+  trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, repeats);trace.append_arg(trace_idx, dim);trace.append_arg(trace_idx, output_size);
   static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
   return tt;
 }
@@ -8799,6 +8799,56 @@ at::Tensor wrap_silu_backward(c10::DispatchKeySet dispatchKeySet, const at::Tens
   auto tt = at::detail::make_tensor<TorchyTensor>(grad_output.dtype(), grad_output.device());
   auto tt_ptr = tt.getIntrusivePtr().get();
   unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_SILU_BACKWARD, dispatchKeySet);
+  trace.append_arg(trace_idx, grad_output);trace.append_arg(trace_idx, self);
+  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
+  return tt;
+}
+
+at::Tensor wrap_mish(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
+  if (trace.is_flushing()) {
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::mish(dispatchKeySet, self);
+  }
+  auto tt = at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device());
+  auto tt_ptr = tt.getIntrusivePtr().get();
+  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_MISH, dispatchKeySet);
+  trace.append_arg(trace_idx, self);
+  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
+  return tt;
+}
+
+at::Tensor & wrap_mish_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
+  if (trace.is_flushing()) {
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::mish_(dispatchKeySet, self);
+  }
+  TorchyTensor *tt = prepare_in_place(self);
+  unsigned trace_idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, H_MISH_, dispatchKeySet);
+  trace.append_arg(trace_idx, self);
+  finish_in_place(tt, trace_idx);
+  return self;
+}
+
+at::Tensor & wrap_mish_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Tensor & out) {
+  if (trace.is_flushing()) {
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::mish_outf(dispatchKeySet, self, out);
+  }
+  TorchyTensor *tt = prepare_in_place(out);
+  unsigned trace_idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, H_MISH_OUT, dispatchKeySet);
+  trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, out);
+  finish_in_place(tt, trace_idx);
+  return out;
+}
+
+at::Tensor wrap_mish_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self) {
+  if (trace.is_flushing()) {
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::mish_backward(dispatchKeySet, grad_output, self);
+  }
+  auto tt = at::detail::make_tensor<TorchyTensor>(grad_output.dtype(), grad_output.device());
+  auto tt_ptr = tt.getIntrusivePtr().get();
+  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_MISH_BACKWARD, dispatchKeySet);
   trace.append_arg(trace_idx, grad_output);trace.append_arg(trace_idx, self);
   static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
   return tt;
@@ -9993,15 +10043,15 @@ at::Tensor & wrap__mkldnn_transpose_(c10::DispatchKeySet dispatchKeySet, at::Ten
   return self;
 }
 
-at::Tensor wrap_one_hot(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t num_classes) {
+at::Tensor wrap_one_hot(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t num_classes, at::ScalarType dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::one_hot(dispatchKeySet, self, num_classes);
+    return at::redispatch::one_hot(dispatchKeySet, self, num_classes, std::move(dtype));
   }
-  auto tt = at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device());
+  auto tt = at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(dtype), self.device());
   auto tt_ptr = tt.getIntrusivePtr().get();
   unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_ONE_HOT, dispatchKeySet);
-  trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, num_classes);
+  trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, num_classes);trace.append_arg(trace_idx, std::move(dtype));
   static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
   return tt;
 }
@@ -12882,7 +12932,7 @@ at::Tensor wrap_scatter_dimname_value(c10::DispatchKeySet dispatchKeySet, const 
   return tt;
 }
 
-at::Tensor & wrap_scatter__reduce(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & src, std::string reduce) {
+at::Tensor & wrap_scatter__reduce(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Tensor & src, c10::string_view reduce) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::scatter_(dispatchKeySet, self, dim, index, src, std::move(reduce));
@@ -12894,7 +12944,7 @@ at::Tensor & wrap_scatter__reduce(c10::DispatchKeySet dispatchKeySet, at::Tensor
   return self;
 }
 
-at::Tensor & wrap_scatter__value_reduce(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Scalar & value, std::string reduce) {
+at::Tensor & wrap_scatter__value_reduce(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, int64_t dim, const at::Tensor & index, const at::Scalar & value, c10::string_view reduce) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::scatter_(dispatchKeySet, self, dim, index, value, std::move(reduce));
@@ -15987,7 +16037,7 @@ at::Tensor wrap_nanquantile(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   return tt;
 }
 
-at::Tensor & wrap_quantile_new_scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation, at::Tensor & out) {
+at::Tensor & wrap_quantile_new_scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, c10::string_view interpolation, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::quantile_outf(dispatchKeySet, self, q, dim, keepdim, std::move(interpolation), out);
@@ -15999,7 +16049,7 @@ at::Tensor & wrap_quantile_new_scalar_out(c10::DispatchKeySet dispatchKeySet, co
   return out;
 }
 
-at::Tensor wrap_quantile_new_scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation) {
+at::Tensor wrap_quantile_new_scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, c10::string_view interpolation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::quantile(dispatchKeySet, self, q, dim, keepdim, std::move(interpolation));
@@ -16012,7 +16062,7 @@ at::Tensor wrap_quantile_new_scalar(c10::DispatchKeySet dispatchKeySet, const at
   return tt;
 }
 
-at::Tensor & wrap_quantile_new_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation, at::Tensor & out) {
+at::Tensor & wrap_quantile_new_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, c10::string_view interpolation, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::quantile_outf(dispatchKeySet, self, q, dim, keepdim, std::move(interpolation), out);
@@ -16024,7 +16074,7 @@ at::Tensor & wrap_quantile_new_out(c10::DispatchKeySet dispatchKeySet, const at:
   return out;
 }
 
-at::Tensor wrap_quantile_new(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation) {
+at::Tensor wrap_quantile_new(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, c10::string_view interpolation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::quantile(dispatchKeySet, self, q, dim, keepdim, std::move(interpolation));
@@ -16037,7 +16087,7 @@ at::Tensor wrap_quantile_new(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   return tt;
 }
 
-at::Tensor & wrap_nanquantile_new_scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation, at::Tensor & out) {
+at::Tensor & wrap_nanquantile_new_scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, c10::string_view interpolation, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::nanquantile_outf(dispatchKeySet, self, q, dim, keepdim, std::move(interpolation), out);
@@ -16049,7 +16099,7 @@ at::Tensor & wrap_nanquantile_new_scalar_out(c10::DispatchKeySet dispatchKeySet,
   return out;
 }
 
-at::Tensor wrap_nanquantile_new_scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation) {
+at::Tensor wrap_nanquantile_new_scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, double q, c10::optional<int64_t> dim, bool keepdim, c10::string_view interpolation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::nanquantile(dispatchKeySet, self, q, dim, keepdim, std::move(interpolation));
@@ -16062,7 +16112,7 @@ at::Tensor wrap_nanquantile_new_scalar(c10::DispatchKeySet dispatchKeySet, const
   return tt;
 }
 
-at::Tensor & wrap_nanquantile_new_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation, at::Tensor & out) {
+at::Tensor & wrap_nanquantile_new_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, c10::string_view interpolation, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::nanquantile_outf(dispatchKeySet, self, q, dim, keepdim, std::move(interpolation), out);
@@ -16074,7 +16124,7 @@ at::Tensor & wrap_nanquantile_new_out(c10::DispatchKeySet dispatchKeySet, const 
   return out;
 }
 
-at::Tensor wrap_nanquantile_new(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, std::string interpolation) {
+at::Tensor wrap_nanquantile_new(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & q, c10::optional<int64_t> dim, bool keepdim, c10::string_view interpolation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::nanquantile(dispatchKeySet, self, q, dim, keepdim, std::move(interpolation));
@@ -17798,17 +17848,16 @@ at::Tensor & wrap_elu_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   return out;
 }
 
-at::Tensor wrap_elu_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Scalar & alpha, const at::Scalar & scale, const at::Scalar & input_scale, bool is_result, const at::Tensor & self_or_result) {
+at::Tensor & wrap_elu_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Scalar & alpha, const at::Scalar & scale, const at::Scalar & input_scale, bool is_result, const at::Tensor & self_or_result, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::elu_backward(dispatchKeySet, grad_output, alpha, scale, input_scale, is_result, self_or_result);
+    return at::redispatch::elu_backward_outf(dispatchKeySet, grad_output, alpha, scale, input_scale, is_result, self_or_result, grad_input);
   }
-  auto tt = at::detail::make_tensor<TorchyTensor>(grad_output.dtype(), grad_output.device());
-  auto tt_ptr = tt.getIntrusivePtr().get();
-  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_ELU_BACKWARD, dispatchKeySet);
-  trace.append_arg(trace_idx, grad_output);trace.append_arg(trace_idx, alpha);trace.append_arg(trace_idx, scale);trace.append_arg(trace_idx, input_scale);trace.append_arg(trace_idx, is_result);trace.append_arg(trace_idx, self_or_result);
-  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
-  return tt;
+  TorchyTensor *tt = prepare_in_place(grad_input);
+  unsigned trace_idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, H_ELU_BACKWARD_GRAD_INPUT, dispatchKeySet);
+  trace.append_arg(trace_idx, grad_output);trace.append_arg(trace_idx, alpha);trace.append_arg(trace_idx, scale);trace.append_arg(trace_idx, input_scale);trace.append_arg(trace_idx, is_result);trace.append_arg(trace_idx, self_or_result);trace.append_arg(trace_idx, grad_input);
+  finish_in_place(tt, trace_idx);
+  return grad_input;
 }
 
 at::Tensor & wrap_elu_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Scalar & alpha, const at::Scalar & scale, const at::Scalar & input_scale) {
@@ -17898,17 +17947,16 @@ at::Tensor wrap_hardsigmoid(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   return tt;
 }
 
-at::Tensor wrap_hardsigmoid_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self) {
+at::Tensor & wrap_hardsigmoid_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::hardsigmoid_backward(dispatchKeySet, grad_output, self);
+    return at::redispatch::hardsigmoid_backward_outf(dispatchKeySet, grad_output, self, grad_input);
   }
-  auto tt = at::detail::make_tensor<TorchyTensor>(grad_output.dtype(), grad_output.device());
-  auto tt_ptr = tt.getIntrusivePtr().get();
-  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_HARDSIGMOID_BACKWARD, dispatchKeySet);
-  trace.append_arg(trace_idx, grad_output);trace.append_arg(trace_idx, self);
-  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
-  return tt;
+  TorchyTensor *tt = prepare_in_place(grad_input);
+  unsigned trace_idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, H_HARDSIGMOID_BACKWARD_GRAD_INPUT, dispatchKeySet);
+  trace.append_arg(trace_idx, grad_output);trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, grad_input);
+  finish_in_place(tt, trace_idx);
+  return grad_input;
 }
 
 at::Tensor & wrap_hardtanh_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & min_val, const at::Scalar & max_val, at::Tensor & out) {
@@ -18048,17 +18096,16 @@ at::Tensor wrap_leaky_relu(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   return tt;
 }
 
-at::Tensor wrap_leaky_relu_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, const at::Scalar & negative_slope, bool self_is_result) {
+at::Tensor & wrap_leaky_relu_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, const at::Scalar & negative_slope, bool self_is_result, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::leaky_relu_backward(dispatchKeySet, grad_output, self, negative_slope, self_is_result);
+    return at::redispatch::leaky_relu_backward_outf(dispatchKeySet, grad_output, self, negative_slope, self_is_result, grad_input);
   }
-  auto tt = at::detail::make_tensor<TorchyTensor>(grad_output.dtype(), grad_output.device());
-  auto tt_ptr = tt.getIntrusivePtr().get();
-  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_LEAKY_RELU_BACKWARD, dispatchKeySet);
-  trace.append_arg(trace_idx, grad_output);trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, negative_slope);trace.append_arg(trace_idx, self_is_result);
-  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
-  return tt;
+  TorchyTensor *tt = prepare_in_place(grad_input);
+  unsigned trace_idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, H_LEAKY_RELU_BACKWARD_GRAD_INPUT, dispatchKeySet);
+  trace.append_arg(trace_idx, grad_output);trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, negative_slope);trace.append_arg(trace_idx, self_is_result);trace.append_arg(trace_idx, grad_input);
+  finish_in_place(tt, trace_idx);
+  return grad_input;
 }
 
 at::Tensor & wrap_leaky_relu_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, const at::Scalar & negative_slope) {
@@ -18207,19 +18254,6 @@ at::Tensor & wrap_softplus_backward_grad_input(c10::DispatchKeySet dispatchKeySe
   trace.append_arg(trace_idx, grad_output);trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, beta);trace.append_arg(trace_idx, threshold);trace.append_arg(trace_idx, output);trace.append_arg(trace_idx, grad_input);
   finish_in_place(tt, trace_idx);
   return grad_input;
-}
-
-at::Tensor wrap_softplus_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, const at::Scalar & beta, const at::Scalar & threshold, const at::Tensor & output) {
-  if (trace.is_flushing()) {
-    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::softplus_backward(dispatchKeySet, grad_output, self, beta, threshold, output);
-  }
-  auto tt = at::detail::make_tensor<TorchyTensor>(grad_output.dtype(), grad_output.device());
-  auto tt_ptr = tt.getIntrusivePtr().get();
-  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_SOFTPLUS_BACKWARD, dispatchKeySet);
-  trace.append_arg(trace_idx, grad_output);trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, beta);trace.append_arg(trace_idx, threshold);trace.append_arg(trace_idx, output);
-  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
-  return tt;
 }
 
 at::Tensor & wrap_softshrink_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & lambd, at::Tensor & out) {
@@ -20239,7 +20273,7 @@ at::Tensor & wrap_special_expit_out(c10::DispatchKeySet dispatchKeySet, const at
   return out;
 }
 
-at::Tensor wrap_fft_fft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_fft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_fft(dispatchKeySet, self, n, dim, std::move(norm));
@@ -20252,7 +20286,7 @@ at::Tensor wrap_fft_fft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
   return tt;
 }
 
-at::Tensor & wrap_fft_fft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_fft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_fft_outf(dispatchKeySet, self, n, dim, std::move(norm), out);
@@ -20264,7 +20298,7 @@ at::Tensor & wrap_fft_fft_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   return out;
 }
 
-at::Tensor wrap_fft_ifft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_ifft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_ifft(dispatchKeySet, self, n, dim, std::move(norm));
@@ -20277,7 +20311,7 @@ at::Tensor wrap_fft_ifft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
   return tt;
 }
 
-at::Tensor & wrap_fft_ifft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_ifft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_ifft_outf(dispatchKeySet, self, n, dim, std::move(norm), out);
@@ -20289,7 +20323,7 @@ at::Tensor & wrap_fft_ifft_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   return out;
 }
 
-at::Tensor wrap_fft_rfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_rfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_rfft(dispatchKeySet, self, n, dim, std::move(norm));
@@ -20302,7 +20336,7 @@ at::Tensor wrap_fft_rfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
   return tt;
 }
 
-at::Tensor & wrap_fft_rfft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_rfft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_rfft_outf(dispatchKeySet, self, n, dim, std::move(norm), out);
@@ -20314,7 +20348,7 @@ at::Tensor & wrap_fft_rfft_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   return out;
 }
 
-at::Tensor wrap_fft_irfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_irfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_irfft(dispatchKeySet, self, n, dim, std::move(norm));
@@ -20327,7 +20361,7 @@ at::Tensor wrap_fft_irfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   return tt;
 }
 
-at::Tensor & wrap_fft_irfft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_irfft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_irfft_outf(dispatchKeySet, self, n, dim, std::move(norm), out);
@@ -20339,7 +20373,7 @@ at::Tensor & wrap_fft_irfft_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   return out;
 }
 
-at::Tensor wrap_fft_hfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_hfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_hfft(dispatchKeySet, self, n, dim, std::move(norm));
@@ -20352,7 +20386,7 @@ at::Tensor wrap_fft_hfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
   return tt;
 }
 
-at::Tensor & wrap_fft_hfft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_hfft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_hfft_outf(dispatchKeySet, self, n, dim, std::move(norm), out);
@@ -20364,7 +20398,7 @@ at::Tensor & wrap_fft_hfft_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   return out;
 }
 
-at::Tensor wrap_fft_ihfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_ihfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_ihfft(dispatchKeySet, self, n, dim, std::move(norm));
@@ -20377,7 +20411,7 @@ at::Tensor wrap_fft_ihfft(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   return tt;
 }
 
-at::Tensor & wrap_fft_ihfft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_ihfft_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<int64_t> n, int64_t dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_ihfft_outf(dispatchKeySet, self, n, dim, std::move(norm), out);
@@ -20389,7 +20423,7 @@ at::Tensor & wrap_fft_ihfft_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   return out;
 }
 
-at::Tensor wrap_fft_fft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_fft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_fft2(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
@@ -20402,7 +20436,7 @@ at::Tensor wrap_fft_fft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
   return tt;
 }
 
-at::Tensor & wrap_fft_fft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_fft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_fft2_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
@@ -20414,7 +20448,7 @@ at::Tensor & wrap_fft_fft2_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   return out;
 }
 
-at::Tensor wrap_fft_ifft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_ifft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_ifft2(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
@@ -20427,7 +20461,7 @@ at::Tensor wrap_fft_ifft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   return tt;
 }
 
-at::Tensor & wrap_fft_ifft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_ifft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_ifft2_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
@@ -20439,7 +20473,7 @@ at::Tensor & wrap_fft_ifft2_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   return out;
 }
 
-at::Tensor wrap_fft_rfft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_rfft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_rfft2(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
@@ -20452,7 +20486,7 @@ at::Tensor wrap_fft_rfft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   return tt;
 }
 
-at::Tensor & wrap_fft_rfft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_rfft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_rfft2_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
@@ -20464,7 +20498,7 @@ at::Tensor & wrap_fft_rfft2_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   return out;
 }
 
-at::Tensor wrap_fft_irfft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_irfft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_irfft2(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
@@ -20477,7 +20511,7 @@ at::Tensor wrap_fft_irfft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   return tt;
 }
 
-at::Tensor & wrap_fft_irfft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_irfft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_irfft2_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
@@ -20489,7 +20523,7 @@ at::Tensor & wrap_fft_irfft2_out(c10::DispatchKeySet dispatchKeySet, const at::T
   return out;
 }
 
-at::Tensor wrap_fft_fftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_fftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_fftn(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
@@ -20502,7 +20536,7 @@ at::Tensor wrap_fft_fftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
   return tt;
 }
 
-at::Tensor & wrap_fft_fftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_fftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_fftn_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
@@ -20514,7 +20548,7 @@ at::Tensor & wrap_fft_fftn_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   return out;
 }
 
-at::Tensor wrap_fft_ifftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_ifftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_ifftn(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
@@ -20527,7 +20561,7 @@ at::Tensor wrap_fft_ifftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   return tt;
 }
 
-at::Tensor & wrap_fft_ifftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_ifftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_ifftn_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
@@ -20539,7 +20573,7 @@ at::Tensor & wrap_fft_ifftn_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   return out;
 }
 
-at::Tensor wrap_fft_rfftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_rfftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_rfftn(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
@@ -20552,7 +20586,7 @@ at::Tensor wrap_fft_rfftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   return tt;
 }
 
-at::Tensor & wrap_fft_rfftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_rfftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_rfftn_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
@@ -20564,7 +20598,7 @@ at::Tensor & wrap_fft_rfftn_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   return out;
 }
 
-at::Tensor wrap_fft_irfftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm) {
+at::Tensor wrap_fft_irfftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_irfftn(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
@@ -20577,7 +20611,7 @@ at::Tensor wrap_fft_irfftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   return tt;
 }
 
-at::Tensor & wrap_fft_irfftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<std::string> norm, at::Tensor & out) {
+at::Tensor & wrap_fft_irfftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::fft_irfftn_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
@@ -20746,13 +20780,13 @@ at::Tensor wrap_det(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
   return tt;
 }
 
-std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap_linalg_lstsq(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & b, c10::optional<double> rcond, c10::optional<std::string> driver) {
+std::tuple<at::Tensor,at::Tensor,at::Tensor,at::Tensor> wrap_linalg_lstsq(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & b, c10::optional<double> rcond, c10::optional<c10::string_view> driver) {
   ensure_materialized(self);ensure_materialized(b);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
   return at::redispatch::linalg_lstsq(dispatchKeySet, self, b, rcond, std::move(driver));
 }
 
-std::tuple<at::Tensor &,at::Tensor &,at::Tensor &,at::Tensor &> wrap_linalg_lstsq_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & b, c10::optional<double> rcond, c10::optional<std::string> driver, at::Tensor & solution, at::Tensor & residuals, at::Tensor & rank, at::Tensor & singular_values) {
+std::tuple<at::Tensor &,at::Tensor &,at::Tensor &,at::Tensor &> wrap_linalg_lstsq_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & b, c10::optional<double> rcond, c10::optional<c10::string_view> driver, at::Tensor & solution, at::Tensor & residuals, at::Tensor & rank, at::Tensor & singular_values) {
   ensure_materialized(self);ensure_materialized(b);ensure_materialized(solution);ensure_materialized(residuals);ensure_materialized(rank);ensure_materialized(singular_values);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
   return at::redispatch::linalg_lstsq_outf(dispatchKeySet, self, b, rcond, std::move(driver), solution, residuals, rank, singular_values);
@@ -20807,19 +20841,19 @@ at::Tensor & wrap_linalg_eigvals_out(c10::DispatchKeySet dispatchKeySet, const a
   return out;
 }
 
-std::tuple<at::Tensor,at::Tensor> wrap_linalg_eigh(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string UPLO) {
+std::tuple<at::Tensor,at::Tensor> wrap_linalg_eigh(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view UPLO) {
   ensure_materialized(self);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
   return at::redispatch::linalg_eigh(dispatchKeySet, self, std::move(UPLO));
 }
 
-std::tuple<at::Tensor &,at::Tensor &> wrap_linalg_eigh_eigvals(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string UPLO, at::Tensor & eigvals, at::Tensor & eigvecs) {
+std::tuple<at::Tensor &,at::Tensor &> wrap_linalg_eigh_eigvals(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view UPLO, at::Tensor & eigvals, at::Tensor & eigvecs) {
   ensure_materialized(self);ensure_materialized(eigvals);ensure_materialized(eigvecs);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
   return at::redispatch::linalg_eigh_outf(dispatchKeySet, self, std::move(UPLO), eigvals, eigvecs);
 }
 
-at::Tensor wrap_linalg_eigvalsh(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string UPLO) {
+at::Tensor wrap_linalg_eigvalsh(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view UPLO) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::linalg_eigvalsh(dispatchKeySet, self, std::move(UPLO));
@@ -20832,7 +20866,7 @@ at::Tensor wrap_linalg_eigvalsh(c10::DispatchKeySet dispatchKeySet, const at::Te
   return tt;
 }
 
-at::Tensor & wrap_linalg_eigvalsh_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string UPLO, at::Tensor & out) {
+at::Tensor & wrap_linalg_eigvalsh_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view UPLO, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::linalg_eigvalsh_outf(dispatchKeySet, self, std::move(UPLO), out);
@@ -21006,7 +21040,7 @@ at::Tensor wrap_linalg_norm(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   return tt;
 }
 
-at::Tensor wrap_linalg_norm_ord_str(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
+at::Tensor wrap_linalg_norm_ord_str(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::linalg_norm(dispatchKeySet, self, std::move(ord), std::move(dim), keepdim, std::move(dtype));
@@ -21031,7 +21065,7 @@ at::Tensor & wrap_linalg_norm_out(c10::DispatchKeySet dispatchKeySet, const at::
   return out;
 }
 
-at::Tensor & wrap_linalg_norm_ord_str_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
+at::Tensor & wrap_linalg_norm_ord_str_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::linalg_norm_outf(dispatchKeySet, self, std::move(ord), std::move(dim), keepdim, std::move(dtype), out);
@@ -21093,7 +21127,7 @@ at::Tensor & wrap_linalg_matrix_norm_out(c10::DispatchKeySet dispatchKeySet, con
   return out;
 }
 
-at::Tensor wrap_linalg_matrix_norm_str_ord(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string ord, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
+at::Tensor wrap_linalg_matrix_norm_str_ord(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view ord, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::linalg_matrix_norm(dispatchKeySet, self, std::move(ord), std::move(dim), keepdim, std::move(dtype));
@@ -21106,7 +21140,7 @@ at::Tensor wrap_linalg_matrix_norm_str_ord(c10::DispatchKeySet dispatchKeySet, c
   return tt;
 }
 
-at::Tensor & wrap_linalg_matrix_norm_str_ord_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string ord, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
+at::Tensor & wrap_linalg_matrix_norm_str_ord_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view ord, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::linalg_matrix_norm_outf(dispatchKeySet, self, std::move(ord), std::move(dim), keepdim, std::move(dtype), out);
@@ -21180,7 +21214,7 @@ at::Tensor & wrap_linalg_cond_out(c10::DispatchKeySet dispatchKeySet, const at::
   return out;
 }
 
-at::Tensor wrap_linalg_cond_p_str(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string p) {
+at::Tensor wrap_linalg_cond_p_str(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view p) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::linalg_cond(dispatchKeySet, self, std::move(p));
@@ -21193,7 +21227,7 @@ at::Tensor wrap_linalg_cond_p_str(c10::DispatchKeySet dispatchKeySet, const at::
   return tt;
 }
 
-at::Tensor & wrap_linalg_cond_p_str_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string p, at::Tensor & out) {
+at::Tensor & wrap_linalg_cond_p_str_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view p, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::linalg_cond_outf(dispatchKeySet, self, std::move(p), out);
@@ -21342,19 +21376,19 @@ at::Tensor & wrap_linalg_tensorsolve_out(c10::DispatchKeySet dispatchKeySet, con
   return out;
 }
 
-std::tuple<at::Tensor,at::Tensor> wrap_linalg_qr(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string mode) {
+std::tuple<at::Tensor,at::Tensor> wrap_linalg_qr(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view mode) {
   ensure_materialized(self);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
   return at::redispatch::linalg_qr(dispatchKeySet, self, std::move(mode));
 }
 
-std::tuple<at::Tensor &,at::Tensor &> wrap_linalg_qr_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string mode, at::Tensor & Q, at::Tensor & R) {
+std::tuple<at::Tensor &,at::Tensor &> wrap_linalg_qr_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view mode, at::Tensor & Q, at::Tensor & R) {
   ensure_materialized(self);ensure_materialized(Q);ensure_materialized(R);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
   return at::redispatch::linalg_qr_outf(dispatchKeySet, self, std::move(mode), Q, R);
 }
 
-std::tuple<at::Tensor,at::Tensor> wrap__linalg_qr_helper(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, std::string mode) {
+std::tuple<at::Tensor,at::Tensor> wrap__linalg_qr_helper(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view mode) {
   ensure_materialized(self);
   dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
   return at::redispatch::_linalg_qr_helper(dispatchKeySet, self, std::move(mode));
@@ -21515,7 +21549,7 @@ at::Tensor wrap__test_optional_floatlist(c10::DispatchKeySet dispatchKeySet, con
   return tt;
 }
 
-at::Tensor wrap__test_string_default(c10::DispatchKeySet dispatchKeySet, const at::Tensor & dummy, std::string a, std::string b) {
+at::Tensor wrap__test_string_default(c10::DispatchKeySet dispatchKeySet, const at::Tensor & dummy, c10::string_view a, c10::string_view b) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_test_string_default(dispatchKeySet, dummy, std::move(a), std::move(b));
@@ -21541,7 +21575,7 @@ at::Tensor wrap__test_ambiguous_defaults_a(c10::DispatchKeySet dispatchKeySet, c
   return tt;
 }
 
-at::Tensor wrap__test_ambiguous_defaults_b(c10::DispatchKeySet dispatchKeySet, const at::Tensor & dummy, int64_t a, std::string b) {
+at::Tensor wrap__test_ambiguous_defaults_b(c10::DispatchKeySet dispatchKeySet, const at::Tensor & dummy, int64_t a, c10::string_view b) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::_test_ambiguous_defaults(dispatchKeySet, dummy, a, std::move(b));
@@ -21554,7 +21588,7 @@ at::Tensor wrap__test_ambiguous_defaults_b(c10::DispatchKeySet dispatchKeySet, c
   return tt;
 }
 
-at::Tensor wrap_segment_reduce(c10::DispatchKeySet dispatchKeySet, const at::Tensor & data, std::string reduce, const c10::optional<at::Tensor> & lengths, const c10::optional<at::Tensor> & indices, int64_t axis, bool unsafe, const c10::optional<at::Scalar> & initial) {
+at::Tensor wrap_segment_reduce(c10::DispatchKeySet dispatchKeySet, const at::Tensor & data, c10::string_view reduce, const c10::optional<at::Tensor> & lengths, const c10::optional<at::Tensor> & indices, int64_t axis, bool unsafe, const c10::optional<at::Scalar> & initial) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::segment_reduce(dispatchKeySet, data, std::move(reduce), lengths, indices, axis, unsafe, initial);
