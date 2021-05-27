@@ -1192,7 +1192,7 @@ at::Tensor wrap_argmax(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::argmax(dispatchKeySet, self, dim, keepdim);
   }
-  auto tt = at::detail::make_tensor<TorchyTensor>(self.dtype(), self.device());
+  auto tt = at::detail::make_tensor<TorchyTensor>(scalarTypeToTypeMeta(kLong), self.device());
   auto tt_ptr = tt.getIntrusivePtr().get();
   unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, H_ARGMAX, dispatchKeySet);
   trace.append_arg(trace_idx, self);trace.append_arg(trace_idx, dim);trace.append_arg(trace_idx, keepdim);

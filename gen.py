@@ -140,8 +140,10 @@ def gen_dispatch_wrapper(fn):
     dtype = get_arg_of_type(args, 'at::ScalarType')
     if not dtype:
       dtype = get_arg_of_type(args, 'c10::optional<at::ScalarType>')
-    if fn.func.name.name.base in always_returns_bool:
-      dtype = 'scalarTypeToTypeMeta(kBool)'
+
+    fixed = fix_return_type.get(fn.func.name.name.base)
+    if fixed:
+      dtype = f'scalarTypeToTypeMeta({fixed})'
 
     device = get_arg_of_type(args, 'at::Device')
     if not device:
