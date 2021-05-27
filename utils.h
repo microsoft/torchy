@@ -26,7 +26,7 @@ public:
   }
 
   template<typename T>
-  void operator()(const c10::ArrayRef<T> &l) {
+  void operator()(const std::vector<T> &l) {
     for (const auto &elem : l) {
       (*this)(elem);
     }

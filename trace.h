@@ -122,7 +122,7 @@ public:
     if (arg)
       copy = arg->vec();
     ops[idx].args.emplace_back(std::move(copy));
-   }
+  }
 
   template<typename T>
   void append_arg(unsigned idx, c10::optional<at::ArrayRef<T>> &&arg) {

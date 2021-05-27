@@ -76,7 +76,7 @@ public:
   }
 
   template<typename T>
-  ostream& operator()(const ArrayRef<T> &l) {
+  ostream& operator()(const vector<T> &l) {
     os << '[';
     bool first = true;
     for (const auto &elem : l) {
