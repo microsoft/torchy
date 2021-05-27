@@ -6,6 +6,7 @@
 #include "trace.h"
 #include <ATen/core/List.h>
 #include <ATen/RedispatchFunctions.h>
+#include <type_traits>
 
 using namespace at;
 
@@ -29,6 +30,58 @@ static void set(TensorOp &op, const Tensor &t) {
       set(tensor, t);
   }
 }
+
+namespace {
+
+template <typename T>
+struct load {
+  T operator()(UnionInputTy &arg) {
+    return std::move(get<T>(arg));
+  }
+};
+
+template <typename T>
+struct load<T&> {
+  using lookup = typename std::remove_cv<T>::type;
+
+  T& operator()(UnionInputTy &arg) {
+    return get<lookup>(arg);
+  }
+};
+
+template <typename T>
+struct load<ArrayRef<T>> {
+  ArrayRef<T> operator()(UnionInputTy &arg) {
+    return get<std::vector<T>>(arg);
+  }
+};
+
+template <typename T>
+struct load<c10::optional<ArrayRef<T>>> {
+  c10::optional<ArrayRef<T>> operator()(UnionInputTy &arg) {
+    auto &opt = get<c10::optional<std::vector<T>>>(arg);
+    if (!opt)
+      return c10::nullopt;
+    return *opt;
+  }
+};
+
+template <>
+c10::string_view load<c10::string_view>::operator()(UnionInputTy &arg) {
+  return get<std::string>(arg);
+}
+
+template <>
+c10::optional<c10::string_view>
+load<c10::optional<c10::string_view>>::operator()(UnionInputTy &arg) {
+  auto &opt = get<c10::optional<std::string>>(arg);
+  if (!opt)
+    return c10::nullopt;
+  return *opt;
+}
+
+}
+
 
 namespace interpreter {
 

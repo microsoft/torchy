@@ -214,8 +214,8 @@ def gen_interpreter_redispatch(fn):
   dispatcher_exprs = translate(sig.arguments(), dispatcher_sig.arguments())
   args = []
   for i, arg in enumerate(dispatcher_exprs):
-    type = arg.type.cpp_type(strip_ref=True)
-    args.append(move_if_needed(f'get<{type}>(op.args[{i}])', arg))
+    type = arg.type.cpp_type(strip_ref=False)
+    args.append(f'load<{type}>()(op.args[{i}])')
 
   redispatch = f'at::redispatch::{sig.name()}(ks, {", ".join(args)})'
 

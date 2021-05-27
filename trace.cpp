@@ -307,7 +307,6 @@ void Trace::flush() {
 
   next_op = 0;
   flushing = false;
-  deep_copies.clear();
 }
 
 ostream& operator<<(ostream &os, const Trace &t) {

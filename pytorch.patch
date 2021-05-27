@@ -42,3 +42,23 @@ index ff29b68dc4..cfae0dc783 100644
 +  bool reserved_;
  };
  } // namespace c10
+diff --git a/c10/core/TensorImpl.cpp b/c10/core/TensorImpl.cpp
+index a0c7673641..3c027a4a17 100644
+--- a/c10/core/TensorImpl.cpp
++++ b/c10/core/TensorImpl.cpp
+@@ -480,9 +480,12 @@ void TensorImpl::copy_tensor_metadata_except_version_counter(
+     const TensorImpl* src_impl,
+     TensorImpl* dest_impl,
+     bool allow_tensor_metadata_change) {
+-  dest_impl->storage_ = src_impl->storage_;
+-  dest_impl->sizes_and_strides_ = src_impl->sizes_and_strides_;
+-  dest_impl->storage_offset_ = src_impl->storage_offset_;
++  dest_impl->storage_ = src_impl->storage();
++  dest_impl->sizes_and_strides_.set_sizes(src_impl->sizes());
++  auto strides = src_impl->strides();
++  memcpy(dest_impl->sizes_and_strides_.strides_data(), strides.begin(),
++         sizeof(int64_t) * strides.size());
++  dest_impl->storage_offset_ = src_impl->storage_offset();
+   dest_impl->data_type_ = src_impl->data_type_;
+   dest_impl->device_opt_ = src_impl->device_opt_;
+   dest_impl->key_set_ = src_impl->key_set_;
