@@ -101,6 +101,8 @@ void run(Trace &t) {
     }
     ks = ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
 
+    ThreadLocalState::setThreadLocalState(op.tls);
+
     switch (op.id) {
 
 #include "autogen/interpreter_redispatch.h"

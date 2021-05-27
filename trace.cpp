@@ -201,6 +201,7 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
   assert(op.args.empty());
   op.refs = 1;
   op.observable = true;
+  op.tls = ThreadLocalState();
   op.dispatch_key = ks;
   return next_op++;
 }
@@ -302,7 +303,9 @@ void Trace::flush() {
 
   // reduce reference count on tensors s.t. they are deleted if possible
   for (unsigned i = 0; i < next_op; ++i) {
-    ops[i].args.clear();
+    auto &op = ops[i];
+    op.args.clear();
+    op.tls.~ThreadLocalState();
   }
 
   next_op = 0;
