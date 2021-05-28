@@ -153,7 +153,7 @@ public:
 
   void add_shared(unsigned idx, uintptr_t ptr);
   void set_unobservable(unsigned idx, uintptr_t ptr);
-  void flush();
+  void flush(STATS(FlushReason reason));
 
   friend std::ostream& operator<<(std::ostream &os, const Trace &t);
 };

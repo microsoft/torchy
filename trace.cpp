@@ -190,7 +190,7 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
 #endif
 
   if (next_op == MAX_TRACE_LENGTH)
-    flush();
+    flush(FlushReason::TRACE_MAX_LENGTH);
 
   auto &op = ops[next_op];
   op.tensors[0] = tensor;
@@ -250,9 +250,11 @@ void Trace::set_unobservable(unsigned idx, uintptr_t ptr) {
   }
 }
 
-void Trace::flush() {
+void Trace::flush(STATS(FlushReason reason)) {
   assert(!flushing);
   flushing = true;
+
+  inc_flush_reason(reason);
 
   // trim set of observable tensors as the references in arguments keep the
   // tensors alive and therefore we aren't notified the user's program

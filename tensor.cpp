@@ -97,10 +97,10 @@ public:
     set_materialized(true);
   }
 
-  void ensure_materialized() const {
+  void ensure_materialized(STATS(FlushReason reason)) const {
     if (!trace.is_flushing() && !materialized()) {
       assert(trace_idx != -1u);
-      trace.flush();
+      trace.flush(STATS(reason));
       assert(!storage_ || materialized());
     }
   }
@@ -117,42 +117,42 @@ public:
   // an extra indirection. Another way is to templatize these.
 
   IntArrayRef sizes() const override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::SIZES));
     return TensorImpl::sizes();
   }
 
   IntArrayRef strides() const override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::STRIDES));
     return TensorImpl::strides();
   }
 
   int64_t dim() const override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::DIM));
     return TensorImpl::dim();
   }
 
   bool has_storage() const override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::HAS_STORAGE));
     return TensorImpl::has_storage();
   }
 
   const Storage& storage() const override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::STORAGE));
     return TensorImpl::storage();
   }
 
   int64_t numel() const override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::NUMEL));
     return TensorImpl::numel();
   }
 
   bool is_contiguous(at::MemoryFormat memory_format) const override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::IS_CONTIGUOUS));
     return TensorImpl::is_contiguous(memory_format);
   }
 
   int64_t storage_offset() const override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::STORAGE_OFFSET));
     return TensorImpl::storage_offset();
   }
 
@@ -161,27 +161,27 @@ public:
   }
 
   void set_size(int64_t dim, int64_t new_size) override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::SET_SIZE));
     TensorImpl::set_size(dim, new_size);
   }
 
   void set_stride(int64_t dim, int64_t new_stride) override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::SET_STRIDE));
     TensorImpl::set_stride(dim, new_stride);
   }
 
   void set_storage_offset(int64_t storage_offset) override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::SET_STORAGE_OFFSET));
     TensorImpl::set_storage_offset(storage_offset);
   }
 
   int64_t size(int64_t d) const override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::SIZE));
     return TensorImpl::size(d);
   }
 
   int64_t stride(int64_t d) const override {
-    ensure_materialized();
+    ensure_materialized(STATS(FlushReason::STRIDE));
     return TensorImpl::stride(d);
   }
 
@@ -291,7 +291,7 @@ void finish_in_place(TorchyTensor *tt, unsigned idx) {
 
 void ensure_materialized(const Tensor &t) {
   if (auto tt = is_torchy(t))
-    tt->ensure_materialized();
+    tt->ensure_materialized(STATS(FlushReason::UNSUPPORTED_OPERATION));
 }
 
 void ensure_materialized(const optional<Tensor> &t) {
