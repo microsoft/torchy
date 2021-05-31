@@ -285,7 +285,7 @@ void finish_in_place(TorchyTensor *tt, unsigned idx) {
   if (tt) {
     tt->update_idx(idx);
   } else {
-    trace.flush();
+    trace.flush(STATS(FlushReason::INPLACE_SHARED));
   }
 }
 

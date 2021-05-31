@@ -1,9 +1,11 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
-#include "stats.h"
+#include "config.h"
 
 #ifdef TORCHY_ENABLE_STATS
+#include <algorithm>
+#include <cstring>
 #include <iostream>
 
 using namespace std;
@@ -13,10 +15,13 @@ using namespace std;
 namespace {
 
 const char* flush_reasons[] = {
+  "debug",
   "dim",
   "has_storage",
+  "inplace shared",
   "is_contiguous",
   "numel",
+  "overflow shared list",
   "set_size",
   "set_storage_offset",
   "set_stride",
@@ -30,30 +35,33 @@ const char* flush_reasons[] = {
   "unsupported operation",
 };
 
-static_assert(NUM_ELEMS(flush_reasons) == FlushReason::NUM_REASONS);
+static_assert(NUM_ELEMS(flush_reasons) == (unsigned)FlushReason::NUM_REASONS);
 
-unsigned flush_reasons_count[FlushReason::NUM_REASONS] = {0};
+unsigned flush_reasons_count[(unsigned)FlushReason::NUM_REASONS] = {0};
 
 struct PrintStats {
   ~PrintStats() {
     cerr << "\n\n------------ STATISTICS ------------\n";
     print_table("Trace Flush Reason", flush_reasons_count, flush_reasons,
-                FlushReason::NUM_REASONS):
+                (unsigned)FlushReason::NUM_REASONS);
     cerr << endl;
   }
 
   void print_table(const char *header, unsigned *data, const char **labels,
                    unsigned size) {
-    cerr << header << ":";
+    cerr << header << ":\n";
 
     unsigned max_label = 0;
     for (unsigned i = 0; i < size; ++i) {
-      max_label = max(max_label, strlen(labels[i]));
+      if (data[i] != 0)
+        max_label = max(max_label, (unsigned)strlen(labels[i]));
     }
 
     for (unsigned i = 0; i < size; ++i) {
-      cerr << label[i] << ": ";
-      pad(label[i], max_label);
+      if (data[i] == 0)
+        continue;
+      cerr << labels[i] << ": ";
+      pad(labels[i], max_label);
       cerr << data[i] << '\n';
     }
     cerr << '\n';
@@ -71,7 +79,7 @@ PrintStats printer;
 }
 
 void inc_flush_reason(FlushReason reason) {
-  ++flush_reasons_count[reason];
+  ++flush_reasons_count[(unsigned)reason];
 }
 
 #endif

@@ -5,10 +5,13 @@
 
 // Please update stats.cpp string version of this when adding a new reason!
 enum class FlushReason {
+  DEBUG,
   DIM,
   HAS_STORAGE,
+  INPLACE_SHARED,
   IS_CONTIGUOUS,
   NUMEL,
+  OVERFLOW_SHARED_LIST,
   SET_SIZE,
   SET_STORAGE_OFFSET,
   SET_STRIDE,

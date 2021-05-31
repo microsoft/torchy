@@ -177,20 +177,20 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
   ++call_count;
   if (auto *limit = getenv("TORCHY_FLUSH_BEFORE")) {
     if (call_count <= (unsigned)atoi(limit))
-      flush();
+      flush(STATS(FlushReason::DEBUG));
   }
   if (auto *limit = getenv("TORCHY_FLUSH_AFTER")) {
     if (call_count > (unsigned)atoi(limit))
-      flush();
+      flush(STATS(FlushReason::DEBUG));
   }
   if (auto *limit = getenv("TORCHY_MAX_TRACE_LENGTH")) {
     if (next_op == (unsigned)atoi(limit))
-      flush();
+      flush(STATS(FlushReason::DEBUG));
   }
 #endif
 
   if (next_op == MAX_TRACE_LENGTH)
-    flush(FlushReason::TRACE_MAX_LENGTH);
+    flush(STATS(FlushReason::TRACE_MAX_LENGTH));
 
   auto &op = ops[next_op];
   op.tensors[0] = tensor;
@@ -219,7 +219,7 @@ void Trace::add_shared(unsigned idx, uintptr_t ptr) {
   }
 
   // no more space for additional observers; just flush
-  flush();
+  flush(STATS(FlushReason::OVERFLOW_SHARED_LIST));
 }
 
 void Trace::set_unobservable(unsigned idx, uintptr_t ptr) {
