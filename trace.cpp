@@ -254,8 +254,6 @@ void Trace::flush(STATS(FlushReason reason)) {
   assert(!flushing);
   flushing = true;
 
-  inc_flush_reason(reason);
-
   // trim set of observable tensors as the references in arguments keep the
   // tensors alive and therefore we aren't notified the user's program
   // can't observe these tensors anymore
@@ -297,8 +295,10 @@ void Trace::flush(STATS(FlushReason reason)) {
     }
   }
 
+  inc_flush_reason(reason, *this);
+
 #ifdef TORCHY_PRINT_TRACE_ON_FLUSH
-  cerr << "Flush trace\n" << *this;
+  cerr << "Flush trace\n" << *this << endl;
 #endif
 
   interpreter::run(*this);
@@ -316,7 +316,7 @@ void Trace::flush(STATS(FlushReason reason)) {
 
 ostream& operator<<(ostream &os, const Trace &t) {
   if (t.next_op == 0)
-    os << "(empty)\n";
+    return os << "(empty)\n";
 
   map<const TensorImpl*, unsigned> inputs_map;
   for (unsigned i = 0; i < t.next_op; ++i) {
@@ -324,5 +324,5 @@ ostream& operator<<(ostream &os, const Trace &t) {
     t.ops[i].print(os, inputs_map);
     os << '\n';
   }
-  return os << endl;
+  return os;
 }

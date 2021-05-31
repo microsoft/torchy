@@ -98,6 +98,7 @@ public:
 
   bool is_flushing() const { return flushing; }
   unsigned numOps() const { return next_op; }
+  const TensorOp* getOps() const { return ops; }
   TensorOp* getOps() { return ops; }
 
   template<typename A>
