@@ -110,9 +110,10 @@ struct PrintStats {
                 trace_times.size());
 
     print_header("Most Frequent Traces");
-    for (const auto &p : trace_run_time) {
+    for (auto &p : trace_run_time) {
       if (p.second.size() >= (unsigned)cutoff)
-        cerr << "Trace executed " << p.second.size() << " times\n"
+        cerr << "Trace executed " << p.second.size() << " times ("
+             << unsigned(median(p.second) * 1000000.0) << " us)\n"
              << p.first << "\n\n";
     }
 
