@@ -117,12 +117,13 @@ public:
 }
 
 void TensorOp::print(ostream &os, InputMap &inputs) const {
+    os << id;
+
     if (!needsComputing()) {
-      os << "[dead]";
+      os << " [dead]";
       return;
     }
 
-    os << id;
     bool first = true;
     for (auto &arg : args) {
       os << (first ? " " : ", ");
@@ -296,6 +297,8 @@ void Trace::flush(STATS(FlushReason reason)) {
     }
   }
 
+  stats_register_trace(*this, reason);
+
 #ifdef TORCHY_PRINT_TRACE_ON_FLUSH
   cerr << "Flush trace\n" << *this << endl;
 #endif
@@ -304,7 +307,7 @@ void Trace::flush(STATS(FlushReason reason)) {
   interpreter::run(*this);
   STATS(run_time.stop());
 
-  stats_register_trace(*this, run_time, reason);
+  stats_register_trace_time(run_time);
 
   // reduce reference count on tensors s.t. they are deleted if possible
   for (unsigned i = 0; i < next_op; ++i) {

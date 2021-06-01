@@ -33,12 +33,13 @@ class StopWatch;
 class Trace;
 
 #define STATS(x) x
-void stats_register_trace(const Trace &t, const StopWatch &run_time,
-                          FlushReason reason);
+void stats_register_trace(const Trace &t, FlushReason reason);
+void stats_register_trace_time(const StopWatch &run_time);
 
 #else
 
 #define STATS(x)
-#define stats_register_trace(t, run_time, reason) (void)0
+#define stats_register_trace(t, reason) (void)0
+#define stats_register_trace_time(run_time) (void)0
 
 #endif

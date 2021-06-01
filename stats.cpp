@@ -65,7 +65,7 @@ array<unsigned, MAX_TRACE_LENGTH+1> num_trace_outputs;
 array<unsigned, MAX_TRACE_LENGTH+1> num_trace_deads;
 unordered_map<string, vector<float>> trace_run_time;
 unordered_map<string, unordered_map<string, unsigned>> trace_successors;
-string last_trace;
+string current_trace, last_trace;
 
 struct PrintStats {
   ~PrintStats() {
@@ -181,8 +181,7 @@ PrintStats printer;
 
 }
 
-void stats_register_trace(const Trace &t, const StopWatch &run_time,
-                          FlushReason reason) {
+void stats_register_trace(const Trace &t, FlushReason reason) {
   ++flush_reasons_count[(unsigned)reason];
 
   unsigned num_ops = t.numOps();
@@ -201,17 +200,21 @@ void stats_register_trace(const Trace &t, const StopWatch &run_time,
   ++num_trace_outputs[num_outputs];
   ++num_trace_deads[num_deads];
 
+  // We need to get the trace's string representation before it is executed.
+  // Tensor's trace_idx gets overwritten during materialization.
   stringstream trace_ss;
   trace_ss << t;
-  auto trace_str = trace_ss.str();
+  current_trace = move(trace_ss).str();
+}
 
+void stats_register_trace_time(const StopWatch &run_time) {
   // FIXME: try_emplace not supported yet.. sniff
-  trace_run_time.emplace(trace_str, vector<float>()).first->second
+  trace_run_time.emplace(current_trace, vector<float>()).first->second
                 .emplace_back(run_time.seconds());
 
   if (!last_trace.empty())
-    trace_successors[last_trace].emplace(trace_str, 0).first->second++;
-  last_trace = move(trace_str);
+    trace_successors[last_trace].emplace(current_trace, 0).first->second++;
+  last_trace = move(current_trace);
 }
 
 #endif
