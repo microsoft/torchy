@@ -29,14 +29,16 @@ enum class FlushReason {
 
 #ifdef TORCHY_ENABLE_STATS
 
+class StopWatch;
 class Trace;
 
 #define STATS(x) x
-void inc_flush_reason(FlushReason reason, const Trace &t);
+void stats_register_trace(const Trace &t, const StopWatch &run_time,
+                          FlushReason reason);
 
 #else
 
 #define STATS(x)
-#define inc_flush_reason(x,t) (void)0
+#define stats_register_trace(t, run_time, reason) (void)0
 
 #endif

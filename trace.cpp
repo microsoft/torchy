@@ -2,6 +2,7 @@
 // Distributed under the MIT license that can be found in the LICENSE file.
 
 #include "trace.h"
+#include "stopwatch.h"
 #include "tensor.h"
 #include "utils.h"
 #include <ATen/core/Formatting.h>
@@ -185,7 +186,7 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
   }
   if (auto *limit = getenv("TORCHY_MAX_TRACE_LENGTH")) {
     if (next_op == (unsigned)atoi(limit))
-      flush(STATS(FlushReason::DEBUG));
+      flush(STATS(FlushReason::TRACE_MAX_LENGTH));
   }
 #endif
 
@@ -295,13 +296,15 @@ void Trace::flush(STATS(FlushReason reason)) {
     }
   }
 
-  inc_flush_reason(reason, *this);
-
 #ifdef TORCHY_PRINT_TRACE_ON_FLUSH
   cerr << "Flush trace\n" << *this << endl;
 #endif
 
+  STATS(StopWatch run_time);
   interpreter::run(*this);
+  STATS(run_time.stop());
+
+  stats_register_trace(*this, run_time, reason);
 
   // reduce reference count on tensors s.t. they are deleted if possible
   for (unsigned i = 0; i < next_op; ++i) {

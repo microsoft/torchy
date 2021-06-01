@@ -2,9 +2,10 @@
 // Distributed under the MIT license that can be found in the LICENSE file.
 
 #include "config.h"
-#include "trace.h"
 
 #ifdef TORCHY_ENABLE_STATS
+#include "stopwatch.h"
+#include "trace.h"
 #include <algorithm>
 #include <array>
 #include <cassert>
@@ -44,11 +45,25 @@ const char* flush_reasons[] = {
 
 static_assert(NUM_ELEMS(flush_reasons) == (unsigned)FlushReason::NUM_REASONS);
 
+float median(vector<float> &v) {
+  sort(v.begin(), v.end());
+  auto sz = v.size();
+  if (sz % 2 == 0)
+    return (v[sz/2 - 1] + v[sz/2]) / 2.0;
+  return v[sz / 2];
+}
+
+void inc(vector<unsigned> &v, size_t idx, unsigned amount = 1) {
+  if (idx >= v.size())
+    v.resize(idx+1);
+  v[idx] += amount;
+}
+
 array<unsigned, (unsigned)FlushReason::NUM_REASONS> flush_reasons_count;
 array<unsigned, MAX_TRACE_LENGTH+1> trace_size;
 array<unsigned, MAX_TRACE_LENGTH+1> num_trace_outputs;
 array<unsigned, MAX_TRACE_LENGTH+1> num_trace_deads;
-unordered_map<string, unsigned> trace_frequency;
+unordered_map<string, vector<float>> trace_run_time;
 unordered_map<string, unordered_map<string, unsigned>> trace_successors;
 string last_trace;
 
@@ -72,9 +87,9 @@ struct PrintStats {
 
     vector<unsigned> trace_freq_stats;
     unsigned total = 0;
-    for (const auto &p : trace_frequency) {
-      inc(trace_freq_stats, p.second);
-      total += p.second;
+    for (const auto &p : trace_run_time) {
+      inc(trace_freq_stats, p.second.size());
+      total += p.second.size();
     }
     print_table("Frequency per Trace", trace_freq_stats.data(),
                 trace_freq_stats.size());
@@ -87,26 +102,27 @@ struct PrintStats {
       num_traces += trace_freq_stats[cutoff];
     }
 
+    vector<unsigned> trace_times;
+    for (auto &p : trace_run_time) {
+      inc(trace_times, unsigned(median(p.second) * 1000000.0), p.second.size());
+    }
+    print_table("Run-times per Trace (microseconds)", trace_times.data(),
+                trace_times.size());
+
     print_header("Most Frequent Traces");
-    for (const auto &p : trace_frequency) {
-      if (p.second >= (unsigned)cutoff)
-        cerr << "Trace executed " << p.second << " times\n"
+    for (const auto &p : trace_run_time) {
+      if (p.second.size() >= (unsigned)cutoff)
+        cerr << "Trace executed " << p.second.size() << " times\n"
              << p.first << "\n\n";
     }
 
     cerr << "Number of traces:\t" << total
-         << "\nDistinct traces:\t" << trace_frequency.size() << '\n';
+         << "\nDistinct traces:\t" << trace_run_time.size() << '\n';
 
     cerr << endl;
   }
 
 private:
-  void inc(vector<unsigned> &v, size_t idx) {
-    if (idx >= v.size())
-      v.resize(idx+1);
-    ++v[idx];
-  }
-
   void print_table(const char *header, unsigned *data, const char **labels,
                    size_t size) {
     print_header(header);
@@ -164,7 +180,8 @@ PrintStats printer;
 
 }
 
-void inc_flush_reason(FlushReason reason, const Trace &t) {
+void stats_register_trace(const Trace &t, const StopWatch &run_time,
+                          FlushReason reason) {
   ++flush_reasons_count[(unsigned)reason];
 
   unsigned num_ops = t.numOps();
@@ -187,7 +204,10 @@ void inc_flush_reason(FlushReason reason, const Trace &t) {
   trace_ss << t;
   auto trace_str = trace_ss.str();
 
-  trace_frequency.emplace(trace_str, 0).first->second++;
+  // FIXME: try_emplace not supported yet.. sniff
+  trace_run_time.emplace(trace_str, vector<float>()).first->second
+                .emplace_back(run_time.seconds());
+
   if (!last_trace.empty())
     trace_successors[last_trace].emplace(trace_str, 0).first->second++;
   last_trace = move(trace_str);
