@@ -9,7 +9,9 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <cstdlib>
 #include <cstring>
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -59,13 +61,41 @@ void inc(vector<unsigned> &v, size_t idx, unsigned amount = 1) {
   v[idx] += amount;
 }
 
+string shrink_trace(const string &t) {
+  istringstream ss(t);
+  string out;
+  unsigned lines = 0;
+
+  for (string line; getline(ss, line); ) {
+    if (line.find("[dead]") != string::npos)
+      continue;
+
+    auto pos = line.find(" #refs=");
+    if (pos != string::npos)
+      line.resize(pos);
+
+    pos = line.find(" #output");
+    if (pos != string::npos)
+      line.resize(pos);
+
+    out += line.substr(0, 50);
+    out += "\\l";
+
+    if (++lines == 20) {
+      out += "...\\l";
+      break;
+    }
+  }
+  return out;
+}
+
 array<unsigned, (unsigned)FlushReason::NUM_REASONS> flush_reasons_count;
 array<unsigned, MAX_TRACE_LENGTH+1> trace_size;
 array<unsigned, MAX_TRACE_LENGTH+1> num_trace_outputs;
 array<unsigned, MAX_TRACE_LENGTH+1> num_trace_deads;
 unordered_map<string, vector<float>> trace_run_time;
 unordered_map<string, unordered_map<string, unsigned>> trace_successors;
-string current_trace, last_trace;
+string first_trace, current_trace, last_trace;
 
 struct PrintStats {
   ~PrintStats() {
@@ -121,9 +151,51 @@ struct PrintStats {
          << "\nDistinct traces:\t" << trace_run_time.size() << '\n';
 
     cerr << endl;
+
+    if (auto p = getenv("TORCHY_PRINT_DOT"))
+      if (*p)
+        print_dot();
   }
 
 private:
+  void print_dot() {
+    {
+      ofstream f("trace.dot");
+      print_dot(f, false);
+    }
+    {
+      ofstream f("trace_detailed.dot");
+      print_dot(f, true);
+    }
+  }
+
+  void print_dot(ofstream &os, bool label_trace) {
+    unordered_map<string, unsigned> trace_map;
+    trace_map[first_trace] = 0;
+
+    auto get_id = [&](const string &t) -> unsigned {
+      auto sz = trace_map.size();
+      return trace_map.emplace(t, sz).first->second;
+    };
+
+    os << "digraph {\n"
+          "n0 [label=Start]\n"
+          "n0 -> T0\n";
+
+    for (const auto &p : trace_successors) {
+      unsigned src = get_id(p.first);
+
+      if (label_trace)
+        os << 'T' << src << " [label=\"" << shrink_trace(p.first)
+           << "\", shape=box]\n";
+
+      for (const auto &p : p.second) {
+        os << 'T' << src << " -> T" << get_id(p.first) << '\n';
+      }
+    }
+    os << "}\n";
+  }
+
   void print_table(const char *header, unsigned *data, const char **labels,
                    size_t size) {
     print_header(header);
@@ -205,15 +277,16 @@ void stats_register_trace(const Trace &t, FlushReason reason) {
   stringstream trace_ss;
   trace_ss << t;
   current_trace = move(trace_ss).str();
+
+  if (first_trace.empty())
+    first_trace = current_trace;
 }
 
 void stats_register_trace_time(const StopWatch &run_time) {
-  // FIXME: try_emplace not supported yet.. sniff
-  trace_run_time.emplace(current_trace, vector<float>()).first->second
-                .emplace_back(run_time.seconds());
+  trace_run_time[current_trace].emplace_back(run_time.seconds());
 
   if (!last_trace.empty())
-    trace_successors[last_trace].emplace(current_trace, 0).first->second++;
+    ++trace_successors[last_trace][current_trace];
   last_trace = move(current_trace);
 }
 
