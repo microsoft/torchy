@@ -70,6 +70,11 @@ string shrink_trace(const string &t) {
     if (line.find("[dead]") != string::npos)
       continue;
 
+    if (++lines == 20) {
+      out += "...\\l";
+      break;
+    }
+
     auto pos = line.find(" #refs=");
     if (pos != string::npos)
       line.resize(pos);
@@ -80,11 +85,6 @@ string shrink_trace(const string &t) {
 
     out += line.substr(0, 50);
     out += "\\l";
-
-    if (++lines == 20) {
-      out += "...\\l";
-      break;
-    }
   }
   return out;
 }
