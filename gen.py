@@ -200,15 +200,16 @@ def gen_torch_library_table(fn):
   return f'm.impl("{fn.func.name}", {wrapper_name(fn)});'
 
 @with_native_function
-def gen_ops_enum(fn):
-  return f'{fn_enum(fn)},'
-
-@with_native_function
 def gen_ops_names(fn):
   return f'"{fn.func.name}",'
 
+
+# (code, redispatch_signature) -> (enum, fn_ptr)*
+interpreter_code = {}
+
 @with_native_function
 def gen_interpreter_redispatch(fn):
+  global interpreter_code
   sig_group = CppSignatureGroup.from_native_function(fn, method=False, fallback_binding=fn.manual_cpp_binding)
   sig = sig_group.faithful_signature if sig_group.faithful_signature else sig_group.signature
   dispatcher_sig = DispatcherSignature.from_schema(fn.func)
@@ -219,29 +220,27 @@ def gen_interpreter_redispatch(fn):
     type = arg.type.cpp_type(strip_ref=False)
     args.append(f'load<{type}>()(op.args[{i}])')
 
-  redispatch = f'at::redispatch::{sig.name()}(ks, {", ".join(args)})'
-
+  redispatch = f'<FN>(ks, {", ".join(args)})'
   rettype = dispatcher_sig.returns_type().cpp_type()
-  case = f'case {fn_enum(fn)}:'
 
   if rettype == 'at::Tensor':
-    return f'''{case}
-  set(op, {redispatch});
-  break;
-'''
+    code = f'set(op, {redispatch});'
 
   # in-place op
-  if rettype == 'at::Tensor &' or\
-     (fn.use_const_ref_for_mutable_tensors and rettype == 'const at::Tensor &'):
-    return f'''{case}
-  init_update_in_place(op);
+  elif rettype == 'at::Tensor &' or\
+       (fn.use_const_ref_for_mutable_tensors and rettype == 'const at::Tensor &'):
+    code = f'''init_update_in_place(op);
   {redispatch};
-  end_update_in_place(op);
-  break;
-'''
+  end_update_in_place(op);'''
+  else:
+    # nothing else gets interpreted
+    return
 
-  # nothing else gets interpreted
-  return f'// skip {sig.defn()}\n'
+  signature = dispatcher_sig.type()
+  fn_ptr = f'at::redispatch::{sig.name()}'
+  key = code, signature
+  interpreter_code.setdefault(key, [])
+  interpreter_code[key].append((fn_enum(fn), fn_ptr))
 
 
 fd1 = open('autogen/dispatch_wrappers.h', 'w')
@@ -249,12 +248,44 @@ fd2 = open('autogen/torch_library_table.h', 'w')
 fd3 = open('autogen/ops_enum.h', 'w')
 fd4 = open('autogen/ops_names.h', 'w')
 fd5 = open('autogen/interpreter_redispatch.h', 'w')
+fd6 = open('autogen/interpreter_redispatch_tables.h', 'w')
 
+total = 0
 for fn in native_functions.native_functions:
   if skip_fn(fn):
     continue
+  total += 1
   print(gen_dispatch_wrapper(fn), file=fd1)
   print(gen_torch_library_table(fn), file=fd2)
-  print(gen_ops_enum(fn), file=fd3)
   print(gen_ops_names(fn), file=fd4)
-  print(gen_interpreter_redispatch(fn), file=fd5)
+  gen_interpreter_redispatch(fn)
+
+print(f'Total redispatched functions: {total}')
+print(f'Distinct signatures: {len(interpreter_code)}')
+
+table_id = 0
+for ((code, sig), entries) in interpreter_code.items():
+  for (enum, ptr) in entries:
+    print(f'case {enum}:', file=fd5)
+    print(f'{enum},', file=fd3)
+
+  if len(entries) == 1:
+    code = code.replace('<FN>', entries[0][1])
+    print(f'  {code}\n  break;\n', file=fd5)
+  elif len(entries) == 2:
+    ptr = sig.replace(' (', f'(*ptr)(DispatchKeySet, ')
+    print(f'  {{{ptr} = {entries[0][1]};', file=fd5)
+    print(f'  if (op.id == {entries[1][0]}) ptr = {entries[1][1]};', file=fd5)
+    code = code.replace('<FN>', f'ptr')
+    print(f'  {code}\n  break;}}\n', file=fd5)
+  else:
+    table = f'redispatch_ptrs_{table_id}'
+    table_id += 1
+    code = code.replace('<FN>', f'{table}[op.id - {entries[0][0]}]')
+    print(f'  {code}\n  break;\n', file=fd5)
+
+    table = sig.replace(' (', f'(*const {table}[])(DispatchKeySet, ')
+    print(f'{table} = {{', file=fd6)
+    for (enum, ptr) in entries:
+      print(f'  {ptr},', file=fd6)
+    print(f'}};\n', file=fd6)

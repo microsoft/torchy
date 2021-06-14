@@ -80,6 +80,8 @@ load<c10::optional<c10::string_view>>::operator()(UnionInputTy &arg) {
   return *opt;
 }
 
+#include "autogen/interpreter_redispatch_tables.h"
+
 }
 
 
