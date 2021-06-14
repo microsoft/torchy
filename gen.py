@@ -124,7 +124,7 @@ def gen_dispatch_wrapper(fn):
   fndecl = fndecl.replace('wrap_' + sig.name(), wrapper_name(fn))
 
   args = translate(sig.arguments(), dispatcher_sig.arguments())
-  register_args = ''.join([f'trace.append_arg(trace_idx, {move_if_needed(a.expr, a)});' for a in args])
+  register_args = ''.join([f'trace.append_arg({move_if_needed(a.expr, a)});' for a in args])
 
   rargs = ', '.join(['dispatchKeySet'] + [move_if_needed(a.expr, a) for a in args])
   redispatch = f'at::redispatch::{sig.name()}({rargs})'
@@ -157,11 +157,8 @@ def gen_dispatch_wrapper(fn):
     {dispatchkey}
     return {redispatch};
   }}{dtype_init}
-  auto tt = at::detail::make_tensor<TorchyTensor>({dtype}, {device});
-  auto tt_ptr = tt.getIntrusivePtr().get();
-  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, {fn_enum(fn)}, dispatchKeySet);
+  auto tt = register_new_tensor(dispatchKeySet, {fn_enum(fn)}, {dtype}, {device});
   {register_args}
-  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
   return tt;
 }}'''
 

@@ -102,51 +102,52 @@ public:
   TensorOp* getOps() { return ops; }
 
   template<typename A>
-  void append_arg(unsigned idx, A &&arg) {
+  void append_arg(A &&arg) {
     incref(arg);
-    ops[idx].args.emplace_back(std::forward<A>(arg));
+    ops[next_op-1].args.emplace_back(std::forward<A>(arg));
   }
 
   template<typename T>
-  void append_arg(unsigned idx, at::ArrayRef<T> &arg) {
+  void append_arg(at::ArrayRef<T> &arg) {
     incref(arg);
-    ops[idx].args.emplace_back(arg.vec());
+    ops[next_op-1].args.emplace_back(arg.vec());
   }
 
   template<typename T>
-  void append_arg(unsigned idx, at::ArrayRef<T> &&arg) {
-    append_arg(idx, arg);
+  void append_arg(at::ArrayRef<T> &&arg) {
+    append_arg(arg);
   }
 
   template<typename T>
-  void append_arg(unsigned idx, c10::optional<at::ArrayRef<T>> &arg) {
-    incref(arg);
+  void append_arg(c10::optional<at::ArrayRef<T>> &arg) {
     c10::optional<std::vector<T>> copy;
-    if (arg)
+    if (arg) {
+      incref(*arg);
       copy = arg->vec();
-    ops[idx].args.emplace_back(std::move(copy));
+    }
+    ops[next_op-1].args.emplace_back(std::move(copy));
   }
 
   template<typename T>
-  void append_arg(unsigned idx, c10::optional<at::ArrayRef<T>> &&arg) {
-    append_arg(idx, arg);
+  void append_arg(c10::optional<at::ArrayRef<T>> &&arg) {
+    append_arg(arg);
   }
 
-  void append_arg(unsigned idx, c10::string_view &&arg) {
-    ops[idx].args.emplace_back(std::string(arg.data(), arg.size()));
+  void append_arg(c10::string_view &&arg) {
+    ops[next_op-1].args.emplace_back(std::string(arg.data(), arg.size()));
   }
 
-  void append_arg(unsigned idx, c10::optional<c10::string_view> &&arg) {
+  void append_arg(c10::optional<c10::string_view> &&arg) {
     c10::optional<std::string> copy;
-    if (copy)
+    if (arg)
       copy = std::string(arg->data(), arg->size());
-    ops[idx].args.emplace_back(std::move(copy));
+    ops[next_op-1].args.emplace_back(std::move(copy));
   }
 
   template<typename T>
-  void append_arg(unsigned idx, const c10::List<T> &arg) {
+  void append_arg(const c10::List<T> &arg) {
     incref(arg);
-    ops[idx].args.emplace_back(arg.copy());
+    ops[next_op-1].args.emplace_back(arg.copy());
   }
 
   unsigned register_tensor(uintptr_t tensor, TorchOp op_id,

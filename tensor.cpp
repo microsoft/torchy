@@ -262,6 +262,15 @@ void end_update_in_place(uintptr_t tt) {
 
 namespace {
 
+Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
+                           caffe2::TypeMeta dtype, c10::Device device) {
+  auto tt = at::detail::make_tensor<TorchyTensor>(dtype, device);
+  auto tt_ptr = tt.getIntrusivePtr().get();
+  unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, op, ks);
+  static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
+  return tt;
+}
+
 TorchyTensor* prepare_in_place(const Tensor &t0) {
   auto &t = const_cast<Tensor&>(t0);
   TorchyTensor *tt = is_torchy(t);
