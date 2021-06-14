@@ -21,11 +21,15 @@ case H_ABS:
 case H_ABSOLUTE:
 case H_ANGLE:
 case H_VIEW_AS_REAL:
+case H__VIEW_AS_REAL_PHYSICAL:
 case H_VIEW_AS_COMPLEX:
 case H_REAL:
 case H_IMAG:
-case H_CONJ:
 case H__CONJ:
+case H_CONJ:
+case H__CONJ_PHYSICAL:
+case H_CONJ_PHYSICAL:
+case H_RESOLVE_CONJ:
 case H_ARCCOS:
 case H_ARCCOSH:
 case H_ARCSINH:
@@ -111,10 +115,14 @@ case H_ISPOSINF:
 case H_ISNEGINF:
 case H_SPECIAL_EXPM1:
 case H_SPECIAL_EXP2:
+case H_SPECIAL_PSI:
+case H_SPECIAL_DIGAMMA:
 case H_SPECIAL_GAMMALN:
 case H_SPECIAL_ERF:
 case H_SPECIAL_ERFC:
 case H_SPECIAL_ERFINV:
+case H_SPECIAL_NDTR:
+case H_SPECIAL_I0:
 case H_SPECIAL_EXPIT:
 case H_LINALG_CHOLESKY:
 case H_LINALG_DET:
@@ -145,6 +153,7 @@ case H_PIXEL_SHUFFLE:
 case H_PIXEL_UNSHUFFLE:
 case H_CHANNEL_SHUFFLE:
 case H_SQUEEZE_DIM:
+case H_ONE_HOT:
 case H_UNSQUEEZE:
 case H_TO_SPARSE_SPARSE_DIM:
 case H_DIAG:
@@ -226,7 +235,6 @@ case H_MV:
 case H__EUCLIDEAN_DIST:
 case H_RESHAPE_AS:
 case H_PRELU:
-case H_GELU_BACKWARD:
 case H_INFINITELY_DIFFERENTIABLE_GELU_BACKWARD:
 case H_SILU_BACKWARD:
 case H_MISH_BACKWARD:
@@ -336,6 +344,7 @@ case H_FEATURE_ALPHA_DROPOUT_:
 
 case H_ABS_:
 case H_ABSOLUTE_:
+case H_CONJ_PHYSICAL_:
 case H_ARCCOS_:
 case H_ARCCOSH_:
 case H_ARCSINH_:
@@ -377,7 +386,7 @@ case H_ABS_OUT:
 case H_ABSOLUTE_OUT:
 case H_ANGLE_OUT:
 case H_SGN_OUT:
-case H_CONJ_OUT:
+case H_CONJ_PHYSICAL_OUT:
 case H_ACOS_OUT:
 case H_ARCCOS_OUT:
 case H_ACOSH_OUT:
@@ -413,6 +422,7 @@ case H_RECIPROCAL_OUT:
 case H_NEG_OUT:
 case H_NEGATIVE_OUT:
 case H_ROUND_OUT:
+case H_GELU_OUT:
 case H_RSQRT_OUT:
 case H_SILU_OUT:
 case H_MISH_OUT:
@@ -442,11 +452,17 @@ case H_ISNEGINF_OUT:
 case H_SPECIAL_ENTR_OUT:
 case H_SPECIAL_EXPM1_OUT:
 case H_SPECIAL_EXP2_OUT:
+case H_SPECIAL_PSI_OUT:
+case H_SPECIAL_DIGAMMA_OUT:
 case H_SPECIAL_GAMMALN_OUT:
 case H_SPECIAL_ERF_OUT:
 case H_SPECIAL_ERFC_OUT:
 case H_SPECIAL_ERFINV_OUT:
+case H_SPECIAL_NDTR_OUT:
+case H_SPECIAL_I0_OUT:
 case H_SPECIAL_I0E_OUT:
+case H_SPECIAL_I1_OUT:
+case H_SPECIAL_I1E_OUT:
 case H_SPECIAL_EXPIT_OUT:
 case H_LINALG_CHOLESKY_OUT:
 case H_LINALG_DET_OUT:
@@ -488,7 +504,6 @@ case H_REFLECTION_PAD2D:
 
 case H_ADD_TENSOR:
 case H__ADD_RELU_TENSOR:
-case H_HARDSHRINK_BACKWARD:
 case H_THRESHOLD_BACKWARD:
 case H_WHERE_SCALAROTHER:
 case H_SUB_TENSOR:
@@ -497,7 +512,6 @@ case H_RSUB_TENSOR:
 case H_MASKED_FILL_SCALAR:
 case H_DIST:
 case H_LERP_SCALAR:
-case H_SOFTSHRINK_BACKWARD:
 case H__TEST_SERIALIZATION_SUBCMUL:
   set(op, redispatch_ptrs_11[op.id - H_ADD_TENSOR](ks, load<const at::Tensor &>()(op.args[0]), load<const at::Tensor &>()(op.args[1]), load<const at::Scalar &>()(op.args[2])));
   break;
@@ -515,6 +529,7 @@ case H_LERP__SCALAR:
 
 case H_ADD_OUT:
 case H__ADD_RELU_OUT:
+case H_HARDSHRINK_BACKWARD_GRAD_INPUT:
 case H_THRESHOLD_BACKWARD_GRAD_INPUT:
 case H_SUB_OUT:
 case H_SUBTRACT_OUT:
@@ -745,11 +760,8 @@ case H_NORMAL_TENSOR_FLOAT:
   break;}
 
 case H_BILINEAR:
-case H_SEGMENT_REDUCE_BACKWARD:
-  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &, const c10::optional<at::Tensor> &) = at::redispatch::bilinear;
-  if (op.id == H_SEGMENT_REDUCE_BACKWARD) ptr = at::redispatch::segment_reduce_backward;
-  set(op, ptr(ks, load<const at::Tensor &>()(op.args[0]), load<const at::Tensor &>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const c10::optional<at::Tensor> &>()(op.args[3])));
-  break;}
+  set(op, at::redispatch::bilinear(ks, load<const at::Tensor &>()(op.args[0]), load<const at::Tensor &>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const c10::optional<at::Tensor> &>()(op.args[3])));
+  break;
 
 case H_BINARY_CROSS_ENTROPY:
   set(op, at::redispatch::binary_cross_entropy(ks, load<const at::Tensor &>()(op.args[0]), load<const at::Tensor &>()(op.args[1]), load<const c10::optional<at::Tensor> &>()(op.args[2]), load<int64_t>()(op.args[3])));
@@ -811,6 +823,7 @@ case H_MM_OUT:
 case H_MUL_OUT:
 case H_MULTIPLY_OUT:
 case H_MV_OUT:
+case H_GELU_BACKWARD_GRAD_INPUT:
 case H_HEAVISIDE_OUT:
 case H_HSPMM_OUT:
 case H_BITWISE_AND_TENSOR_OUT:
@@ -870,7 +883,6 @@ case H_FLOOR_DIVIDE_SCALAR:
 case H_XLOGY_SCALAR_OTHER:
 case H_MUL_SCALAR:
 case H_MULTIPLY_SCALAR:
-case H_HARDSHRINK:
 case H_CELU:
 case H_NATIVE_NORM:
 case H_NORM_SCALAR:
@@ -946,6 +958,7 @@ case H_COPYSIGN_SCALAR_OUT:
 case H_CLAMP_MAX_OUT:
 case H_CLAMP_MIN_OUT:
 case H_XLOGY_OUTSCALAR_OTHER:
+case H_HARDSHRINK_OUT:
 case H_BITWISE_AND_SCALAR_OUT:
 case H_BITWISE_OR_SCALAR_OUT:
 case H_BITWISE_XOR_SCALAR_OUT:
@@ -1647,8 +1660,6 @@ case H_INDEX_TENSOR:
 case H_INDEX_COPY_:
 case H_INDEX_ADD_:
 case H_INDEX_FILL__INT_TENSOR:
-case H_SCATTER__SRC:
-case H_SCATTER_ADD_:
 case H__INDEX_COPY_:
   init_update_in_place(op);
   redispatch_ptrs_52[op.id - H_INDEX_COPY_](ks, load<at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Tensor &>()(op.args[3]));
@@ -1658,8 +1669,6 @@ case H__INDEX_COPY_:
 case H_INDEX_COPY:
 case H_INDEX_ADD:
 case H_INDEX_FILL_INT_TENSOR:
-case H_SCATTER_SRC:
-case H_SCATTER_ADD:
 case H__GATHER_SPARSE_BACKWARD:
   set(op, redispatch_ptrs_53[op.id - H_INDEX_COPY](ks, load<const at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Tensor &>()(op.args[3])));
   break;
@@ -1774,6 +1783,7 @@ case H_LINSPACE_OUT:
   break;
 
 case H_XLOGY_SCALAR_SELF:
+case H_REMAINDER_SCALAR_TENSOR:
 case H_FLOAT_POWER_SCALAR:
 case H_SPECIAL_XLOG1PY_SELF_SCALAR:
   set(op, redispatch_ptrs_56[op.id - H_XLOGY_SCALAR_SELF](ks, load<const at::Scalar &>()(op.args[0]), load<const at::Tensor &>()(op.args[1])));
@@ -2284,10 +2294,6 @@ case H_SWAPDIMS_:
   end_update_in_place(op);
   break;
 
-case H_ONE_HOT:
-  set(op, at::redispatch::one_hot(ks, load<const at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<at::ScalarType>()(op.args[2])));
-  break;
-
 case H_ROT90:
   set(op, at::redispatch::rot90(ks, load<const at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<at::IntArrayRef>()(op.args[2])));
   break;
@@ -2335,7 +2341,6 @@ case H__SPARSE_SUM_DIM_DTYPE:
 
 case H__SPARSE_SUM_BACKWARD:
 case H_MAX_UNPOOL2D:
-case H_REFLECTION_PAD1D_BACKWARD:
 case H_REFLECTION_PAD2D_BACKWARD:
 case H_REPLICATION_PAD2D_BACKWARD:
 case H_REPLICATION_PAD3D_BACKWARD:
@@ -2553,20 +2558,14 @@ case H_INDEX_ADD_DIMNAME:
   break;
 
 case H_INDEX_FILL__INT_SCALAR:
-case H_SCATTER__VALUE:
-  {at::Tensor &(*ptr)(DispatchKeySet, at::Tensor &, int64_t, const at::Tensor &, const at::Scalar &) = at::redispatch::index_fill_;
-  if (op.id == H_SCATTER__VALUE) ptr = at::redispatch::scatter_;
   init_update_in_place(op);
-  ptr(ks, load<at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Scalar &>()(op.args[3]));
+  at::redispatch::index_fill_(ks, load<at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Scalar &>()(op.args[3]));
   end_update_in_place(op);
-  break;}
+  break;
 
 case H_INDEX_FILL_INT_SCALAR:
-case H_SCATTER_VALUE:
-  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, int64_t, const at::Tensor &, const at::Scalar &) = at::redispatch::index_fill;
-  if (op.id == H_SCATTER_VALUE) ptr = at::redispatch::scatter;
-  set(op, ptr(ks, load<const at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Scalar &>()(op.args[3])));
-  break;}
+  set(op, at::redispatch::index_fill(ks, load<const at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Scalar &>()(op.args[3])));
+  break;
 
 case H_INDEX_FILL__DIMNAME_SCALAR:
   init_update_in_place(op);
@@ -2581,21 +2580,30 @@ case H_SCATTER_DIMNAME_VALUE:
   set(op, ptr(ks, load<const at::Tensor &>()(op.args[0]), load<at::Dimname>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Scalar &>()(op.args[3])));
   break;}
 
-case H_SCATTER__REDUCE:
+case H_SCATTER_SRC_OUT:
+case H_SCATTER_ADD_OUT:
+  {at::Tensor &(*ptr)(DispatchKeySet, const at::Tensor &, int64_t, const at::Tensor &, const at::Tensor &, at::Tensor &) = at::redispatch::scatter_outf;
+  if (op.id == H_SCATTER_ADD_OUT) ptr = at::redispatch::scatter_add_outf;
   init_update_in_place(op);
-  at::redispatch::scatter_(ks, load<at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Tensor &>()(op.args[3]), load<c10::string_view>()(op.args[4]));
+  ptr(ks, load<const at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Tensor &>()(op.args[3]), load<at::Tensor &>()(op.args[4]));
+  end_update_in_place(op);
+  break;}
+
+case H_SCATTER_VALUE_OUT:
+  init_update_in_place(op);
+  at::redispatch::scatter_outf(ks, load<const at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Scalar &>()(op.args[3]), load<at::Tensor &>()(op.args[4]));
   end_update_in_place(op);
   break;
 
-case H_SCATTER__VALUE_REDUCE:
+case H_SCATTER_REDUCE_OUT:
   init_update_in_place(op);
-  at::redispatch::scatter_(ks, load<at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Scalar &>()(op.args[3]), load<c10::string_view>()(op.args[4]));
+  at::redispatch::scatter_outf(ks, load<const at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Tensor &>()(op.args[3]), load<c10::string_view>()(op.args[4]), load<at::Tensor &>()(op.args[5]));
   end_update_in_place(op);
   break;
 
-case H_RENORM_:
+case H_SCATTER_VALUE_REDUCE_OUT:
   init_update_in_place(op);
-  at::redispatch::renorm_(ks, load<at::Tensor &>()(op.args[0]), load<const at::Scalar &>()(op.args[1]), load<int64_t>()(op.args[2]), load<const at::Scalar &>()(op.args[3]));
+  at::redispatch::scatter_outf(ks, load<const at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<const at::Scalar &>()(op.args[3]), load<c10::string_view>()(op.args[4]), load<at::Tensor &>()(op.args[5]));
   end_update_in_place(op);
   break;
 
@@ -2847,10 +2855,6 @@ case H_RENORM_OUT:
   init_update_in_place(op);
   at::redispatch::renorm_outf(ks, load<const at::Tensor &>()(op.args[0]), load<const at::Scalar &>()(op.args[1]), load<int64_t>()(op.args[2]), load<const at::Scalar &>()(op.args[3]), load<at::Tensor &>()(op.args[4]));
   end_update_in_place(op);
-  break;
-
-case H_RENORM:
-  set(op, at::redispatch::renorm(ks, load<const at::Tensor &>()(op.args[0]), load<const at::Scalar &>()(op.args[1]), load<int64_t>()(op.args[2]), load<const at::Scalar &>()(op.args[3])));
   break;
 
 case H_NORMAL_TENSOR_FLOAT_OUT:
@@ -3590,6 +3594,10 @@ case H__TEST_AMBIGUOUS_DEFAULTS_B:
 
 case H_SEGMENT_REDUCE:
   set(op, at::redispatch::segment_reduce(ks, load<const at::Tensor &>()(op.args[0]), load<c10::string_view>()(op.args[1]), load<const c10::optional<at::Tensor> &>()(op.args[2]), load<const c10::optional<at::Tensor> &>()(op.args[3]), load<int64_t>()(op.args[4]), load<bool>()(op.args[5]), load<const c10::optional<at::Scalar> &>()(op.args[6])));
+  break;
+
+case H__SEGMENT_REDUCE_BACKWARD:
+  set(op, at::redispatch::_segment_reduce_backward(ks, load<const at::Tensor &>()(op.args[0]), load<const at::Tensor &>()(op.args[1]), load<const at::Tensor &>()(op.args[2]), load<c10::string_view>()(op.args[3]), load<const c10::optional<at::Tensor> &>()(op.args[4])));
   break;
 
 case H_PAD_SEQUENCE:
