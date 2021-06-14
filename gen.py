@@ -199,9 +199,10 @@ def gen_dispatch_wrapper(fn):
 def gen_torch_library_table(fn):
   return f'm.impl("{fn.func.name}", {wrapper_name(fn)});'
 
+enum_names = {}
 @with_native_function
 def gen_ops_names(fn):
-  return f'"{fn.func.name}",'
+  enum_names[fn_enum(fn)] = fn.func.name
 
 
 # (code, redispatch_signature) -> (enum, fn_ptr)*
@@ -257,7 +258,7 @@ for fn in native_functions.native_functions:
   total += 1
   print(gen_dispatch_wrapper(fn), file=fd1)
   print(gen_torch_library_table(fn), file=fd2)
-  print(gen_ops_names(fn), file=fd4)
+  gen_ops_names(fn)
   gen_interpreter_redispatch(fn)
 
 print(f'Total redispatched functions: {total}')
@@ -268,6 +269,7 @@ for ((code, sig), entries) in interpreter_code.items():
   for (enum, ptr) in entries:
     print(f'case {enum}:', file=fd5)
     print(f'{enum},', file=fd3)
+    print(f'"{enum_names[enum]}",', file=fd4)
 
   if len(entries) == 1:
     code = code.replace('<FN>', entries[0][1])
