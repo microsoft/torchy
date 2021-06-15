@@ -216,6 +216,7 @@ def gen_interpreter_redispatch(fn):
   args = []
   for i, arg in enumerate(dispatcher_exprs):
     type = arg.type.cpp_type(strip_ref=False)
+    type = type.replace('const ', '')
     args.append(f'load<{type}>()(op.args[{i}])')
 
   redispatch = f'<FN>(ks, {", ".join(args)})'

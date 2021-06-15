@@ -42,10 +42,8 @@ struct load {
 
 template <typename T>
 struct load<T&> {
-  using lookup = typename std::remove_cv<T>::type;
-
   T& operator()(UnionInputTy &arg) {
-    return get<lookup>(arg);
+    return get<T>(arg);
   }
 };
 
