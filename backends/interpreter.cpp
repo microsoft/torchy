@@ -110,6 +110,9 @@ void run(Trace &t) {
       default:
         assert(0 && "Unhandled op");
     }
+
+    // generated redispatch code only reached here for in-place ops
+    end_update_in_place(op);
   }
 }
 

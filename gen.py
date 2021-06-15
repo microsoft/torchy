@@ -223,14 +223,14 @@ def gen_interpreter_redispatch(fn):
   rettype = dispatcher_sig.returns_type().cpp_type()
 
   if rettype == 'at::Tensor':
-    code = f'set(op, {redispatch});'
+    code = f'set(op, {redispatch});\n  continue;'
 
   # in-place op
   elif rettype == 'at::Tensor &' or\
        (fn.use_const_ref_for_mutable_tensors and rettype == 'const at::Tensor &'):
     code = f'''init_update_in_place(op);
   {redispatch};
-  end_update_in_place(op);'''
+  break;'''
   else:
     # nothing else gets interpreted
     return
@@ -271,18 +271,18 @@ for ((code, sig), entries) in interpreter_code.items():
 
   if len(entries) == 1:
     code = code.replace('<FN>', entries[0][1])
-    print(f'  {code}\n  break;\n', file=fd5)
+    print(f'  {code}\n', file=fd5)
   elif len(entries) == 2:
     ptr = sig.replace(' (', f'(*ptr)(DispatchKeySet, ')
     print(f'  {{{ptr} = {entries[0][1]};', file=fd5)
     print(f'  if (op.id == {entries[1][0]}) ptr = {entries[1][1]};', file=fd5)
     code = code.replace('<FN>', f'ptr')
-    print(f'  {code}\n  break;}}\n', file=fd5)
+    print(f'  {code}}}\n', file=fd5)
   else:
     table = f'redispatch_ptrs_{table_id}'
     table_id += 1
     code = code.replace('<FN>', f'{table}[op.id - {entries[0][0]}]')
-    print(f'  {code}\n  break;\n', file=fd5)
+    print(f'  {code}\n', file=fd5)
 
     table = sig.replace(' (', f'(*const {table}[])(DispatchKeySet, ')
     print(f'{table} = {{', file=fd6)
