@@ -42,7 +42,6 @@ const char* flush_reasons[] = {
   "stride",
   "strides",
   "trace max length",
-  "unsupported operation",
 };
 
 static_assert(NUM_ELEMS(flush_reasons) == (unsigned)FlushReason::NUM_REASONS);

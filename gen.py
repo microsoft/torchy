@@ -12,7 +12,18 @@ from tools.codegen.api import types
 yaml_path = PYTORCH + '/aten/src/ATen/native/native_functions.yaml'
 native_functions = parse_native_yaml(yaml_path)
 
+@with_native_function
 def skip_fn(fn):
+  allowed_ret_types = {
+    'at::Tensor',
+    'at::Tensor &',
+    'const at::Tensor &',
+  }
+  dispatcher_sig = DispatcherSignature.from_schema(fn.func)
+  rettype = dispatcher_sig.returns_type().cpp_type()
+  if rettype not in allowed_ret_types:
+    return True
+
   # TODO: benchmark if we really want to skip these
   # plus check if we want to skip is_generic_dispatch_key(key) as well
   # as those don't have real kernels, just autograd
@@ -128,9 +139,7 @@ def gen_dispatch_wrapper(fn):
 
   rargs = ', '.join(['dispatchKeySet'] + [move_if_needed(a.expr, a) for a in args])
   redispatch = f'at::redispatch::{sig.name()}({rargs})'
-
   tensor_args = [a for a in args if maybe_tensor(a.type)]
-  materialize = ''.join([f'ensure_materialized({a.expr});' for a in tensor_args])
 
   dispatchkey = "dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);"
 
@@ -164,13 +173,11 @@ def gen_dispatch_wrapper(fn):
 
   # in-place op. returns one of the arguments
   # e.g. mul_ or mul_out
-  if rettype == 'at::Tensor &' or\
-     (fn.use_const_ref_for_mutable_tensors and rettype == 'const at::Tensor &'):
-    assert tensor_args
-    ret = fn_output(fn)
+  assert rettype == 'at::Tensor &' or rettype == 'const at::Tensor &'
+  assert tensor_args
+  ret = fn_output(fn)
 
-    # TODO: we can also make it lazy if tensor is non-torchy but ref count == 1
-    return f'''
+  return f'''
 {fndecl} {{
   if (trace.is_flushing()) {{
     {dispatchkey}
@@ -181,14 +188,6 @@ def gen_dispatch_wrapper(fn):
   {register_args}
   finish_in_place(tt, trace_idx);
   return {ret};
-}}'''
-
-  # returns e.g. a scalar. must materialize right away
-  return f'''
-{fndecl} {{
-  {materialize}
-  {dispatchkey}
-  return {redispatch};
 }}'''
 
 
@@ -226,14 +225,11 @@ def gen_interpreter_redispatch(fn):
     code = f'set(op, {redispatch});\n  continue;'
 
   # in-place op
-  elif rettype == 'at::Tensor &' or\
-       (fn.use_const_ref_for_mutable_tensors and rettype == 'const at::Tensor &'):
+  else:
+    assert rettype == 'at::Tensor &' or rettype == 'const at::Tensor &'
     code = f'''init_update_in_place(op);
   {redispatch};
   break;'''
-  else:
-    # nothing else gets interpreted
-    return
 
   signature = dispatcher_sig.type()
   fn_ptr = f'at::redispatch::{sig.name()}'

@@ -298,31 +298,6 @@ void finish_in_place(TorchyTensor *tt, unsigned idx) {
   }
 }
 
-void ensure_materialized(const Tensor &t) {
-  if (auto tt = is_torchy(t))
-    tt->ensure_materialized(STATS(FlushReason::UNSUPPORTED_OPERATION));
-}
-
-void ensure_materialized(const optional<Tensor> &t) {
-  if (t)
-    ensure_materialized(*t);
-}
-
-template<typename T>
-void ensure_materialized(const ArrayRef<T> &l) {
-  for (const auto &elem : l) {
-    ensure_materialized(elem);
-  }
-}
-
-template<typename T>
-void ensure_materialized(const List<T> &l) {
-  for (const auto &it : l) {
-    const T &elem = it;
-    ensure_materialized(elem);
-  }
-}
-
 // see build/aten/src/ATen/RegisterBackendSelect.cpp for redispatching logic
 pair<caffe2::TypeMeta, Device> compute_dtype() {
   return { at::get_default_dtype(), Device(kCPU) };
@@ -335,6 +310,10 @@ pair<caffe2::TypeMeta, Device> compute_dtype(const TensorList &list) {
 }
 
 #include "autogen/dispatch_wrappers.h"
+
+TORCH_LIBRARY_IMPL(_, DISPATCHKEY_NO_NS, m) {
+  m.fallback(torch::CppFunction::makeFallthrough());
+}
 
 TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
 #include "autogen/torch_library_table.h"

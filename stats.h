@@ -22,7 +22,6 @@ enum class FlushReason {
   STRIDE,
   STRIDES,
   TRACE_MAX_LENGTH,
-  UNSUPPORTED_OPERATION,
   NUM_REASONS
 };
 
