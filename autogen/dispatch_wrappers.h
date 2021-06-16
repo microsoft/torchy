@@ -4324,6 +4324,42 @@ at::Tensor wrap_isclose(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
   return tt;
 }
 
+at::Tensor & wrap_isin_Tensor_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & elements, const at::Tensor & test_elements, bool assume_unique, bool invert, at::Tensor & out) {
+  if (trace.is_flushing()) {
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::isin_outf(dispatchKeySet, elements, test_elements, assume_unique, invert, out);
+  }
+  TorchyTensor *tt = prepare_in_place(out);
+  unsigned trace_idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, H_ISIN_TENSOR_TENSOR_OUT, dispatchKeySet);
+  trace.append_arg(elements);trace.append_arg(test_elements);trace.append_arg(assume_unique);trace.append_arg(invert);trace.append_arg(out);
+  finish_in_place(tt, trace_idx);
+  return out;
+}
+
+at::Tensor & wrap_isin_Tensor_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & elements, const at::Scalar & test_element, bool assume_unique, bool invert, at::Tensor & out) {
+  if (trace.is_flushing()) {
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::isin_outf(dispatchKeySet, elements, test_element, assume_unique, invert, out);
+  }
+  TorchyTensor *tt = prepare_in_place(out);
+  unsigned trace_idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, H_ISIN_TENSOR_SCALAR_OUT, dispatchKeySet);
+  trace.append_arg(elements);trace.append_arg(test_element);trace.append_arg(assume_unique);trace.append_arg(invert);trace.append_arg(out);
+  finish_in_place(tt, trace_idx);
+  return out;
+}
+
+at::Tensor & wrap_isin_Scalar_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Scalar & element, const at::Tensor & test_elements, bool assume_unique, bool invert, at::Tensor & out) {
+  if (trace.is_flushing()) {
+    dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    return at::redispatch::isin_outf(dispatchKeySet, element, test_elements, assume_unique, invert, out);
+  }
+  TorchyTensor *tt = prepare_in_place(out);
+  unsigned trace_idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, H_ISIN_SCALAR_TENSOR_OUT, dispatchKeySet);
+  trace.append_arg(element);trace.append_arg(test_elements);trace.append_arg(assume_unique);trace.append_arg(invert);trace.append_arg(out);
+  finish_in_place(tt, trace_idx);
+  return out;
+}
+
 at::Tensor wrap_isnan(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);

@@ -991,7 +991,13 @@ at::Tensor(*const redispatch_ptrs_54[])(DispatchKeySet, const at::Tensor &, at::
   at::redispatch::scatter_add,
 };
 
-at::Tensor(*const redispatch_ptrs_55[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_55[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, bool, bool, at::Tensor &) = {
+  at::redispatch::isin_outf,
+  at::redispatch::bucketize_outf,
+  at::redispatch::searchsorted_outf,
+};
+
+at::Tensor(*const redispatch_ptrs_56[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &) = {
   at::redispatch::fbgemm_linear_fp16_weight_fp32_activation,
   at::redispatch::fbgemm_linear_fp16_weight,
   at::redispatch::where,
@@ -1005,21 +1011,21 @@ at::Tensor(*const redispatch_ptrs_55[])(DispatchKeySet, const at::Tensor &, cons
   at::redispatch::log_sigmoid_backward,
 };
 
-at::Tensor(*const redispatch_ptrs_56[])(DispatchKeySet, const at::Scalar &, const at::Tensor &) = {
+at::Tensor(*const redispatch_ptrs_57[])(DispatchKeySet, const at::Scalar &, const at::Tensor &) = {
   at::redispatch::xlogy,
   at::redispatch::remainder,
   at::redispatch::float_power,
   at::redispatch::special_xlog1py,
 };
 
-at::Tensor &(*const redispatch_ptrs_57[])(DispatchKeySet, const at::Scalar &, const at::Tensor &, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_58[])(DispatchKeySet, const at::Scalar &, const at::Tensor &, at::Tensor &) = {
   at::redispatch::xlogy_outf,
   at::redispatch::pow_outf,
   at::redispatch::float_power_outf,
   at::redispatch::special_xlog1py_outf,
 };
 
-at::Tensor &(*const redispatch_ptrs_58[])(DispatchKeySet, const at::Tensor &, int64_t, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_59[])(DispatchKeySet, const at::Tensor &, int64_t, at::Tensor &) = {
   at::redispatch::_logcumsumexp_outf,
   at::redispatch::logcumsumexp_outf,
   at::redispatch::matrix_power_outf,
@@ -1033,7 +1039,7 @@ at::Tensor &(*const redispatch_ptrs_58[])(DispatchKeySet, const at::Tensor &, in
   at::redispatch::linalg_matrix_power_outf,
 };
 
-at::Tensor &(*const redispatch_ptrs_59[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, bool, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_60[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, bool, at::Tensor &) = {
   at::redispatch::logsumexp_outf,
   at::redispatch::amax_outf,
   at::redispatch::amin_outf,
@@ -1041,7 +1047,7 @@ at::Tensor &(*const redispatch_ptrs_59[])(DispatchKeySet, const at::Tensor &, at
   at::redispatch::nuclear_norm_outf,
 };
 
-at::Tensor(*const redispatch_ptrs_60[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, at::IntArrayRef, at::IntArrayRef, bool) = {
+at::Tensor(*const redispatch_ptrs_61[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, at::IntArrayRef, at::IntArrayRef, bool) = {
   at::redispatch::max_pool1d,
   at::redispatch::max_pool2d,
   at::redispatch::mkldnn_max_pool2d,
@@ -1051,7 +1057,7 @@ at::Tensor(*const redispatch_ptrs_60[])(DispatchKeySet, const at::Tensor &, at::
   at::redispatch::max_pool3d,
 };
 
-at::Tensor(*const redispatch_ptrs_61[])(DispatchKeySet, const at::Tensor &, c10::optional<at::ScalarType>) = {
+at::Tensor(*const redispatch_ptrs_62[])(DispatchKeySet, const at::Tensor &, c10::optional<at::ScalarType>) = {
   at::redispatch::mean,
   at::redispatch::sum,
   at::redispatch::nansum,
@@ -1060,19 +1066,19 @@ at::Tensor(*const redispatch_ptrs_61[])(DispatchKeySet, const at::Tensor &, c10:
   at::redispatch::to_mkldnn,
 };
 
-at::Tensor(*const redispatch_ptrs_62[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, bool, c10::optional<at::ScalarType>) = {
+at::Tensor(*const redispatch_ptrs_63[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, bool, c10::optional<at::ScalarType>) = {
   at::redispatch::mean,
   at::redispatch::sum,
   at::redispatch::nansum,
 };
 
-at::Tensor &(*const redispatch_ptrs_63[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, bool, c10::optional<at::ScalarType>, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_64[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, bool, c10::optional<at::ScalarType>, at::Tensor &) = {
   at::redispatch::mean_outf,
   at::redispatch::sum_outf,
   at::redispatch::nansum_outf,
 };
 
-at::Tensor(*const redispatch_ptrs_64[])(DispatchKeySet, at::IntArrayRef, const at::Tensor &, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, at::IntArrayRef, int64_t, bool, bool) = {
+at::Tensor(*const redispatch_ptrs_65[])(DispatchKeySet, at::IntArrayRef, const at::Tensor &, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, at::IntArrayRef, int64_t, bool, bool) = {
   at::redispatch::miopen_convolution_backward_input,
   at::redispatch::miopen_convolution_backward_weight,
   at::redispatch::miopen_convolution_transpose_backward_weight,
@@ -1080,14 +1086,14 @@ at::Tensor(*const redispatch_ptrs_64[])(DispatchKeySet, at::IntArrayRef, const a
   at::redispatch::miopen_depthwise_convolution_backward_weight,
 };
 
-at::Tensor(*const redispatch_ptrs_65[])(DispatchKeySet, at::IntArrayRef, c10::optional<at::DimnameList>, c10::optional<at::ScalarType>, c10::optional<at::Layout>, c10::optional<at::Device>, c10::optional<bool>) = {
+at::Tensor(*const redispatch_ptrs_66[])(DispatchKeySet, at::IntArrayRef, c10::optional<at::DimnameList>, c10::optional<at::ScalarType>, c10::optional<at::Layout>, c10::optional<at::Device>, c10::optional<bool>) = {
   at::redispatch::ones,
   at::redispatch::rand,
   at::redispatch::randn,
   at::redispatch::zeros,
 };
 
-at::Tensor(*const redispatch_ptrs_66[])(DispatchKeySet, at::IntArrayRef, c10::optional<at::ScalarType>, c10::optional<at::Layout>, c10::optional<at::Device>, c10::optional<bool>) = {
+at::Tensor(*const redispatch_ptrs_67[])(DispatchKeySet, at::IntArrayRef, c10::optional<at::ScalarType>, c10::optional<at::Layout>, c10::optional<at::Device>, c10::optional<bool>) = {
   at::redispatch::ones,
   at::redispatch::rand,
   at::redispatch::randn,
@@ -1095,45 +1101,45 @@ at::Tensor(*const redispatch_ptrs_66[])(DispatchKeySet, at::IntArrayRef, c10::op
   at::redispatch::sparse_coo_tensor,
 };
 
-at::Tensor &(*const redispatch_ptrs_67[])(DispatchKeySet, at::IntArrayRef, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_68[])(DispatchKeySet, at::IntArrayRef, at::Tensor &) = {
   at::redispatch::ones_outf,
   at::redispatch::rand_outf,
   at::redispatch::randn_outf,
   at::redispatch::zeros_outf,
 };
 
-at::Tensor(*const redispatch_ptrs_68[])(DispatchKeySet, const at::Tensor &, double) = {
+at::Tensor(*const redispatch_ptrs_69[])(DispatchKeySet, const at::Tensor &, double) = {
   at::redispatch::pdist,
   at::redispatch::_pdist_forward,
   at::redispatch::pinverse,
 };
 
-at::Tensor(*const redispatch_ptrs_69[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, int64_t, double) = {
+at::Tensor(*const redispatch_ptrs_70[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, int64_t, double) = {
   at::redispatch::cosine_similarity,
   at::redispatch::smooth_l1_loss,
   at::redispatch::huber_loss,
 };
 
-at::Tensor(*const redispatch_ptrs_70[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef) = {
+at::Tensor(*const redispatch_ptrs_71[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef) = {
   at::redispatch::movedim,
   at::redispatch::moveaxis,
   at::redispatch::roll,
 };
 
-at::Tensor &(*const redispatch_ptrs_71[])(DispatchKeySet, const at::Tensor &, const at::Scalar &, const at::Scalar &, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_72[])(DispatchKeySet, const at::Tensor &, const at::Scalar &, const at::Scalar &, at::Tensor &) = {
   at::redispatch::threshold_outf,
   at::redispatch::hardtanh_outf,
   at::redispatch::softplus_outf,
 };
 
-at::Tensor &(*const redispatch_ptrs_72[])(DispatchKeySet, at::Tensor &, int64_t, int64_t) = {
+at::Tensor &(*const redispatch_ptrs_73[])(DispatchKeySet, at::Tensor &, int64_t, int64_t) = {
   at::redispatch::transpose_,
   at::redispatch::_mkldnn_transpose_,
   at::redispatch::swapaxes_,
   at::redispatch::swapdims_,
 };
 
-at::Tensor(*const redispatch_ptrs_73[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, at::IntArrayRef) = {
+at::Tensor(*const redispatch_ptrs_74[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, at::IntArrayRef) = {
   at::redispatch::_sparse_sum_backward,
   at::redispatch::max_unpool2d,
   at::redispatch::reflection_pad2d_backward,
@@ -1141,45 +1147,45 @@ at::Tensor(*const redispatch_ptrs_73[])(DispatchKeySet, const at::Tensor &, cons
   at::redispatch::replication_pad3d_backward,
 };
 
-at::Tensor &(*const redispatch_ptrs_74[])(DispatchKeySet, const at::Tensor &, bool, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_75[])(DispatchKeySet, const at::Tensor &, bool, at::Tensor &) = {
   at::redispatch::nuclear_norm_outf,
   at::redispatch::cholesky_outf,
   at::redispatch::cholesky_inverse_outf,
 };
 
-at::Tensor(*const redispatch_ptrs_75[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const c10::optional<at::Tensor> &, const c10::optional<at::Tensor> &) = {
+at::Tensor(*const redispatch_ptrs_76[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const c10::optional<at::Tensor> &, const c10::optional<at::Tensor> &) = {
   at::redispatch::gru_cell,
   at::redispatch::rnn_tanh_cell,
   at::redispatch::rnn_relu_cell,
 };
 
-at::Tensor(*const redispatch_ptrs_76[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Scalar &, const at::Scalar &, const at::Scalar &, const at::Scalar &) = {
+at::Tensor(*const redispatch_ptrs_77[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Scalar &, const at::Scalar &, const at::Scalar &, const at::Scalar &) = {
   at::redispatch::quantized_gru_cell,
   at::redispatch::quantized_rnn_relu_cell,
   at::redispatch::quantized_rnn_tanh_cell,
 };
 
-at::Tensor &(*const redispatch_ptrs_77[])(DispatchKeySet, at::Tensor &, const at::Tensor &, const at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_78[])(DispatchKeySet, at::Tensor &, const at::Tensor &, const at::Tensor &) = {
   at::redispatch::masked_fill_,
   at::redispatch::masked_scatter_,
   at::redispatch::lerp_,
 };
 
-at::Tensor &(*const redispatch_ptrs_78[])(DispatchKeySet, at::Tensor &, double, double, c10::optional<at::Generator>) = {
+at::Tensor &(*const redispatch_ptrs_79[])(DispatchKeySet, at::Tensor &, double, double, c10::optional<at::Generator>) = {
   at::redispatch::uniform_,
   at::redispatch::cauchy_,
   at::redispatch::log_normal_,
   at::redispatch::normal_,
 };
 
-at::Tensor(*const redispatch_ptrs_79[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const c10::optional<at::Tensor> &, int64_t, int64_t) = {
+at::Tensor(*const redispatch_ptrs_80[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const c10::optional<at::Tensor> &, int64_t, int64_t) = {
   at::redispatch::cross_entropy_loss,
   at::redispatch::nll_loss_nd,
   at::redispatch::nll_loss,
   at::redispatch::nll_loss2d,
 };
 
-at::Tensor &(*const redispatch_ptrs_80[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_81[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &, at::Tensor &) = {
   at::redispatch::lu_solve_outf,
   at::redispatch::lerp_outf,
   at::redispatch::log_sigmoid_backward_outf,
@@ -1187,7 +1193,7 @@ at::Tensor &(*const redispatch_ptrs_80[])(DispatchKeySet, const at::Tensor &, co
   at::redispatch::adaptive_max_pool3d_backward_outf,
 };
 
-at::Tensor &(*const redispatch_ptrs_81[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, int64_t, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_82[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, int64_t, at::Tensor &) = {
   at::redispatch::mse_loss_outf,
   at::redispatch::l1_loss_outf,
   at::redispatch::multilabel_margin_loss_outf,
@@ -1195,13 +1201,13 @@ at::Tensor &(*const redispatch_ptrs_81[])(DispatchKeySet, const at::Tensor &, co
   at::redispatch::glu_backward_outf,
 };
 
-at::Tensor &(*const redispatch_ptrs_82[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &, int64_t, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_83[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &, int64_t, at::Tensor &) = {
   at::redispatch::mse_loss_backward_outf,
   at::redispatch::l1_loss_backward_outf,
   at::redispatch::soft_margin_loss_backward_outf,
 };
 
-at::Tensor &(*const redispatch_ptrs_83[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_84[])(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::Tensor &) = {
   at::redispatch::adaptive_avg_pool2d_outf,
   at::redispatch::adaptive_avg_pool3d_outf,
   at::redispatch::reflection_pad1d_outf,
@@ -1211,7 +1217,7 @@ at::Tensor &(*const redispatch_ptrs_83[])(DispatchKeySet, const at::Tensor &, at
   at::redispatch::replication_pad3d_outf,
 };
 
-at::Tensor &(*const redispatch_ptrs_84[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, at::IntArrayRef, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_85[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, at::IntArrayRef, at::Tensor &) = {
   at::redispatch::max_unpool2d_outf,
   at::redispatch::reflection_pad1d_backward_outf,
   at::redispatch::reflection_pad2d_backward_outf,
@@ -1220,33 +1226,33 @@ at::Tensor &(*const redispatch_ptrs_84[])(DispatchKeySet, const at::Tensor &, co
   at::redispatch::replication_pad3d_backward_outf,
 };
 
-at::Tensor(*const redispatch_ptrs_85[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, bool, c10::optional<at::ArrayRef<double>>) = {
+at::Tensor(*const redispatch_ptrs_86[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, bool, c10::optional<at::ArrayRef<double>>) = {
   at::redispatch::upsample_linear1d,
   at::redispatch::upsample_bilinear2d,
   at::redispatch::upsample_trilinear3d,
   at::redispatch::upsample_bicubic2d,
 };
 
-at::Tensor(*const redispatch_ptrs_86[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, at::IntArrayRef, bool, c10::optional<at::ArrayRef<double>>) = {
+at::Tensor(*const redispatch_ptrs_87[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, at::IntArrayRef, bool, c10::optional<at::ArrayRef<double>>) = {
   at::redispatch::upsample_linear1d_backward,
   at::redispatch::upsample_bilinear2d_backward,
   at::redispatch::upsample_trilinear3d_backward,
   at::redispatch::upsample_bicubic2d_backward,
 };
 
-at::Tensor(*const redispatch_ptrs_87[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, c10::optional<at::ArrayRef<double>>) = {
+at::Tensor(*const redispatch_ptrs_88[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, c10::optional<at::ArrayRef<double>>) = {
   at::redispatch::upsample_nearest1d,
   at::redispatch::upsample_nearest2d,
   at::redispatch::upsample_nearest3d,
 };
 
-at::Tensor(*const redispatch_ptrs_88[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, at::IntArrayRef, c10::optional<at::ArrayRef<double>>) = {
+at::Tensor(*const redispatch_ptrs_89[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, at::IntArrayRef, c10::optional<at::ArrayRef<double>>) = {
   at::redispatch::upsample_nearest1d_backward,
   at::redispatch::upsample_nearest2d_backward,
   at::redispatch::upsample_nearest3d_backward,
 };
 
-at::Tensor(*const redispatch_ptrs_89[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, at::IntArrayRef, const c10::optional<at::Tensor> &, at::IntArrayRef, at::IntArrayRef, at::IntArrayRef) = {
+at::Tensor(*const redispatch_ptrs_90[])(DispatchKeySet, const at::Tensor &, const at::Tensor &, at::IntArrayRef, const c10::optional<at::Tensor> &, at::IntArrayRef, at::IntArrayRef, at::IntArrayRef) = {
   at::redispatch::thnn_conv_depthwise2d,
   at::redispatch::thnn_conv_depthwise2d_forward,
   at::redispatch::conv_depthwise3d,
@@ -1254,7 +1260,7 @@ at::Tensor(*const redispatch_ptrs_89[])(DispatchKeySet, const at::Tensor &, cons
   at::redispatch::slow_conv_dilated3d,
 };
 
-at::Tensor(*const redispatch_ptrs_90[])(DispatchKeySet, const at::Tensor &, c10::optional<int64_t>, int64_t, c10::optional<c10::string_view>) = {
+at::Tensor(*const redispatch_ptrs_91[])(DispatchKeySet, const at::Tensor &, c10::optional<int64_t>, int64_t, c10::optional<c10::string_view>) = {
   at::redispatch::fft_fft,
   at::redispatch::fft_ifft,
   at::redispatch::fft_rfft,
@@ -1263,7 +1269,7 @@ at::Tensor(*const redispatch_ptrs_90[])(DispatchKeySet, const at::Tensor &, c10:
   at::redispatch::fft_ihfft,
 };
 
-at::Tensor &(*const redispatch_ptrs_91[])(DispatchKeySet, const at::Tensor &, c10::optional<int64_t>, int64_t, c10::optional<c10::string_view>, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_92[])(DispatchKeySet, const at::Tensor &, c10::optional<int64_t>, int64_t, c10::optional<c10::string_view>, at::Tensor &) = {
   at::redispatch::fft_fft_outf,
   at::redispatch::fft_ifft_outf,
   at::redispatch::fft_rfft_outf,
@@ -1272,35 +1278,35 @@ at::Tensor &(*const redispatch_ptrs_91[])(DispatchKeySet, const at::Tensor &, c1
   at::redispatch::fft_ihfft_outf,
 };
 
-at::Tensor(*const redispatch_ptrs_92[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, at::IntArrayRef, c10::optional<c10::string_view>) = {
+at::Tensor(*const redispatch_ptrs_93[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, at::IntArrayRef, c10::optional<c10::string_view>) = {
   at::redispatch::fft_fft2,
   at::redispatch::fft_ifft2,
   at::redispatch::fft_rfft2,
   at::redispatch::fft_irfft2,
 };
 
-at::Tensor &(*const redispatch_ptrs_93[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, at::IntArrayRef, c10::optional<c10::string_view>, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_94[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, at::IntArrayRef, c10::optional<c10::string_view>, at::Tensor &) = {
   at::redispatch::fft_fft2_outf,
   at::redispatch::fft_ifft2_outf,
   at::redispatch::fft_rfft2_outf,
   at::redispatch::fft_irfft2_outf,
 };
 
-at::Tensor(*const redispatch_ptrs_94[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, c10::optional<at::IntArrayRef>, c10::optional<c10::string_view>) = {
+at::Tensor(*const redispatch_ptrs_95[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, c10::optional<at::IntArrayRef>, c10::optional<c10::string_view>) = {
   at::redispatch::fft_fftn,
   at::redispatch::fft_ifftn,
   at::redispatch::fft_rfftn,
   at::redispatch::fft_irfftn,
 };
 
-at::Tensor &(*const redispatch_ptrs_95[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, c10::optional<at::IntArrayRef>, c10::optional<c10::string_view>, at::Tensor &) = {
+at::Tensor &(*const redispatch_ptrs_96[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>, c10::optional<at::IntArrayRef>, c10::optional<c10::string_view>, at::Tensor &) = {
   at::redispatch::fft_fftn_outf,
   at::redispatch::fft_ifftn_outf,
   at::redispatch::fft_rfftn_outf,
   at::redispatch::fft_irfftn_outf,
 };
 
-at::Tensor(*const redispatch_ptrs_96[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>) = {
+at::Tensor(*const redispatch_ptrs_97[])(DispatchKeySet, const at::Tensor &, c10::optional<at::IntArrayRef>) = {
   at::redispatch::fft_fftshift,
   at::redispatch::fft_ifftshift,
   at::redispatch::_test_optional_intlist,
