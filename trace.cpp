@@ -27,12 +27,13 @@ void TensorOp::decref(TensorOp *ops) {
   --refs;
 
   if (refs == 0) {
+    TensorVisitor visitor([&](const Tensor &t) {
+      auto idx = trace_idx(t);
+      if (idx != -1u)
+        ops[idx].decref(ops);
+    });
     for (auto &arg : args) {
-      visit(TensorVisitor([&](const Tensor &t) {
-        auto idx = trace_idx(t);
-        if (idx != -1u)
-          ops[idx].decref(ops);
-      }), arg);
+      visit(visitor, arg);
     }
     args.clear();
     assert(!observable && !hasTensors());
@@ -270,17 +271,18 @@ void Trace::flush(STATS(FlushReason reason)) {
       auto &op = ops[i];
 
       if (i > 0) {
+        TensorVisitor visitor([&](const Tensor &t) {
+          auto I = refs.find((uintptr_t)t.getIntrusivePtr().get());
+          // all refs are inputs -> not observable
+          if (I != refs.end() && --I->second.first == 0) {
+            refs.erase(I);
+            auto &argop = ops[I->second.second];
+            argop.observable = false;
+            argop.decref(ops);
+          }
+        });
         for (auto &arg : op.args) {
-          visit(TensorVisitor([&](const Tensor &t) {
-            auto I = refs.find((uintptr_t)t.getIntrusivePtr().get());
-            // all refs are inputs -> not observable
-            if (I != refs.end() && --I->second.first == 0) {
-              refs.erase(I);
-              auto &argop = ops[I->second.second];
-              argop.observable = false;
-              argop.decref(ops);
-            }
-          }), arg);
+          visit(visitor, arg);
         }
       }
 
