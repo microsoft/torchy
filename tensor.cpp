@@ -271,7 +271,7 @@ Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
   return tt;
 }
 
-TorchyTensor* prepare_in_place(const Tensor &t0) {
+bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks) {
   auto &t = const_cast<Tensor&>(t0);
   TorchyTensor *tt = is_torchy(t);
 
@@ -285,17 +285,16 @@ TorchyTensor* prepare_in_place(const Tensor &t0) {
     tt = is_torchy(t);
     assert(tt);
   }
-  if (tt)
-    tt->set_materialized(false);
-  return tt;
-}
 
-void finish_in_place(TorchyTensor *tt, unsigned idx) {
+  auto idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, op, ks);
   if (tt) {
+    tt->set_materialized(false);
     tt->update_idx(idx);
-  } else {
-    trace.flush(STATS(FlushReason::INPLACE_SHARED));
+    return false;
   }
+
+  // shared; needs flushing
+  return true;
 }
 
 // see build/aten/src/ATen/RegisterBackendSelect.cpp for redispatching logic

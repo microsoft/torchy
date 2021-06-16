@@ -183,10 +183,10 @@ def gen_dispatch_wrapper(fn):
     {dispatchkey}
     return {redispatch};
   }}
-  TorchyTensor *tt = prepare_in_place({ret});
-  unsigned trace_idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, {fn_enum(fn)}, dispatchKeySet);
+  bool flush = register_in_place({ret}, {fn_enum(fn)}, dispatchKeySet);
   {register_args}
-  finish_in_place(tt, trace_idx);
+  if (flush)
+    trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return {ret};
 }}'''
 
