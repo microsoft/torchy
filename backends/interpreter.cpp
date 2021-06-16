@@ -80,6 +80,45 @@ load<c10::optional<c10::string_view>>::operator()(UnionInputTy &arg) {
 
 #include "autogen/interpreter_redispatch_tables.h"
 
+struct DispatchKeyComputer {
+  c10::DispatchKeySet ks;
+
+  DispatchKeyComputer(c10::DispatchKeySet ks) : ks(ks) {}
+
+  template <typename T>
+  void operator()(const T&) {}
+
+  void operator()(const at::Tensor &t) {
+    ks = ks | t.key_set();
+  }
+
+  void operator()(const at::Generator &gen) {
+    if (gen.defined())
+      ks = ks | gen.key_set();
+  }
+
+  template<typename T>
+  void operator()(const c10::optional<T> &opt) {
+    if (opt)
+      (*this)(*opt);
+  }
+
+  template<typename T>
+  void operator()(const std::vector<T> &l) {
+    for (const auto &elem : l) {
+      (*this)(elem);
+    }
+  }
+
+  template<typename T>
+  void operator()(const at::List<T> &l) {
+    for (const auto &it : l) {
+      const T &elem = it;
+      (*this)(elem);
+    }
+  }
+};
+
 }
 
 
@@ -93,13 +132,12 @@ void run(Trace &t) {
     if (!op.needsComputing())
       continue;
 
-    auto ks = op.dispatch_key;
+    DispatchKeyComputer visitor(op.dispatch_key);
     for (auto &arg : op.args) {
-      if (auto t = get_if<Tensor>(&arg)) {
-        ks = ks | t->key_set();
-      }
+      visit(visitor, arg);
     }
-    ks = ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    auto ks
+      = visitor.ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
 
     ThreadLocalState::setThreadLocalState(op.tls);
 
