@@ -141,6 +141,9 @@ void run(Trace &t) {
 
     ThreadLocalState::setThreadLocalState(op.tls);
 
+    if (op.id >= FIRST_INPLACE_OP)
+      init_update_in_place(op);
+
     switch (op.id) {
 
 #include "autogen/interpreter_redispatch.h"
@@ -149,7 +152,7 @@ void run(Trace &t) {
         assert(0 && "Unhandled op");
     }
 
-    // generated redispatch code only reached here for in-place ops
+    // generated redispatch code only reaches here for in-place ops
     end_update_in_place(op);
   }
 }

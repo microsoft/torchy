@@ -180,7 +180,7 @@ def gen_ops_names(fn):
   enum_names[fn_enum(fn)] = fn.func.name
 
 
-# (code, redispatch_signature) -> (enum, fn_ptr)*
+# (inplace, code, redispatch_signature) -> (enum, fn_ptr)*
 interpreter_code = {}
 
 @with_native_function
@@ -202,17 +202,17 @@ def gen_interpreter_redispatch(fn):
 
   if rettype == 'at::Tensor':
     code = f'set(op, {redispatch});\n  continue;'
+    inplace = False
 
   # in-place op
   else:
     assert rettype == 'at::Tensor &' or rettype == 'const at::Tensor &'
-    code = f'''init_update_in_place(op);
-  {redispatch};
-  break;'''
+    inplace = True
+    code = f'{redispatch};\n  break;'
 
   signature = dispatcher_sig.type()
   fn_ptr = f'at::redispatch::{sig.name()}'
-  key = code, signature
+  key = inplace, code, signature
   interpreter_code.setdefault(key, [])
   interpreter_code[key].append((fn_enum(fn), fn_ptr))
 
@@ -238,7 +238,15 @@ print(f'Total redispatched functions: {total}')
 print(f'Distinct signatures: {len(interpreter_code)}')
 
 table_id = 0
-for ((code, sig), entries) in interpreter_code.items():
+# put all inplaces last
+interpreter_code = sorted(interpreter_code.items())
+is_first_inplace = True
+
+for ((inplace, code, sig), entries) in interpreter_code:
+  if inplace and is_first_inplace:
+    is_first_inplace = False
+    print(f'#define FIRST_INPLACE_OP {entries[0][0]}\n', file=fd6)
+
   for (enum, ptr) in entries:
     print(f'case {enum}:', file=fd5)
     print(f'{enum},', file=fd3)
