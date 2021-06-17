@@ -50,48 +50,39 @@ def maybe_tensor(type):
   }
   return type.remove_const_ref().cpp_type() in types
 
-# returns (dtype, device, init code)
-def get_dtype_arg(args, dtype, device):
-  uses_default = False
-  tensors = [a.expr for a in args if a.type.remove_const_ref().cpp_type() == 'at::Tensor']
+def get_dtype_arg(tensors, args, fixed_dtype):
+  tensors = [a.expr for a in tensors if a.type.remove_const_ref().cpp_type() == 'at::Tensor']
+  dtype = 'nullopt'
+  device = 'nullopt'
   if tensors:
-    dtype_default  = f'{tensors[0]}.dtype()'
-    device_default = f'{tensors[0]}.device()'
-    needs_init_code = False
-  else:
-    dtype_default  = 'default_dtype'
-    device_default = 'default_device'
-    needs_init_code = True
+    dtype  = f'{tensors[0]}.dtype()'
+    device = f'{tensors[0]}.device()'
 
-  if not dtype:
-    dtype = dtype_default
-    uses_default = True
-  if not device:
-    device = device_default
-    uses_default = True
+  dtype_arg = get_arg_of_type(args, 'at::ScalarType')
+  if dtype_arg:
+    device_arg = get_arg_of_type(args, 'at::Device')
+    device_arg = device_arg.expr if device_arg else device
+    dtype_arg = dtype_arg.expr
+    return f'{dtype_arg}, {device_arg}'
 
-  def fix_types(t, default, cast = None):
-    if isinstance(t, str):
-      return t, False
-    if 'c10::optional' in t.type.remove_const_ref().cpp_type():
-      if cast:
-        return f'{t.expr} ? {cast}(*{t.expr}) : {default}', True
-      return f'{t.expr} ? *{t.expr} : {default}', True
-    return f'{cast}({t.expr})' if cast else t.expr, False
+  dtype_arg = get_arg_of_type(args, 'c10::optional<at::ScalarType>')
+  if dtype_arg:
+    device_arg = get_arg_of_type(args, 'c10::optional<at::Device>')
+    dtype_arg = dtype_arg.expr
+    if tensors:
+      device_arg = device_arg.expr if device_arg else 'nullopt'
+      return f'{tensors[0]}, {dtype_arg}, {device_arg}'
 
-  dtype, tdef  = fix_types(dtype, dtype_default, 'scalarTypeToTypeMeta')
-  device, ddef = fix_types(device, device_default)
-  uses_default |= tdef or ddef
+    device_arg = device_arg.expr if device_arg else device
+    return f'{dtype_arg}, {device_arg}'
 
-  init_code = ''
-  if uses_default and needs_init_code:
-    args = ', '.join([a.expr for a in args])
-    init_code = f'''
-  auto defaults = compute_dtype({args});
-  auto &default_dtype = defaults.first;
-  auto &default_device = defaults.second;'''
+  tensor_arg = get_arg_of_type(args, 'at::TensorList')
+  if tensor_arg:
+    return tensor_arg.expr
 
-  return dtype, device, init_code
+  if fixed_dtype:
+    dtype = f'scalarTypeToTypeMeta({fixed_dtype})'
+  return f'{dtype}, {device}'
 
 
 def fn_output(fn):
@@ -146,27 +137,15 @@ def gen_dispatch_wrapper(fn):
   # returns a tensor and takes tensors as arguments
   # e.g. add(x, y)
   if rettype == 'at::Tensor':
-    dtype = get_arg_of_type(args, 'at::ScalarType')
-    if not dtype:
-      dtype = get_arg_of_type(args, 'c10::optional<at::ScalarType>')
-
-    fixed = fix_return_type.get(fn.func.name.name.base)
-    if fixed:
-      dtype = f'scalarTypeToTypeMeta({fixed})'
-
-    device = get_arg_of_type(args, 'at::Device')
-    if not device:
-      device = get_arg_of_type(args, 'c10::optional<at::Device>')
-
-    dtype, device, dtype_init = get_dtype_arg(tensor_args, dtype, device)
+    dtype_device = get_dtype_arg(tensor_args, args, fix_return_type.get(fn.func.name.name.base))
 
     return f'''
 {fndecl} {{
   if (trace.is_flushing()) {{
     {dispatchkey}
     return {redispatch};
-  }}{dtype_init}
-  auto tt = register_new_tensor(dispatchKeySet, {fn_enum(fn)}, {dtype}, {device});
+  }}
+  auto tt = register_new_tensor(dispatchKeySet, {fn_enum(fn)}, {dtype_device});
   {register_args}
   return tt;
 }}'''

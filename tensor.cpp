@@ -271,6 +271,31 @@ Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
   return tt;
 }
 
+Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
+                           c10::optional<at::ScalarType> dtype,
+                           c10::optional<at::Device> device) {
+  // see build/aten/src/ATen/RegisterBackendSelect.cpp for redispatching logic
+  auto dty = dtype ? scalarTypeToTypeMeta(*dtype) : at::get_default_dtype();
+  auto dev = device ? *device : Device(kCPU);
+  return register_new_tensor(ks, op, dty, dev);
+}
+
+Tensor register_new_tensor(DispatchKeySet ks, TorchOp op, const Tensor &t,
+                           c10::optional<at::ScalarType> dtype,
+                           c10::optional<at::Device> device) {
+  auto dty = dtype ? scalarTypeToTypeMeta(*dtype) : t.dtype();
+  auto dev = device ? *device : t.device();
+  return register_new_tensor(ks, op, dty, dev);
+}
+
+Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
+                           const TensorList &list) {
+  if (list.empty())
+    return register_new_tensor(ks, op, nullopt, nullopt);
+  auto &t = list.front();
+  return register_new_tensor(ks, op, t.dtype(), t.device());
+}
+
 bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks) {
   auto &t = const_cast<Tensor&>(t0);
   TorchyTensor *tt = is_torchy(t);
@@ -295,17 +320,6 @@ bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks) {
 
   // shared; needs flushing
   return true;
-}
-
-// see build/aten/src/ATen/RegisterBackendSelect.cpp for redispatching logic
-pair<caffe2::TypeMeta, Device> compute_dtype() {
-  return { at::get_default_dtype(), Device(kCPU) };
-}
-
-pair<caffe2::TypeMeta, Device> compute_dtype(const TensorList &list) {
-  if (list.empty())
-    return compute_dtype();
-  return { list.front().dtype(), list.front().device() };
 }
 
 #include "autogen/dispatch_wrappers.h"
