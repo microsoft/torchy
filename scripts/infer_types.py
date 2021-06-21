@@ -13,38 +13,34 @@ yaml_path = PYTORCH + '/aten/src/ATen/native/native_functions.yaml'
 native_functions = parse_native_yaml(yaml_path)
 
 
+def get(tensors, type):
+  # try to reuse a tensor to avoid exponential explosion
+  if len(tensors) >= 4:
+    for ty, t in tensors:
+      if ty == type:
+        return t
+  t = f't{len(tensors)}'
+  tensors.append((type, t))
+  return t
+
 def mk_arg(arg, tensors):
   type = arg.type.cpp_type()
   if 'TensorList' in type:
-    t = f't{len(tensors)}'
-    tensors.append(('TensorList &', t))
-    return t
+    return get(tensors, 'TensorList &')
   if type == 'const c10::List<c10::optional<at::Tensor>> &':
-    t = f't{len(tensors)}'
-    tensors.append(('List<optional<Tensor>> &', t))
-    return t
+    return get(tensors, 'List<optional<Tensor>> &')
   if 'Tensor' in type:
-    t = f't{len(tensors)}'
-    tensors.append(('Tensor &', t))
-    return t
-  if type == 'const at::Scalar &' or type == 'const c10::optional<at::Scalar> &':
-    return 'Scalar(0)'
+    return get(tensors, 'Tensor &')
   if type == 'c10::string_view':
     return '"foo"'
-  if type == 'int64_t':
+  if type == 'int64_t' or type == 'double':
     return '1'
-  if type == 'double':
-    return '1.0'
-  if type == 'bool':
-    return 'false'
-  if type == 'at::IntArrayRef':
-    return 'IntArrayRef{0}'
-  if 'optional<' in type:
-    return 'nullopt'
   if type == 'at::Dimname':
     return 'Dimname::wildcard()'
   if type == 'at::DimnameList':
     return '{Dimname::wildcard()}'
+  if type == 'at::Device':
+    return 'Device("cpu")'
   return '{}'
 
 
@@ -58,14 +54,16 @@ def gen(fn):
   tensors = []
   args = [mk_arg(arg, tensors) for arg in args]
 
-  if not tensors:
+  if not tensors or str(fn.func.name).endswith('.out'):
     return f'// skip {fn.func.name}'
+
+  ptr_cast = dispatcher_sig.type().replace(' (', '(*)(DispatchKeySet, ')
 
   key = 'DispatchKeySet(DispatchKey::CPU)'
   types = ', '.join(ty for ty,name in tensors)
   types_names = ', '.join(f'{ty} {name}' for ty,name in tensors)
-  return f'C::call("{fn.func.name}", function<Tensor({types})>{{[]({types_names}) {{' +\
-         f' return at::redispatch::{sig.name()}({key}, {", ".join(args)}); }}}});'
+  return f'C{{"{fn.func.name}"}}.call(function<Tensor({types})>{{[]({types_names}) {{' +\
+         f' return static_cast<{ptr_cast}>(at::redispatch::{sig.name()})({key}, {", ".join(args)}); }}}});'
 
 
 fd = open('scripts/call_pytorch_fns.h', 'w')

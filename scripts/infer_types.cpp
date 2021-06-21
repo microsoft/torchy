@@ -30,7 +30,9 @@ ScalarType promoted_type_trail() {
 }
 
 struct C {
-  static void call(const char *name, function<Tensor()> fn) {
+  const char *name;
+
+  void call(function<Tensor()> fn) {
     cout << name << '(';
     bool first = true;
     for (auto ty : type_trail) {
@@ -47,19 +49,20 @@ struct C {
       if (dtype != promoted_ty)
         cout << " [not equal to promoted type: " << promoted_ty << ']';
       cout << '\n';
-
     } catch (const c10::Error &) {
       cout << "Exception! [promoted type: " << promoted_ty << "]\n";
+    } catch (const runtime_error &) {
+      cout << "Runtime Exception! [promoted type: " << promoted_ty << "]\n";
     }
   }
 
   template <typename... Tail>
-  static void call(const char *name, function<Tensor(Tensor&, Tail...)> fn) {
+  void call(function<Tensor(Tensor&, Tail...)> fn) {
     for (auto ty : types) {
       if (isQIntType(ty))
         continue;
       type_trail.emplace_back(ty);
-      call(name, function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+      call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
         auto t = native::empty_cpu({1}, ty);
         return fn(t, forward<Tail>(args)...);
       }});
@@ -68,7 +71,7 @@ struct C {
   }
 
   template <typename... Tail>
-  static void call(const char *name, function<Tensor(TensorList&, Tail...)> fn) {
+  void call(function<Tensor(TensorList&, Tail...)> fn) {
     for (auto ty1 : types) {
       if (isQIntType(ty1))
         continue;
@@ -78,9 +81,9 @@ struct C {
         if (isQIntType(ty2))
           continue;
         type_trail.emplace_back(ty2);
-        call(name, function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
           Tensor ts[2] = { native::empty_cpu({1}, ty1),
-                          native::empty_cpu({1}, ty2) };
+                           native::empty_cpu({1}, ty2) };
           ArrayRef<Tensor> aref(ts);
           return fn(aref, forward<Tail>(args)...);
         }});
@@ -91,8 +94,7 @@ struct C {
   }
 
   template <typename... Tail>
-  static void call(const char *name,
-                   function<Tensor(List<optional<Tensor>>&, Tail...)> fn) {
+  void call(function<Tensor(List<optional<Tensor>>&, Tail...)> fn) {
     for (auto ty1 : types) {
       if (isQIntType(ty1))
         continue;
@@ -102,7 +104,7 @@ struct C {
         if (isQIntType(ty2))
           continue;
         type_trail.emplace_back(ty2);
-        call(name, function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
           List<optional<Tensor>> list({ native::empty_cpu({1}, ty1),
                                         native::empty_cpu({1}, ty2) });
           return fn(list, forward<Tail>(args)...);
