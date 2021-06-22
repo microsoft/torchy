@@ -44,6 +44,8 @@ def mk_arg(arg, tensors):
   return '{}'
 
 
+all_functions = []
+
 @with_native_function
 def gen(fn):
   sig_group = CppSignatureGroup.from_native_function(fn, method=False, fallback_binding=fn.manual_cpp_binding)
@@ -54,15 +56,19 @@ def gen(fn):
   tensors = []
   args = [mk_arg(arg, tensors) for arg in args]
 
-  if not tensors or str(fn.func.name).endswith('.out'):
+  if not tensors or\
+     str(fn.func.name).endswith('.out') or\
+     str(fn.func.name).endswith('_out') or\
+     str(fn.func.name).endswith('out_mode'):
     return f'// skip {fn.func.name}'
 
+  all_functions.append(str(fn.func.name))
   ptr_cast = dispatcher_sig.type().replace(' (', '(*)(DispatchKeySet, ')
 
   key = 'DispatchKeySet(DispatchKey::CPU)'
   types = ', '.join(ty for ty,name in tensors)
   types_names = ', '.join(f'{ty} {name}' for ty,name in tensors)
-  return f'C{{"{fn.func.name}"}}.call(function<Tensor({types})>{{[]({types_names}) {{' +\
+  return f'C{{"{fn.func.name}"}}.analyze(function<Tensor({types})>{{[]({types_names}) {{' +\
          f' return static_cast<{ptr_cast}>(at::redispatch::{sig.name()})({key}, {", ".join(args)}); }}}});'
 
 
@@ -72,3 +78,18 @@ for fn in native_functions.native_functions:
     continue
 
   print(gen(fn), file=fd)
+
+fd = open('build.ninja', 'w')
+print(f'''
+rule infer
+  command = bash -c "./infer_types $in > $out 2> /dev/null || true"
+
+rule merge
+  command = bash -c "cat $in > $out"
+
+build types.txt: merge {" ".join(f'output/{fn}.txt' for fn in all_functions)}
+''', file=fd)
+
+for fn in all_functions:
+  print(f'build output/{fn}.txt: infer {fn}', file=fd)
+  print(f'build {fn}: phony', file=fd)

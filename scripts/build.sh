@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PYTORCH=../pytorch
-LIB_DIR=`echo $PYTORCH/build/lib.*/torch/lib`
+LIB_DIR=`realpath $PYTORCH/build/lib.*/torch/lib`
 
 for f in `ls scripts/*.cpp` ; do
   base=`basename $f .cpp`
