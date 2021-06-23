@@ -56,10 +56,7 @@ def gen(fn):
   tensors = []
   args = [mk_arg(arg, tensors) for arg in args]
 
-  if not tensors or\
-     str(fn.func.name).endswith('.out') or\
-     str(fn.func.name).endswith('_out') or\
-     str(fn.func.name).endswith('out_mode'):
+  if not tensors or fn.func.arguments.out:
     return f'// skip {fn.func.name}'
 
   all_functions.append(str(fn.func.name))
@@ -83,9 +80,11 @@ fd = open('build.ninja', 'w')
 print(f'''
 rule infer
   command = bash -c "./infer_types $in > $out 2> /dev/null || true"
+  description = $in
 
 rule merge
   command = bash -c "cat $in > $out"
+  description = Assemble final $out file
 
 build types.txt: merge {" ".join(f'output/{fn}.txt' for fn in all_functions)}
 ''', file=fd)
