@@ -50,13 +50,74 @@ def maybe_tensor(type):
   }
   return type.remove_const_ref().cpp_type() in types
 
-def get_dtype_arg(tensors, args, fixed_dtype):
-  tensors = [a.expr for a in tensors if a.type.remove_const_ref().cpp_type() == 'at::Tensor']
+
+def mk_dtype_infer(type, tensors):
+  if type[0:3] == 'ALL':
+    return f'scalarTypeToTypeMeta(k{type[4:]})'
+  if type == 'BOOL2INT':
+    return f'scalarTypeToTypeMeta(bool_to_int({tensors[0].expr}.dtype().toScalarType()))'
+  if type == 'EQ_PROMOTED':
+    # save code size by using the default function
+    if len(tensors) == 1 and get_arg_of_type(tensors, 'at::TensorList'):
+      return 'nullopt'
+    return f'scalarTypeToTypeMeta(promote_tys({", ".join(t.expr for t in tensors)}))'
+  if type == 'EQ_SECOND':
+    return f'{tensors[1].expr}.dtype()'
+  if type == 'EQ_THIRD':
+    return f'{tensors[2].expr}.dtype()'
+  if type == 'BOOLBYTE':
+    return f'scalarTypeToTypeMeta(bool_byte({tensors[0].expr}.dtype().toScalarType()))'
+  if type == 'BOOL2INT':
+    return f'scalarTypeToTypeMeta(bool_to_int({tensors[0].expr}.dtype().toScalarType()))'
+  if type == 'BOOL2INT2':
+    return f'scalarTypeToTypeMeta(bool_to_int2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+  if type == 'INTEGRAL2INT':
+    return f'scalarTypeToTypeMeta(integrals_to_int({tensors[0].expr}.dtype().toScalarType()))'
+  if type == 'TO_COMPLEX':
+    return f'scalarTypeToTypeMeta(to_complex({tensors[0].expr}.dtype().toScalarType()))'
+  if type == 'TO_DOUBLE':
+    return f'scalarTypeToTypeMeta(to_double({tensors[0].expr}.dtype().toScalarType()))'
+  if type == 'TO_DOUBLE2':
+    return f'scalarTypeToTypeMeta(to_double2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+  if type == 'TO_FLOAT':
+    return f'scalarTypeToTypeMeta(to_float({tensors[0].expr}.dtype().toScalarType()))'
+  if type == 'TO_FLOAT_DOUBLE':
+    return f'scalarTypeToTypeMeta(to_float_double({tensors[0].expr}.dtype().toScalarType()))'
+  if type == 'TO_FLOAT2':
+    return f'scalarTypeToTypeMeta(to_float2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+  if type == 'TO_FLOAT2_2':
+    return f'scalarTypeToTypeMeta(to_float2_2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+  if type == 'TO_FLOAT2_3':
+    return f'scalarTypeToTypeMeta(to_float2_3({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+  if type == 'TO_FLOAT2_4':
+    return f'scalarTypeToTypeMeta(to_float2_4({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+  if type == 'TO_FLOAT3':
+    return f'scalarTypeToTypeMeta(to_float3({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType(), {tensors[2].expr}.dtype().toScalarType()))'
+  if type == 'TO_FLOAT3_2':
+    return f'scalarTypeToTypeMeta(to_float2({tensors[0].expr}.dtype().toScalarType(), {tensors[2].expr}.dtype().toScalarType()))'
+  if type == 'TO_QINT':
+    return f'scalarTypeToTypeMeta(toQIntType({tensors[0].expr}.dtype().toScalarType()))'
+  if type == 'TO_REAL2':
+    return f'scalarTypeToTypeMeta(to_real2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+  if type == 'TO_REAL_FLOAT':
+    return f'scalarTypeToTypeMeta(to_real_float({tensors[0].expr}.dtype().toScalarType()))'
+  if type == 'TO_VALUE_TYPE':
+    return f'scalarTypeToTypeMeta(toValueType({tensors[0].expr}.dtype().toScalarType()))'
+  print('mk_dtype_infer', type)
+  exit()
+
+
+def get_dtype_arg(all_tensors, args, name):
+  tensors = [a.expr for a in all_tensors if a.type.remove_const_ref().cpp_type() == 'at::Tensor']
   dtype = 'nullopt'
   device = 'nullopt'
   if tensors:
     dtype  = f'{tensors[0]}.dtype()'
     device = f'{tensors[0]}.device()'
+
+  name = str(name)
+  if name in type_inferece:
+    dtype = mk_dtype_infer(type_inferece[name], all_tensors)
 
   dtype_arg = get_arg_of_type(args, 'at::ScalarType')
   if dtype_arg:
@@ -77,11 +138,9 @@ def get_dtype_arg(tensors, args, fixed_dtype):
     return f'{dtype_arg}, {device_arg}'
 
   tensor_arg = get_arg_of_type(args, 'at::TensorList')
-  if tensor_arg:
+  if dtype == 'nullopt' and tensor_arg:
     return tensor_arg.expr
 
-  if fixed_dtype:
-    dtype = f'scalarTypeToTypeMeta({fixed_dtype})'
   return f'{dtype}, {device}'
 
 
@@ -137,7 +196,7 @@ def gen_dispatch_wrapper(fn):
   # returns a tensor and takes tensors as arguments
   # e.g. add(x, y)
   if rettype == 'at::Tensor':
-    dtype_device = get_dtype_arg(tensor_args, args, fix_return_type.get(fn.func.name.name.base))
+    dtype_device = get_dtype_arg(tensor_args, args, fn.func.name)
 
     return f'''
 {fndecl} {{

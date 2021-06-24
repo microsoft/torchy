@@ -262,6 +262,36 @@ void end_update_in_place(uintptr_t tt) {
 
 namespace {
 
+c10::optional<ScalarType> promote_tys0(const Tensor &t) {
+  return typeMetaToScalarType(t.dtype());
+}
+
+c10::optional<ScalarType> promote_tys0(const TensorList &list) {
+  if (list.empty())
+    return nullopt;
+
+  auto ty = typeMetaToScalarType(list.front().dtype());
+  for (auto &elem : list) {
+    ty = promoteTypes(ty, typeMetaToScalarType(elem.dtype()));
+  }
+  return ty;
+}
+
+template <typename T, typename... Ts>
+c10::optional<ScalarType> promote_tys0(const T &x, Ts&&... xs) {
+  auto ty = promote_tys0(x);
+  auto ty2 = promote_tys0(xs...);
+  if (ty && ty2)
+    return promoteTypes(*ty, *ty2);
+  return ty ? ty : ty2;
+}
+
+template <typename... Ts>
+ScalarType promote_tys(Ts&&... xs) {
+  auto ty = promote_tys0(xs...);
+  return ty ? *ty : typeMetaToScalarType(at::get_default_dtype());
+}
+
 Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
                            caffe2::TypeMeta dtype, c10::Device device) {
   auto tt = at::detail::make_tensor<TorchyTensor>(dtype, device);
@@ -292,8 +322,7 @@ Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
                            const TensorList &list) {
   if (list.empty())
     return register_new_tensor(ks, op, nullopt, nullopt);
-  auto &t = list.front();
-  return register_new_tensor(ks, op, t.dtype(), t.device());
+  return register_new_tensor(ks, op, promote_tys(list), list.front().device());
 }
 
 bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks) {
@@ -321,6 +350,8 @@ bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks) {
   // shared; needs flushing
   return true;
 }
+
+#include "type_inference.h"
 
 #include "autogen/dispatch_wrappers.h"
 

@@ -32,114 +32,7 @@ ScalarType promoted_type_trail(const vector<ScalarType> &type_trail) {
   return ty;
 }
 
-ScalarType to_float(ScalarType ty) {
-  switch (ty) {
-  case ScalarType::Half:
-  case ScalarType::Double:
-  case ScalarType::ComplexFloat:
-  case ScalarType::ComplexDouble:
-  case ScalarType::BFloat16:
-    return ty;
-  default:
-    return ScalarType::Float;
-  }
-}
-
-ScalarType to_float_double(ScalarType ty) {
-  if (ty == ScalarType::Float)
-    return ty;
-  return ScalarType::Double;
-}
-
-ScalarType to_double(ScalarType ty) {
-  switch (ty) {
-  case ScalarType::ComplexFloat:
-  case ScalarType::ComplexDouble:
-    return ScalarType::ComplexDouble;
-  default:
-    return ScalarType::Double;
-  }
-}
-
-ScalarType to_float2(ScalarType ty, ScalarType ty2) {
-  if (isIntegralType(ty, true) && isIntegralType(ty2, true))
-    return ScalarType::Float;
-  return promoteTypes(ty, ty2);
-}
-
-ScalarType to_float2_2(ScalarType ty, ScalarType ty2) {
-  if (isComplexType(ty) ||
-      ty == ScalarType::Double ||
-      ty2 == ScalarType::Double ||
-      ty2 == ScalarType::BFloat16)
-    return promoteTypes(ty, ty2);
-
-  return ScalarType::Float;
-}
-
-ScalarType to_float2_3(ScalarType ty, ScalarType ty2) {
-  if ((isIntegralType(ty, true) ||
-       ty == ScalarType::Half ||
-       ty == ScalarType::BFloat16) && isIntegralType(ty2, true))
-    return ScalarType::Float;
-  return promoteTypes(ty, ty2);
-}
-
-ScalarType to_float2_4(ScalarType ty, ScalarType ty2) {
-  if (isIntegralType(ty, true) &&
-      (isIntegralType(ty2, true) ||
-       ty2 == ScalarType::Half ||
-       ty2 == ScalarType::BFloat16))
-    return ScalarType::Float;
-  return promoteTypes(ty, ty2);
-}
-
-ScalarType to_float3(ScalarType ty, ScalarType ty2, ScalarType ty3) {
-  if (isIntegralType(ty, true) &&
-      isIntegralType(ty2, true) &&
-      isIntegralType(ty3, true))
-    return ScalarType::Float;
-  return promoteTypes(promoteTypes(ty, ty2), ty3);
-}
-
-ScalarType to_real_float(ScalarType ty) {
-  switch (ty) {
-  case ScalarType::Half:
-  case ScalarType::Double:
-  case ScalarType::BFloat16:
-    return ty;
-  case ScalarType::ComplexDouble:
-    return ScalarType::Double;
-  default:
-    return ScalarType::Float;
-  }
-}
-
-ScalarType to_complex(ScalarType ty) {
-  switch (ty) {
-  case ScalarType::Half:
-  case ScalarType::ComplexHalf:
-    return ScalarType::ComplexHalf;
-  case ScalarType::Double:
-  case ScalarType::ComplexDouble:
-    return ScalarType::ComplexDouble;
-  default:
-    return ScalarType::ComplexFloat;
-  }
-}
-
-ScalarType bool_to_int(ScalarType ty) {
-  if (ty == ScalarType::Bool)
-    return ScalarType::Long;
-  return ty;
-}
-
-ScalarType integrals_to_int(ScalarType ty) {
-  if (isIntegralType(ty, true))
-    return ScalarType::Long;
-  return ty;
-}
-
+#include "../type_inference.h"
 
 struct C {
   const char *name;
@@ -229,29 +122,38 @@ struct C {
     bool eq_promoted = true;
     bool eq_first = true;
     bool eq_second = true;
+    bool eq_third = true;
     bool is_value = true;
     bool is_to_float = true;
     bool is_to_double = true;
+    bool is_to_double2 = true;
     bool is_to_float2 = true;
     bool is_to_float2_2 = true;
     bool is_to_float2_3 = true;
     bool is_to_float2_4 = true;
     bool is_to_float3 = true;
     bool is_to_float3_2 = true;
-    bool is_to_fdouble2 = true;
+    bool is_to_fdouble = true;
     bool is_to_real_float = true;
+    bool is_to_real2 = true;
     bool is_to_complex = true;
     bool is_bool2int = true;
+    bool is_bool2int2 = true;
+    bool is_boolbyte = true;
     bool is_integral2int = true;
+    bool is_to_qint = true;
 
     for (auto &[type_trail, type] : results) {
       all_equal        &= type == results[0].second;
       eq_promoted      &= type == promoted_type_trail(type_trail);
       eq_first         &= type == type_trail[0];
       eq_second        &= type_trail.size() >= 2 && type == type_trail[1];
+      eq_third         &= type_trail.size() >= 3 && type == type_trail[2];
       is_value         &= toValueType(type_trail[0]) == type;
       is_to_float      &= to_float(type_trail[0]) == type;
       is_to_double     &= to_double(type_trail[0]) == type;
+      is_to_double2    &= type_trail.size() >= 2 &&
+                          to_double2(type_trail[0], type_trail[1]) == type;
       is_to_float2     &= type_trail.size() >= 2 &&
                           to_float2(type_trail[0], type_trail[1]) == type;
       is_to_float2_2   &= type_trail.size() >= 2 &&
@@ -265,12 +167,18 @@ struct C {
                             == type;
       is_to_float3_2   &= type_trail.size() >= 3 &&
                           to_float2(type_trail[0], type_trail[2]) == type;
-      is_to_fdouble2   &= type_trail.size() >= 2 &&
+      is_to_fdouble    &= type_trail.size() >= 2 &&
                           to_float_double(type_trail[1]) == type;
       is_to_real_float &= to_real_float(type_trail[0]) == type;
+      is_to_real2      &= type_trail.size() >= 2 &&
+                          to_real2(type_trail[0], type_trail[1]) == type;
       is_to_complex    &= to_complex(type_trail[0]) == type;
       is_bool2int      &= bool_to_int(type_trail[0]) == type;
+      is_bool2int2     &= type_trail.size() >= 2 &&
+                          bool_to_int2(type_trail[0], type_trail[1]) == type;
+      is_boolbyte      &= bool_byte(type_trail[0]) == type;
       is_integral2int  &= integrals_to_int(type_trail[0]) == type;
+      is_to_qint       &= toQIntType(type_trail[0]) == type;
     }
 
     cout << name;
@@ -283,74 +191,36 @@ struct C {
       cout << ": ALL " << results[0].second << endl;
       return;
     }
-    if (eq_first) {
-      cout << ": EQ_FIRST" << endl;
-      return;
+
+#define PRINT(var, msg)         \
+    if (var) {                  \
+      cout << ": " msg << endl; \
+      return;                   \
     }
-    if (eq_second) {
-      cout << ": EQ_SECOND" << endl;
-      return;
-    }
-    if (eq_promoted) {
-      cout << ": EQ_PROMOTED" << endl;
-      return;
-    }
-    if (is_value) {
-      cout << ": TO_VALUE_TYPE" << endl;
-      return;
-    }
-    if (is_to_float) {
-      cout << ": TO_FLOAT" << endl;
-      return;
-    }
-    if (is_to_double) {
-      cout << ": TO_DOUBLE" << endl;
-      return;
-    }
-    if (is_to_float2) {
-      cout << ": TO_FLOAT2" << endl;
-      return;
-    }
-    if (is_to_float2_2) {
-      cout << ": TO_FLOAT2_2" << endl;
-      return;
-    }
-    if (is_to_float2_3) {
-      cout << ": TO_FLOAT2_3" << endl;
-      return;
-    }
-    if (is_to_float2_4) {
-      cout << ": TO_FLOAT2_4" << endl;
-      return;
-    }
-    if (is_to_float3) {
-      cout << ": TO_FLOAT3" << endl;
-      return;
-    }
-    if (is_to_float3_2) {
-      cout << ": TO_FLOAT3_2" << endl;
-      return;
-    }
-    if (is_to_fdouble2) {
-      cout << ": TO_FLOAT_DOUBLE2" << endl;
-      return;
-    }
-    if (is_to_real_float) {
-      cout << ": TO_REAL_FLOAT" << endl;
-      return;
-    }
-    if (is_to_complex) {
-      cout << ": TO_COMPLEX" << endl;
-      return;
-    }
-    if (is_bool2int) {
-      cout << ": BOOL2INT" << endl;
-      return;
-    }
-    if (is_integral2int) {
-      cout << ": INTEGRAL2INT" << endl;
-      return;
-    }
+
+    PRINT(eq_first, "EQ_FIRST")
+    PRINT(eq_second, "EQ_SECOND")
+    PRINT(eq_third, "EQ_THIRD")
+    PRINT(eq_promoted, "EQ_PROMOTED")
+    PRINT(is_value, "TO_VALUE_TYPE")
+    PRINT(is_to_float, "TO_FLOAT")
+    PRINT(is_to_double, "TO_DOUBLE")
+    PRINT(is_to_double2, "TO_DOUBLE2")
+    PRINT(is_to_float2, "TO_FLOAT2")
+    PRINT(is_to_float2_2, "TO_FLOAT2_2")
+    PRINT(is_to_float2_3, "TO_FLOAT2_3")
+    PRINT(is_to_float2_4, "TO_FLOAT2_4")
+    PRINT(is_to_float3, "TO_FLOAT3")
+    PRINT(is_to_float3_2, "TO_FLOAT3_2")
+    PRINT(is_to_fdouble, "TO_FLOAT_DOUBLE")
+    PRINT(is_to_real_float, "TO_REAL_FLOAT")
+    PRINT(is_to_real2, "TO_REAL2")
+    PRINT(is_to_complex, "TO_COMPLEX")
+    PRINT(is_bool2int, "BOOL2INT")
+    PRINT(is_bool2int2, "BOOL2INT2")
+    PRINT(is_boolbyte, "BOOLBYTE")
+    PRINT(is_integral2int, "INTEGRAL2INT")
+    PRINT(is_to_qint, "TO_QINT")
 
     cout << ": NON_STANDARD:" << endl;
 
