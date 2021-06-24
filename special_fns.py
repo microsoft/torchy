@@ -1,7 +1,7 @@
 # Copyright (c) 2021-present The Torchy Authors.
 # Distributed under the MIT license that can be found in the LICENSE file.
 
-type_inferece = {
+type_inference = {
   'logical_not': 'ALL Bool',
   'logical_xor': 'ALL Bool',
   'logical_and': 'ALL Bool',

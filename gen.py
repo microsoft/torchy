@@ -116,8 +116,8 @@ def get_dtype_arg(all_tensors, args, name):
     device = f'{tensors[0]}.device()'
 
   name = str(name)
-  if name in type_inferece:
-    dtype = mk_dtype_infer(type_inferece[name], all_tensors)
+  if name in type_inference:
+    dtype = mk_dtype_infer(type_inference[name], all_tensors)
 
   dtype_arg = get_arg_of_type(args, 'at::ScalarType')
   if dtype_arg:
