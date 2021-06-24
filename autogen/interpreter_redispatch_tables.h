@@ -29,9 +29,12 @@ at::Tensor(*const redispatch_ptrs_3[])(DispatchKeySet, at::IntArrayRef, c10::opt
 
 at::Tensor(*const redispatch_ptrs_4[])(DispatchKeySet, const at::Scalar &, const at::Tensor &) = {
   at::redispatch::xlogy,
+  at::redispatch::bitwise_left_shift,
+  at::redispatch::bitwise_right_shift,
   at::redispatch::remainder,
   at::redispatch::float_power,
   at::redispatch::special_xlog1py,
+  at::redispatch::special_zeta,
 };
 
 at::Tensor(*const redispatch_ptrs_5[])(DispatchKeySet, const at::Tensor &) = {
@@ -144,6 +147,9 @@ at::Tensor(*const redispatch_ptrs_5[])(DispatchKeySet, const at::Tensor &) = {
   at::redispatch::special_ndtr,
   at::redispatch::special_i0,
   at::redispatch::special_expit,
+  at::redispatch::special_sinc,
+  at::redispatch::special_round,
+  at::redispatch::special_log1p,
   at::redispatch::linalg_cholesky,
   at::redispatch::linalg_det,
   at::redispatch::det,
@@ -258,7 +264,9 @@ at::Tensor(*const redispatch_ptrs_15[])(DispatchKeySet, const at::Tensor &, cons
   at::redispatch::bitwise_xor,
   at::redispatch::__xor__,
   at::redispatch::__lshift__,
+  at::redispatch::bitwise_left_shift,
   at::redispatch::__rshift__,
+  at::redispatch::bitwise_right_shift,
   at::redispatch::ne,
   at::redispatch::not_equal,
   at::redispatch::eq,
@@ -276,6 +284,7 @@ at::Tensor(*const redispatch_ptrs_15[])(DispatchKeySet, const at::Tensor &, cons
   at::redispatch::float_power,
   at::redispatch::leaky_relu,
   at::redispatch::special_xlog1py,
+  at::redispatch::special_zeta,
 };
 
 at::Tensor(*const redispatch_ptrs_16[])(DispatchKeySet, const at::Tensor &, const at::Scalar &, const at::Scalar &) = {
@@ -370,6 +379,7 @@ at::Tensor(*const redispatch_ptrs_17[])(DispatchKeySet, const at::Tensor &, cons
   at::redispatch::_adaptive_avg_pool3d_backward,
   at::redispatch::sigmoid_backward,
   at::redispatch::tanh_backward,
+  at::redispatch::special_zeta,
   at::redispatch::linalg_householder_product,
   at::redispatch::inner,
   at::redispatch::outer,
@@ -678,8 +688,6 @@ at::Tensor(*const redispatch_ptrs_52[])(DispatchKeySet, const at::Tensor &, int6
 };
 
 at::Tensor(*const redispatch_ptrs_53[])(DispatchKeySet, const at::Tensor &, int64_t, bool) = {
-  at::redispatch::all,
-  at::redispatch::any,
   at::redispatch::_log_softmax,
   at::redispatch::_softmax,
   at::redispatch::_sparse_softmax,
@@ -773,6 +781,7 @@ at::Tensor &(*const redispatch_ptrs_62[])(DispatchKeySet, const at::Scalar &, co
   at::redispatch::pow_outf,
   at::redispatch::float_power_outf,
   at::redispatch::special_xlog1py_outf,
+  at::redispatch::special_zeta_outf,
 };
 
 at::Tensor &(*const redispatch_ptrs_63[])(DispatchKeySet, at::Tensor &) = {
@@ -818,6 +827,7 @@ at::Tensor &(*const redispatch_ptrs_64[])(DispatchKeySet, const at::Tensor &, at
   at::redispatch::adaptive_avg_pool3d_outf,
   at::redispatch::reflection_pad1d_outf,
   at::redispatch::reflection_pad2d_outf,
+  at::redispatch::reflection_pad3d_outf,
   at::redispatch::replication_pad1d_outf,
   at::redispatch::replication_pad2d_outf,
   at::redispatch::replication_pad3d_outf,
@@ -858,7 +868,9 @@ at::Tensor &(*const redispatch_ptrs_67[])(DispatchKeySet, at::Tensor &, const at
   at::redispatch::bitwise_xor_,
   at::redispatch::__ixor__,
   at::redispatch::__ilshift__,
+  at::redispatch::bitwise_left_shift_,
   at::redispatch::__irshift__,
+  at::redispatch::bitwise_right_shift_,
   at::redispatch::fmod_,
   at::redispatch::ne_,
   at::redispatch::not_equal_,
@@ -897,6 +909,8 @@ at::Tensor &(*const redispatch_ptrs_70[])(DispatchKeySet, const at::Tensor &, co
   at::redispatch::bitwise_and_outf,
   at::redispatch::bitwise_or_outf,
   at::redispatch::bitwise_xor_outf,
+  at::redispatch::bitwise_left_shift_outf,
+  at::redispatch::bitwise_right_shift_outf,
   at::redispatch::ne_outf,
   at::redispatch::not_equal_outf,
   at::redispatch::eq_outf,
@@ -915,6 +929,7 @@ at::Tensor &(*const redispatch_ptrs_70[])(DispatchKeySet, const at::Tensor &, co
   at::redispatch::leaky_relu_outf,
   at::redispatch::softshrink_outf,
   at::redispatch::special_xlog1py_outf,
+  at::redispatch::special_zeta_outf,
 };
 
 at::Tensor &(*const redispatch_ptrs_71[])(DispatchKeySet, at::Tensor &, const at::Tensor &) = {
@@ -1027,6 +1042,7 @@ at::Tensor &(*const redispatch_ptrs_72[])(DispatchKeySet, const at::Tensor &, at
   at::redispatch::isposinf_outf,
   at::redispatch::isneginf_outf,
   at::redispatch::special_entr_outf,
+  at::redispatch::special_ndtri_outf,
   at::redispatch::special_expm1_outf,
   at::redispatch::special_exp2_outf,
   at::redispatch::special_psi_outf,
@@ -1034,6 +1050,7 @@ at::Tensor &(*const redispatch_ptrs_72[])(DispatchKeySet, const at::Tensor &, at
   at::redispatch::special_gammaln_outf,
   at::redispatch::special_erf_outf,
   at::redispatch::special_erfc_outf,
+  at::redispatch::special_erfcx_outf,
   at::redispatch::special_erfinv_outf,
   at::redispatch::special_ndtr_outf,
   at::redispatch::special_i0_outf,
@@ -1041,6 +1058,9 @@ at::Tensor &(*const redispatch_ptrs_72[])(DispatchKeySet, const at::Tensor &, at
   at::redispatch::special_i1_outf,
   at::redispatch::special_i1e_outf,
   at::redispatch::special_expit_outf,
+  at::redispatch::special_sinc_outf,
+  at::redispatch::special_round_outf,
+  at::redispatch::special_log1p_outf,
   at::redispatch::linalg_cholesky_outf,
   at::redispatch::linalg_det_outf,
   at::redispatch::linalg_eigvals_outf,
@@ -1052,6 +1072,7 @@ at::Tensor &(*const redispatch_ptrs_73[])(DispatchKeySet, const at::Tensor &, co
   at::redispatch::max_unpool2d_outf,
   at::redispatch::reflection_pad1d_backward_outf,
   at::redispatch::reflection_pad2d_backward_outf,
+  at::redispatch::reflection_pad3d_backward_outf,
   at::redispatch::replication_pad1d_backward_outf,
   at::redispatch::replication_pad2d_backward_outf,
   at::redispatch::replication_pad3d_backward_outf,
@@ -1118,6 +1139,8 @@ at::Tensor &(*const redispatch_ptrs_77[])(DispatchKeySet, const at::Tensor &, co
   at::redispatch::bitwise_and_outf,
   at::redispatch::bitwise_or_outf,
   at::redispatch::bitwise_xor_outf,
+  at::redispatch::bitwise_left_shift_outf,
+  at::redispatch::bitwise_right_shift_outf,
   at::redispatch::ne_outf,
   at::redispatch::not_equal_outf,
   at::redispatch::eq_outf,
@@ -1152,6 +1175,7 @@ at::Tensor &(*const redispatch_ptrs_77[])(DispatchKeySet, const at::Tensor &, co
   at::redispatch::sigmoid_backward_outf,
   at::redispatch::tanh_backward_outf,
   at::redispatch::special_xlog1py_outf,
+  at::redispatch::special_zeta_outf,
   at::redispatch::linalg_householder_product_outf,
   at::redispatch::inner_outf,
   at::redispatch::outer_outf,

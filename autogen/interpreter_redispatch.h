@@ -104,9 +104,12 @@ case H_LOGSPACE:
   continue;
 
 case H_XLOGY_SCALAR_SELF:
+case H_BITWISE_LEFT_SHIFT_SCALAR_TENSOR:
+case H_BITWISE_RIGHT_SHIFT_SCALAR_TENSOR:
 case H_REMAINDER_SCALAR_TENSOR:
 case H_FLOAT_POWER_SCALAR:
 case H_SPECIAL_XLOG1PY_SELF_SCALAR:
+case H_SPECIAL_ZETA_SELF_SCALAR:
   set(op, redispatch_ptrs_4[op.id - H_XLOGY_SCALAR_SELF](ks, load<at::Scalar &>()(op.args[0]), load<at::Tensor &>()(op.args[1])));
   continue;
 
@@ -230,6 +233,9 @@ case H_SPECIAL_ERFINV:
 case H_SPECIAL_NDTR:
 case H_SPECIAL_I0:
 case H_SPECIAL_EXPIT:
+case H_SPECIAL_SINC:
+case H_SPECIAL_ROUND:
+case H_SPECIAL_LOG1P:
 case H_LINALG_CHOLESKY:
 case H_LINALG_DET:
 case H_DET:
@@ -558,7 +564,9 @@ case H___OR___SCALAR:
 case H_BITWISE_XOR_SCALAR:
 case H___XOR___SCALAR:
 case H___LSHIFT___SCALAR:
+case H_BITWISE_LEFT_SHIFT_TENSOR_SCALAR:
 case H___RSHIFT___SCALAR:
+case H_BITWISE_RIGHT_SHIFT_TENSOR_SCALAR:
 case H_NE_SCALAR:
 case H_NOT_EQUAL_SCALAR:
 case H_EQ_SCALAR:
@@ -576,6 +584,7 @@ case H_POW_TENSOR_SCALAR:
 case H_FLOAT_POWER_TENSOR_SCALAR:
 case H_LEAKY_RELU:
 case H_SPECIAL_XLOG1PY_OTHER_SCALAR:
+case H_SPECIAL_ZETA_OTHER_SCALAR:
   set(op, redispatch_ptrs_15[op.id - H_COPYSIGN_SCALAR](ks, load<at::Tensor &>()(op.args[0]), load<at::Scalar &>()(op.args[1])));
   continue;
 
@@ -712,6 +721,7 @@ case H__ADAPTIVE_AVG_POOL2D_BACKWARD:
 case H__ADAPTIVE_AVG_POOL3D_BACKWARD:
 case H_SIGMOID_BACKWARD:
 case H_TANH_BACKWARD:
+case H_SPECIAL_ZETA:
 case H_LINALG_HOUSEHOLDER_PRODUCT:
 case H_INNER:
 case H_OUTER:
@@ -906,6 +916,10 @@ case H_MULTI_MARGIN_LOSS_BACKWARD:
   set(op, at::redispatch::multi_margin_loss_backward(ks, load<at::Tensor &>()(op.args[0]), load<at::Tensor &>()(op.args[1]), load<at::Tensor &>()(op.args[2]), load<at::Scalar &>()(op.args[3]), load<at::Scalar &>()(op.args[4]), load<c10::optional<at::Tensor> &>()(op.args[5]), load<int64_t>()(op.args[6])));
   continue;
 
+case H_QUANTIZE_PER_TENSOR_TENSOR_QPARAMS:
+  set(op, at::redispatch::quantize_per_tensor(ks, load<at::Tensor &>()(op.args[0]), load<at::Tensor &>()(op.args[1]), load<at::Tensor &>()(op.args[2]), load<at::ScalarType>()(op.args[3])));
+  continue;
+
 case H_FBGEMM_LINEAR_INT8_WEIGHT_FP32_ACTIVATION:
 case H_FBGEMM_LINEAR_INT8_WEIGHT:
   {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Tensor &, const at::Scalar &, const at::Scalar &, const at::Tensor &) = at::redispatch::fbgemm_linear_int8_weight_fp32_activation;
@@ -984,7 +998,7 @@ case H_NLL_LOSS2D_BACKWARD:
   continue;}
 
 case H__SEGMENT_REDUCE_BACKWARD:
-  set(op, at::redispatch::_segment_reduce_backward(ks, load<at::Tensor &>()(op.args[0]), load<at::Tensor &>()(op.args[1]), load<at::Tensor &>()(op.args[2]), load<c10::string_view>()(op.args[3]), load<c10::optional<at::Tensor> &>()(op.args[4])));
+  set(op, at::redispatch::_segment_reduce_backward(ks, load<at::Tensor &>()(op.args[0]), load<at::Tensor &>()(op.args[1]), load<at::Tensor &>()(op.args[2]), load<c10::string_view>()(op.args[3]), load<c10::optional<at::Tensor> &>()(op.args[4]), load<int64_t>()(op.args[5])));
   continue;
 
 case H__CDIST_BACKWARD:
@@ -1634,15 +1648,13 @@ case H_NARROW_TENSOR:
   set(op, at::redispatch::narrow(ks, load<at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<at::Tensor &>()(op.args[2]), load<int64_t>()(op.args[3])));
   continue;
 
-case H_ALL_DIM:
-case H_ANY_DIM:
 case H__LOG_SOFTMAX:
 case H__SOFTMAX:
 case H__SPARSE_SOFTMAX:
 case H__SPARSE_LOG_SOFTMAX:
 case H_COMBINATIONS:
 case H_ARGSORT:
-  set(op, redispatch_ptrs_53[op.id - H_ALL_DIM](ks, load<at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<bool>()(op.args[2])));
+  set(op, redispatch_ptrs_53[op.id - H__LOG_SOFTMAX](ks, load<at::Tensor &>()(op.args[0]), load<int64_t>()(op.args[1]), load<bool>()(op.args[2])));
   continue;
 
 case H_MULTINOMIAL:
@@ -1904,6 +1916,7 @@ case H_XLOGY_OUTSCALAR_SELF:
 case H_POW_SCALAR_OUT:
 case H_FLOAT_POWER_SCALAR_OUT:
 case H_SPECIAL_XLOG1PY_SELF_SCALAR_OUT:
+case H_SPECIAL_ZETA_SELF_SCALAR_OUT:
   redispatch_ptrs_62[op.id - H_XLOGY_OUTSCALAR_SELF](ks, load<at::Scalar &>()(op.args[0]), load<at::Tensor &>()(op.args[1]), load<at::Tensor &>()(op.args[2]));
   break;
 
@@ -2082,6 +2095,7 @@ case H_ADAPTIVE_AVG_POOL2D_OUT:
 case H_ADAPTIVE_AVG_POOL3D_OUT:
 case H_REFLECTION_PAD1D_OUT:
 case H_REFLECTION_PAD2D_OUT:
+case H_REFLECTION_PAD3D_OUT:
 case H_REPLICATION_PAD1D_OUT:
 case H_REPLICATION_PAD2D_OUT:
 case H_REPLICATION_PAD3D_OUT:
@@ -2178,7 +2192,9 @@ case H___IOR___SCALAR:
 case H_BITWISE_XOR__SCALAR:
 case H___IXOR___SCALAR:
 case H___ILSHIFT___SCALAR:
+case H_BITWISE_LEFT_SHIFT__TENSOR_SCALAR:
 case H___IRSHIFT___SCALAR:
+case H_BITWISE_RIGHT_SHIFT__TENSOR_SCALAR:
 case H_FMOD__SCALAR:
 case H_NE__SCALAR:
 case H_NOT_EQUAL__SCALAR:
@@ -2237,6 +2253,8 @@ case H_HARDSHRINK_OUT:
 case H_BITWISE_AND_SCALAR_OUT:
 case H_BITWISE_OR_SCALAR_OUT:
 case H_BITWISE_XOR_SCALAR_OUT:
+case H_BITWISE_LEFT_SHIFT_TENSOR_SCALAR_OUT:
+case H_BITWISE_RIGHT_SHIFT_TENSOR_SCALAR_OUT:
 case H_NE_SCALAR_OUT:
 case H_NOT_EQUAL_SCALAR_OUT:
 case H_EQ_SCALAR_OUT:
@@ -2255,6 +2273,7 @@ case H_FLOAT_POWER_TENSOR_SCALAR_OUT:
 case H_LEAKY_RELU_OUT:
 case H_SOFTSHRINK_OUT:
 case H_SPECIAL_XLOG1PY_OTHER_SCALAR_OUT:
+case H_SPECIAL_ZETA_OTHER_SCALAR_OUT:
   redispatch_ptrs_70[op.id - H_COPYSIGN_SCALAR_OUT](ks, load<at::Tensor &>()(op.args[0]), load<at::Scalar &>()(op.args[1]), load<at::Tensor &>()(op.args[2]));
   break;
 
@@ -2398,6 +2417,7 @@ case H_LOG_SIGMOID_OUT:
 case H_ISPOSINF_OUT:
 case H_ISNEGINF_OUT:
 case H_SPECIAL_ENTR_OUT:
+case H_SPECIAL_NDTRI_OUT:
 case H_SPECIAL_EXPM1_OUT:
 case H_SPECIAL_EXP2_OUT:
 case H_SPECIAL_PSI_OUT:
@@ -2405,6 +2425,7 @@ case H_SPECIAL_DIGAMMA_OUT:
 case H_SPECIAL_GAMMALN_OUT:
 case H_SPECIAL_ERF_OUT:
 case H_SPECIAL_ERFC_OUT:
+case H_SPECIAL_ERFCX_OUT:
 case H_SPECIAL_ERFINV_OUT:
 case H_SPECIAL_NDTR_OUT:
 case H_SPECIAL_I0_OUT:
@@ -2412,6 +2433,9 @@ case H_SPECIAL_I0E_OUT:
 case H_SPECIAL_I1_OUT:
 case H_SPECIAL_I1E_OUT:
 case H_SPECIAL_EXPIT_OUT:
+case H_SPECIAL_SINC_OUT:
+case H_SPECIAL_ROUND_OUT:
+case H_SPECIAL_LOG1P_OUT:
 case H_LINALG_CHOLESKY_OUT:
 case H_LINALG_DET_OUT:
 case H_LINALG_EIGVALS_OUT:
@@ -2456,6 +2480,7 @@ case H_FRACTIONAL_MAX_POOL3D_BACKWARD_GRAD_INPUT:
 case H_MAX_UNPOOL2D_OUT:
 case H_REFLECTION_PAD1D_BACKWARD_GRAD_INPUT:
 case H_REFLECTION_PAD2D_BACKWARD_GRAD_INPUT:
+case H_REFLECTION_PAD3D_BACKWARD_GRAD_INPUT:
 case H_REPLICATION_PAD1D_BACKWARD_GRAD_INPUT:
 case H_REPLICATION_PAD2D_BACKWARD_GRAD_INPUT:
 case H_REPLICATION_PAD3D_BACKWARD_GRAD_INPUT:
@@ -2528,11 +2553,8 @@ case H_LEAKY_RELU_BACKWARD_GRAD_INPUT:
   break;
 
 case H__LINALG_INV_OUT_HELPER_:
-case H__LINALG_SOLVE_OUT_HELPER_:
-  {at::Tensor &(*ptr)(DispatchKeySet, at::Tensor &, at::Tensor &, at::Tensor &) = at::redispatch::_linalg_inv_out_helper_;
-  if (op.id == H__LINALG_SOLVE_OUT_HELPER_) ptr = at::redispatch::_linalg_solve_out_helper_;
-  ptr(ks, load<at::Tensor &>()(op.args[0]), load<at::Tensor &>()(op.args[1]), load<at::Tensor &>()(op.args[2]));
-  break;}
+  at::redispatch::_linalg_inv_out_helper_(ks, load<at::Tensor &>()(op.args[0]), load<at::Tensor &>()(op.args[1]), load<at::Tensor &>()(op.args[2]));
+  break;
 
 case H_MASKED_FILL__TENSOR:
 case H_MASKED_SCATTER_:
@@ -2574,6 +2596,8 @@ case H_HSPMM_OUT:
 case H_BITWISE_AND_TENSOR_OUT:
 case H_BITWISE_OR_TENSOR_OUT:
 case H_BITWISE_XOR_TENSOR_OUT:
+case H_BITWISE_LEFT_SHIFT_TENSOR_OUT:
+case H_BITWISE_RIGHT_SHIFT_TENSOR_OUT:
 case H_NE_TENSOR_OUT:
 case H_NOT_EQUAL_TENSOR_OUT:
 case H_EQ_TENSOR_OUT:
@@ -2608,6 +2632,7 @@ case H_ADAPTIVE_AVG_POOL3D_BACKWARD_GRAD_INPUT:
 case H_SIGMOID_BACKWARD_GRAD_INPUT:
 case H_TANH_BACKWARD_GRAD_INPUT:
 case H_SPECIAL_XLOG1PY_OUT:
+case H_SPECIAL_ZETA_OUT:
 case H_LINALG_HOUSEHOLDER_PRODUCT_OUT:
 case H_INNER_OUT:
 case H_OUTER_OUT:
