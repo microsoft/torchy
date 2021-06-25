@@ -27,7 +27,8 @@ vector<pair<vector<ScalarType>, ScalarType>> results;
 ScalarType promoted_type_trail(const vector<ScalarType> &type_trail) {
   auto ty = type_trail[0];
   for (auto ty2 : type_trail) {
-    ty = promoteTypes(ty, ty2);
+    if (ty2 != ScalarType::Undefined)
+      ty = promoteTypes(ty, ty2);
   }
   return ty;
 }
@@ -59,10 +60,28 @@ struct C {
       type_trail.emplace_back(ty);
       call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
         auto t = native::empty_cpu({1}, ty);
-        return fn(t, forward<Tail>(args)...);
+        return fn(t, args...);
       }});
       type_trail.pop_back();
     }
+  }
+
+  template <typename T, typename... Tail>
+  void call(function<Tensor(optional<T>&, Tail...)> fn) {
+    // call with a value
+    call(function<Tensor(T&, Tail&&...)>{
+      [=](T &val, Tail&&... args) -> Tensor {
+        optional<T> opt(val);
+        return fn(opt, args...);
+      }});
+
+    // and call without a value
+    type_trail.emplace_back(ScalarType::Undefined);
+    call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+      optional<T> opt;
+      return fn(opt, forward<Tail>(args)...);
+    }});
+    type_trail.pop_back();
   }
 
   template <typename... Tail>
@@ -80,7 +99,7 @@ struct C {
           Tensor ts[2] = { native::empty_cpu({1}, ty1),
                            native::empty_cpu({1}, ty2) };
           ArrayRef<Tensor> aref(ts);
-          return fn(aref, forward<Tail>(args)...);
+          return fn(aref, args...);
         }});
         type_trail.pop_back();
       }
@@ -102,12 +121,33 @@ struct C {
         call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
           List<optional<Tensor>> list({ native::empty_cpu({1}, ty1),
                                         native::empty_cpu({1}, ty2) });
-          return fn(list, forward<Tail>(args)...);
+          return fn(list, args...);
         }});
         type_trail.pop_back();
       }
       type_trail.pop_back();
     }
+  }
+
+  template <typename... Tail>
+  void call(function<Tensor(at::Scalar&, Tail...)> fn) {
+    auto test = [&](ScalarType ty, initializer_list<at::Scalar> tries) {
+      type_trail.emplace_back(ty);
+      auto n = results.size();
+      for (auto v : tries) {
+        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+          return fn(const_cast<Scalar&>(v), args...);
+        }});
+        if (results.size() > n)
+          break;
+      }
+      type_trail.pop_back();
+    };
+
+    test(kBool, {false, true});
+    test(kLong, {0, 1});
+    test(kDouble, {0.0, 1.0});
+    test(kComplexDouble, {c10::complex<double>(0.0),c10::complex<double>(1.0)});
   }
 
   template <typename T>
