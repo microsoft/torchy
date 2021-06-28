@@ -3,3 +3,5 @@ __pycache__
 build
 dist
 torchy.egg-info
+build.ninja
+scripts/call_pytorch_fns.h

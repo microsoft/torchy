@@ -19,6 +19,7 @@ extra_compile_args = [
 extra_link_args = [] + sanitizers
 
 sources = glob('**/*.cpp', recursive=True)
+sources = [file for file in sources if 'scripts' not in file]
 
 setup(
   name='torchy',
