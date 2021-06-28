@@ -58,7 +58,7 @@ def gen(fn):
   if not tensors or fn.func.arguments.out:
     return f'// skip {fn.func.name}'
 
-  all_functions.append(str(fn.func.name))
+  all_functions.append((str(fn.func.name), len(tensors)))
   ptr_cast = dispatcher_sig.type().replace(' (', '(*)(DispatchKeySet, ')
 
   key = 'DispatchKeySet(DispatchKey::CPU)'
@@ -67,13 +67,15 @@ def gen(fn):
   return f'C{{"{fn.func.name}"}}.analyze(function<Tensor({types})>{{[]({types_names}) {{' +\
          f' return static_cast<{ptr_cast}>(at::redispatch::{sig.name()})({key}, {", ".join(args)}); }}}});'
 
-
 fd = open('scripts/call_pytorch_fns.h', 'w')
 for fn in native_functions.native_functions:
   if len(fn.func.returns) != 1 or str(fn.func.returns[0].type) != 'Tensor':
     continue
 
   print(gen(fn), file=fd)
+
+
+all_functions = sorted(all_functions, key=lambda p : -p[1])
 
 fd = open('build.ninja', 'w')
 print(f'''
@@ -85,9 +87,9 @@ rule merge
   command = bash -c "cat $in > $out"
   description = Assemble final $out file
 
-build types.txt: merge {" ".join(f'output/{fn}.txt' for fn in all_functions)}
+build types.txt: merge {" ".join(f'output/{fn}.txt' for fn,sz in all_functions)}
 ''', file=fd)
 
-for fn in all_functions:
+for fn,sz in all_functions:
   print(f'build output/{fn}.txt: infer {fn}', file=fd)
   print(f'build {fn}: phony', file=fd)

@@ -24,6 +24,16 @@ char *call_only = nullptr;
 vector<ScalarType> type_trail;
 vector<pair<vector<ScalarType>, ScalarType>> results;
 
+void print(const vector<ScalarType> &type_trail) {
+  bool first = true;
+  for (auto ty : type_trail) {
+    if (!first)
+      cout << ", ";
+    cout << ty;
+    first = false;
+  }
+}
+
 ScalarType promoted_type_trail(const vector<ScalarType> &type_trail) {
   auto ty = type_trail[0];
   for (auto ty2 : type_trail) {
@@ -172,7 +182,7 @@ struct C {
     bool is_to_float2_3 = true;
     bool is_to_float2_4 = true;
     bool is_to_float3 = true;
-    bool is_to_float3_2 = true;
+    bool is_to_float4 = true;
     bool is_to_fdouble = true;
     bool is_to_real_float = true;
     bool is_to_real2 = true;
@@ -205,8 +215,9 @@ struct C {
       is_to_float3     &= type_trail.size() >= 3 &&
                           to_float3(type_trail[0], type_trail[1], type_trail[2])
                             == type;
-      is_to_float3_2   &= type_trail.size() >= 3 &&
-                          to_float2(type_trail[0], type_trail[2]) == type;
+      is_to_float4     &= type_trail.size() >= 4 &&
+                          to_float4(type_trail[0], type_trail[1], type_trail[2],
+                                    type_trail[3]) == type;
       is_to_fdouble    &= type_trail.size() >= 2 &&
                           to_float_double(type_trail[1]) == type;
       is_to_real_float &= to_real_float(type_trail[0]) == type;
@@ -251,7 +262,7 @@ struct C {
     PRINT(is_to_float2_3, "TO_FLOAT2_3")
     PRINT(is_to_float2_4, "TO_FLOAT2_4")
     PRINT(is_to_float3, "TO_FLOAT3")
-    PRINT(is_to_float3_2, "TO_FLOAT3_2")
+    PRINT(is_to_float4, "TO_FLOAT4")
     PRINT(is_to_fdouble, "TO_FLOAT_DOUBLE")
     PRINT(is_to_real_float, "TO_REAL_FLOAT")
     PRINT(is_to_real2, "TO_REAL2")
@@ -265,13 +276,7 @@ struct C {
     cout << ": NON_STANDARD:" << endl;
 
     for (auto &[type_trail, type] : results) {
-      bool first = true;
-      for (auto ty : type_trail) {
-        if (!first)
-          cout << ", ";
-        cout << ty;
-        first = false;
-      }
+      print(type_trail);
       cout << " -> " << type;
 
       if (promoted_type_trail(type_trail) != type) {
@@ -291,6 +296,9 @@ int main(int argc, char **argv) {
   if (argc > 1) {
     call_only = argv[1];
   }
+  results.reserve(1024 * 1024);
+
 #include "call_pytorch_fns.h"
+
   return 0;
 }

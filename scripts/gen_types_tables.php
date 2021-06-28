@@ -5,6 +5,8 @@
 $file = file_exists('types.txt') ? 'types.txt' : '../types.txt';
 
 foreach (file($file) as $line) {
+  if (strstr($line, ' -> ') || !trim($line))
+    continue;
   preg_match('/([^:]+): (.*)/S', $line, $m);
   $data[$m[2]][] = $m[1];
 }
@@ -19,16 +21,22 @@ type_inference = {
 
 EOF;
 
+$fns_txt = [];
+
 foreach ($data as $ty => $fns) {
   // make eq first the default
-  if ($ty === 'EQ_FIRST' || $ty === 'NO_SAMPLES')
+  if ($ty === 'EQ_FIRST' || $ty === 'NO_SAMPLES' || $ty === 'NON_STANDARD:')
     continue;
 
   foreach ($fns as $fn) {
-    $txt .= "  '$fn': '$ty',\n";
+    $fns_txt[] = "  '$fn': '$ty',";
   }
 }
-$txt .= "}\n";
+
+sort($fns_txt);
+$txt .= implode("\n", $fns_txt);
+
+$txt .= "\n}\n";
 
 file_put_contents('special_fns.py', $txt);
 

@@ -93,8 +93,8 @@ def mk_dtype_infer(type, tensors):
     return f'scalarTypeToTypeMeta(to_float2_4({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
   if type == 'TO_FLOAT3':
     return f'scalarTypeToTypeMeta(to_float3({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType(), {tensors[2].expr}.dtype().toScalarType()))'
-  if type == 'TO_FLOAT3_2':
-    return f'scalarTypeToTypeMeta(to_float2({tensors[0].expr}.dtype().toScalarType(), {tensors[2].expr}.dtype().toScalarType()))'
+  if type == 'TO_FLOAT4':
+    return f'scalarTypeToTypeMeta(to_float4({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType(), {tensors[2].expr}.dtype().toScalarType(), optional_type({tensors[3].expr})))'
   if type == 'TO_QINT':
     return f'scalarTypeToTypeMeta(toQIntType({tensors[0].expr}.dtype().toScalarType()))'
   if type == 'TO_REAL2':

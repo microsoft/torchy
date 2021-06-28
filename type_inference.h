@@ -15,9 +15,14 @@ ScalarType to_float(ScalarType ty) {
 }
 
 ScalarType to_float_double(ScalarType ty) {
-  if (ty == ScalarType::Float)
+  switch (ty) {
+  case ScalarType::Float:
     return ty;
-  return ScalarType::Double;
+  case ScalarType::Undefined:
+    return ScalarType::Long;
+  default:
+    return ScalarType::Double;
+  }
 }
 
 ScalarType to_double(ScalarType ty) {
@@ -71,6 +76,14 @@ ScalarType to_float3(ScalarType ty, ScalarType ty2, ScalarType ty3) {
       isIntegralType(ty3, true))
     return ScalarType::Float;
   return promoteTypes(promoteTypes(ty, ty2), ty3);
+}
+
+ScalarType to_float4(ScalarType ty1, ScalarType ty2, ScalarType ty3,
+                     ScalarType ty4) {
+  if (ty4 != ScalarType::Undefined)
+    return promoteTypes(promoteTypes(ty3, ty4), kLong);
+
+  return promoteTypes(to_float(ty2), ty3);
 }
 
 ScalarType to_real_float(ScalarType ty) {

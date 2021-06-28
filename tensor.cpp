@@ -277,6 +277,11 @@ c10::optional<ScalarType> promote_tys0(const TensorList &list) {
   return ty;
 }
 
+template <typename T>
+c10::optional<ScalarType> promote_tys0(const c10::optional<T> &val) {
+  return val ? promote_tys0(*val) : nullopt;
+}
+
 template <typename T, typename... Ts>
 c10::optional<ScalarType> promote_tys0(const T &x, Ts&&... xs) {
   auto ty = promote_tys0(x);
@@ -290,6 +295,11 @@ template <typename... Ts>
 ScalarType promote_tys(Ts&&... xs) {
   auto ty = promote_tys0(xs...);
   return ty ? *ty : typeMetaToScalarType(at::get_default_dtype());
+}
+
+ScalarType optional_type(const c10::optional<Tensor> &t) {
+  auto ty = promote_tys0(t);
+  return ty ? *ty : ScalarType::Undefined;
 }
 
 Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,

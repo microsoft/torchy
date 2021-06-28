@@ -1376,7 +1376,7 @@ at::Tensor wrap_bernoulli(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::bernoulli(dispatchKeySet, self, std::move(generator));
   }
-  auto tt = register_new_tensor(dispatchKeySet, H_BERNOULLI, scalarTypeToTypeMeta(kDouble), self.device());
+  auto tt = register_new_tensor(dispatchKeySet, H_BERNOULLI, self.dtype(), self.device());
   trace.append_arg(self);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -1496,7 +1496,7 @@ at::Tensor wrap_binary_cross_entropy_with_logits_backward(c10::DispatchKeySet di
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::binary_cross_entropy_with_logits_backward(dispatchKeySet, grad_output, self, target, weight, pos_weight, reduction);
   }
-  auto tt = register_new_tensor(dispatchKeySet, H_BINARY_CROSS_ENTROPY_WITH_LOGITS_BACKWARD, scalarTypeToTypeMeta(to_float2(grad_output.dtype().toScalarType(), target.dtype().toScalarType())), grad_output.device());
+  auto tt = register_new_tensor(dispatchKeySet, H_BINARY_CROSS_ENTROPY_WITH_LOGITS_BACKWARD, scalarTypeToTypeMeta(to_float4(grad_output.dtype().toScalarType(), self.dtype().toScalarType(), target.dtype().toScalarType(), optional_type(weight))), grad_output.device());
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(weight);trace.append_arg(pos_weight);trace.append_arg(reduction);
   return tt;
 }
@@ -6422,7 +6422,7 @@ at::Tensor wrap_repeat_interleave_Tensor(c10::DispatchKeySet dispatchKeySet, con
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::repeat_interleave(dispatchKeySet, repeats, output_size);
   }
-  auto tt = register_new_tensor(dispatchKeySet, H_REPEAT_INTERLEAVE_TENSOR, repeats.dtype(), repeats.device());
+  auto tt = register_new_tensor(dispatchKeySet, H_REPEAT_INTERLEAVE_TENSOR, scalarTypeToTypeMeta(kInt), repeats.device());
   trace.append_arg(repeats);trace.append_arg(output_size);
   return tt;
 }
@@ -8208,7 +8208,7 @@ at::Tensor wrap_poisson(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::poisson(dispatchKeySet, self, std::move(generator));
   }
-  auto tt = register_new_tensor(dispatchKeySet, H_POISSON, self.dtype(), self.device());
+  auto tt = register_new_tensor(dispatchKeySet, H_POISSON, scalarTypeToTypeMeta(kDouble), self.device());
   trace.append_arg(self);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -11462,7 +11462,7 @@ at::Tensor wrap_take(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::take(dispatchKeySet, self, index);
   }
-  auto tt = register_new_tensor(dispatchKeySet, H_TAKE, scalarTypeToTypeMeta(kLong), self.device());
+  auto tt = register_new_tensor(dispatchKeySet, H_TAKE, self.dtype(), self.device());
   trace.append_arg(self);trace.append_arg(index);
   return tt;
 }
@@ -12518,7 +12518,7 @@ at::Tensor wrap_nanquantile(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::nanquantile(dispatchKeySet, self, q, dim, keepdim);
   }
-  auto tt = register_new_tensor(dispatchKeySet, H_NANQUANTILE, scalarTypeToTypeMeta(kDouble), self.device());
+  auto tt = register_new_tensor(dispatchKeySet, H_NANQUANTILE, self.dtype(), self.device());
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
@@ -13308,7 +13308,7 @@ at::Tensor wrap_nll_loss(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::nll_loss(dispatchKeySet, self, target, weight, reduction, ignore_index);
   }
-  auto tt = register_new_tensor(dispatchKeySet, H_NLL_LOSS, self.dtype(), self.device());
+  auto tt = register_new_tensor(dispatchKeySet, H_NLL_LOSS, scalarTypeToTypeMeta(kDouble), self.device());
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(weight);trace.append_arg(reduction);trace.append_arg(ignore_index);
   return tt;
 }
