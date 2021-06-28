@@ -1,7 +1,11 @@
 __pycache__
 .vscode
 build
+output
 dist
 torchy.egg-info
 build.ninja
+.ninja_log
+infer_types
 scripts/call_pytorch_fns.h
+types.txt

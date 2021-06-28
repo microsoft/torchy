@@ -8,6 +8,7 @@
 #include <cstring>
 #include <functional>
 #include <iostream>
+#include <unistd.h>
 
 using namespace at;
 using namespace c10;
@@ -20,18 +21,26 @@ array<ScalarType, NumScalarTypes-1> types = {
 #undef DECL
 };
 
+struct Result {
+  vector<ScalarType> inputs;
+  ScalarType default_dtype;
+  ScalarType output;
+
+};
+
 char *call_only = nullptr;
 vector<ScalarType> type_trail;
-vector<pair<vector<ScalarType>, ScalarType>> results;
+vector<Result> results;
 
-void print(const vector<ScalarType> &type_trail) {
+void print(const Result &result) {
   bool first = true;
-  for (auto ty : type_trail) {
+  for (auto ty : result.inputs) {
     if (!first)
       cout << ", ";
     cout << ty;
     first = false;
   }
+  cout << ", default=" << result.default_dtype << " -> " << result.output;
 }
 
 ScalarType promoted_type_trail(const vector<ScalarType> &type_trail) {
@@ -50,8 +59,11 @@ struct C {
 
   void call(function<Tensor()> fn) {
     try {
-      auto dtype = typeMetaToScalarType(fn().dtype());
-      results.emplace_back(type_trail, dtype);
+      for (auto def : { kFloat, kDouble }) {
+        at::set_default_dtype(scalarTypeToTypeMeta(def));
+        auto output = typeMetaToScalarType(fn().dtype());
+        results.push_back({type_trail, def, output});
+      }
 #if 0
     } catch (const c10::Error &) {
       cout << "Exception!\n";
@@ -77,18 +89,18 @@ struct C {
   }
 
   template <typename T, typename... Tail>
-  void call(function<Tensor(optional<T>&, Tail...)> fn) {
+  void call(function<Tensor(c10::optional<T>&, Tail...)> fn) {
     // call with a value
     call(function<Tensor(T&, Tail&&...)>{
       [=](T &val, Tail&&... args) -> Tensor {
-        optional<T> opt(val);
+        c10::optional<T> opt(val);
         return fn(opt, args...);
       }});
 
     // and call without a value
     type_trail.emplace_back(ScalarType::Undefined);
     call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-      optional<T> opt;
+      c10::optional<T> opt;
       return fn(opt, forward<Tail>(args)...);
     }});
     type_trail.pop_back();
@@ -118,7 +130,7 @@ struct C {
   }
 
   template <typename... Tail>
-  void call(function<Tensor(List<optional<Tensor>>&, Tail...)> fn) {
+  void call(function<Tensor(List<c10::optional<Tensor>>&, Tail...)> fn) {
     for (auto ty1 : types) {
       if (isQIntType(ty1))
         continue;
@@ -129,8 +141,8 @@ struct C {
           continue;
         type_trail.emplace_back(ty2);
         call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-          List<optional<Tensor>> list({ native::empty_cpu({1}, ty1),
-                                        native::empty_cpu({1}, ty2) });
+          List<c10::optional<Tensor>> list({ native::empty_cpu({1}, ty1),
+                                             native::empty_cpu({1}, ty2) });
           return fn(list, args...);
         }});
         type_trail.pop_back();
@@ -179,7 +191,6 @@ struct C {
     bool is_to_double2 = true;
     bool is_to_float2 = true;
     bool is_to_float2_2 = true;
-    bool is_to_float2_3 = true;
     bool is_to_float2_4 = true;
     bool is_to_float3 = true;
     bool is_to_float4 = true;
@@ -193,8 +204,12 @@ struct C {
     bool is_integral2int = true;
     bool is_to_qint = true;
 
-    for (auto &[type_trail, type] : results) {
-      all_equal        &= type == results[0].second;
+    for (auto &result : results) {
+      auto &type_trail = result.inputs;
+      auto &type = result.output;
+      at::set_default_dtype(scalarTypeToTypeMeta(result.default_dtype));
+
+      all_equal        &= type == results[0].output;
       eq_promoted      &= type == promoted_type_trail(type_trail);
       eq_first         &= type == type_trail[0];
       eq_second        &= type_trail.size() >= 2 && type == type_trail[1];
@@ -208,8 +223,6 @@ struct C {
                           to_float2(type_trail[0], type_trail[1]) == type;
       is_to_float2_2   &= type_trail.size() >= 2 &&
                           to_float2_2(type_trail[0], type_trail[1]) == type;
-      is_to_float2_3   &= type_trail.size() >= 2 &&
-                          to_float2_3(type_trail[0], type_trail[1]) == type;
       is_to_float2_4   &= type_trail.size() >= 2 &&
                           to_float2_4(type_trail[0], type_trail[1]) == type;
       is_to_float3     &= type_trail.size() >= 3 &&
@@ -239,7 +252,7 @@ struct C {
       return;
     }
     if (all_equal) {
-      cout << ": ALL " << results[0].second << endl;
+      cout << ": ALL " << results[0].output << endl;
       return;
     }
 
@@ -259,7 +272,6 @@ struct C {
     PRINT(is_to_double2, "TO_DOUBLE2")
     PRINT(is_to_float2, "TO_FLOAT2")
     PRINT(is_to_float2_2, "TO_FLOAT2_2")
-    PRINT(is_to_float2_3, "TO_FLOAT2_3")
     PRINT(is_to_float2_4, "TO_FLOAT2_4")
     PRINT(is_to_float3, "TO_FLOAT3")
     PRINT(is_to_float4, "TO_FLOAT4")
@@ -275,11 +287,10 @@ struct C {
 
     cout << ": NON_STANDARD:" << endl;
 
-    for (auto &[type_trail, type] : results) {
-      print(type_trail);
-      cout << " -> " << type;
+    for (auto &result : results) {
+      print(result);
 
-      if (promoted_type_trail(type_trail) != type) {
+      if (promoted_type_trail(result.inputs) != result.output) {
         cout << " [non-standard promotion]\n";
       } else {
         cout << '\n';
@@ -300,5 +311,6 @@ int main(int argc, char **argv) {
 
 #include "call_pytorch_fns.h"
 
+  _Exit(0);
   return 0;
 }

@@ -132,6 +132,10 @@ void run(Trace &t) {
     if (!op.needsComputing())
       continue;
 
+#if 0
+    std::cout << "Dispatch " << op.id << std::endl;
+#endif
+
     DispatchKeyComputer visitor(op.dispatch_key);
     for (auto &arg : op.args) {
       visit(visitor, arg);
