@@ -5,6 +5,7 @@
 #include <ATen/NativeFunctions.h>
 #include <ATen/RedispatchFunctions.h>
 #include <array>
+#include <cassert>
 #include <cstring>
 #include <functional>
 #include <iostream>
@@ -15,44 +16,102 @@ using namespace c10;
 using namespace std;
 
 namespace {
-array<ScalarType, NumScalarTypes-1> types = {
+array<ScalarType, /*NumScalarTypes-1*/7> types = {
 #define DECL(_, x) ScalarType::x,
-  AT_FORALL_SCALAR_TYPES_WITH_COMPLEX_AND_QINTS(DECL)
+  //AT_FORALL_SCALAR_TYPES_WITH_COMPLEX_AND_QINTS(DECL)
+  kBool,
+  kByte,
+  kInt,
+  kFloat,
+  kDouble,
+  kComplexFloat,
+  kComplexDouble
 #undef DECL
 };
 
+struct InputEntry {
+  ScalarType ty;
+  bool zerodim;
+};
+
 struct Result {
-  vector<ScalarType> inputs;
+  vector<InputEntry> inputs;
   ScalarType default_dtype;
   ScalarType output;
-
 };
 
 char *call_only = nullptr;
-vector<ScalarType> type_trail;
+vector<InputEntry> type_trail;
 vector<Result> results;
+
+Tensor new_tensor(IntArrayRef shape, ScalarType ty) {
+  auto t = native::empty_cpu(shape, ty);
+  native::ones_out(shape, t);
+  return t;
+}
 
 void print(const Result &result) {
   bool first = true;
-  for (auto ty : result.inputs) {
+  for (auto input : result.inputs) {
     if (!first)
       cout << ", ";
-    cout << ty;
+    cout << input.ty;
+    if (input.zerodim)
+      cout << " [z]";
     first = false;
   }
   cout << ", default=" << result.default_dtype << " -> " << result.output;
 }
 
-ScalarType promoted_type_trail(const vector<ScalarType> &type_trail) {
-  auto ty = type_trail[0];
-  for (auto ty2 : type_trail) {
-    if (ty2 != ScalarType::Undefined)
-      ty = promoteTypes(ty, ty2);
+#include "../type_inference.h"
+
+// https://pytorch.org/docs/stable/tensor_attributes.html#type-promotion-doc
+
+ScalarType promoted_type_trail(const vector<InputEntry> &type_trail) {
+  assert(!type_trail.empty());
+  auto ty = type_trail[0].ty;
+  assert(ty != ScalarType::Undefined);
+
+  for (auto &input : type_trail) {
+    if (input.ty != ScalarType::Undefined)
+      ty = promoteTypes(ty, input.ty);
   }
   return ty;
 }
 
-#include "../type_inference.h"
+pair<ScalarType,ScalarType>
+promoted_type_trail_split(const vector<InputEntry> &type_trail) {
+  auto ty_zero = ScalarType::Undefined;
+  auto ty_nonzero = ScalarType::Undefined;
+
+  for (auto &input : type_trail) {
+    auto &ty = input.zerodim ? ty_zero : ty_nonzero;
+    if (ty == ScalarType::Undefined)
+      ty = input.ty;
+    else if (input.ty != ScalarType::Undefined)
+      ty = promoteTypes(ty, input.ty);
+  }
+  return { ty_zero, ty_nonzero };
+}
+
+ScalarType promoted_type_trail_const(const vector<InputEntry> &type_trail) {
+  auto p = promoted_type_trail_split(type_trail);
+  auto ty_zero = p.first;
+  auto ty_nonzero = p.second;
+  return ty_to_num(ty_zero) > ty_to_num(ty_nonzero) ? ty_zero : ty_nonzero;
+}
+
+ScalarType promoted_type_trail_buggy(const vector<InputEntry> &type_trail) {
+  auto p = promoted_type_trail_split(type_trail);
+  auto ty_zero = p.first;
+  auto ty_nonzero = p.second;
+
+  // PyTorch bug: https://github.com/pytorch/pytorch/issues/60941
+  if (ty_zero == kComplexFloat && ty_nonzero == kDouble)
+    return kComplexDouble;
+
+  return ty_to_num(ty_zero) > ty_to_num(ty_nonzero) ? ty_zero : ty_nonzero;
+}
 
 struct C {
   const char *name;
@@ -76,15 +135,20 @@ struct C {
 
   template <typename... Tail>
   void call(function<Tensor(Tensor&, Tail...)> fn) {
+    ArrayRef<long> zero_sz = {};
+    ArrayRef<long> nonzero_sz = {1};
+
     for (auto ty : types) {
       if (isQIntType(ty))
         continue;
-      type_trail.emplace_back(ty);
-      call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-        auto t = native::empty_cpu({1}, ty);
-        return fn(t, args...);
-      }});
-      type_trail.pop_back();
+      for (bool zerodim : { false, true }) {
+        type_trail.push_back({ty, zerodim});
+        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+          auto t = new_tensor(zerodim ? zero_sz : nonzero_sz, ty);
+          return fn(t, args...);
+        }});
+        type_trail.pop_back();
+      }
     }
   }
 
@@ -98,7 +162,7 @@ struct C {
       }});
 
     // and call without a value
-    type_trail.emplace_back(ScalarType::Undefined);
+    type_trail.push_back({ScalarType::Undefined, false});
     call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
       c10::optional<T> opt;
       return fn(opt, forward<Tail>(args)...);
@@ -111,15 +175,15 @@ struct C {
     for (auto ty1 : types) {
       if (isQIntType(ty1))
         continue;
-      type_trail.emplace_back(ty1);
+      type_trail.push_back({ty1, false});
 
       for (auto ty2 : types) {
         if (isQIntType(ty2))
           continue;
-        type_trail.emplace_back(ty2);
+        type_trail.push_back({ty2, false});
         call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-          Tensor ts[2] = { native::empty_cpu({1}, ty1),
-                           native::empty_cpu({1}, ty2) };
+          Tensor ts[2] = { new_tensor({1}, ty1),
+                           new_tensor({1}, ty2) };
           ArrayRef<Tensor> aref(ts);
           return fn(aref, args...);
         }});
@@ -134,15 +198,15 @@ struct C {
     for (auto ty1 : types) {
       if (isQIntType(ty1))
         continue;
-      type_trail.emplace_back(ty1);
+      type_trail.push_back({ty1, false});
 
       for (auto ty2 : types) {
         if (isQIntType(ty2))
           continue;
-        type_trail.emplace_back(ty2);
+        type_trail.push_back({ty2, false});
         call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-          List<c10::optional<Tensor>> list({ native::empty_cpu({1}, ty1),
-                                             native::empty_cpu({1}, ty2) });
+          List<c10::optional<Tensor>> list({ new_tensor({1}, ty1),
+                                             new_tensor({1}, ty2) });
           return fn(list, args...);
         }});
         type_trail.pop_back();
@@ -154,7 +218,7 @@ struct C {
   template <typename... Tail>
   void call(function<Tensor(at::Scalar&, Tail...)> fn) {
     auto test = [&](ScalarType ty, initializer_list<at::Scalar> tries) {
-      type_trail.emplace_back(ty);
+      type_trail.push_back({ty, false});
       auto n = results.size();
       for (auto v : tries) {
         call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
@@ -182,6 +246,8 @@ struct C {
 
     bool all_equal = true;
     bool eq_promoted = true;
+    bool eq_promoted_const = true;
+    bool eq_promoted_buggy = true;
     bool eq_first = true;
     bool eq_second = true;
     bool eq_third = true;
@@ -209,40 +275,57 @@ struct C {
       auto &type = result.output;
       at::set_default_dtype(scalarTypeToTypeMeta(result.default_dtype));
 
+#define PASS(arg) \
+  arg.ty, [&]() { return arg.zerodim; }
+
+#define DEBUG(what)                 \
+  if (what != type) {               \
+    cout << "WRONG: ";              \
+    print(result);                  \
+    cout << " vs " << what << endl; \
+  }
+
       all_equal        &= type == results[0].output;
       eq_promoted      &= type == promoted_type_trail(type_trail);
-      eq_first         &= type == type_trail[0];
-      eq_second        &= type_trail.size() >= 2 && type == type_trail[1];
-      eq_third         &= type_trail.size() >= 3 && type == type_trail[2];
-      is_value         &= toValueType(type_trail[0]) == type;
-      is_to_float      &= to_float(type_trail[0]) == type;
-      is_to_double     &= to_double(type_trail[0]) == type;
+      eq_promoted_const&= type == promoted_type_trail_const(type_trail);
+      eq_promoted_buggy&= type == promoted_type_trail_buggy(type_trail);
+      eq_first         &= type == type_trail[0].ty;
+      eq_second        &= type_trail.size() >= 2 && type == type_trail[1].ty;
+      eq_third         &= type_trail.size() >= 3 && type == type_trail[2].ty;
+      is_value         &= toValueType(type_trail[0].ty) == type;
+      is_to_float      &= to_float(type_trail[0].ty) == type;
+      is_to_double     &= to_double(type_trail[0].ty) == type;
       is_to_double2    &= type_trail.size() >= 2 &&
-                          to_double2(type_trail[0], type_trail[1]) == type;
+                          to_double2(type_trail[0].ty,
+                                     type_trail[1].ty) == type;
       is_to_float2     &= type_trail.size() >= 2 &&
-                          to_float2(type_trail[0], type_trail[1]) == type;
+                          to_float2(PASS(type_trail[0]),
+                                    PASS(type_trail[1])) == type;
       is_to_float2_2   &= type_trail.size() >= 2 &&
-                          to_float2_2(type_trail[0], type_trail[1]) == type;
+                          to_float2_2(PASS(type_trail[0]),
+                                      PASS(type_trail[1])) == type;
       is_to_float2_4   &= type_trail.size() >= 2 &&
-                          to_float2_4(type_trail[0], type_trail[1]) == type;
+                          to_float2_4(type_trail[0].ty,
+                                      type_trail[1].ty) == type;
       is_to_float3     &= type_trail.size() >= 3 &&
-                          to_float3(type_trail[0], type_trail[1], type_trail[2])
-                            == type;
+                          to_float3(type_trail[0].ty, type_trail[1].ty,
+                                    type_trail[2].ty) == type;
       is_to_float4     &= type_trail.size() >= 4 &&
-                          to_float4(type_trail[0], type_trail[1], type_trail[2],
-                                    type_trail[3]) == type;
+                          to_float4(type_trail[0].ty, type_trail[1].ty,
+                                    type_trail[2].ty, type_trail[3].ty) == type;
       is_to_fdouble    &= type_trail.size() >= 2 &&
-                          to_float_double(type_trail[1]) == type;
-      is_to_real_float &= to_real_float(type_trail[0]) == type;
+                          to_float_double(type_trail[1].ty) == type;
+      is_to_real_float &= to_real_float(type_trail[0].ty) == type;
       is_to_real2      &= type_trail.size() >= 2 &&
-                          to_real2(type_trail[0], type_trail[1]) == type;
-      is_to_complex    &= to_complex(type_trail[0]) == type;
-      is_bool2int      &= bool_to_int(type_trail[0]) == type;
+                          to_real2(type_trail[0].ty, type_trail[1].ty) == type;
+      is_to_complex    &= to_complex(type_trail[0].ty) == type;
+      is_bool2int      &= bool_to_int(type_trail[0].ty) == type;
       is_bool2int2     &= type_trail.size() >= 2 &&
-                          bool_to_int2(type_trail[0], type_trail[1]) == type;
-      is_boolbyte      &= bool_byte(type_trail[0]) == type;
-      is_integral2int  &= integrals_to_int(type_trail[0]) == type;
-      is_to_qint       &= toQIntType(type_trail[0]) == type;
+                          bool_to_int2(type_trail[0].ty,
+                                       type_trail[1].ty) == type;
+      is_boolbyte      &= bool_byte(type_trail[0].ty) == type;
+      is_integral2int  &= integrals_to_int(type_trail[0].ty) == type;
+      is_to_qint       &= toQIntType(type_trail[0].ty) == type;
     }
 
     cout << name;
@@ -266,6 +349,8 @@ struct C {
     PRINT(eq_second, "EQ_SECOND")
     PRINT(eq_third, "EQ_THIRD")
     PRINT(eq_promoted, "EQ_PROMOTED")
+    PRINT(eq_promoted_const, "EQ_PROMOTED_CONST")
+    PRINT(eq_promoted_buggy, "EQ_PROMOTED_BUGGY")
     PRINT(is_value, "TO_VALUE_TYPE")
     PRINT(is_to_float, "TO_FLOAT")
     PRINT(is_to_double, "TO_DOUBLE")
