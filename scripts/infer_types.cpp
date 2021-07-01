@@ -63,9 +63,21 @@ void print(const Result &result) {
   cout << ", default=" << result.default_dtype << " -> " << result.output;
 }
 
-#include "../type_inference.h"
+#define ARG(n) args[n].ty, [&]() { return args[n].zerodim; }
 
-// https://pytorch.org/docs/stable/tensor_attributes.html#type-promotion-doc
+#define callVA(f) \
+  switch (args.size()) { \
+  case 1:  return f(ARG(0));\
+  case 2:  return f(ARG(0), ARG(1));\
+  case 3:  return f(ARG(0), ARG(1), ARG(2));\
+  case 4:  return f(ARG(0), ARG(1), ARG(2), ARG(3));\
+  case 5:  return f(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4));\
+  case 6:  return f(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5));\
+  case 7:  return f(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6));\
+  default: assert(0 && "too many args");\
+  }
+
+#include "../type_inference.h"
 
 ScalarType promoted_type_trail(const vector<InputEntry> &type_trail) {
   assert(!type_trail.empty());
@@ -79,38 +91,12 @@ ScalarType promoted_type_trail(const vector<InputEntry> &type_trail) {
   return ty;
 }
 
-pair<ScalarType,ScalarType>
-promoted_type_trail_split(const vector<InputEntry> &type_trail) {
-  auto ty_zero = ScalarType::Undefined;
-  auto ty_nonzero = ScalarType::Undefined;
-
-  for (auto &input : type_trail) {
-    auto &ty = input.zerodim ? ty_zero : ty_nonzero;
-    if (ty == ScalarType::Undefined)
-      ty = input.ty;
-    else if (input.ty != ScalarType::Undefined)
-      ty = promoteTypes(ty, input.ty);
-  }
-  return { ty_zero, ty_nonzero };
+ScalarType promoted_type_trail_const(const vector<InputEntry> &args) {
+  callVA(promote_const)
 }
 
-ScalarType promoted_type_trail_const(const vector<InputEntry> &type_trail) {
-  auto p = promoted_type_trail_split(type_trail);
-  auto ty_zero = p.first;
-  auto ty_nonzero = p.second;
-  return ty_to_num(ty_zero) > ty_to_num(ty_nonzero) ? ty_zero : ty_nonzero;
-}
-
-ScalarType promoted_type_trail_buggy(const vector<InputEntry> &type_trail) {
-  auto p = promoted_type_trail_split(type_trail);
-  auto ty_zero = p.first;
-  auto ty_nonzero = p.second;
-
-  // PyTorch bug: https://github.com/pytorch/pytorch/issues/60941
-  if (ty_zero == kComplexFloat && ty_nonzero == kDouble)
-    return kComplexDouble;
-
-  return ty_to_num(ty_zero) > ty_to_num(ty_nonzero) ? ty_zero : ty_nonzero;
+ScalarType promoted_type_trail_buggy(const vector<InputEntry> &args) {
+  callVA(promote_buggy)
 }
 
 struct C {
@@ -305,24 +291,27 @@ struct C {
                           to_float2_2(PASS(type_trail[0]),
                                       PASS(type_trail[1])) == type;
       is_to_float2_4   &= type_trail.size() >= 2 &&
-                          to_float2_4(type_trail[0].ty,
-                                      type_trail[1].ty) == type;
+                          to_float2_4(PASS(type_trail[0]),
+                                      PASS(type_trail[1])) == type;
       is_to_float3     &= type_trail.size() >= 3 &&
-                          to_float3(type_trail[0].ty, type_trail[1].ty,
-                                    type_trail[2].ty) == type;
+                          to_float3(PASS(type_trail[0]), PASS(type_trail[1]),
+                                    PASS(type_trail[2])) == type;
       is_to_float4     &= type_trail.size() >= 4 &&
-                          to_float4(type_trail[0].ty, type_trail[1].ty,
-                                    type_trail[2].ty, type_trail[3].ty) == type;
+                          to_float4(PASS(type_trail[0]),
+                                    PASS(type_trail[1]),
+                                    PASS(type_trail[2]),
+                                    PASS(type_trail[3])) == type;
       is_to_fdouble    &= type_trail.size() >= 2 &&
                           to_float_double(type_trail[1].ty) == type;
       is_to_real_float &= to_real_float(type_trail[0].ty) == type;
       is_to_real2      &= type_trail.size() >= 2 &&
-                          to_real2(type_trail[0].ty, type_trail[1].ty) == type;
+                          to_real2(PASS(type_trail[0]),
+                                   PASS(type_trail[1])) == type;
       is_to_complex    &= to_complex(type_trail[0].ty) == type;
       is_bool2int      &= bool_to_int(type_trail[0].ty) == type;
       is_bool2int2     &= type_trail.size() >= 2 &&
-                          bool_to_int2(type_trail[0].ty,
-                                       type_trail[1].ty) == type;
+                          bool_to_int2(PASS(type_trail[0]),
+                                       PASS(type_trail[1])) == type;
       is_boolbyte      &= bool_byte(type_trail[0].ty) == type;
       is_integral2int  &= integrals_to_int(type_trail[0].ty) == type;
       is_to_qint       &= toQIntType(type_trail[0].ty) == type;
@@ -370,7 +359,7 @@ struct C {
     PRINT(is_integral2int, "INTEGRAL2INT")
     PRINT(is_to_qint, "TO_QINT")
 
-    cout << ": NON_STANDARD:" << endl;
+    cout << ": NON_STANDARD:\n";
 
     for (auto &result : results) {
       print(result);
@@ -381,7 +370,7 @@ struct C {
         cout << '\n';
       }
     }
-    cout << '\n';
+    cout << endl;
   }
 
 };
