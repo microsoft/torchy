@@ -22,6 +22,8 @@ namespace {
 
 class TorchyTensor final : public TensorImpl {
   unsigned trace_idx = -1u;
+  bool has_shape_data = false;
+  // TODO: store predicted shape & check on update
 
   bool& materialized_var() const {
     assert(storage_);
@@ -78,6 +80,7 @@ public:
                          other->allow_tensor_metadata_change());
 
     set_materialized(true);
+    has_shape_data = true;
 
     // must be run after materialized is set to true, as these call the
     // overriden methods below
@@ -117,17 +120,20 @@ public:
   // an extra indirection. Another way is to templatize these.
 
   IntArrayRef sizes() const override {
-    ensure_materialized(STATS(FlushReason::SIZES));
+    if (!has_shape_data)
+      ensure_materialized(STATS(FlushReason::SIZES));
     return TensorImpl::sizes();
   }
 
   IntArrayRef strides() const override {
-    ensure_materialized(STATS(FlushReason::STRIDES));
+    if (!has_shape_data)
+      ensure_materialized(STATS(FlushReason::STRIDES));
     return TensorImpl::strides();
   }
 
   int64_t dim() const override {
-    ensure_materialized(STATS(FlushReason::DIM));
+    if (!has_shape_data)
+      ensure_materialized(STATS(FlushReason::DIM));
     return TensorImpl::dim();
   }
 
@@ -142,12 +148,14 @@ public:
   }
 
   int64_t numel() const override {
-    ensure_materialized(STATS(FlushReason::NUMEL));
+    if (!has_shape_data)
+      ensure_materialized(STATS(FlushReason::NUMEL));
     return TensorImpl::numel();
   }
 
   bool is_contiguous(at::MemoryFormat memory_format) const override {
-    ensure_materialized(STATS(FlushReason::IS_CONTIGUOUS));
+    if (!has_shape_data)
+      ensure_materialized(STATS(FlushReason::IS_CONTIGUOUS));
     return TensorImpl::is_contiguous(memory_format);
   }
 
@@ -162,11 +170,13 @@ public:
 
   void set_size(int64_t dim, int64_t new_size) override {
     ensure_materialized(STATS(FlushReason::SET_SIZE));
+    has_shape_data = false;
     TensorImpl::set_size(dim, new_size);
   }
 
   void set_stride(int64_t dim, int64_t new_stride) override {
     ensure_materialized(STATS(FlushReason::SET_STRIDE));
+    has_shape_data = false;
     TensorImpl::set_stride(dim, new_stride);
   }
 
@@ -176,12 +186,14 @@ public:
   }
 
   int64_t size(int64_t d) const override {
-    ensure_materialized(STATS(FlushReason::SIZE));
+    if (!has_shape_data)
+      ensure_materialized(STATS(FlushReason::SIZE));
     return TensorImpl::size(d);
   }
 
   int64_t stride(int64_t d) const override {
-    ensure_materialized(STATS(FlushReason::STRIDE));
+    if (!has_shape_data)
+      ensure_materialized(STATS(FlushReason::STRIDE));
     return TensorImpl::stride(d);
   }
 
