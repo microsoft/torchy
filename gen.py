@@ -53,65 +53,69 @@ def maybe_tensor(type):
 
 def mk_dtype_infer(type, tensors):
   if type[0:3] == 'ALL':
-    return f'scalarTypeToTypeMeta(k{type[4:]})'
+    return f'k{type[4:]}'
   if type == 'BOOL2INT':
-    return f'scalarTypeToTypeMeta(bool_to_int({tensors[0].expr}.dtype().toScalarType()))'
+    return f'bool_to_int({tensors[0].expr}.dtype().toScalarType())'
   if type == 'EQ_PROMOTED':
-    # save code size by using the default function
-    if len(tensors) == 1 and get_arg_of_type(tensors, 'at::TensorList'):
-      return 'nullopt'
-    return f'scalarTypeToTypeMeta(promote_tys({", ".join(t.expr for t in tensors)}))'
+    return f'promote_tys({", ".join(t.expr for t in tensors)})'
+  if type == 'EQ_PROMOTED_BUGGY':
+    return f'promote_buggy({", ".join(t.expr for t in tensors)})'
+  if type == 'EQ_PROMOTED_CONST':
+    return f'promote_const({", ".join(t.expr for t in tensors)})'
   if type == 'EQ_SECOND':
     return f'{tensors[1].expr}.dtype()'
   if type == 'EQ_THIRD':
     return f'{tensors[2].expr}.dtype()'
   if type == 'BOOLBYTE':
-    return f'scalarTypeToTypeMeta(bool_byte({tensors[0].expr}.dtype().toScalarType()))'
+    return f'bool_byte({tensors[0].expr}.dtype().toScalarType())'
   if type == 'BOOL2INT':
-    return f'scalarTypeToTypeMeta(bool_to_int({tensors[0].expr}.dtype().toScalarType()))'
+    return f'bool_to_int({tensors[0].expr}.dtype().toScalarType())'
   if type == 'BOOL2INT2':
-    return f'scalarTypeToTypeMeta(bool_to_int2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+    return f'bool_to_int2({tensors[0].expr}, {tensors[1].expr})'
   if type == 'INTEGRAL2INT':
-    return f'scalarTypeToTypeMeta(integrals_to_int({tensors[0].expr}.dtype().toScalarType()))'
+    return f'integrals_to_int({tensors[0].expr}.dtype().toScalarType())'
   if type == 'TO_COMPLEX':
-    return f'scalarTypeToTypeMeta(to_complex({tensors[0].expr}.dtype().toScalarType()))'
+    return f'to_complex({tensors[0].expr}.dtype().toScalarType())'
   if type == 'TO_DOUBLE':
-    return f'scalarTypeToTypeMeta(to_double({tensors[0].expr}.dtype().toScalarType()))'
+    return f'to_double({tensors[0].expr}.dtype().toScalarType())'
   if type == 'TO_DOUBLE2':
-    return f'scalarTypeToTypeMeta(to_double2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+    return f'to_double2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType())'
   if type == 'TO_FLOAT':
-    return f'scalarTypeToTypeMeta(to_float({tensors[0].expr}.dtype().toScalarType()))'
+    return f'to_float({tensors[0].expr}.dtype().toScalarType())'
   if type == 'TO_FLOAT_DOUBLE':
-    return f'scalarTypeToTypeMeta(to_float_double({tensors[0].expr}.dtype().toScalarType()))'
+    return f'to_float_double({tensors[0].expr}.dtype().toScalarType())'
   if type == 'TO_FLOAT2':
-    return f'scalarTypeToTypeMeta(to_float2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+    return f'to_float2({tensors[0].expr}, {tensors[1].expr})'
   if type == 'TO_FLOAT2_2':
-    return f'scalarTypeToTypeMeta(to_float2_2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+    return f'to_float2_2({tensors[0].expr}, {tensors[1].expr})'
   if type == 'TO_FLOAT2_4':
-    return f'scalarTypeToTypeMeta(to_float2_4({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+    return f'to_float2_4({tensors[0].expr}, {tensors[1].expr})'
   if type == 'TO_FLOAT3':
-    return f'scalarTypeToTypeMeta(to_float3({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType(), {tensors[2].expr}.dtype().toScalarType()))'
+    return f'to_float3({tensors[0].expr}, {tensors[1].expr}, {tensors[2].expr})'
   if type == 'TO_FLOAT4':
-    return f'scalarTypeToTypeMeta(to_float4({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType(), {tensors[2].expr}.dtype().toScalarType(), optional_type({tensors[3].expr})))'
+    return f'to_float4({tensors[0].expr}, {tensors[1].expr}, {tensors[2].expr}, {tensors[3].expr})'
   if type == 'TO_QINT':
-    return f'scalarTypeToTypeMeta(toQIntType({tensors[0].expr}.dtype().toScalarType()))'
+    return f'toQIntType({tensors[0].expr}.dtype().toScalarType())'
   if type == 'TO_REAL2':
-    return f'scalarTypeToTypeMeta(to_real2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType()))'
+    return f'to_real2({tensors[0].expr}, {tensors[1].expr})'
   if type == 'TO_REAL_FLOAT':
-    return f'scalarTypeToTypeMeta(to_real_float({tensors[0].expr}.dtype().toScalarType()))'
+    return f'to_real_float({tensors[0].expr}.dtype().toScalarType())'
   if type == 'TO_VALUE_TYPE':
-    return f'scalarTypeToTypeMeta(toValueType({tensors[0].expr}.dtype().toScalarType()))'
+    return f'toValueType({tensors[0].expr}.dtype().toScalarType())'
   print('mk_dtype_infer', type)
   exit()
 
 
 def get_dtype_arg(all_tensors, args, name):
   tensors = [a.expr for a in all_tensors if a.type.remove_const_ref().cpp_type() == 'at::Tensor']
+  tensor_lst = [a.expr for a in all_tensors if a.type.remove_const_ref().cpp_type() == 'at::TensorList']
   dtype = 'nullopt'
   device = 'nullopt'
   if tensors:
     dtype  = f'{tensors[0]}.dtype()'
     device = f'{tensors[0]}.device()'
+  elif tensor_lst:
+    device = f'device_of({tensor_lst[0]})'
 
   name = str(name)
   if name in type_inference:

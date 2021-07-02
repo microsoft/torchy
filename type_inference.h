@@ -15,8 +15,10 @@ unsigned ty_to_num(ScalarType ty) {
   return 0;
 }
 
-void promote(ScalarType &ty_zero, ScalarType &ty_nonzero, ScalarType ty,
-             const function<bool()> &z) {
+void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero) {}
+
+void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero, ScalarType ty,
+              const function<bool()> &z) {
   auto &target = z() ? ty_zero : ty_nonzero;
   if (target == ScalarType::Undefined)
     target = ty;
@@ -24,21 +26,40 @@ void promote(ScalarType &ty_zero, ScalarType &ty_nonzero, ScalarType ty,
     target = promoteTypes(target, ty);
 }
 
-// return zero_ty, nonzero_ty
 template <typename... Args>
-void promote(ScalarType &ty_zero, ScalarType &ty_nonzero, ScalarType ty,
-             const function<bool()> &z, Args&&... args) {
-  promote(ty_zero, ty_nonzero, ty, z);
-  promote(ty_zero, ty_nonzero, args...);
+void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero, ScalarType ty,
+              const function<bool()> &z, Args&&... args) {
+  promote_(ty_zero, ty_nonzero, ty, z);
+  promote_(ty_zero, ty_nonzero, args...);
+}
+
+void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero, const Tensor &t) {
+  promote_(ty_zero, ty_nonzero, t.dtype().toScalarType(),
+           [&]() { return t.dim() == 0; });
+}
+
+template <typename... Args>
+void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero, const Tensor &t,
+              Args&&... args) {
+  promote_(ty_zero, ty_nonzero, t);
+  promote_(ty_zero, ty_nonzero, args...);
+}
+
+template <typename... Args>
+void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero,
+              const TensorList &list, Args&&... args) {
+  for (auto &elem : list) {
+    promote_(ty_zero, ty_nonzero, elem);
+  }
+  promote_(ty_zero, ty_nonzero, args...);
 }
 
 // return zero_ty, nonzero_ty
 template <typename... Args>
-pair<ScalarType,ScalarType> promote(ScalarType ty, const function<bool()> &z,
-                                    Args&&... args) {
+pair<ScalarType,ScalarType> promote(Args&&... args) {
   auto ty_zero = ScalarType::Undefined;
   auto ty_nonzero = ScalarType::Undefined;
-  promote(ty_zero, ty_nonzero, ty, z, args...);
+  promote_(ty_zero, ty_nonzero, args...);
   return { ty_zero, ty_nonzero };
 }
 
@@ -47,7 +68,12 @@ bool all_ty_eq(ScalarType ty) { return true; }
 template <typename... Args>
 bool all_ty_eq(ScalarType ty0, ScalarType ty, const function<bool()> &z,
                Args&&... args) {
-  return ty0 == ty && all_ty_eq(ty, args...);
+  return ty0 == ty && all_ty_eq(ty0, args...);
+}
+
+template <typename... Args>
+bool all_ty_eq(ScalarType ty0, const Tensor &t, Args&&... args) {
+  return ty0 == t.dtype().toScalarType() && all_ty_eq(ty0, args...);
 }
 
 template <typename... Args>
@@ -56,9 +82,48 @@ bool all_ty_eq(ScalarType ty, const function<bool()> &z, Args&&... args) {
 }
 
 template <typename... Args>
+bool all_ty_eq(const TensorList &list, Args&&... args) {
+  if (list.empty())
+    return true;
+
+  auto ty = list.front().dtype();
+  for (auto &elem : list) {
+    if (elem.dtype() != ty)
+      return false;
+  }
+  return all_ty_eq(ty.toScalarType(), args...);
+}
+
+template <typename... Args>
+bool all_ty_eq(const Tensor &t, Args&&... args) {
+  return all_ty_eq(t.dtype().toScalarType(), args...);
+}
+
+template <typename... Args>
 ScalarType pick_first_ty(ScalarType ty, const function<bool()> &z,
                          Args&&... args) {
   return ty;
+}
+
+template <typename... Args>
+ScalarType pick_first_ty(const TensorList &list, Args&&... args) {
+  return list.empty() ? typeMetaToScalarType(at::get_default_dtype())
+                      : list.front().dtype().toScalarType();
+}
+
+template <typename... Args>
+ScalarType pick_first_ty(const Tensor &t, Args&&... args) {
+  return t.dtype().toScalarType();
+}
+
+template <typename... Args>
+ScalarType promote_tys(Args&&... args) {
+  // avoid calling zerodim
+  if (all_ty_eq(args...))
+    return pick_first_ty(args...);
+
+  auto p = promote(args...);
+  return promoteTypes(p.first, p.second);
 }
 
 template <typename... Args>
@@ -145,7 +210,7 @@ ScalarType to_float2_2(ScalarType ty1, const function<bool()> &zerodim1,
     return promoteTypes(default_ty, ty2);
 
   if (default_ty == kDouble &&
-      isFloatingType(ty1) &&
+      (isFloatingType(ty1) || isComplexType(ty1)) &&
       isIntegralType(ty2, true) &&
       (zerodim1() || !zerodim2()))
     return promoteTypes(ty1, default_ty);

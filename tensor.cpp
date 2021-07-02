@@ -262,44 +262,45 @@ void end_update_in_place(uintptr_t tt) {
 
 namespace {
 
-c10::optional<ScalarType> promote_tys0(const Tensor &t) {
-  return typeMetaToScalarType(t.dtype());
-}
-
-c10::optional<ScalarType> promote_tys0(const TensorList &list) {
-  if (list.empty())
-    return nullopt;
-
-  auto ty = typeMetaToScalarType(list.front().dtype());
-  for (auto &elem : list) {
-    ty = promoteTypes(ty, typeMetaToScalarType(elem.dtype()));
-  }
-  return ty;
-}
-
-template <typename T>
-c10::optional<ScalarType> promote_tys0(const c10::optional<T> &val) {
-  return val ? promote_tys0(*val) : nullopt;
-}
-
-template <typename T, typename... Ts>
-c10::optional<ScalarType> promote_tys0(const T &x, Ts&&... xs) {
-  auto ty = promote_tys0(x);
-  auto ty2 = promote_tys0(xs...);
-  if (ty && ty2)
-    return promoteTypes(*ty, *ty2);
-  return ty ? ty : ty2;
-}
-
-template <typename... Ts>
-ScalarType promote_tys(Ts&&... xs) {
-  auto ty = promote_tys0(xs...);
-  return ty ? *ty : typeMetaToScalarType(at::get_default_dtype());
-}
+#include "type_inference.h"
 
 ScalarType optional_type(const c10::optional<Tensor> &t) {
-  auto ty = promote_tys0(t);
-  return ty ? *ty : ScalarType::Undefined;
+  return t ? t->dtype().toScalarType() : ScalarType::Undefined;
+}
+
+#define PASS(t) \
+  t.dtype().toScalarType(), [&]() { return t.dim() == 0; }
+
+#define PASS_OPT(t) \
+  optional_type(t), [&]() { return t && t->dim() == 0; }
+
+ScalarType to_float2(const Tensor &t1, const Tensor &t2) {
+  return to_float2(PASS(t1), PASS(t2));
+}
+
+ScalarType to_float2_2(const Tensor &t1, const Tensor &t2) {
+  return to_float2_2(PASS(t1), PASS(t2));
+}
+
+ScalarType to_float2_4(const Tensor &t1, const Tensor &t2) {
+  return to_float2_4(PASS(t1), PASS(t2));
+}
+
+ScalarType to_float3(const Tensor &t1, const Tensor &t2, const Tensor &t3) {
+  return to_float3(PASS(t1), PASS(t2), PASS(t3));
+}
+
+ScalarType to_float4(const Tensor &t1, const Tensor &t2, const Tensor &t3,
+                     const c10::optional<Tensor> &t4) {
+  return to_float4(PASS(t1), PASS(t2), PASS(t3), PASS_OPT(t4));
+}
+
+ScalarType to_real2(const Tensor &t1, const Tensor &t2) {
+  return to_real2(PASS(t1), PASS(t2));
+}
+
+ScalarType bool_to_int2(const Tensor &t1, const Tensor &t2) {
+  return bool_to_int2(PASS(t1), PASS(t2));
 }
 
 Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
@@ -309,6 +310,11 @@ Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
   unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, op, ks);
   static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
   return tt;
+}
+
+Tensor register_new_tensor(DispatchKeySet ks, TorchOp op, ScalarType dtype,
+                           c10::Device device) {
+  return register_new_tensor(ks, op, scalarTypeToTypeMeta(dtype), move(device));
 }
 
 Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
@@ -360,8 +366,6 @@ bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks) {
   // shared; needs flushing
   return true;
 }
-
-#include "type_inference.h"
 
 #include "autogen/dispatch_wrappers.h"
 

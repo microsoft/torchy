@@ -79,16 +79,8 @@ void print(const Result &result) {
 
 #include "../type_inference.h"
 
-ScalarType promoted_type_trail(const vector<InputEntry> &type_trail) {
-  assert(!type_trail.empty());
-  auto ty = type_trail[0].ty;
-  assert(ty != ScalarType::Undefined);
-
-  for (auto &input : type_trail) {
-    if (input.ty != ScalarType::Undefined)
-      ty = promoteTypes(ty, input.ty);
-  }
-  return ty;
+ScalarType promoted_type_trail(const vector<InputEntry> &args) {
+  callVA(promote_tys)
 }
 
 ScalarType promoted_type_trail_const(const vector<InputEntry> &args) {
