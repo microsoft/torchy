@@ -1,0 +1,15 @@
+diff --git a/c10/util/Logging.cpp b/c10/util/Logging.cpp
+index 3de6623cf3..6a47412dab 100644
+--- a/c10/util/Logging.cpp
++++ b/c10/util/Logging.cpp
+@@ -26,7 +26,8 @@ namespace {
+ // NOLINTNEXTLINE(modernize-redundant-void-arg)
+ std::function<string(void)>* GetFetchStackTrace() {
+   static std::function<string(void)> func = []() {
+-    return get_backtrace(/*frames_to_skip=*/1);
++    //return get_backtrace(/*frames_to_skip=*/1);
++    return string();
+   };
+   return &func;
+ };
+
