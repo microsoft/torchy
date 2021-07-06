@@ -108,6 +108,17 @@ unsigned pick_1st(unsigned s) {
   return shape.empty() ? -1u : lookup_shape({ shape[0] });
 }
 
+unsigned matmul(unsigned a, unsigned b) {
+  auto &shape_a = all_shapes[a];
+  auto &shape_b = all_shapes[b];
+  if (shape_a.empty() || shape_b.empty())
+    return -1u;
+
+  auto res = shape_a;
+  res.back() = shape_b.back();
+  return lookup_shape(move(res));
+}
+
 unsigned join(unsigned a, unsigned b) {
   auto res = all_shapes[a];
   auto &shape_b = all_shapes[b];
@@ -252,8 +263,12 @@ struct C {
 
     bool all_equal = true;
     bool eq_first = true;
+    bool eq_second = true;
+    bool eq_third = true;
     bool std_promote = true;
+    bool promote_1_2 = true;
     bool pick_1st_2nd = true;
+    bool matmul_2_3 = true;
     bool join_2_3 = true;
 
     for (auto &result : results) {
@@ -264,16 +279,24 @@ struct C {
   var = var && test
 
 #define DEBUG(what)                 \
-  if (what != type) {               \
+  if (what != out) {                \
     cout << "WRONG: ";              \
     print(result);                  \
-    cout << " vs " << what << endl; \
+    cout << " vs ";                 \
+    print_shape(what);              \
+    cout << endl;                   \
   }
 
       TEST(all_equal,    out == results[0].output);
       TEST(eq_first,     out == trail[0]);
+      TEST(eq_second,    trail.size() >= 2 && out == trail[1]);
+      TEST(eq_third,     trail.size() >= 3 && out == trail[2]);
       TEST(std_promote,  out == standard_promote(trail));
+      TEST(promote_1_2,  trail.size() >= 2 &&
+                         out == standard_promote(trail[0], trail[1]));
       TEST(pick_1st_2nd, trail.size() >= 2 && out == pick_1st(trail[1]));
+      TEST(matmul_2_3,   trail.size() >= 3 &&
+                         out == matmul(trail[1], trail[2]));
       TEST(join_2_3,     trail.size() >= 3 && out == join(trail[1], trail[2]));
     }
 
@@ -297,8 +320,12 @@ struct C {
     }
 
     PRINT(eq_first, "EQ_FIRST")
+    PRINT(eq_second, "EQ_SECOND")
+    PRINT(eq_third, "EQ_THIRD")
     PRINT(std_promote, "STD_PROMOTE")
+    PRINT(promote_1_2, "PROMOTE_1_2")
     PRINT(pick_1st_2nd, "PICK_1ST_2ND")
+    PRINT(matmul_2_3, "MATMUL_2ND_3RD")
     PRINT(join_2_3, "JOIN_2_3")
 
     cout << ": NON_STANDARD:\n";

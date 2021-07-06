@@ -6,6 +6,7 @@ dist
 torchy.egg-info
 build.ninja
 .ninja_log
+infer_shapes
 infer_types
 scripts/call_pytorch_fns.h
 types.txt
