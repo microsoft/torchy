@@ -119,6 +119,27 @@ unsigned matmul(unsigned a, unsigned b) {
   return lookup_shape(move(res));
 }
 
+unsigned mul_last(unsigned a, unsigned b) {
+  auto &shape_a = all_shapes[a];
+  auto &shape_b = all_shapes[b];
+  if (shape_a.empty()) return b;
+  if (shape_b.empty()) return a;
+
+  bool is_a_ge = shape_a.size() >= shape_b.size();
+  auto &ge = is_a_ge ? shape_a : shape_b;
+  auto &lt = is_a_ge ? shape_b : shape_a;
+
+  auto promoted = ge;
+  unsigned j = lt.size()-1;
+  for (int i = ge.size()-1; i >= 0; --i) {
+    promoted[i] *= lt[j];
+
+    if (j-- == 0)
+      break;
+  }
+  return lookup_shape(move(promoted));
+}
+
 unsigned join(unsigned a, unsigned b) {
   auto res = all_shapes[a];
   auto &shape_b = all_shapes[b];
@@ -268,7 +289,9 @@ struct C {
     bool std_promote = true;
     bool promote_1_2 = true;
     bool pick_1st_2nd = true;
+    bool matmul_1_2 = true;
     bool matmul_2_3 = true;
+    bool mul_1_2 = true;
     bool join_2_3 = true;
 
     for (auto &result : results) {
@@ -295,8 +318,12 @@ struct C {
       TEST(promote_1_2,  trail.size() >= 2 &&
                          out == standard_promote(trail[0], trail[1]));
       TEST(pick_1st_2nd, trail.size() >= 2 && out == pick_1st(trail[1]));
+      TEST(matmul_1_2,   trail.size() >= 2 &&
+                         out == matmul(trail[0], trail[1]));
       TEST(matmul_2_3,   trail.size() >= 3 &&
                          out == matmul(trail[1], trail[2]));
+      TEST(mul_1_2,      trail.size() >= 2 &&
+                         out == mul_last(trail[0], trail[1]));
       TEST(join_2_3,     trail.size() >= 3 && out == join(trail[1], trail[2]));
     }
 
@@ -325,7 +352,9 @@ struct C {
     PRINT(std_promote, "STD_PROMOTE")
     PRINT(promote_1_2, "PROMOTE_1_2")
     PRINT(pick_1st_2nd, "PICK_1ST_2ND")
+    PRINT(matmul_1_2, "MATMUL_1ST_2ND")
     PRINT(matmul_2_3, "MATMUL_2ND_3RD")
+    PRINT(mul_1_2, "MUL_1ST_2ND")
     PRINT(join_2_3, "JOIN_2_3")
 
     cout << ": NON_STANDARD:\n";
