@@ -16,7 +16,7 @@ $ ./scripts/build.sh
 $ ninja
 ```
 
-This produces a types.txt file.
+This produces two files: types.txt & shapes.txt.
 Look for new typings:
 ```
 $ grep NON_STANDARD types.txt
@@ -24,6 +24,7 @@ $ grep NON_STANDARD types.txt
 
 Should be empty! If not, you need to add support for a new typing method
 in the following files: infer_types.* and gen.py.
+Note that shape inference is optional, while data-type (dtype) inference is not!
 
 2) Regenerate C++ files in autogen folder
 ```

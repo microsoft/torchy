@@ -67,6 +67,10 @@ public:
       trace_idx = idx;
   }
 
+  void set_no_shape_info() {
+    has_shape_data = false;
+  }
+
   unsigned getTraceIdx() const { return trace_idx; }
 
   void set(const Tensor &t) {
@@ -170,13 +174,11 @@ public:
 
   void set_size(int64_t dim, int64_t new_size) override {
     ensure_materialized(STATS(FlushReason::SET_SIZE));
-    has_shape_data = false;
     TensorImpl::set_size(dim, new_size);
   }
 
   void set_stride(int64_t dim, int64_t new_stride) override {
     ensure_materialized(STATS(FlushReason::SET_STRIDE));
-    has_shape_data = false;
     TensorImpl::set_stride(dim, new_stride);
   }
 
@@ -353,7 +355,8 @@ Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
   return register_new_tensor(ks, op, promote_tys(list), list.front().device());
 }
 
-bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks) {
+bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks,
+                       bool preserves_shape) {
   auto &t = const_cast<Tensor&>(t0);
   TorchyTensor *tt = is_torchy(t);
 
@@ -370,8 +373,12 @@ bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks) {
 
   auto idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, op, ks);
   if (tt) {
+    // TODO: what if tt wasn't in the trace but has multiple refs. how can we
+    // update those? storage doesn't keep track of users.
     tt->set_materialized(false);
     tt->update_idx(idx);
+    if (!preserves_shape)
+      tt->set_no_shape_info();
     return false;
   }
 

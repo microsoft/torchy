@@ -345,6 +345,18 @@ struct C {
     }});
   }
 
+  template <typename... Tail>
+  void call(function<Tensor(IntArrayRef&, Tail...)> fn) {
+    for (unsigned shape = 0; shape < num_test_shapes; ++shape) {
+      type_trail.push_back(shape);
+      call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+        IntArrayRef s(all_shapes[shape]);
+        return fn(s, args...);
+      }});
+      type_trail.pop_back();
+    }
+  }
+
   template <typename T>
   void analyze(function<T> fn) {
     if (call_only && strcmp(name, call_only))

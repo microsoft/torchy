@@ -79,17 +79,23 @@ all_functions = sorted(all_functions, key=lambda p : -p[1])
 
 fd = open('build.ninja', 'w')
 print(f'''
-rule infer
+rule type
   command = bash -c "./infer_types $in > $out 2> /dev/null || true"
-  description = $in
+  description = type $in
+
+rule shape
+  command = bash -c "./infer_shapes $in > $out 2> /dev/null || true"
+  description = shape $in
 
 rule merge
   command = bash -c "cat $in > $out"
   description = Assemble final $out file
 
-build types.txt: merge {" ".join(f'output/{fn}.txt' for fn,sz in all_functions)}
+build types.txt: merge {" ".join(f'types/{fn}.txt' for fn,sz in all_functions)}
+build shapes.txt: merge {" ".join(f'shapes/{fn}.txt' for fn,sz in all_functions)}
 ''', file=fd)
 
 for fn,sz in all_functions:
-  print(f'build output/{fn}.txt: infer {fn}', file=fd)
+  print(f'build types/{fn}.txt: type {fn}', file=fd)
+  print(f'build shapes/{fn}.txt: shape {fn}', file=fd)
   print(f'build {fn}: phony', file=fd)

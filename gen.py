@@ -3,7 +3,7 @@
 
 PYTORCH = '../pytorch'
 
-from special_fns import *
+from typings_data import *
 import sys
 sys.path.append(PYTORCH)
 from tools.codegen.gen import *
@@ -217,13 +217,20 @@ def gen_dispatch_wrapper(fn):
   assert tensor_args
   ret = fn_output(fn)
 
+  keeps_shape = 'false'
+  shape_fn = shape_inference.get(str(fn.func.name))
+  if shape_fn == 'EQ_FIRST' and tensor_args[0].expr == ret:
+    keeps_shape = 'true'
+  elif shape_fn:
+    keeps_shape = f'eq_shapes({ret}, TODO_SHAPE)'
+
   return f'''
 {fndecl} {{
   if (trace.is_flushing()) {{
     {dispatchkey}
     return {redispatch};
   }}
-  bool flush = register_in_place({ret}, {fn_enum(fn)}, dispatchKeySet);
+  bool flush = register_in_place({ret}, {fn_enum(fn)}, dispatchKeySet, {keeps_shape});
   {register_args}
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
