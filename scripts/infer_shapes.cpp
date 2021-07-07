@@ -119,6 +119,54 @@ unsigned matmul(unsigned a, unsigned b) {
   return lookup_shape(move(res));
 }
 
+// https://pytorch.org/docs/stable/generated/torch.matmul.html
+unsigned mul(unsigned a, unsigned b) {
+  auto &shape_a = all_shapes[a];
+  auto &shape_b = all_shapes[b];
+  if (shape_a.empty() || shape_b.empty())
+    return -1u;
+
+  auto size_a = shape_a.size();
+  auto size_b = shape_b.size();
+  if (size_a == 1 && size_b == 1)
+    return lookup_shape({});
+
+  if (size_a <= 2 && size_b == 2)
+    return matmul(a, b);
+
+  if (size_a == 2 && size_b == 1)
+    return lookup_shape({shape_a[0]});
+
+  if (size_a == 1 && size_b >= 2) {
+    auto res = shape_b;
+    auto last = res.back();
+    res.pop_back();
+    res.back() = last;
+    return lookup_shape(move(res));
+  }
+
+  if (size_b == 1) {
+    auto res = shape_a;
+    res.pop_back();
+    return lookup_shape(move(res));
+  }
+
+  auto res = all_shapes[standard_promote(a, b)];
+  res[res.size()-2] = shape_a[shape_a.size()-2];
+  res.back() = shape_b.back();
+  return lookup_shape(move(res));
+}
+
+unsigned mult(unsigned a, unsigned b) {
+  auto &shape_b = all_shapes[b];
+  if (shape_b.size() < 2)
+    return mul(a, b);
+  
+  auto newb = shape_b;
+  swap(newb.back(), newb[newb.size()-2]);
+  return mul(a, lookup_shape(move(newb)));
+}
+
 unsigned mul_last(unsigned a, unsigned b) {
   auto &shape_a = all_shapes[a];
   auto &shape_b = all_shapes[b];
@@ -144,6 +192,29 @@ unsigned join(unsigned a, unsigned b) {
   auto res = all_shapes[a];
   auto &shape_b = all_shapes[b];
   res.insert(res.end(), shape_b.begin(), shape_b.end());
+  return lookup_shape(move(res));
+}
+
+unsigned pad1(unsigned s) {
+  auto res = all_shapes[s];
+  res.push_back(1);
+  return lookup_shape(move(res));
+}
+
+unsigned drop1(unsigned s) {
+  auto res = all_shapes[s];
+  if (res.size() < 1)
+    return -1u;
+  res.pop_back();
+  return lookup_shape(move(res));
+}
+
+unsigned drop2(unsigned s) {
+  auto res = all_shapes[s];
+  if (res.size() < 2)
+    return -1u;
+  res.pop_back();
+  res.pop_back();
   return lookup_shape(move(res));
 }
 
@@ -289,10 +360,15 @@ struct C {
     bool std_promote = true;
     bool promote_1_2 = true;
     bool pick_1st_2nd = true;
+    bool mul_1_2 = true;
+    bool mult_1_2 = true;
     bool matmul_1_2 = true;
     bool matmul_2_3 = true;
-    bool mul_1_2 = true;
+    bool mullast_1_2 = true;
     bool join_2_3 = true;
+    bool is_pad1 = true;
+    bool is_drop1 = true;
+    bool is_drop2 = true;
 
     for (auto &result : results) {
       auto &trail = result.inputs;
@@ -318,13 +394,18 @@ struct C {
       TEST(promote_1_2,  trail.size() >= 2 &&
                          out == standard_promote(trail[0], trail[1]));
       TEST(pick_1st_2nd, trail.size() >= 2 && out == pick_1st(trail[1]));
+      TEST(mul_1_2,      trail.size() >= 2 && out == mul(trail[0], trail[1]));
+      TEST(mult_1_2,     trail.size() >= 2 && out == mult(trail[0], trail[1]));
       TEST(matmul_1_2,   trail.size() >= 2 &&
                          out == matmul(trail[0], trail[1]));
       TEST(matmul_2_3,   trail.size() >= 3 &&
                          out == matmul(trail[1], trail[2]));
-      TEST(mul_1_2,      trail.size() >= 2 &&
+      TEST(mullast_1_2,  trail.size() >= 2 &&
                          out == mul_last(trail[0], trail[1]));
       TEST(join_2_3,     trail.size() >= 3 && out == join(trail[1], trail[2]));
+      TEST(is_pad1,      out == pad1(trail[0]));
+      TEST(is_drop1,     out == drop1(trail[0]));
+      TEST(is_drop2,     out == drop2(trail[0]));
     }
 
     cout << name;
@@ -352,10 +433,15 @@ struct C {
     PRINT(std_promote, "STD_PROMOTE")
     PRINT(promote_1_2, "PROMOTE_1_2")
     PRINT(pick_1st_2nd, "PICK_1ST_2ND")
+    PRINT(mul_1_2, "MUL_1ST_2ND")
+    PRINT(mult_1_2, "MULT_1ST_2ND")
     PRINT(matmul_1_2, "MATMUL_1ST_2ND")
     PRINT(matmul_2_3, "MATMUL_2ND_3RD")
-    PRINT(mul_1_2, "MUL_1ST_2ND")
+    PRINT(mullast_1_2, "MULLAST_1ST_2ND")
     PRINT(join_2_3, "JOIN_2_3")
+    PRINT(is_pad1, "PAD1")
+    PRINT(is_drop1, "DROP1")
+    PRINT(is_drop2, "DROP2")
 
     cout << ": NON_STANDARD:\n";
 
