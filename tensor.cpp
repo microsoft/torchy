@@ -174,7 +174,8 @@ public:
   }
 
   IntArrayRef strides() const override {
-    if (!has_shape_data)
+    // TODO
+    if (!has_shape_data || true)
       ensure_materialized(STATS(FlushReason::STRIDES));
     return TensorImpl::strides();
   }
@@ -196,13 +197,15 @@ public:
   }
 
   int64_t numel() const override {
-    if (!has_shape_data)
+    // TODO
+    if (!has_shape_data || true)
       ensure_materialized(STATS(FlushReason::NUMEL));
     return TensorImpl::numel();
   }
 
   bool is_contiguous(at::MemoryFormat memory_format) const override {
-    if (!has_shape_data)
+    // TODO
+    if (!has_shape_data || true)
       ensure_materialized(STATS(FlushReason::IS_CONTIGUOUS));
     return TensorImpl::is_contiguous(memory_format);
   }
@@ -219,6 +222,7 @@ public:
   void set_size(int64_t dim, int64_t new_size) override {
     ensure_materialized(STATS(FlushReason::SET_SIZE));
     TensorImpl::set_size(dim, new_size);
+    store_shape();
   }
 
   void set_stride(int64_t dim, int64_t new_stride) override {
@@ -238,7 +242,8 @@ public:
   }
 
   int64_t stride(int64_t d) const override {
-    if (!has_shape_data)
+    // TODO
+    if (!has_shape_data || true)
       ensure_materialized(STATS(FlushReason::STRIDE));
     return TensorImpl::stride(d);
   }
