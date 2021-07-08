@@ -72,6 +72,14 @@ class TorchyTensor final : public TensorImpl {
 #endif
   }
 
+  void copy_torchy_data(const TorchyTensor *tt) {
+    has_shape_data      = tt->has_shape_data;
+#ifndef NDEBUG
+    inferred_shape_dims = tt->inferred_shape_dims;
+    inferred_shape      = tt->inferred_shape;
+#endif
+  }
+
 public:
   TorchyTensor(DispatchKeySet key_set, caffe2::TypeMeta dtype,
                const c10::optional<c10::Device> &device_opt)
@@ -251,6 +259,7 @@ public:
     copy_tensor_metadata(this, copy.get(), forward<T>(version_counter),
                          allow_tensor_metadata_change);
     copy->numel_ = numel_;
+    copy->copy_torchy_data(this);
     return copy;
   }
 
@@ -278,6 +287,7 @@ public:
         trace.add_shared(tt->trace_idx, (uintptr_t)this);
         trace_idx = tt->trace_idx;
       }
+      copy_torchy_data(tt);
     }
 
     TensorImpl::shallow_copy_from(impl);

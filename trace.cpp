@@ -341,5 +341,16 @@ ostream& operator<<(ostream &os, const Trace &t) {
     t.ops[i].print(os, inputs_map);
     os << '\n';
   }
+
+  if (inputs_map.empty())
+    return os;
+
+  os << "\nInputs' shapes:\n";
+  for (unsigned i = 0, e = inputs_map.size(); i != e; ++i) {
+    auto I = find_if(inputs_map.begin(), inputs_map.end(),
+                     [=](auto &p) { return p.second == i; });
+    assert(I != inputs_map.end());
+    os << "in<" << i << ">: " << I->first->sizes() << '\n';
+  }
   return os;
 }
