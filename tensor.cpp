@@ -37,15 +37,13 @@ class TorchyTensor final : public TensorImpl {
     return storage_ && materialized_var();
   }
 
-#if 0
   bool shared() const {
     return storage_ && !storage_.unique();
   }
-#endif
 
   void check_inferred_shape() {
 #ifndef NDEBUG
-    if (!has_shape_data)
+    if (!has_shape_data || shared())
       return;
     auto real_shape = TensorImpl::sizes();
     assert(real_shape.size() == inferred_shape_dims);
