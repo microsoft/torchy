@@ -45,6 +45,11 @@ bool TensorOp::hasTensors() const {
            != tensors.end();
 }
 
+uintptr_t TensorOp::someTensor() const {
+  auto I = find_if(tensors.begin(), tensors.end(), [](auto t) { return t!=0; });
+  return I == tensors.end() ? 0 : *I;
+}
+
 namespace {
 using InputMap = map<const TensorImpl*, unsigned>;
 
@@ -138,6 +143,10 @@ void TensorOp::print(ostream &os, InputMap &inputs) const {
 
   if (observable)
     os << " #output";
+
+  if (auto t = someTensor())
+    if (tensor_has_shape(t))
+      tensor_print_shape(os << " shape=", t);
 }
 
 

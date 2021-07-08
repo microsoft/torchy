@@ -1134,7 +1134,7 @@ const at::Tensor & wrap_as_strided_(c10::DispatchKeySet dispatchKeySet, const at
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::as_strided_(dispatchKeySet, self, std::move(size), std::move(stride), storage_offset);
   }
-  bool flush = register_in_place(self, H_AS_STRIDED_, dispatchKeySet, eq_shapes(self, TODO_SHAPE));
+  bool flush = register_in_place(self, H_AS_STRIDED_, dispatchKeySet, false);
   trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(std::move(stride));trace.append_arg(storage_offset);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
@@ -3414,7 +3414,7 @@ const at::Tensor & wrap_resize_(c10::DispatchKeySet dispatchKeySet, const at::Te
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::resize_(dispatchKeySet, self, std::move(size), std::move(memory_format));
   }
-  bool flush = register_in_place(self, H_RESIZE_, dispatchKeySet, eq_shapes(self, TODO_SHAPE));
+  bool flush = register_in_place(self, H_RESIZE_, dispatchKeySet, false);
   trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(std::move(memory_format));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
@@ -8582,7 +8582,7 @@ const at::Tensor & wrap_resize_as_(c10::DispatchKeySet dispatchKeySet, const at:
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::resize_as_(dispatchKeySet, self, the_template, std::move(memory_format));
   }
-  bool flush = register_in_place(self, H_RESIZE_AS_, dispatchKeySet, eq_shapes(self, TODO_SHAPE));
+  bool flush = register_in_place(self, H_RESIZE_AS_, dispatchKeySet, false);
   trace.append_arg(self);trace.append_arg(the_template);trace.append_arg(std::move(memory_format));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
@@ -9450,7 +9450,7 @@ at::Tensor & wrap_set__source_Tensor(c10::DispatchKeySet dispatchKeySet, at::Ten
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::set_(dispatchKeySet, self, source);
   }
-  bool flush = register_in_place(self, H_SET__SOURCE_TENSOR, dispatchKeySet, eq_shapes(self, TODO_SHAPE));
+  bool flush = register_in_place(self, H_SET__SOURCE_TENSOR, dispatchKeySet, false);
   trace.append_arg(self);trace.append_arg(source);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
@@ -9462,7 +9462,7 @@ at::Tensor & wrap_set_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::set_(dispatchKeySet, self);
   }
-  bool flush = register_in_place(self, H_SET_, dispatchKeySet, eq_shapes(self, TODO_SHAPE));
+  bool flush = register_in_place(self, H_SET_, dispatchKeySet, false);
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));

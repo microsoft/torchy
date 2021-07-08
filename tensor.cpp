@@ -23,7 +23,10 @@ namespace {
 class TorchyTensor final : public TensorImpl {
   unsigned trace_idx = -1u;
   bool has_shape_data = false;
-  // TODO: store predicted shape & check on update
+#ifndef NDEBUG
+  uint8_t inferred_shape_dims;
+  array<unsigned, 5> inferred_shape;
+#endif
 
   bool& materialized_var() const {
     assert(storage_);
@@ -39,6 +42,35 @@ class TorchyTensor final : public TensorImpl {
     return storage_ && !storage_.unique();
   }
 #endif
+
+  void check_inferred_shape() {
+#ifndef NDEBUG
+    if (!has_shape_data)
+      return;
+    auto real_shape = TensorImpl::sizes();
+    assert(real_shape.size() == inferred_shape_dims);
+    for (unsigned i = 0; i < inferred_shape_dims; ++i) {
+      assert(real_shape[i] == inferred_shape[i]);
+    }
+#endif
+  }
+
+  void store_shape() {
+    has_shape_data = true;
+#ifndef NDEBUG
+    auto real_shape = TensorImpl::sizes();
+    if (real_shape.size() > inferred_shape.size()) {
+      has_shape_data = false;
+      cerr << "WARN: Can't keep track of tensor with so many dimensions: "
+           << real_shape.size() << endl;
+      return;
+    }
+    inferred_shape_dims = real_shape.size();
+    for (unsigned i = 0; i < inferred_shape_dims; ++i) {
+      inferred_shape[i] = real_shape[i];
+    }
+#endif
+  }
 
 public:
   TorchyTensor(DispatchKeySet key_set, caffe2::TypeMeta dtype,
@@ -72,6 +104,7 @@ public:
   }
 
   unsigned getTraceIdx() const { return trace_idx; }
+  bool hasShapeData() const { return has_shape_data; }
 
   void set(const Tensor &t) {
     assert(dtype() == t.dtype());
@@ -84,7 +117,9 @@ public:
                          other->allow_tensor_metadata_change());
 
     set_materialized(true);
-    has_shape_data = true;
+
+    check_inferred_shape();
+    store_shape();
 
     // must be run after materialized is set to true, as these call the
     // overriden methods below
@@ -102,6 +137,9 @@ public:
   void endInPlaceUpdate() {
     trace_idx = -1u;
     set_materialized(true);
+
+    check_inferred_shape();
+    store_shape();
   }
 
   void ensure_materialized(STATS(FlushReason reason)) const {
@@ -271,6 +309,15 @@ void init_update_in_place(uintptr_t tt) {
 void end_update_in_place(uintptr_t tt) {
   if (tt != DUMMY_TORCHY)
     ((TorchyTensor*)tt)->endInPlaceUpdate();
+}
+
+bool tensor_has_shape(uintptr_t tt) {
+  return tt != DUMMY_TORCHY && ((TorchyTensor*)tt)->hasShapeData();
+}
+
+void tensor_print_shape(ostream &os, uintptr_t tt) {
+  assert(tt != DUMMY_TORCHY);
+  os << ((TorchyTensor*)tt)->sizes();
 }
 
 

@@ -16,16 +16,9 @@ using namespace c10;
 using namespace std;
 
 namespace {
-array<ScalarType, /*NumScalarTypes-1*/7> types = {
+array<ScalarType, NumScalarTypes-1> types = {
 #define DECL(_, x) ScalarType::x,
-  //AT_FORALL_SCALAR_TYPES_WITH_COMPLEX_AND_QINTS(DECL)
-  kBool,
-  kByte,
-  kInt,
-  kFloat,
-  kDouble,
-  kComplexFloat,
-  kComplexDouble
+  AT_FORALL_SCALAR_TYPES_WITH_COMPLEX_AND_QINTS(DECL)
 #undef DECL
 };
 
