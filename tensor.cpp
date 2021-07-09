@@ -88,6 +88,17 @@ public:
 
   TorchyTensor(Tensor &&t) : TensorImpl(DISPATCHKEY, t.dtype(), t.device()) {
     set(t);
+
+    // steal pyobj & friends
+    auto *other = t.getIntrusivePtr().get();
+    auto *interp = other->pyobj_interpreter();
+    init_pyobj(interp, other->check_pyobj(interp).value_or(nullptr),
+               c10::impl::PyInterpreterStatus::DEFINITELY_UNINITIALIZED);
+
+    if (other->owns_pyobj()) {
+      set_owns_pyobj(true);
+      other->set_owns_pyobj(false);
+    }
   }
 
   void set_materialized(bool val) {

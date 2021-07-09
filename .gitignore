@@ -9,4 +9,5 @@ build.ninja
 infer_shapes
 infer_types
 scripts/call_pytorch_fns.h
+shapes.txt
 types.txt
