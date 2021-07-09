@@ -42,4 +42,6 @@ $ python setup.py install
 $ ./run-tests.sh
 ```
 
-5) Ship it! 🚀
+5) Update PYTORCH_COMMIT
+
+6) Ship it! 🚀
