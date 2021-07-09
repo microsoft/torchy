@@ -123,6 +123,20 @@ struct C {
     }
   }
 
+  template <typename... Tail>
+  void call(function<Tensor(ScalarType&, Tail...)> fn) {
+    for (auto ty : types) {
+      if (isQIntType(ty))
+        continue;
+      type_trail.push_back({ty, false});
+      call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+        auto ty_cpy = ty;
+        return fn(ty_cpy, args...);
+      }});
+      type_trail.pop_back();
+    }
+  }
+
   template <typename T, typename... Tail>
   void call(function<Tensor(c10::optional<T>&, Tail...)> fn) {
     // call with a value
@@ -205,6 +219,14 @@ struct C {
     test(kLong, {0, 1});
     test(kDouble, {0.0, 1.0});
     test(kComplexDouble, {c10::complex<double>(0.0),c10::complex<double>(1.0)});
+  }
+
+  template <typename... Tail>
+  void call(function<Tensor(IntArrayRef&, Tail...)> fn) {
+    call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+      IntArrayRef s;
+      return fn(s, args...);
+    }});
   }
 
   template <typename T>

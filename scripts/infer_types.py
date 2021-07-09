@@ -25,7 +25,12 @@ def get(tensors, type):
 
 def mk_arg(arg, tensors):
   type = arg.type.cpp_type()
-  if 'Tensor' in type or type == 'const c10::optional<at::Scalar> &':
+  dispatch_types = [
+    'at::IntArrayRef',
+    'const c10::optional<at::Scalar> &',
+    'c10::optional<at::ScalarType>',
+  ]
+  if 'Tensor' in type or type in dispatch_types:
     type = type.replace('const ', '')
     if '&' not in type:
       type += ' &'
@@ -55,7 +60,7 @@ def gen(fn):
   tensors = []
   args = [mk_arg(arg, tensors) for arg in args]
 
-  if not tensors or fn.func.arguments.out:
+  if not tensors:
     return f'// skip {fn.func.name}'
 
   all_functions.append((str(fn.func.name), len(tensors)))

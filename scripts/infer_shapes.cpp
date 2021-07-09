@@ -357,6 +357,14 @@ struct C {
     }
   }
 
+  template <typename... Tail>
+  void call(function<Tensor(ScalarType&, Tail...)> fn) {
+    call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+      auto ty_cpy = kFloat;
+      return fn(ty_cpy, args...);
+    }});
+  }
+
   template <typename T>
   void analyze(function<T> fn) {
     if (call_only && strcmp(name, call_only))
