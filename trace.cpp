@@ -16,10 +16,15 @@ using namespace std;
 
 namespace interpreter { void run(Trace &t); }
 
+void TensorOp::destroy() {
+  args.clear();
+  tls.~ThreadLocalState();
+}
+
 void TensorOp::incref() {
   assert(observable);
-  // TODO: harden this for overflows
   ++refs;
+  assert(refs != 0);
 }
 
 void TensorOp::decref(TensorOp *ops) {
@@ -35,8 +40,8 @@ void TensorOp::decref(TensorOp *ops) {
     for (auto &arg : args) {
       visit(visitor, arg);
     }
-    args.clear();
     assert(!observable && !hasTensors());
+    destroy();
   }
 }
 
@@ -322,9 +327,7 @@ void Trace::flush(STATS(FlushReason reason)) {
 
   // reduce reference count on tensors s.t. they are deleted if possible
   for (unsigned i = 0; i < next_op; ++i) {
-    auto &op = ops[i];
-    op.args.clear();
-    op.tls.~ThreadLocalState();
+    ops[i].destroy();
   }
 
   next_op = 0;

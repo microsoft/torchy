@@ -71,6 +71,7 @@ struct TensorOp {
              std::map<const at::TensorImpl*, unsigned> &inputs) const;
 
 private:
+  void destroy();
   void incref();
   void decref(TensorOp *ops);
   bool hasTensors() const;
