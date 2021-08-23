@@ -66,6 +66,8 @@ def mk_dtype_infer(type, tensors):
     return f'{tensors[1].expr}.dtype()'
   if type == 'EQ_THIRD':
     return f'{tensors[2].expr}.dtype()'
+  if type == 'EQ_FOURTH':
+    return f'{tensors[3].expr}.dtype()'
   if type == 'BOOLBYTE':
     return f'bool_byte({tensors[0].expr}.dtype().toScalarType())'
   if type == 'BOOL2INT':
@@ -86,10 +88,6 @@ def mk_dtype_infer(type, tensors):
     return f'to_float_double({tensors[0].expr}.dtype().toScalarType())'
   if type == 'TO_FLOAT2':
     return f'to_float2({tensors[0].expr}, {tensors[1].expr})'
-  if type == 'TO_FLOAT2_2':
-    return f'to_float2_2({tensors[0].expr}, {tensors[1].expr})'
-  if type == 'TO_FLOAT2_4':
-    return f'to_float2_4({tensors[0].expr}, {tensors[1].expr})'
   if type == 'TO_FLOAT3':
     return f'to_float3({tensors[0].expr}, {tensors[1].expr}, {tensors[2].expr})'
   if type == 'TO_FLOAT4':

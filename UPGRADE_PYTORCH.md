@@ -17,9 +17,10 @@ $ ninja
 ```
 
 This produces two files: types.txt & shapes.txt.
-Look for new typings:
+Look for new typings and errors:
 ```
 $ grep NON_STANDARD types.txt
+$ grep ERROR types.txt
 ```
 
 Should be empty! If not, you need to add support for a new typing method

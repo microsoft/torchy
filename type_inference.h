@@ -15,7 +15,7 @@ unsigned ty_to_num(ScalarType ty) {
   return 0;
 }
 
-void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero) {}
+//void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero) {}
 
 void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero, ScalarType ty,
               const function<bool()> &z) {
@@ -123,6 +123,10 @@ ScalarType promote_tys(Args&&... args) {
     return pick_first_ty(args...);
 
   auto p = promote(args...);
+  if (p.first == ScalarType::Undefined)
+    return p.second;
+  if (p.second == ScalarType::Undefined)
+    return p.first;
   return promoteTypes(p.first, p.second);
 }
 
@@ -191,47 +195,6 @@ ScalarType to_float2(ScalarType ty1, const function<bool()> &zerodim1,
     return typeMetaToScalarType(at::get_default_dtype());
 
   return promote_buggy(ty1, zerodim1, ty2, zerodim2);
-}
-
-ScalarType to_float2_2(ScalarType ty1, const function<bool()> &zerodim1,
-                       ScalarType ty2, const function<bool()> &zerodim2) {
-  auto default_ty = typeMetaToScalarType(at::get_default_dtype());
-
-  if (isIntegralType(ty1, true) && isIntegralType(ty2, true))
-    return default_ty;
-
-  if (isIntegralType(ty1, true))
-    return promoteTypes(ty1, ty2);
-
-  if (ty1 == kFloat && ty2 == kFloat)
-    return ty1;
-
-  if (default_ty == kFloat && ty1 == kDouble && zerodim1() && !zerodim2())
-    return promoteTypes(default_ty, ty2);
-
-  if (default_ty == kDouble &&
-      (isFloatingType(ty1) || isComplexType(ty1)) &&
-      isIntegralType(ty2, true) &&
-      (zerodim1() || !zerodim2()))
-    return promoteTypes(ty1, default_ty);
-
-  return promote_buggy(ty1, zerodim1, ty2, zerodim2);
-}
-
-ScalarType to_float2_4(ScalarType ty1, const function<bool()> &zerodim1,
-                       ScalarType ty2, const function<bool()> &zerodim2) {
-  auto res = promote_buggy(ty1, zerodim1, ty2, zerodim2);
-  if (isIntegralType(ty1, true)) {
-    auto default_ty = typeMetaToScalarType(at::get_default_dtype());
-    if (default_ty == kDouble &&
-        (isFloatingType(ty2) || isComplexType(ty2)) &&
-        zerodim1() && !zerodim2())
-      return ty2;
-    if (ty2 == kDouble && !zerodim1() &&zerodim2())
-      return default_ty;
-    return promoteTypes(res, default_ty);
-  }
-  return res;
 }
 
 ScalarType to_float3(ScalarType ty1, const function<bool()> &zerodim1,
@@ -310,4 +273,8 @@ ScalarType integrals_to_int(ScalarType ty) {
   if (isIntegralType(ty, true))
     return ScalarType::Long;
   return ty;
+}
+
+ScalarType optional_or_else(optional<ScalarType> opt, ScalarType ty) {
+  return opt ? *opt : ty;
 }

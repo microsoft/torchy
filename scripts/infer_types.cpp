@@ -65,9 +65,7 @@ void print(const Result &result) {
   case 3:  return f(ARG(0), ARG(1), ARG(2));\
   case 4:  return f(ARG(0), ARG(1), ARG(2), ARG(3));\
   case 5:  return f(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4));\
-  case 6:  return f(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5));\
-  case 7:  return f(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6));\
-  default: assert(0 && "too many args");\
+  default: cout << "ERROR: Too many args!" << endl; _Exit(-1); \
   }
 
 #include "../type_inference.h"
@@ -82,6 +80,12 @@ ScalarType promoted_type_trail_const(const vector<InputEntry> &args) {
 
 ScalarType promoted_type_trail_buggy(const vector<InputEntry> &args) {
   callVA(promote_buggy)
+}
+
+optional<ScalarType> to_optional(ScalarType ty) {
+  if (ty == ScalarType::Undefined)
+    return {};
+  return ty;
 }
 
 struct C {
@@ -244,13 +248,12 @@ struct C {
     bool eq_first = true;
     bool eq_second = true;
     bool eq_third = true;
+    bool eq_fourth = true;
     bool is_value = true;
     bool is_to_float = true;
     bool is_to_double = true;
     bool is_to_double2 = true;
     bool is_to_float2 = true;
-    bool is_to_float2_2 = true;
-    bool is_to_float2_4 = true;
     bool is_to_float3 = true;
     bool is_to_float4 = true;
     bool is_to_fdouble = true;
@@ -262,6 +265,7 @@ struct C {
     bool is_boolbyte = true;
     bool is_integral2int = true;
     bool is_to_qint = true;
+    bool is_optional_or21 = true;
 
     for (auto &result : results) {
       auto &type_trail = result.inputs;
@@ -285,6 +289,7 @@ struct C {
       eq_first         &= type == type_trail[0].ty;
       eq_second        &= type_trail.size() >= 2 && type == type_trail[1].ty;
       eq_third         &= type_trail.size() >= 3 && type == type_trail[2].ty;
+      eq_fourth        &= type_trail.size() >= 4 && type == type_trail[3].ty;
       is_value         &= toValueType(type_trail[0].ty) == type;
       is_to_float      &= to_float(type_trail[0].ty) == type;
       is_to_double     &= to_double(type_trail[0].ty) == type;
@@ -294,12 +299,6 @@ struct C {
       is_to_float2     &= type_trail.size() >= 2 &&
                           to_float2(PASS(type_trail[0]),
                                     PASS(type_trail[1])) == type;
-      is_to_float2_2   &= type_trail.size() >= 2 &&
-                          to_float2_2(PASS(type_trail[0]),
-                                      PASS(type_trail[1])) == type;
-      is_to_float2_4   &= type_trail.size() >= 2 &&
-                          to_float2_4(PASS(type_trail[0]),
-                                      PASS(type_trail[1])) == type;
       is_to_float3     &= type_trail.size() >= 3 &&
                           to_float3(PASS(type_trail[0]), PASS(type_trail[1]),
                                     PASS(type_trail[2])) == type;
@@ -322,6 +321,9 @@ struct C {
       is_boolbyte      &= bool_byte(type_trail[0].ty) == type;
       is_integral2int  &= integrals_to_int(type_trail[0].ty) == type;
       is_to_qint       &= toQIntType(type_trail[0].ty) == type;
+      is_optional_or21 &= type_trail.size() >= 2 &&
+                          optional_or_else(to_optional(type_trail[1].ty),
+                                           type_trail[0].ty) == type;
     }
 
     cout << name;
@@ -344,6 +346,7 @@ struct C {
     PRINT(eq_first, "EQ_FIRST")
     PRINT(eq_second, "EQ_SECOND")
     PRINT(eq_third, "EQ_THIRD")
+    PRINT(eq_fourth, "EQ_FOURTH")
     PRINT(eq_promoted, "EQ_PROMOTED")
     PRINT(eq_promoted_const, "EQ_PROMOTED_CONST")
     PRINT(eq_promoted_buggy, "EQ_PROMOTED_BUGGY")
@@ -352,8 +355,6 @@ struct C {
     PRINT(is_to_double, "TO_DOUBLE")
     PRINT(is_to_double2, "TO_DOUBLE2")
     PRINT(is_to_float2, "TO_FLOAT2")
-    PRINT(is_to_float2_2, "TO_FLOAT2_2")
-    PRINT(is_to_float2_4, "TO_FLOAT2_4")
     PRINT(is_to_float3, "TO_FLOAT3")
     PRINT(is_to_float4, "TO_FLOAT4")
     PRINT(is_to_fdouble, "TO_FLOAT_DOUBLE")
@@ -365,6 +366,7 @@ struct C {
     PRINT(is_boolbyte, "BOOLBYTE")
     PRINT(is_integral2int, "INTEGRAL2INT")
     PRINT(is_to_qint, "TO_QINT")
+    PRINT(is_optional_or21, "OPTIONAL_OR21")
 
     cout << ": NON_STANDARD:\n";
 
