@@ -59,12 +59,17 @@ def to_scalar_type(v):
   print('to_scalar_type', ty)
   exit(-1)
 
+def is_type_arg(arg):
+  type = arg.type.cpp_type()
+  dispatch_types = [
+    'const c10::optional<at::Scalar> &',
+    'c10::optional<at::ScalarType>',
+  ]
+  return 'Tensor' in type or type in dispatch_types
+
 
 def mk_dtype_infer(type, all_args):
-  dtypes = {
-    'c10::optional<at::ScalarType>',
-  }
-  args = [a for a in all_args if maybe_tensor(a.type) or a.type.remove_const_ref().cpp_type() in dtypes]
+  args = [arg for arg in all_args if is_type_arg(arg)]
 
   if type[0:3] == 'ALL':
     return f'k{type[4:]}'
@@ -193,6 +198,46 @@ def move_if_needed(str, arg):
     return str
   return f'std::move({str})'
 
+def is_shape_arg(arg):
+  type = arg.type.cpp_type()
+  dispatch_types = [
+    'at::IntArrayRef',
+    'c10::optional<at::ScalarType>',
+  ]
+  return 'Tensor' in type or type in dispatch_types
+
+def mk_shape_infer(shape, all_args):
+  args = [arg for arg in all_args if is_shape_arg(arg)]
+
+  if shape == 'ALL <>':
+    return 'IntArrayRef()'
+  if shape == 'ALL <0>':
+    return 'IntArrayRef(0)'
+  if shape == 'ALL <1>':
+    return 'IntArrayRef(1)'
+  if shape == 'EQ_FIRST':
+    return args[0].expr
+  if shape == 'EQ_SECOND':
+    return args[1].expr
+  if shape == 'EQ_THIRD':
+    return args[2].expr
+  if shape == 'MATMUL_1ST_2ND':
+    return f'shape_matmul({args[0].expr}, {args[1].expr})'
+  if shape == 'MATMUL_2ND_3RD':
+    return f'shape_matmul({args[1].expr}, {args[2].expr})'
+  if shape == 'PICK_1ST_2ND':
+    return f'shape_pick_1st({args[1].expr})'
+  if shape == 'JOIN_2_3':
+    return f'shape_join({args[1].expr}, {args[2].expr})'
+  if shape == 'DROP1':
+    return f'shape_drop1({args[0].expr})'
+  if shape == 'DROP2':
+    return f'shape_drop2({args[0].expr})'
+
+  print('mk_shape_infer', shape)
+  return 'nullopt'
+  #exit()
+
 
 @with_native_function
 def gen_dispatch_wrapper(fn):
@@ -237,10 +282,12 @@ def gen_dispatch_wrapper(fn):
 
   keeps_shape = 'false'
   shape_fn = shape_inference.get(str(fn.func.name))
-  if shape_fn == 'EQ_FIRST' and tensor_args[0].expr == ret:
+  if (shape_fn == 'EQ_FIRST' and len(tensor_args) >= 1 and tensor_args[0].expr == ret) or\
+     (shape_fn == 'EQ_SECOND' and len(tensor_args) >= 2 and tensor_args[1].expr == ret) or\
+     (shape_fn == 'EQ_THIRD' and len(tensor_args) >= 3 and tensor_args[2].expr == ret):
     keeps_shape = 'true'
   elif shape_fn:
-    keeps_shape = f'eq_shapes({ret}, TODO_SHAPE)'
+    keeps_shape = f'eq_shapes({ret}, {mk_shape_infer(shape_fn, args)})'
 
   return f'''
 {fndecl} {{

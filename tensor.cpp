@@ -380,6 +380,70 @@ ScalarType bool_to_int2(const Tensor &t1, const Tensor &t2) {
   return bool_to_int2(PASS(t1), PASS(t2));
 }
 
+optional<IntArrayRef> shape_of(const Tensor &t) {
+  // best effort; don't trigger rematerialization
+  if (auto *tt = is_torchy(t)) {
+    if (!tt->hasShapeData())
+      return {};
+  }
+  return t.sizes();
+}
+
+static std::vector<int64_t> tmp_shape;
+
+#include "shape_inference.h"
+
+#define GET_SHAPE(v) \
+  auto shape_##v = shape_of(v); \
+  if (!shape_##v) return {}
+
+optional<IntArrayRef> shape_matmul(const Tensor &a, const Tensor &b) {
+  GET_SHAPE(a);
+  GET_SHAPE(b);
+  return tmp_shape = shape_matmul(shape_a, shape_b)
+}
+
+optional<IntArrayRef> shape_mul(const Tensor &a, const Tensor &b) {
+  GET_SHAPE(a);
+  GET_SHAPE(b);
+  return tmp_shape = shape_mul(shape_a, shape_b)
+}
+
+optional<IntArrayRef> shape_pick_1st(const Tensor &t) {
+  GET_SHAPE(t);
+  return IntArrayRef(shape_t->data(), 1);
+}
+
+optional<IntArrayRef> shape_join(const Tensor &a, const Tensor &b) {
+  GET_SHAPE(a);
+  GET_SHAPE(b);
+  return tmp_shape = shape_join(shape_a, shape_b);
+}
+
+optional<IntArrayRef> shape_drop1(const Tensor &t) {
+  GET_SHAPE(t);
+  return IntArrayRef(shape_t->data(), shape_t->size()-1);
+}
+
+optional<IntArrayRef> shape_drop2(const Tensor &t) {
+  GET_SHAPE(t);
+  return IntArrayRef(shape_t->data(), shape_t->size()-2);
+}
+
+bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
+  if (!s1 || !s2)
+    return false;
+  return s1 == s2;
+}
+
+bool eq_shapes(const Tensor &t1, const Tensor &t2) {
+  return eq_shapes(shape_of(t1), shape_of(t2));
+}
+
+bool eq_shapes(const Tensor &t1, optional<IntArrayRef> s2) {
+  return eq_shapes(shape_of(t1), s2);
+}
+
 Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
                            caffe2::TypeMeta dtype, c10::Device device) {
   auto tt = at::detail::make_tensor<TorchyTensor>(dtype, device);

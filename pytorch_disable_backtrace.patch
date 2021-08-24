@@ -1,3 +1,16 @@
+diff --git a/aten/src/ATen/native/Resize.cpp b/aten/src/ATen/native/Resize.cpp
+index f4bff473d2..a3955e3fed 100644
+--- a/aten/src/ATen/native/Resize.cpp
++++ b/aten/src/ATen/native/Resize.cpp
+@@ -12,7 +12,7 @@ bool resize_output_check(const Tensor& output, IntArrayRef shape) {
+   if (output.sizes().equals(shape)) {
+     return false;
+   }
+-  if (output.numel() != 0) {
++  if (false && output.numel() != 0) {
+     TORCH_WARN(
+       "An output with one or more elements was resized since it had ",
+       "shape ", output.sizes(), ", which does not match the required ",
 diff --git a/c10/util/Logging.cpp b/c10/util/Logging.cpp
 index 3de6623cf3..6a47412dab 100644
 --- a/c10/util/Logging.cpp

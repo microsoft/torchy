@@ -70,29 +70,10 @@ Tensor new_tensor(unsigned shape) {
   return t;
 }
 
+#include "../shape_inference.h"
+
 unsigned standard_promote(unsigned a, unsigned b) {
-  if (a == b)
-    return a;
-
-  auto &shape_a = all_shapes[a];
-  auto &shape_b = all_shapes[b];
-  if (shape_a.empty()) return b;
-  if (shape_b.empty()) return a;
-
-  bool is_a_ge = shape_a.size() >= shape_b.size();
-  auto &ge = is_a_ge ? shape_a : shape_b;
-  auto &lt = is_a_ge ? shape_b : shape_a;
-
-  auto promoted = ge;
-  unsigned j = lt.size()-1;
-  for (int i = ge.size()-1; i >= 0; --i) {
-    if (lt[j] > ge[i])
-      promoted[i] = lt[j];
-
-    if (j-- == 0)
-      break;
-  }
-  return lookup_shape(move(promoted));
+  return lookup_shape(shape_std_promote(all_shapes[a], all_shapes[b]));
 }
 
 unsigned standard_promote(const vector<unsigned> &shapes) {
@@ -113,92 +94,31 @@ unsigned matmul(unsigned a, unsigned b) {
   auto &shape_b = all_shapes[b];
   if (shape_a.empty() || shape_b.empty())
     return -1u;
-
-  auto res = shape_a;
-  res.back() = shape_b.back();
-  return lookup_shape(move(res));
+  return lookup_shape(shape_matmul(shape_a, shape_b));
 }
 
-// https://pytorch.org/docs/stable/generated/torch.matmul.html
 unsigned mul(unsigned a, unsigned b) {
   auto &shape_a = all_shapes[a];
   auto &shape_b = all_shapes[b];
   if (shape_a.empty() || shape_b.empty())
     return -1u;
-
-  auto size_a = shape_a.size();
-  auto size_b = shape_b.size();
-  if (size_a == 1 && size_b == 1)
-    return lookup_shape({});
-
-  if (size_a <= 2 && size_b == 2)
-    return matmul(a, b);
-
-  if (size_a == 2 && size_b == 1)
-    return lookup_shape({shape_a[0]});
-
-  if (size_a == 1 && size_b >= 2) {
-    auto res = shape_b;
-    auto last = res.back();
-    res.pop_back();
-    res.back() = last;
-    return lookup_shape(move(res));
-  }
-
-  if (size_b == 1) {
-    auto res = shape_a;
-    res.pop_back();
-    return lookup_shape(move(res));
-  }
-
-  auto res = all_shapes[standard_promote(a, b)];
-  res[res.size()-2] = shape_a[shape_a.size()-2];
-  res.back() = shape_b.back();
-  return lookup_shape(move(res));
+  return lookup_shape(shape_mul(shape_a, shape_b));
 }
 
 unsigned mult(unsigned a, unsigned b) {
-  auto &shape_b = all_shapes[b];
-  if (shape_b.size() < 2)
-    return mul(a, b);
-  
-  auto newb = shape_b;
-  swap(newb.back(), newb[newb.size()-2]);
-  return mul(a, lookup_shape(move(newb)));
+  return lookup_shape(shape_mult(all_shapes[a], all_shapes[b]));
 }
 
 unsigned mul_last(unsigned a, unsigned b) {
-  auto &shape_a = all_shapes[a];
-  auto &shape_b = all_shapes[b];
-  if (shape_a.empty()) return b;
-  if (shape_b.empty()) return a;
-
-  bool is_a_ge = shape_a.size() >= shape_b.size();
-  auto &ge = is_a_ge ? shape_a : shape_b;
-  auto &lt = is_a_ge ? shape_b : shape_a;
-
-  auto promoted = ge;
-  unsigned j = lt.size()-1;
-  for (int i = ge.size()-1; i >= 0; --i) {
-    promoted[i] *= lt[j];
-
-    if (j-- == 0)
-      break;
-  }
-  return lookup_shape(move(promoted));
+  return lookup_shape(shape_mul_last(all_shapes[a], all_shapes[b]));
 }
 
 unsigned join(unsigned a, unsigned b) {
-  auto res = all_shapes[a];
-  auto &shape_b = all_shapes[b];
-  res.insert(res.end(), shape_b.begin(), shape_b.end());
-  return lookup_shape(move(res));
+  return lookup_shape(shape_join(all_shapes[a], all_shapes[b]));
 }
 
 unsigned pad1(unsigned s) {
-  auto res = all_shapes[s];
-  res.push_back(1);
-  return lookup_shape(move(res));
+  return lookup_shape(shape_pad1(all_shapes[s]));
 }
 
 unsigned drop1(unsigned s) {
