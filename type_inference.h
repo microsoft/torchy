@@ -15,7 +15,7 @@ unsigned ty_to_num(ScalarType ty) {
   return 0;
 }
 
-//void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero) {}
+void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero) {}
 
 void promote_(ScalarType &ty_zero, ScalarType &ty_nonzero, ScalarType ty,
               const function<bool()> &z) {
@@ -276,5 +276,13 @@ ScalarType integrals_to_int(ScalarType ty) {
 }
 
 ScalarType optional_or_else(optional<ScalarType> opt, ScalarType ty) {
-  return opt ? *opt : ty;
+  return opt.value_or(ty);
+}
+
+ScalarType optional_or_longelse(optional<ScalarType> opt, ScalarType ty) {
+  return optional_or_else(opt, integrals_to_int(ty));
+}
+
+ScalarType optional_or_default(optional<ScalarType> opt) {
+  return opt ? *opt : typeMetaToScalarType(at::get_default_dtype());
 }

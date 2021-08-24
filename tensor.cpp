@@ -363,14 +363,6 @@ ScalarType to_float2(const Tensor &t1, const Tensor &t2) {
   return to_float2(PASS(t1), PASS(t2));
 }
 
-ScalarType to_float2_2(const Tensor &t1, const Tensor &t2) {
-  return to_float2_2(PASS(t1), PASS(t2));
-}
-
-ScalarType to_float2_4(const Tensor &t1, const Tensor &t2) {
-  return to_float2_4(PASS(t1), PASS(t2));
-}
-
 ScalarType to_float3(const Tensor &t1, const Tensor &t2, const Tensor &t3) {
   return to_float3(PASS(t1), PASS(t2), PASS(t3));
 }
@@ -403,20 +395,18 @@ Tensor register_new_tensor(DispatchKeySet ks, TorchOp op, ScalarType dtype,
 }
 
 Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
-                           c10::optional<at::ScalarType> dtype,
+                           caffe2::TypeMeta dtype,
                            c10::optional<at::Device> device) {
   // see build/aten/src/ATen/RegisterBackendSelect.cpp for redispatching logic
-  auto dty = dtype ? scalarTypeToTypeMeta(*dtype) : at::get_default_dtype();
   auto dev = device ? *device : Device(kCPU);
-  return register_new_tensor(ks, op, dty, dev);
+  return register_new_tensor(ks, op, dtype, dev);
 }
 
-Tensor register_new_tensor(DispatchKeySet ks, TorchOp op, const Tensor &t,
+Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
                            c10::optional<at::ScalarType> dtype,
                            c10::optional<at::Device> device) {
-  auto dty = dtype ? scalarTypeToTypeMeta(*dtype) : t.dtype();
-  auto dev = device ? *device : t.device();
-  return register_new_tensor(ks, op, dty, dev);
+  auto dty = dtype ? scalarTypeToTypeMeta(*dtype) : at::get_default_dtype();
+  return register_new_tensor(ks, op, dty, device);
 }
 
 Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,

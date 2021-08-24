@@ -50,56 +50,78 @@ def maybe_tensor(type):
   }
   return type.remove_const_ref().cpp_type() in types
 
+def to_scalar_type(v):
+  ty = v.type.remove_const_ref().cpp_type()
+  if ty == 'at::Tensor':
+    return f'{v.expr}.dtype().toScalarType()'
+  if ty == 'c10::optional<at::ScalarType>':
+    return f'{v.expr}.value_or(ScalarType::Undefined)'
+  print('to_scalar_type', ty)
+  exit(-1)
 
-def mk_dtype_infer(type, tensors):
+
+def mk_dtype_infer(type, all_args):
+  dtypes = {
+    'c10::optional<at::ScalarType>',
+  }
+  args = [a for a in all_args if maybe_tensor(a.type) or a.type.remove_const_ref().cpp_type() in dtypes]
+
   if type[0:3] == 'ALL':
     return f'k{type[4:]}'
   if type == 'BOOL2INT':
-    return f'bool_to_int({tensors[0].expr}.dtype().toScalarType())'
+    return f'bool_to_int({args[0].expr}.dtype().toScalarType())'
   if type == 'EQ_PROMOTED':
-    return f'promote_tys({", ".join(t.expr for t in tensors)})'
+    return f'promote_tys({", ".join(t.expr for t in args)})'
   if type == 'EQ_PROMOTED_BUGGY':
-    return f'promote_buggy({", ".join(t.expr for t in tensors)})'
+    return f'promote_buggy({", ".join(t.expr for t in args)})'
   if type == 'EQ_PROMOTED_CONST':
-    return f'promote_const({", ".join(t.expr for t in tensors)})'
+    return f'promote_const({", ".join(t.expr for t in args)})'
   if type == 'EQ_SECOND':
-    return f'{tensors[1].expr}.dtype()'
+    return f'{args[1].expr}.dtype()'
   if type == 'EQ_THIRD':
-    return f'{tensors[2].expr}.dtype()'
+    return f'{args[2].expr}.dtype()'
   if type == 'EQ_FOURTH':
-    return f'{tensors[3].expr}.dtype()'
+    return f'{args[3].expr}.dtype()'
   if type == 'BOOLBYTE':
-    return f'bool_byte({tensors[0].expr}.dtype().toScalarType())'
+    return f'bool_byte({args[0].expr}.dtype().toScalarType())'
   if type == 'BOOL2INT':
-    return f'bool_to_int({tensors[0].expr}.dtype().toScalarType())'
+    return f'bool_to_int({args[0].expr}.dtype().toScalarType())'
   if type == 'BOOL2INT2':
-    return f'bool_to_int2({tensors[0].expr}, {tensors[1].expr})'
+    return f'bool_to_int2({args[0].expr}, {args[1].expr})'
   if type == 'INTEGRAL2INT':
-    return f'integrals_to_int({tensors[0].expr}.dtype().toScalarType())'
+    return f'integrals_to_int({args[0].expr}.dtype().toScalarType())'
   if type == 'TO_COMPLEX':
-    return f'to_complex({tensors[0].expr}.dtype().toScalarType())'
+    return f'to_complex({args[0].expr}.dtype().toScalarType())'
   if type == 'TO_DOUBLE':
-    return f'to_double({tensors[0].expr}.dtype().toScalarType())'
+    return f'to_double({args[0].expr}.dtype().toScalarType())'
   if type == 'TO_DOUBLE2':
-    return f'to_double2({tensors[0].expr}.dtype().toScalarType(), {tensors[1].expr}.dtype().toScalarType())'
+    return f'to_double2({args[0].expr}.dtype().toScalarType(), {args[1].expr}.dtype().toScalarType())'
   if type == 'TO_FLOAT':
-    return f'to_float({tensors[0].expr}.dtype().toScalarType())'
+    return f'to_float({args[0].expr}.dtype().toScalarType())'
   if type == 'TO_FLOAT_DOUBLE':
-    return f'to_float_double({tensors[0].expr}.dtype().toScalarType())'
+    return f'to_float_double({args[0].expr}.dtype().toScalarType())'
   if type == 'TO_FLOAT2':
-    return f'to_float2({tensors[0].expr}, {tensors[1].expr})'
+    return f'to_float2({args[0].expr}, {args[1].expr})'
   if type == 'TO_FLOAT3':
-    return f'to_float3({tensors[0].expr}, {tensors[1].expr}, {tensors[2].expr})'
+    return f'to_float3({args[0].expr}, {args[1].expr}, {args[2].expr})'
   if type == 'TO_FLOAT4':
-    return f'to_float4({tensors[0].expr}, {tensors[1].expr}, {tensors[2].expr}, {tensors[3].expr})'
+    return f'to_float4({args[0].expr}, {args[1].expr}, {args[2].expr}, {args[3].expr})'
   if type == 'TO_QINT':
-    return f'toQIntType({tensors[0].expr}.dtype().toScalarType())'
+    return f'toQIntType({args[0].expr}.dtype().toScalarType())'
   if type == 'TO_REAL2':
-    return f'to_real2({tensors[0].expr}, {tensors[1].expr})'
+    return f'to_real2({args[0].expr}, {args[1].expr})'
   if type == 'TO_REAL_FLOAT':
-    return f'to_real_float({tensors[0].expr}.dtype().toScalarType())'
+    return f'to_real_float({to_scalar_type(args[0])})'
   if type == 'TO_VALUE_TYPE':
-    return f'toValueType({tensors[0].expr}.dtype().toScalarType())'
+    return f'toValueType({args[0].expr}.dtype().toScalarType())'
+  if type == 'OPTIONAL_OR21':
+    return f'optional_or_else({args[1].expr}, {args[0].expr}.dtype().toScalarType())'
+  if type == 'OPTIONAL_O21LONG':
+    return f'optional_or_longelse({args[1].expr}, {args[0].expr}.dtype().toScalarType())'
+  if type == 'FIRST_OR_DEFAULT':
+    return args[0].expr
+  if type == 'FIRST_OR_LONG':
+    return f'optional_or_else({args[0].expr}, kLong)'
   print('mk_dtype_infer', type)
   exit()
 
@@ -115,27 +137,25 @@ def get_dtype_arg(all_tensors, args, name):
   elif tensor_lst:
     device = f'device_of({tensor_lst[0]})'
 
+  device_arg = get_arg_of_type(args, 'at::Device')
+  if device_arg:
+    device = device_arg.expr
+
+  device_arg = get_arg_of_type(args, 'c10::optional<at::Device>')
+  if device_arg:
+    device = device_arg.expr
+
   name = str(name)
   if name in type_inference:
-    dtype = mk_dtype_infer(type_inference[name], all_tensors)
+    dtype = mk_dtype_infer(type_inference[name], args)
+  else:
+    dtype_arg = get_arg_of_type(args, 'at::ScalarType')
+    if dtype_arg:
+      dtype = dtype_arg.expr
 
-  dtype_arg = get_arg_of_type(args, 'at::ScalarType')
-  if dtype_arg:
-    device_arg = get_arg_of_type(args, 'at::Device')
-    device_arg = device_arg.expr if device_arg else device
-    dtype_arg = dtype_arg.expr
-    return f'{dtype_arg}, {device_arg}'
-
-  dtype_arg = get_arg_of_type(args, 'c10::optional<at::ScalarType>')
-  if dtype_arg:
-    device_arg = get_arg_of_type(args, 'c10::optional<at::Device>')
-    dtype_arg = dtype_arg.expr
-    if tensors:
-      device_arg = device_arg.expr if device_arg else 'nullopt'
-      return f'{tensors[0]}, {dtype_arg}, {device_arg}'
-
-    device_arg = device_arg.expr if device_arg else device
-    return f'{dtype_arg}, {device_arg}'
+    dtype_arg = get_arg_of_type(args, 'c10::optional<at::ScalarType>')
+    if dtype_arg:
+      dtype = dtype_arg.expr
 
   tensor_arg = get_arg_of_type(args, 'at::TensorList')
   if dtype == 'nullopt' and tensor_arg:

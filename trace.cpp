@@ -9,6 +9,7 @@
 #include <ATen/core/List.h>
 #include <algorithm>
 #include <cstdlib>
+#include <iostream>
 #include <unordered_map>
 
 using namespace at;

@@ -266,6 +266,9 @@ struct C {
     bool is_integral2int = true;
     bool is_to_qint = true;
     bool is_optional_or21 = true;
+    bool is_optional_or21long = true;
+    bool is_1_or_default = true;
+    bool is_1_or_long = true;
 
     for (auto &result : results) {
       auto &type_trail = result.inputs;
@@ -324,6 +327,13 @@ struct C {
       is_optional_or21 &= type_trail.size() >= 2 &&
                           optional_or_else(to_optional(type_trail[1].ty),
                                            type_trail[0].ty) == type;
+      is_optional_or21long &= type_trail.size() >= 2 &&
+                             optional_or_longelse(to_optional(type_trail[1].ty),
+                                                  type_trail[0].ty) == type;
+      is_1_or_default  &= optional_or_default(to_optional(type_trail[0].ty))
+                            == type;
+      is_1_or_long     &= optional_or_else(to_optional(type_trail[0].ty), kLong)
+                            == type;
     }
 
     cout << name;
@@ -367,6 +377,9 @@ struct C {
     PRINT(is_integral2int, "INTEGRAL2INT")
     PRINT(is_to_qint, "TO_QINT")
     PRINT(is_optional_or21, "OPTIONAL_OR21")
+    PRINT(is_optional_or21long, "OPTIONAL_O21LONG")
+    PRINT(is_1_or_default, "FIRST_OR_DEFAULT")
+    PRINT(is_1_or_long, "FIRST_OR_LONG")
 
     cout << ": NON_STANDARD:\n";
 
