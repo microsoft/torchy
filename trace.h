@@ -110,18 +110,13 @@ public:
   }
 
   template<typename T>
-  void append_arg(at::ArrayRef<T> &arg) {
+  void append_arg(at::ArrayRef<T> arg) {
     incref(arg);
     ops[next_op-1].args.emplace_back(arg.vec());
   }
 
   template<typename T>
-  void append_arg(at::ArrayRef<T> &&arg) {
-    append_arg(arg);
-  }
-
-  template<typename T>
-  void append_arg(c10::optional<at::ArrayRef<T>> &arg) {
+  void append_arg(c10::optional<at::ArrayRef<T>> arg) {
     c10::optional<std::vector<T>> copy;
     if (arg) {
       incref(*arg);
@@ -130,16 +125,11 @@ public:
     ops[next_op-1].args.emplace_back(std::move(copy));
   }
 
-  template<typename T>
-  void append_arg(c10::optional<at::ArrayRef<T>> &&arg) {
-    append_arg(arg);
-  }
-
-  void append_arg(c10::string_view &&arg) {
+  void append_arg(c10::string_view arg) {
     ops[next_op-1].args.emplace_back(std::string(arg.data(), arg.size()));
   }
 
-  void append_arg(c10::optional<c10::string_view> &&arg) {
+  void append_arg(c10::optional<c10::string_view> arg) {
     c10::optional<std::string> copy;
     if (arg)
       copy = std::string(arg->data(), arg->size());

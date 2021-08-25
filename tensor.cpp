@@ -397,6 +397,12 @@ static std::vector<int64_t> tmp_shape;
   auto shape_##v = shape_of(v); \
   if (!shape_##v) return {}
 
+optional<IntArrayRef> shape_std_promote(const Tensor &a, const Tensor &b) {
+  GET_SHAPE(a);
+  GET_SHAPE(b);
+  return tmp_shape = shape_std_promote(*shape_a, *shape_b);
+}
+
 optional<IntArrayRef> shape_matmul(const Tensor &a, IntArrayRef shape_b) {
   GET_SHAPE(a);
   return tmp_shape = shape_matmul(*shape_a, shape_b);
@@ -411,6 +417,37 @@ optional<IntArrayRef> shape_mul(const Tensor &a, const Tensor &b) {
   GET_SHAPE(a);
   GET_SHAPE(b);
   return tmp_shape = shape_mul(*shape_a, *shape_b);
+}
+
+optional<IntArrayRef> shape_mul(const TensorList &lst) {
+  if (lst.empty())
+    return {};
+
+  auto shape = shape_of(lst[0]);
+  if (!shape)
+    return {};
+
+  for (unsigned i = 1, e = lst.size(); i != e; ++i) {
+    auto shape_2 = shape_of(lst[i]);
+    if (!shape_2)
+      return {};
+
+    tmp_shape = shape_mul(*shape, *shape_2);
+    shape = tmp_shape;
+  }
+  return shape;
+}
+
+optional<IntArrayRef> shape_mult(const Tensor &a, const Tensor &b) {
+  GET_SHAPE(a);
+  GET_SHAPE(b);
+  return tmp_shape = shape_mult(*shape_a, *shape_b);
+}
+
+optional<IntArrayRef> shape_mul_last(const Tensor &a, const Tensor &b) {
+  GET_SHAPE(a);
+  GET_SHAPE(b);
+  return tmp_shape = shape_mul_last(*shape_a, *shape_b);
 }
 
 optional<IntArrayRef> shape_pick_1st(const Tensor &t) {

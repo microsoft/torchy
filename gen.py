@@ -183,7 +183,15 @@ def move_if_needed(str, arg):
     'bool',
     'int64_t',
     'double',
-    'at::IntArrayRef'
+    'at::Device',
+    'at::Dimname',
+    'at::DimnameList',
+    'at::IntArrayRef',
+    'at::MemoryFormat',
+    'at::ScalarType',
+    'at::Layout',
+    'at::TensorList',
+    'c10::string_view',
   }
   free_copy_types = (
     types.ArrayRefCType,
@@ -222,10 +230,22 @@ def mk_shape_infer(shape, all_args):
     return args[1].expr
   if shape == 'EQ_THIRD':
     return args[2].expr
+  if shape == 'STD_PROMOTE':
+    return f'shape_std_promote({", ".join([arg.expr for arg in args])})'
+  if shape == 'PROMOTE_1_2':
+    return f'shape_std_promote({args[0].expr}, {args[1].expr})'
   if shape == 'MATMUL_1ST_2ND':
     return f'shape_matmul({args[0].expr}, {args[1].expr})'
   if shape == 'MATMUL_2ND_3RD':
     return f'shape_matmul({args[1].expr}, {args[2].expr})'
+  if shape == 'MUL_1ST_2ND':
+    if args[0].type.cpp_type() == 'at::TensorList':
+      return f'shape_mul({args[0].expr})'
+    return f'shape_mul({args[0].expr}, {args[1].expr})'
+  if shape == 'MULT_1ST_2ND':
+    return f'shape_mult({args[0].expr}, {args[1].expr})'
+  if shape == 'MULLAST_1ST_2ND':
+    return f'shape_mul_last({args[0].expr}, {args[1].expr})'
   if shape == 'PICK_1ST_2ND':
     return f'shape_pick_1st({args[1].expr})'
   if shape == 'JOIN_2_3':
