@@ -116,6 +116,11 @@ public:
       trace_idx = idx;
   }
 
+  void set_shape(IntArrayRef shape) {
+    // TODO
+    has_shape_data = true;
+  }
+
   void set_no_shape_info() {
     has_shape_data = false;
   }
@@ -397,10 +402,22 @@ static std::vector<int64_t> tmp_shape;
   auto shape_##v = shape_of(v); \
   if (!shape_##v) return {}
 
+optional<IntArrayRef> shape_std_promote(IntArrayRef shape_a, const Tensor &b) {
+  GET_SHAPE(b);
+  return tmp_shape = shape_std_promote(shape_a, *shape_b);
+}
+
 optional<IntArrayRef> shape_std_promote(const Tensor &a, const Tensor &b) {
   GET_SHAPE(a);
-  GET_SHAPE(b);
-  return tmp_shape = shape_std_promote(*shape_a, *shape_b);
+  return shape_std_promote(*shape_a, b);
+}
+
+template <typename A, typename B, typename... Tail>
+optional<IntArrayRef> shape_std_promote(A &a, B &b, Tail&&... tail) {
+  auto shape = shape_std_promote(a, b);
+  if (!shape)
+    return {};
+  return shape_std_promote(*shape, forward<Tail>(tail)...);
 }
 
 optional<IntArrayRef> shape_matmul(const Tensor &a, IntArrayRef shape_b) {
@@ -444,10 +461,14 @@ optional<IntArrayRef> shape_mult(const Tensor &a, const Tensor &b) {
   return tmp_shape = shape_mult(*shape_a, *shape_b);
 }
 
-optional<IntArrayRef> shape_mul_last(const Tensor &a, const Tensor &b) {
+optional<IntArrayRef> shape_mul_last(const Tensor &a, IntArrayRef shape_b) {
   GET_SHAPE(a);
+  return tmp_shape = shape_mul_last(*shape_a, shape_b);
+}
+
+optional<IntArrayRef> shape_mul_last(const Tensor &a, const Tensor &b) {
   GET_SHAPE(b);
-  return tmp_shape = shape_mul_last(*shape_a, *shape_b);
+  return shape_mul_last(a, *shape_b);
 }
 
 optional<IntArrayRef> shape_pick_1st(const Tensor &t) {
@@ -459,6 +480,11 @@ optional<IntArrayRef> shape_join(const Tensor &a, const Tensor &b) {
   GET_SHAPE(a);
   GET_SHAPE(b);
   return tmp_shape = shape_join(*shape_a, *shape_b);
+}
+
+optional<IntArrayRef> shape_pad1(const Tensor &t) {
+  GET_SHAPE(t);
+  return tmp_shape = shape_pad1(*shape_t);
 }
 
 optional<IntArrayRef> shape_drop1(const Tensor &t) {
@@ -519,6 +545,19 @@ Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
   if (list.empty())
     return register_new_tensor(ks, op, nullopt, nullopt);
   return register_new_tensor(ks, op, promote_tys(list), list.front().device());
+}
+
+void set_shape(Tensor &t, optional<IntArrayRef> shape) {
+  if (!shape)
+    return;
+
+  TorchyTensor *tt = is_torchy(t);
+  assert(tt);
+  tt->set_shape(*shape);
+}
+
+void set_shape(Tensor &t, const Tensor &shape_t) {
+  set_shape(t, shape_of(shape_t));
 }
 
 bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks,

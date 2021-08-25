@@ -5,6 +5,7 @@ at::Tensor wrap__cast_Byte(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::_cast_Byte(dispatchKeySet, self, non_blocking);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CAST_BYTE, kByte, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(non_blocking);
   return tt;
 }
@@ -15,6 +16,7 @@ at::Tensor wrap__cast_Char(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::_cast_Char(dispatchKeySet, self, non_blocking);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CAST_CHAR, kChar, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(non_blocking);
   return tt;
 }
@@ -25,6 +27,7 @@ at::Tensor wrap__cast_Double(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::_cast_Double(dispatchKeySet, self, non_blocking);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CAST_DOUBLE, kDouble, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(non_blocking);
   return tt;
 }
@@ -35,6 +38,7 @@ at::Tensor wrap__cast_Float(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::_cast_Float(dispatchKeySet, self, non_blocking);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CAST_FLOAT, kFloat, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(non_blocking);
   return tt;
 }
@@ -45,6 +49,7 @@ at::Tensor wrap__cast_Int(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::_cast_Int(dispatchKeySet, self, non_blocking);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CAST_INT, kInt, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(non_blocking);
   return tt;
 }
@@ -55,6 +60,7 @@ at::Tensor wrap__cast_Long(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::_cast_Long(dispatchKeySet, self, non_blocking);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CAST_LONG, kLong, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(non_blocking);
   return tt;
 }
@@ -65,6 +71,7 @@ at::Tensor wrap__cast_Short(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::_cast_Short(dispatchKeySet, self, non_blocking);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CAST_SHORT, kShort, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(non_blocking);
   return tt;
 }
@@ -75,6 +82,7 @@ at::Tensor wrap__cast_Half(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::_cast_Half(dispatchKeySet, self, non_blocking);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CAST_HALF, kHalf, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(non_blocking);
   return tt;
 }
@@ -85,6 +93,7 @@ at::Tensor wrap_data(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::__dispatch_data(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DATA, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -139,6 +148,7 @@ at::Tensor wrap_rename(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::rename(dispatchKeySet, self, names);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RENAME, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(names);
   return tt;
 }
@@ -149,6 +159,7 @@ at::Tensor wrap_align_to(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::align_to(dispatchKeySet, self, names);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ALIGN_TO, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef(1));
   trace.append_arg(self);trace.append_arg(names);
   return tt;
 }
@@ -179,6 +190,7 @@ at::Tensor wrap_refine_names(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::refine_names(dispatchKeySet, self, names);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_REFINE_NAMES, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(names);
   return tt;
 }
@@ -275,6 +287,7 @@ at::Tensor wrap_dropout(c10::DispatchKeySet dispatchKeySet, const at::Tensor & i
     return at::redispatch::dropout(dispatchKeySet, input, p, train);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DROPOUT, input.dtype(), input.device());
+  set_shape(tt, input);
   trace.append_arg(input);trace.append_arg(p);trace.append_arg(train);
   return tt;
 }
@@ -297,6 +310,7 @@ at::Tensor wrap_feature_dropout(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::feature_dropout(dispatchKeySet, input, p, train);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FEATURE_DROPOUT, input.dtype(), input.device());
+  set_shape(tt, input);
   trace.append_arg(input);trace.append_arg(p);trace.append_arg(train);
   return tt;
 }
@@ -319,6 +333,7 @@ at::Tensor wrap_alpha_dropout(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::alpha_dropout(dispatchKeySet, input, p, train);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ALPHA_DROPOUT, input.dtype(), input.device());
+  set_shape(tt, input);
   trace.append_arg(input);trace.append_arg(p);trace.append_arg(train);
   return tt;
 }
@@ -341,6 +356,7 @@ at::Tensor wrap_feature_alpha_dropout(c10::DispatchKeySet dispatchKeySet, const 
     return at::redispatch::feature_alpha_dropout(dispatchKeySet, input, p, train);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FEATURE_ALPHA_DROPOUT, input.dtype(), input.device());
+  set_shape(tt, input);
   trace.append_arg(input);trace.append_arg(p);trace.append_arg(train);
   return tt;
 }
@@ -363,6 +379,7 @@ at::Tensor wrap_abs(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
     return at::redispatch::abs(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ABS, toValueType(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -397,6 +414,7 @@ at::Tensor wrap_absolute(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::absolute(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ABSOLUTE, toValueType(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -431,6 +449,7 @@ at::Tensor wrap_angle(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::angle(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ANGLE, to_real_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -463,6 +482,7 @@ at::Tensor wrap_view_as_complex(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::view_as_complex(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VIEW_AS_COMPLEX, self.dtype(), self.device());
+  set_shape(tt, shape_drop1(self));
   trace.append_arg(self);
   return tt;
 }
@@ -515,6 +535,7 @@ at::Tensor wrap_conj(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::__dispatch_conj(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONJ, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -525,6 +546,7 @@ at::Tensor wrap__conj_physical(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::_conj_physical(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CONJ_PHYSICAL, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -535,6 +557,7 @@ at::Tensor wrap_conj_physical(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::conj_physical(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONJ_PHYSICAL, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -569,6 +592,7 @@ at::Tensor wrap_resolve_conj(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::resolve_conj(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RESOLVE_CONJ, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -579,6 +603,7 @@ at::Tensor wrap_resolve_neg(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::resolve_neg(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RESOLVE_NEG, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -589,6 +614,7 @@ at::Tensor wrap__neg_view(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::_neg_view(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__NEG_VIEW, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -611,6 +637,7 @@ at::Tensor wrap_arccos(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::arccos(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ARCCOS, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -655,6 +682,7 @@ at::Tensor wrap_adaptive_avg_pool1d(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::adaptive_avg_pool1d(dispatchKeySet, self, output_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ADAPTIVE_AVG_POOL1D, self.dtype(), self.device());
+  set_shape(tt, shape_matmul(self, output_size));
   trace.append_arg(self);trace.append_arg(output_size);
   return tt;
 }
@@ -665,6 +693,7 @@ at::Tensor wrap_add_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::add(dispatchKeySet, self, other, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ADD_TENSOR, promote_buggy(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   return tt;
 }
@@ -699,6 +728,7 @@ at::Tensor wrap__add_relu_Tensor(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::_add_relu(dispatchKeySet, self, other, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__ADD_RELU_TENSOR, promote_const(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   return tt;
 }
@@ -733,6 +763,7 @@ at::Tensor wrap__add_relu_Scalar(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::_add_relu(dispatchKeySet, self, other, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__ADD_RELU_SCALAR, bool_to_int(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   return tt;
 }
@@ -755,6 +786,7 @@ at::Tensor wrap_add_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::add(dispatchKeySet, self, other, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ADD_SCALAR, bool_to_int(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   return tt;
 }
@@ -789,6 +821,7 @@ at::Tensor wrap_addr(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::addr(dispatchKeySet, self, vec1, vec2, beta, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ADDR, promote_tys(self, vec1, vec2), self.device());
+  set_shape(tt, shape_join(vec1, vec2));
   trace.append_arg(self);trace.append_arg(vec1);trace.append_arg(vec2);trace.append_arg(beta);trace.append_arg(alpha);
   return tt;
 }
@@ -1011,6 +1044,7 @@ at::Tensor wrap_arccosh(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::arccosh(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ARCCOSH, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -1057,6 +1091,7 @@ at::Tensor wrap_arcsinh(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::arcsinh(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ARCSINH, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -1103,6 +1138,7 @@ at::Tensor wrap_arctanh(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::arctanh(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ARCTANH, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -1137,6 +1173,7 @@ at::Tensor wrap_as_strided(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::as_strided(dispatchKeySet, self, size, stride, storage_offset);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_AS_STRIDED, self.dtype(), self.device());
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(stride);trace.append_arg(storage_offset);
   return tt;
 }
@@ -1159,6 +1196,7 @@ at::Tensor wrap_asin(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::asin(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ASIN, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -1193,6 +1231,7 @@ at::Tensor wrap_arcsin(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::arcsin(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ARCSIN, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -1239,6 +1278,7 @@ at::Tensor wrap_arctan(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::arctan(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ARCTAN, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -1303,6 +1343,7 @@ at::Tensor wrap_baddbmm(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::baddbmm(dispatchKeySet, self, batch1, batch2, beta, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BADDBMM, self.dtype(), self.device());
+  set_shape(tt, shape_matmul(batch1, batch2));
   trace.append_arg(self);trace.append_arg(batch1);trace.append_arg(batch2);trace.append_arg(beta);trace.append_arg(alpha);
   return tt;
 }
@@ -1369,6 +1410,7 @@ at::Tensor wrap_batch_norm(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::batch_norm(dispatchKeySet, input, weight, bias, running_mean, running_var, training, momentum, eps, cudnn_enabled);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BATCH_NORM, input.dtype(), input.device());
+  set_shape(tt, input);
   trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(running_mean);trace.append_arg(running_var);trace.append_arg(training);trace.append_arg(momentum);trace.append_arg(eps);trace.append_arg(cudnn_enabled);
   return tt;
 }
@@ -1389,6 +1431,7 @@ at::Tensor wrap_bernoulli(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::bernoulli(dispatchKeySet, self, std::move(generator));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BERNOULLI, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -1435,6 +1478,7 @@ at::Tensor wrap_bernoulli_p(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::bernoulli(dispatchKeySet, self, p, std::move(generator));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BERNOULLI_P, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -1477,6 +1521,7 @@ at::Tensor wrap_binary_cross_entropy_backward(c10::DispatchKeySet dispatchKeySet
     return at::redispatch::binary_cross_entropy_backward(dispatchKeySet, grad_output, self, target, weight, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BINARY_CROSS_ENTROPY_BACKWARD, grad_output.dtype(), grad_output.device());
+  set_shape(tt, self);
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(weight);trace.append_arg(reduction);
   return tt;
 }
@@ -1553,6 +1598,7 @@ at::Tensor wrap_copysign_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::copysign(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_COPYSIGN_SCALAR, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -1587,6 +1633,7 @@ at::Tensor wrap_logical_not(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::logical_not(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOGICAL_NOT, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -1621,6 +1668,7 @@ at::Tensor wrap_logical_xor(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::logical_xor(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOGICAL_XOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -1655,6 +1703,7 @@ at::Tensor wrap_logical_and(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::logical_and(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOGICAL_AND, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -1689,6 +1738,7 @@ at::Tensor wrap_logical_or(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::logical_or(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOGICAL_OR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -1743,6 +1793,7 @@ at::Tensor wrap_bmm(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self,
     return at::redispatch::bmm(dispatchKeySet, self, mat2);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BMM, self.dtype(), self.device());
+  set_shape(tt, shape_mul(self, mat2));
   trace.append_arg(self);trace.append_arg(mat2);
   return tt;
 }
@@ -1765,6 +1816,7 @@ at::Tensor wrap_broadcast_to(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::broadcast_to(dispatchKeySet, self, size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BROADCAST_TO, self.dtype(), self.device());
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);
   return tt;
 }
@@ -1829,6 +1881,7 @@ at::Tensor wrap_ceil(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::ceil(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CEIL, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -1863,6 +1916,7 @@ at::Tensor wrap_chain_matmul(c10::DispatchKeySet dispatchKeySet, at::TensorList 
     return at::redispatch::chain_matmul(dispatchKeySet, matrices);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CHAIN_MATMUL, matrices);
+  set_shape(tt, shape_mul(matrices));
   trace.append_arg(matrices);
   return tt;
 }
@@ -1885,6 +1939,7 @@ at::Tensor wrap_clamp(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::clamp(dispatchKeySet, self, min, max);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CLAMP, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(max);
   return tt;
 }
@@ -1953,6 +2008,7 @@ at::Tensor wrap_clamp_max(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::clamp_max(dispatchKeySet, self, max);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CLAMP_MAX, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(max);
   return tt;
 }
@@ -1963,6 +2019,7 @@ at::Tensor wrap_clamp_max_Tensor(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::clamp_max(dispatchKeySet, self, max);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CLAMP_MAX_TENSOR, self.dtype(), self.device());
+  set_shape(tt, shape_std_promote(self, max));
   trace.append_arg(self);trace.append_arg(max);
   return tt;
 }
@@ -2021,6 +2078,7 @@ at::Tensor wrap_clamp_min(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::clamp_min(dispatchKeySet, self, min);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CLAMP_MIN, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(min);
   return tt;
 }
@@ -2031,6 +2089,7 @@ at::Tensor wrap_clamp_min_Tensor(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::clamp_min(dispatchKeySet, self, min);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CLAMP_MIN_TENSOR, self.dtype(), self.device());
+  set_shape(tt, shape_std_promote(self, min));
   trace.append_arg(self);trace.append_arg(min);
   return tt;
 }
@@ -2089,6 +2148,7 @@ at::Tensor wrap_clip(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::clip(dispatchKeySet, self, min, max);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CLIP, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(max);
   return tt;
 }
@@ -2157,6 +2217,7 @@ at::Tensor wrap_complex(c10::DispatchKeySet dispatchKeySet, const at::Tensor & r
     return at::redispatch::complex(dispatchKeySet, real, imag);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_COMPLEX, to_complex(real.dtype().toScalarType()), real.device());
+  set_shape(tt, shape_std_promote(real, imag));
   trace.append_arg(real);trace.append_arg(imag);
   return tt;
 }
@@ -2179,6 +2240,7 @@ at::Tensor wrap_polar(c10::DispatchKeySet dispatchKeySet, const at::Tensor & abs
     return at::redispatch::polar(dispatchKeySet, abs, angle);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_POLAR, to_complex(abs.dtype().toScalarType()), abs.device());
+  set_shape(tt, shape_std_promote(abs, angle));
   trace.append_arg(abs);trace.append_arg(angle);
   return tt;
 }
@@ -2211,6 +2273,7 @@ at::Tensor wrap_contiguous(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::__dispatch_contiguous(dispatchKeySet, self, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONTIGUOUS, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(memory_format);
   return tt;
 }
@@ -2417,6 +2480,7 @@ at::Tensor wrap_cosine_embedding_loss(c10::DispatchKeySet dispatchKeySet, const 
     return at::redispatch::cosine_embedding_loss(dispatchKeySet, input1, input2, target, margin, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_COSINE_EMBEDDING_LOSS, input1.dtype(), input1.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(input1);trace.append_arg(input2);trace.append_arg(target);trace.append_arg(margin);trace.append_arg(reduction);
   return tt;
 }
@@ -2437,6 +2501,7 @@ at::Tensor wrap_count_nonzero(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::count_nonzero(dispatchKeySet, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_COUNT_NONZERO, kLong, self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
@@ -2749,6 +2814,7 @@ at::Tensor wrap_ctc_loss_IntList(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::ctc_loss(dispatchKeySet, log_probs, targets, input_lengths, target_lengths, blank, reduction, zero_infinity);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CTC_LOSS_INTLIST, log_probs.dtype(), log_probs.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(log_probs);trace.append_arg(targets);trace.append_arg(input_lengths);trace.append_arg(target_lengths);trace.append_arg(blank);trace.append_arg(reduction);trace.append_arg(zero_infinity);
   return tt;
 }
@@ -2863,6 +2929,7 @@ at::Tensor wrap_div_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::div(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DIV_TENSOR, to_float2(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -2897,6 +2964,7 @@ at::Tensor wrap_div_Tensor_mode(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::div(dispatchKeySet, self, other, rounding_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DIV_TENSOR_MODE, to_float2(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(rounding_mode);
   return tt;
 }
@@ -2931,6 +2999,7 @@ at::Tensor wrap_div_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::div(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DIV_SCALAR, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -2953,6 +3022,7 @@ at::Tensor wrap_div_Scalar_mode(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::div(dispatchKeySet, self, other, rounding_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DIV_SCALAR_MODE, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(rounding_mode);
   return tt;
 }
@@ -2975,6 +3045,7 @@ at::Tensor wrap_divide_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::divide(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DIVIDE_TENSOR, to_float2(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -3009,6 +3080,7 @@ at::Tensor wrap_divide_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::divide(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DIVIDE_SCALAR, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -3031,6 +3103,7 @@ at::Tensor wrap_divide_Tensor_mode(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::divide(dispatchKeySet, self, other, rounding_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DIVIDE_TENSOR_MODE, to_float2(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(rounding_mode);
   return tt;
 }
@@ -3065,6 +3138,7 @@ at::Tensor wrap_divide_Scalar_mode(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::divide(dispatchKeySet, self, other, rounding_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DIVIDE_SCALAR_MODE, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(rounding_mode);
   return tt;
 }
@@ -3087,6 +3161,7 @@ at::Tensor wrap_true_divide_Tensor(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::true_divide(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TRUE_DIVIDE_TENSOR, to_float2(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -3121,6 +3196,7 @@ at::Tensor wrap_true_divide_Scalar(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::true_divide(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TRUE_DIVIDE_SCALAR, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -3143,6 +3219,7 @@ at::Tensor wrap_dot(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self,
     return at::redispatch::dot(dispatchKeySet, self, tensor);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DOT, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(tensor);
   return tt;
 }
@@ -3165,6 +3242,7 @@ at::Tensor wrap_vdot(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::vdot(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VDOT, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -3311,6 +3389,7 @@ at::Tensor wrap_empty_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef 
     return at::redispatch::empty(dispatchKeySet, size, names, dtype, layout, device, pin_memory, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EMPTY_NAMES, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(names);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);trace.append_arg(memory_format);
   return tt;
 }
@@ -3321,6 +3400,7 @@ at::Tensor wrap_empty_memory_format(c10::DispatchKeySet dispatchKeySet, at::IntA
     return at::redispatch::empty(dispatchKeySet, size, dtype, layout, device, pin_memory, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EMPTY_MEMORY_FORMAT, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);trace.append_arg(memory_format);
   return tt;
 }
@@ -3331,6 +3411,7 @@ at::Tensor wrap_new_empty(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::new_empty(dispatchKeySet, self, size, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEW_EMPTY, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -3341,6 +3422,7 @@ at::Tensor wrap_new_empty_strided(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::new_empty_strided(dispatchKeySet, self, size, stride, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEW_EMPTY_STRIDED, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(stride);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -3351,6 +3433,7 @@ at::Tensor wrap_new_full(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::new_full(dispatchKeySet, self, size, fill_value, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEW_FULL, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(fill_value);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -3361,6 +3444,7 @@ at::Tensor wrap_new_zeros(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::new_zeros(dispatchKeySet, self, size, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEW_ZEROS, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -3371,6 +3455,7 @@ at::Tensor wrap_new_ones(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::new_ones(dispatchKeySet, self, size, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEW_ONES, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -3435,6 +3520,7 @@ at::Tensor wrap_empty_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::empty_like(dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EMPTY_LIKE, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);trace.append_arg(memory_format);
   return tt;
 }
@@ -3445,6 +3531,7 @@ at::Tensor wrap_empty_strided(c10::DispatchKeySet dispatchKeySet, at::IntArrayRe
     return at::redispatch::empty_strided(dispatchKeySet, size, stride, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EMPTY_STRIDED, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(stride);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -3515,6 +3602,7 @@ at::Tensor wrap_expand(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::expand(dispatchKeySet, self, size, implicit);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EXPAND, self.dtype(), self.device());
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(implicit);
   return tt;
 }
@@ -3525,6 +3613,7 @@ at::Tensor wrap_expand_as(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::expand_as(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EXPAND_AS, self.dtype(), self.device());
+  set_shape(tt, other);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -3579,6 +3668,7 @@ at::Tensor wrap_flatten_using_ints(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::flatten(dispatchKeySet, self, start_dim, end_dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLATTEN_USING_INTS, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(start_dim);trace.append_arg(end_dim);
   return tt;
 }
@@ -3663,6 +3753,7 @@ at::Tensor wrap_floor(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::floor(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLOOR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -3697,6 +3788,7 @@ at::Tensor wrap_floor_divide(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::floor_divide(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLOOR_DIVIDE, promote_const(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -3731,6 +3823,7 @@ at::Tensor wrap_floor_divide_Scalar(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::floor_divide(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLOOR_DIVIDE_SCALAR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -3765,6 +3858,7 @@ at::Tensor wrap_full_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef s
     return at::redispatch::full(dispatchKeySet, size, fill_value, names, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FULL_NAMES, optional_or_else(dtype, kLong), device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(fill_value);trace.append_arg(names);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -3775,6 +3869,7 @@ at::Tensor wrap_full(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c
     return at::redispatch::full(dispatchKeySet, size, fill_value, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FULL, optional_or_else(dtype, kLong), device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(fill_value);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -3797,6 +3892,7 @@ at::Tensor wrap_full_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::full_like(dispatchKeySet, self, fill_value, dtype, layout, device, pin_memory, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FULL_LIKE, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(fill_value);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);trace.append_arg(memory_format);
   return tt;
 }
@@ -3971,6 +4067,7 @@ at::Tensor wrap_hinge_embedding_loss(c10::DispatchKeySet dispatchKeySet, const a
     return at::redispatch::hinge_embedding_loss(dispatchKeySet, self, target, margin, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_HINGE_EMBEDDING_LOSS, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(margin);trace.append_arg(reduction);
   return tt;
 }
@@ -4155,6 +4252,7 @@ at::Tensor wrap_inverse(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::inverse(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_INVERSE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -4187,6 +4285,7 @@ at::Tensor wrap_isclose(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::isclose(dispatchKeySet, self, other, rtol, atol, equal_nan);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ISCLOSE, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(rtol);trace.append_arg(atol);trace.append_arg(equal_nan);
   return tt;
 }
@@ -4233,6 +4332,7 @@ at::Tensor wrap_isnan(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::isnan(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ISNAN, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -4243,6 +4343,7 @@ at::Tensor wrap_isreal(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::isreal(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ISREAL, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -4253,6 +4354,7 @@ at::Tensor wrap_kl_div(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::kl_div(dispatchKeySet, self, target, reduction, log_target);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_KL_DIV, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(log_target);
   return tt;
 }
@@ -4263,6 +4365,7 @@ at::Tensor wrap_kl_div_backward(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::kl_div_backward(dispatchKeySet, grad_output, self, target, reduction, log_target);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_KL_DIV_BACKWARD, grad_output.dtype(), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self, target));
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(log_target);
   return tt;
 }
@@ -4273,6 +4376,7 @@ at::Tensor wrap_kron(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::kron(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_KRON, promote_tys(self, other), self.device());
+  set_shape(tt, shape_mul_last(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -4305,6 +4409,7 @@ at::Tensor wrap_nan_to_num(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::nan_to_num(dispatchKeySet, self, nan, posinf, neginf);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NAN_TO_NUM, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(nan);trace.append_arg(posinf);trace.append_arg(neginf);
   return tt;
 }
@@ -4339,6 +4444,7 @@ at::Tensor wrap_linear(c10::DispatchKeySet dispatchKeySet, const at::Tensor & in
     return at::redispatch::linear(dispatchKeySet, input, weight, bias);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINEAR, input.dtype(), input.device());
+  set_shape(tt, shape_mult(input, weight));
   trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);
   return tt;
 }
@@ -4389,6 +4495,7 @@ at::Tensor wrap_fbgemm_pack_gemm_matrix_fp16(c10::DispatchKeySet dispatchKeySet,
     return at::redispatch::fbgemm_pack_gemm_matrix_fp16(dispatchKeySet, input);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FBGEMM_PACK_GEMM_MATRIX_FP16, input.dtype(), input.device());
+  set_shape(tt, nullopt);
   trace.append_arg(input);
   return tt;
 }
@@ -4439,6 +4546,7 @@ at::Tensor wrap_ldexp_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::ldexp(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LDEXP_TENSOR, self.dtype(), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -4519,6 +4627,7 @@ at::Tensor wrap_log1p(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::log1p(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOG1P, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -4577,6 +4686,7 @@ at::Tensor wrap_logaddexp(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::logaddexp(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOGADDEXP, promote_const(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -4599,6 +4709,7 @@ at::Tensor wrap_logaddexp2(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::logaddexp2(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOGADDEXP2, promote_const(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -4609,6 +4720,7 @@ at::Tensor wrap_xlogy_Scalar_Self(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::xlogy(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_XLOGY_SCALAR_SELF, to_float(other.dtype().toScalarType()), other.device());
+  set_shape(tt, other);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -4619,6 +4731,7 @@ at::Tensor wrap_xlogy_Scalar_Other(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::xlogy(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_XLOGY_SCALAR_OTHER, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -4677,6 +4790,7 @@ at::Tensor wrap_logdet(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::logdet(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOGDET, self.dtype(), self.device());
+  set_shape(tt, shape_drop2(self));
   trace.append_arg(self);
   return tt;
 }
@@ -4753,6 +4867,7 @@ at::Tensor wrap__logcumsumexp(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::_logcumsumexp(dispatchKeySet, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__LOGCUMSUMEXP, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
@@ -4775,6 +4890,7 @@ at::Tensor wrap_logcumsumexp(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::logcumsumexp(dispatchKeySet, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOGCUMSUMEXP, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
@@ -4863,6 +4979,7 @@ at::Tensor wrap_margin_ranking_loss(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::margin_ranking_loss(dispatchKeySet, input1, input2, target, margin, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MARGIN_RANKING_LOSS, to_float3(input1, input2, target), input1.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(input1);trace.append_arg(input2);trace.append_arg(target);trace.append_arg(margin);trace.append_arg(reduction);
   return tt;
 }
@@ -4873,6 +4990,7 @@ at::Tensor wrap_matmul(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::matmul(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MATMUL, self.dtype(), self.device());
+  set_shape(tt, shape_mul(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -4895,6 +5013,7 @@ at::Tensor wrap_matrix_rank_tol(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::matrix_rank(dispatchKeySet, self, tol, symmetric);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MATRIX_RANK_TOL, self.dtype(), self.device());
+  set_shape(tt, shape_drop2(self));
   trace.append_arg(self);trace.append_arg(tol);trace.append_arg(symmetric);
   return tt;
 }
@@ -4905,6 +5024,7 @@ at::Tensor wrap_matrix_rank(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::matrix_rank(dispatchKeySet, self, symmetric);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MATRIX_RANK, self.dtype(), self.device());
+  set_shape(tt, shape_drop2(self));
   trace.append_arg(self);trace.append_arg(symmetric);
   return tt;
 }
@@ -4915,6 +5035,7 @@ at::Tensor wrap_matrix_power(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::matrix_power(dispatchKeySet, self, n);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MATRIX_POWER, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(n);
   return tt;
 }
@@ -4937,6 +5058,7 @@ at::Tensor wrap_matrix_exp(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::matrix_exp(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MATRIX_EXP, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -4947,6 +5069,7 @@ at::Tensor wrap_matrix_exp_backward(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::matrix_exp_backward(dispatchKeySet, self, grad);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MATRIX_EXP_BACKWARD, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(grad);
   return tt;
 }
@@ -5101,6 +5224,7 @@ at::Tensor wrap_mean(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::mean(dispatchKeySet, self, dtype);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MEAN, optional_or_else(dtype, self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(dtype);
   return tt;
 }
@@ -5155,6 +5279,7 @@ at::Tensor wrap_median(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::median(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MEDIAN, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);
   return tt;
 }
@@ -5165,6 +5290,7 @@ at::Tensor wrap_nanmedian(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::nanmedian(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NANMEDIAN, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);
   return tt;
 }
@@ -5317,6 +5443,7 @@ at::Tensor wrap_mm(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, 
     return at::redispatch::mm(dispatchKeySet, self, mat2);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MM, self.dtype(), self.device());
+  set_shape(tt, shape_mul(self, mat2));
   trace.append_arg(self);trace.append_arg(mat2);
   return tt;
 }
@@ -5339,6 +5466,7 @@ at::Tensor wrap__sparse_mm(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::_sparse_mm(dispatchKeySet, sparse, dense);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SPARSE_MM, sparse.dtype(), sparse.device());
+  set_shape(tt, shape_mul(sparse, dense));
   trace.append_arg(sparse);trace.append_arg(dense);
   return tt;
 }
@@ -5369,6 +5497,7 @@ at::Tensor wrap_mul_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::mul(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MUL_TENSOR, promote_buggy(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -5403,6 +5532,7 @@ at::Tensor wrap_mul_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::mul(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MUL_SCALAR, bool_to_int(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -5425,6 +5555,7 @@ at::Tensor wrap_multiply_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::multiply(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MULTIPLY_TENSOR, promote_buggy(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -5459,6 +5590,7 @@ at::Tensor wrap_multiply_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::multiply(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MULTIPLY_SCALAR, bool_to_int(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -5481,6 +5613,7 @@ at::Tensor wrap_mv(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, 
     return at::redispatch::mv(dispatchKeySet, self, vec);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MV, self.dtype(), self.device());
+  set_shape(tt, shape_mul(self, vec));
   trace.append_arg(self);trace.append_arg(vec);
   return tt;
 }
@@ -5515,6 +5648,7 @@ at::Tensor wrap_mvlgamma(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::mvlgamma(dispatchKeySet, self, p);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MVLGAMMA, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(p);
   return tt;
 }
@@ -5641,6 +5775,7 @@ at::Tensor wrap_ones_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef s
     return at::redispatch::ones(dispatchKeySet, size, names, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ONES_NAMES, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(names);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -5651,6 +5786,7 @@ at::Tensor wrap_ones(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c
     return at::redispatch::ones(dispatchKeySet, size, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ONES, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -5673,6 +5809,7 @@ at::Tensor wrap_ones_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::ones_like(dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ONES_LIKE, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);trace.append_arg(memory_format);
   return tt;
 }
@@ -5693,6 +5830,7 @@ at::Tensor wrap_cdist(c10::DispatchKeySet dispatchKeySet, const at::Tensor & x1,
     return at::redispatch::cdist(dispatchKeySet, x1, x2, p, compute_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CDIST, x1.dtype(), x1.device());
+  set_shape(tt, shape_mult(x1, x2));
   trace.append_arg(x1);trace.append_arg(x2);trace.append_arg(p);trace.append_arg(compute_mode);
   return tt;
 }
@@ -5703,6 +5841,7 @@ at::Tensor wrap__euclidean_dist(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::_euclidean_dist(dispatchKeySet, x1, x2);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__EUCLIDEAN_DIST, x1.dtype(), x1.device());
+  set_shape(tt, shape_mult(x1, x2));
   trace.append_arg(x1);trace.append_arg(x2);
   return tt;
 }
@@ -5713,6 +5852,7 @@ at::Tensor wrap__cdist_forward(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::_cdist_forward(dispatchKeySet, x1, x2, p, compute_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CDIST_FORWARD, x1.dtype(), x1.device());
+  set_shape(tt, shape_mult(x1, x2));
   trace.append_arg(x1);trace.append_arg(x2);trace.append_arg(p);trace.append_arg(compute_mode);
   return tt;
 }
@@ -5773,6 +5913,7 @@ at::Tensor wrap_permute(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::permute(dispatchKeySet, self, dims);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_PERMUTE, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(dims);
   return tt;
 }
@@ -5793,6 +5934,7 @@ at::Tensor wrap_movedim_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::movedim(dispatchKeySet, self, source, destination);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MOVEDIM_INT, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(source);trace.append_arg(destination);
   return tt;
 }
@@ -5813,6 +5955,7 @@ at::Tensor wrap_moveaxis_int(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::moveaxis(dispatchKeySet, self, source, destination);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MOVEAXIS_INT, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(source);trace.append_arg(destination);
   return tt;
 }
@@ -5833,6 +5976,7 @@ at::Tensor wrap_pixel_shuffle(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::pixel_shuffle(dispatchKeySet, self, upscale_factor);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_PIXEL_SHUFFLE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(upscale_factor);
   return tt;
 }
@@ -5843,6 +5987,7 @@ at::Tensor wrap_pixel_unshuffle(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::pixel_unshuffle(dispatchKeySet, self, downscale_factor);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_PIXEL_UNSHUFFLE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(downscale_factor);
   return tt;
 }
@@ -5853,6 +5998,7 @@ at::Tensor wrap_channel_shuffle(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::channel_shuffle(dispatchKeySet, self, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CHANNEL_SHUFFLE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(groups);
   return tt;
 }
@@ -5893,6 +6039,7 @@ at::Tensor wrap_poisson_nll_loss(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::poisson_nll_loss(dispatchKeySet, input, target, log_input, full, eps, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_POISSON_NLL_LOSS, input.dtype(), input.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(input);trace.append_arg(target);trace.append_arg(log_input);trace.append_arg(full);trace.append_arg(eps);trace.append_arg(reduction);
   return tt;
 }
@@ -5903,6 +6050,7 @@ at::Tensor wrap_rad2deg(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::rad2deg(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RAD2DEG, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -5937,6 +6085,7 @@ at::Tensor wrap_deg2rad(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::deg2rad(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DEG2RAD, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -5981,6 +6130,7 @@ at::Tensor wrap_rand_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef s
     return at::redispatch::rand(dispatchKeySet, size, names, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RAND_NAMES, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(names);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -5991,6 +6141,7 @@ at::Tensor wrap_rand_generator_with_names(c10::DispatchKeySet dispatchKeySet, at
     return at::redispatch::rand(dispatchKeySet, size, std::move(generator), names, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RAND_GENERATOR_WITH_NAMES, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(names);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -6001,6 +6152,7 @@ at::Tensor wrap_rand(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c
     return at::redispatch::rand(dispatchKeySet, size, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RAND, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -6011,6 +6163,7 @@ at::Tensor wrap_rand_generator(c10::DispatchKeySet dispatchKeySet, at::IntArrayR
     return at::redispatch::rand(dispatchKeySet, size, std::move(generator), dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RAND_GENERATOR, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -6045,6 +6198,7 @@ at::Tensor wrap_rand_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::rand_like(dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RAND_LIKE, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);trace.append_arg(memory_format);
   return tt;
 }
@@ -6055,6 +6209,7 @@ at::Tensor wrap_randint(c10::DispatchKeySet dispatchKeySet, int64_t high, at::In
     return at::redispatch::randint(dispatchKeySet, high, size, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDINT, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(high);trace.append_arg(size);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -6065,6 +6220,7 @@ at::Tensor wrap_randint_generator(c10::DispatchKeySet dispatchKeySet, int64_t hi
     return at::redispatch::randint(dispatchKeySet, high, size, std::move(generator), dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDINT_GENERATOR, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(high);trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -6143,6 +6299,7 @@ at::Tensor wrap_randint_like(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::randint_like(dispatchKeySet, self, high, dtype, layout, device, pin_memory, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDINT_LIKE, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(high);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);trace.append_arg(memory_format);
   return tt;
 }
@@ -6163,6 +6320,7 @@ at::Tensor wrap_randn(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, 
     return at::redispatch::randn(dispatchKeySet, size, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDN, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -6173,6 +6331,7 @@ at::Tensor wrap_randn_generator(c10::DispatchKeySet dispatchKeySet, at::IntArray
     return at::redispatch::randn(dispatchKeySet, size, std::move(generator), dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDN_GENERATOR, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -6183,6 +6342,7 @@ at::Tensor wrap_randn_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef 
     return at::redispatch::randn(dispatchKeySet, size, names, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDN_NAMES, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(names);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -6193,6 +6353,7 @@ at::Tensor wrap_randn_generator_with_names(c10::DispatchKeySet dispatchKeySet, a
     return at::redispatch::randn(dispatchKeySet, size, std::move(generator), names, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDN_GENERATOR_WITH_NAMES, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(names);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -6227,6 +6388,7 @@ at::Tensor wrap_randn_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::randn_like(dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDN_LIKE, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);trace.append_arg(memory_format);
   return tt;
 }
@@ -6335,6 +6497,7 @@ at::Tensor wrap_neg(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
     return at::redispatch::neg(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEG, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -6369,6 +6532,7 @@ at::Tensor wrap_negative(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::negative(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEGATIVE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -6403,6 +6567,7 @@ at::Tensor wrap_repeat(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::repeat(dispatchKeySet, self, repeats);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_REPEAT, self.dtype(), self.device());
+  set_shape(tt, shape_mul_last(self, repeats));
   trace.append_arg(self);trace.append_arg(repeats);
   return tt;
 }
@@ -6443,6 +6608,7 @@ at::Tensor wrap_reshape(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::reshape(dispatchKeySet, self, shape);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RESHAPE, self.dtype(), self.device());
+  set_shape(tt, shape);
   trace.append_arg(self);trace.append_arg(shape);
   return tt;
 }
@@ -6453,6 +6619,7 @@ at::Tensor wrap__reshape_alias(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::_reshape_alias(dispatchKeySet, self, size, stride);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__RESHAPE_ALIAS, self.dtype(), self.device());
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(stride);
   return tt;
 }
@@ -6473,6 +6640,7 @@ at::Tensor wrap_reshape_as(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::reshape_as(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RESHAPE_AS, self.dtype(), self.device());
+  set_shape(tt, other);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -6495,6 +6663,7 @@ at::Tensor wrap_rrelu(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::rrelu(dispatchKeySet, self, lower, upper, training, std::move(generator));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RRELU, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(lower);trace.append_arg(upper);trace.append_arg(training);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -6517,6 +6686,7 @@ at::Tensor wrap_relu(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::relu(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RELU, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -6539,6 +6709,7 @@ at::Tensor wrap_relu6(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::relu6(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RELU6, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -6561,6 +6732,7 @@ at::Tensor wrap_prelu(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::prelu(dispatchKeySet, self, weight);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_PRELU, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(weight);
   return tt;
 }
@@ -6583,6 +6755,7 @@ at::Tensor wrap_gelu(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::gelu(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_GELU, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -6605,6 +6778,7 @@ at::Tensor wrap_gelu_backward(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::gelu_backward(dispatchKeySet, grad, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_GELU_BACKWARD, promote_const(grad, self), grad.device());
+  set_shape(tt, shape_std_promote(grad, self));
   trace.append_arg(grad);trace.append_arg(self);
   return tt;
 }
@@ -6615,6 +6789,7 @@ at::Tensor wrap_infinitely_differentiable_gelu_backward(c10::DispatchKeySet disp
     return at::redispatch::infinitely_differentiable_gelu_backward(dispatchKeySet, grad, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_INFINITELY_DIFFERENTIABLE_GELU_BACKWARD, self.dtype(), grad.device());
+  set_shape(tt, self);
   trace.append_arg(grad);trace.append_arg(self);
   return tt;
 }
@@ -6681,6 +6856,7 @@ at::Tensor wrap_select_backward(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::select_backward(dispatchKeySet, grad, input_sizes, dim, index);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SELECT_BACKWARD, grad.dtype(), grad.device());
+  set_shape(tt, input_sizes);
   trace.append_arg(grad);trace.append_arg(input_sizes);trace.append_arg(dim);trace.append_arg(index);
   return tt;
 }
@@ -6691,6 +6867,7 @@ at::Tensor wrap_selu(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::selu(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SELU, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -6735,6 +6912,7 @@ at::Tensor wrap_silu(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::silu(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SILU, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -6781,6 +6959,7 @@ at::Tensor wrap_silu_backward(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::silu_backward(dispatchKeySet, grad_output, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SILU_BACKWARD, promote_buggy(grad_output, self), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self));
   trace.append_arg(grad_output);trace.append_arg(self);
   return tt;
 }
@@ -6791,6 +6970,7 @@ at::Tensor wrap_mish(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::mish(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MISH, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -6825,6 +7005,7 @@ at::Tensor wrap_mish_backward(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::mish_backward(dispatchKeySet, grad_output, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MISH_BACKWARD, self.dtype(), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self));
   trace.append_arg(grad_output);trace.append_arg(self);
   return tt;
 }
@@ -6835,6 +7016,7 @@ at::Tensor wrap_sigmoid(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::sigmoid(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SIGMOID, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -6869,6 +7051,7 @@ at::Tensor wrap_logit(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::logit(dispatchKeySet, self, eps);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOGIT, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(eps);
   return tt;
 }
@@ -6939,6 +7122,7 @@ at::Tensor wrap_detach(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::detach(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DETACH, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -6961,6 +7145,7 @@ at::Tensor wrap_slice_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::slice(dispatchKeySet, self, dim, start, end, step);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SLICE_TENSOR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(start);trace.append_arg(end);trace.append_arg(step);
   return tt;
 }
@@ -6971,6 +7156,7 @@ at::Tensor wrap_slice_backward(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::slice_backward(dispatchKeySet, grad, input_sizes, dim, start, end, step);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SLICE_BACKWARD, grad.dtype(), grad.device());
+  set_shape(tt, input_sizes);
   trace.append_arg(grad);trace.append_arg(input_sizes);trace.append_arg(dim);trace.append_arg(start);trace.append_arg(end);trace.append_arg(step);
   return tt;
 }
@@ -7011,6 +7197,7 @@ at::Tensor wrap__softmax(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::_softmax(dispatchKeySet, self, dim, half_to_float);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SOFTMAX, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(half_to_float);
   return tt;
 }
@@ -7263,6 +7450,7 @@ at::Tensor wrap_sum(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self,
     return at::redispatch::sum(dispatchKeySet, self, dtype);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SUM, optional_or_longelse(dtype, self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(dtype);
   return tt;
 }
@@ -7307,6 +7495,7 @@ at::Tensor wrap_nansum(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::nansum(dispatchKeySet, self, dtype);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NANSUM, optional_or_longelse(dtype, self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(dtype);
   return tt;
 }
@@ -7339,6 +7528,7 @@ at::Tensor wrap_sum_to_size(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::sum_to_size(dispatchKeySet, self, size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SUM_TO_SIZE, integrals_to_int(self.dtype().toScalarType()), self.device());
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);
   return tt;
 }
@@ -7349,6 +7539,7 @@ at::Tensor wrap_sqrt(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::sqrt(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SQRT, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -7371,6 +7562,7 @@ at::Tensor wrap_square(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::square(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SQUARE, bool_to_int(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -7405,6 +7597,7 @@ at::Tensor wrap_std(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self,
     return at::redispatch::std(dispatchKeySet, self, unbiased);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_STD, toValueType(self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(unbiased);
   return tt;
 }
@@ -7425,6 +7618,7 @@ at::Tensor wrap_std_correction(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::std(dispatchKeySet, self, dim, correction, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_STD_CORRECTION, toValueType(self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(correction);trace.append_arg(keepdim);
   return tt;
 }
@@ -7503,6 +7697,7 @@ at::Tensor wrap_prod(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::prod(dispatchKeySet, self, dtype);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_PROD, optional_or_longelse(dtype, self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(dtype);
   return tt;
 }
@@ -7581,6 +7776,7 @@ at::Tensor wrap_tanh(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::tanh(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TANH, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -7637,6 +7833,7 @@ at::Tensor wrap_threshold(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::threshold(dispatchKeySet, self, threshold, value);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_THRESHOLD, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(threshold);trace.append_arg(value);
   return tt;
 }
@@ -7671,6 +7868,7 @@ at::Tensor wrap_threshold_backward(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::threshold_backward(dispatchKeySet, grad_output, self, threshold);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_THRESHOLD_BACKWARD, promote_const(grad_output, self), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self));
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(threshold);
   return tt;
 }
@@ -7681,6 +7879,7 @@ at::Tensor wrap_tile(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::tile(dispatchKeySet, self, dims);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TILE, self.dtype(), self.device());
+  set_shape(tt, shape_mul_last(self, dims));
   trace.append_arg(self);trace.append_arg(dims);
   return tt;
 }
@@ -7691,6 +7890,7 @@ at::Tensor wrap_transpose_int(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::transpose(dispatchKeySet, self, dim0, dim1);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TRANSPOSE_INT, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dim0);trace.append_arg(dim1);
   return tt;
 }
@@ -7755,6 +7955,7 @@ at::Tensor wrap_flip(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::flip(dispatchKeySet, self, dims);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLIP, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dims);
   return tt;
 }
@@ -7765,6 +7966,7 @@ at::Tensor wrap_fliplr(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::fliplr(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLIPLR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -7775,6 +7977,7 @@ at::Tensor wrap_flipud(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::flipud(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLIPUD, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -7785,6 +7988,7 @@ at::Tensor wrap_roll(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::roll(dispatchKeySet, self, shifts, dims);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ROLL, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(shifts);trace.append_arg(dims);
   return tt;
 }
@@ -7855,6 +8059,7 @@ at::Tensor wrap_triplet_margin_loss(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::triplet_margin_loss(dispatchKeySet, anchor, positive, negative, margin, p, eps, swap, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TRIPLET_MARGIN_LOSS, anchor.dtype(), anchor.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(anchor);trace.append_arg(positive);trace.append_arg(negative);trace.append_arg(margin);trace.append_arg(p);trace.append_arg(eps);trace.append_arg(swap);trace.append_arg(reduction);
   return tt;
 }
@@ -7865,6 +8070,7 @@ at::Tensor wrap_trunc(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::trunc(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TRUNC, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -7899,6 +8105,7 @@ at::Tensor wrap_fix(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
     return at::redispatch::fix(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FIX, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -7933,6 +8140,7 @@ at::Tensor wrap_type_as(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::type_as(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TYPE_AS, other.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -7943,6 +8151,7 @@ at::Tensor wrap__unsafe_view(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::_unsafe_view(dispatchKeySet, self, size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__UNSAFE_VIEW, self.dtype(), self.device());
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);
   return tt;
 }
@@ -7985,6 +8194,7 @@ at::Tensor wrap_var(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self,
     return at::redispatch::var(dispatchKeySet, self, unbiased);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VAR, toValueType(self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(unbiased);
   return tt;
 }
@@ -8005,6 +8215,7 @@ at::Tensor wrap_var_correction(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::var(dispatchKeySet, self, dim, correction, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VAR_CORRECTION, toValueType(self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(correction);trace.append_arg(keepdim);
   return tt;
 }
@@ -8083,6 +8294,7 @@ at::Tensor wrap_view_as(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::view_as(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VIEW_AS, self.dtype(), self.device());
+  set_shape(tt, other);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -8153,6 +8365,7 @@ at::Tensor wrap__weight_norm(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::_weight_norm(dispatchKeySet, v, g, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__WEIGHT_NORM, v.dtype(), v.device());
+  set_shape(tt, shape_std_promote(v, g));
   trace.append_arg(v);trace.append_arg(g);trace.append_arg(dim);
   return tt;
 }
@@ -8163,6 +8376,7 @@ at::Tensor wrap_zeros_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef 
     return at::redispatch::zeros(dispatchKeySet, size, names, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ZEROS_NAMES, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(names);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -8173,6 +8387,7 @@ at::Tensor wrap_zeros(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, 
     return at::redispatch::zeros(dispatchKeySet, size, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ZEROS, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -8195,6 +8410,7 @@ at::Tensor wrap_zeros_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::zeros_like(dispatchKeySet, self, dtype, layout, device, pin_memory, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ZEROS_LIKE, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);trace.append_arg(memory_format);
   return tt;
 }
@@ -8205,6 +8421,7 @@ at::Tensor wrap__standard_gamma_grad(c10::DispatchKeySet dispatchKeySet, const a
     return at::redispatch::_standard_gamma_grad(dispatchKeySet, self, output);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__STANDARD_GAMMA_GRAD, self.dtype(), self.device());
+  set_shape(tt, shape_std_promote(self, output));
   trace.append_arg(self);trace.append_arg(output);
   return tt;
 }
@@ -8215,6 +8432,7 @@ at::Tensor wrap__standard_gamma(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::_standard_gamma(dispatchKeySet, self, std::move(generator));
   }
   auto tt = register_new_tensor(dispatchKeySet, H__STANDARD_GAMMA, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -8225,6 +8443,7 @@ at::Tensor wrap__dirichlet_grad(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::_dirichlet_grad(dispatchKeySet, x, alpha, total);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__DIRICHLET_GRAD, x.dtype(), x.device());
+  set_shape(tt, shape_std_promote(x, alpha, total));
   trace.append_arg(x);trace.append_arg(alpha);trace.append_arg(total);
   return tt;
 }
@@ -8235,6 +8454,7 @@ at::Tensor wrap__sample_dirichlet(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::_sample_dirichlet(dispatchKeySet, self, std::move(generator));
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SAMPLE_DIRICHLET, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -8245,6 +8465,7 @@ at::Tensor wrap_poisson(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::poisson(dispatchKeySet, self, std::move(generator));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_POISSON, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -8255,6 +8476,7 @@ at::Tensor wrap_binomial(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::binomial(dispatchKeySet, count, prob, std::move(generator));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BINOMIAL, count.dtype(), count.device());
+  set_shape(tt, shape_std_promote(count, prob));
   trace.append_arg(count);trace.append_arg(prob);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -8425,6 +8647,7 @@ at::Tensor wrap_norm_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::norm(dispatchKeySet, self, p);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NORM_SCALAR, toValueType(self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(p);
   return tt;
 }
@@ -8523,6 +8746,7 @@ at::Tensor wrap_frobenius_norm(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::frobenius_norm(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FROBENIUS_NORM, toValueType(self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);
   return tt;
 }
@@ -8555,6 +8779,7 @@ at::Tensor wrap_nuclear_norm(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::nuclear_norm(dispatchKeySet, self, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NUCLEAR_NORM, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(keepdim);
   return tt;
 }
@@ -8577,6 +8802,7 @@ at::Tensor wrap_nuclear_norm_dim(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::nuclear_norm(dispatchKeySet, self, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NUCLEAR_NORM_DIM, self.dtype(), self.device());
+  set_shape(tt, shape_drop2(self));
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
@@ -8599,6 +8825,7 @@ at::Tensor wrap_clone(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::clone(dispatchKeySet, self, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CLONE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(memory_format);
   return tt;
 }
@@ -8609,6 +8836,7 @@ at::Tensor wrap_positive(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::positive(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_POSITIVE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -8667,6 +8895,7 @@ at::Tensor wrap_sub_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::sub(dispatchKeySet, self, other, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SUB_TENSOR, promote_buggy(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   return tt;
 }
@@ -8689,6 +8918,7 @@ at::Tensor wrap_sub_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::sub(dispatchKeySet, self, other, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SUB_SCALAR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   return tt;
 }
@@ -8723,6 +8953,7 @@ at::Tensor wrap_subtract_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::subtract(dispatchKeySet, self, other, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SUBTRACT_TENSOR, promote_buggy(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   return tt;
 }
@@ -8745,6 +8976,7 @@ at::Tensor wrap_subtract_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::subtract(dispatchKeySet, self, other, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SUBTRACT_SCALAR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   return tt;
 }
@@ -8767,6 +8999,7 @@ at::Tensor wrap_rsub_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::rsub(dispatchKeySet, self, other, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RSUB_TENSOR, promote_buggy(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   return tt;
 }
@@ -8789,6 +9022,7 @@ at::Tensor wrap_rsub_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::rsub(dispatchKeySet, self, other, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RSUB_SCALAR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   return tt;
 }
@@ -8799,6 +9033,7 @@ at::Tensor wrap__sparse_addmm(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::_sparse_addmm(dispatchKeySet, self, sparse, dense, beta, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SPARSE_ADDMM, self.dtype(), self.device());
+  set_shape(tt, shape_matmul(sparse, dense));
   trace.append_arg(self);trace.append_arg(sparse);trace.append_arg(dense);trace.append_arg(beta);trace.append_arg(alpha);
   return tt;
 }
@@ -8821,6 +9056,7 @@ at::Tensor wrap_addmm(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::addmm(dispatchKeySet, self, mat1, mat2, beta, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ADDMM, self.dtype(), self.device());
+  set_shape(tt, shape_matmul(mat1, mat2));
   trace.append_arg(self);trace.append_arg(mat1);trace.append_arg(mat2);trace.append_arg(beta);trace.append_arg(alpha);
   return tt;
 }
@@ -8873,6 +9109,7 @@ at::Tensor wrap_sparse_coo_tensor_size(c10::DispatchKeySet dispatchKeySet, at::I
     return at::redispatch::sparse_coo_tensor(dispatchKeySet, size, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPARSE_COO_TENSOR_SIZE, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(size);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -9113,6 +9350,7 @@ at::Tensor wrap_to_sparse_sparse_dim(c10::DispatchKeySet dispatchKeySet, const a
     return at::redispatch::to_sparse(dispatchKeySet, self, sparse_dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TO_SPARSE_SPARSE_DIM, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(sparse_dim);
   return tt;
 }
@@ -9123,6 +9361,7 @@ at::Tensor wrap_to_sparse(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::to_sparse(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TO_SPARSE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -9203,6 +9442,7 @@ at::Tensor wrap_dequantize_self(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::dequantize(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DEQUANTIZE_SELF, kFloat, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -9263,6 +9503,7 @@ at::Tensor wrap_fake_quantize_per_tensor_affine(c10::DispatchKeySet dispatchKeyS
     return at::redispatch::fake_quantize_per_tensor_affine(dispatchKeySet, self, scale, zero_point, quant_min, quant_max);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FAKE_QUANTIZE_PER_TENSOR_AFFINE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(scale);trace.append_arg(zero_point);trace.append_arg(quant_min);trace.append_arg(quant_max);
   return tt;
 }
@@ -9273,6 +9514,7 @@ at::Tensor wrap_fake_quantize_per_tensor_affine_tensor_qparams(c10::DispatchKeyS
     return at::redispatch::fake_quantize_per_tensor_affine(dispatchKeySet, self, scale, zero_point, quant_min, quant_max);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FAKE_QUANTIZE_PER_TENSOR_AFFINE_TENSOR_QPARAMS, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(scale);trace.append_arg(zero_point);trace.append_arg(quant_min);trace.append_arg(quant_max);
   return tt;
 }
@@ -9293,6 +9535,7 @@ at::Tensor wrap__fake_quantize_learnable_per_tensor_affine(c10::DispatchKeySet d
     return at::redispatch::_fake_quantize_learnable_per_tensor_affine(dispatchKeySet, self, scale, zero_point, quant_min, quant_max, grad_factor);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__FAKE_QUANTIZE_LEARNABLE_PER_TENSOR_AFFINE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(scale);trace.append_arg(zero_point);trace.append_arg(quant_min);trace.append_arg(quant_max);trace.append_arg(grad_factor);
   return tt;
 }
@@ -9323,6 +9566,7 @@ at::Tensor wrap__fake_quantize_learnable_per_channel_affine(c10::DispatchKeySet 
     return at::redispatch::_fake_quantize_learnable_per_channel_affine(dispatchKeySet, self, scale, zero_point, axis, quant_min, quant_max, grad_factor);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__FAKE_QUANTIZE_LEARNABLE_PER_CHANNEL_AFFINE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(scale);trace.append_arg(zero_point);trace.append_arg(axis);trace.append_arg(quant_min);trace.append_arg(quant_max);trace.append_arg(grad_factor);
   return tt;
 }
@@ -9333,6 +9577,7 @@ at::Tensor wrap_fused_moving_avg_obs_fake_quant(c10::DispatchKeySet dispatchKeyS
     return at::redispatch::fused_moving_avg_obs_fake_quant(dispatchKeySet, self, observer_on, fake_quant_on, running_min, running_max, scale, zero_point, averaging_const, quant_min, quant_max, ch_axis, per_row_fake_quant, symmetric_quant);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FUSED_MOVING_AVG_OBS_FAKE_QUANT, kFloat, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(observer_on);trace.append_arg(fake_quant_on);trace.append_arg(running_min);trace.append_arg(running_max);trace.append_arg(scale);trace.append_arg(zero_point);trace.append_arg(averaging_const);trace.append_arg(quant_min);trace.append_arg(quant_max);trace.append_arg(ch_axis);trace.append_arg(per_row_fake_quant);trace.append_arg(symmetric_quant);
   return tt;
 }
@@ -9343,6 +9588,7 @@ at::Tensor wrap__saturate_weight_to_fp16(c10::DispatchKeySet dispatchKeySet, con
     return at::redispatch::_saturate_weight_to_fp16(dispatchKeySet, weight);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SATURATE_WEIGHT_TO_FP16, weight.dtype(), weight.device());
+  set_shape(tt, weight);
   trace.append_arg(weight);
   return tt;
 }
@@ -9353,6 +9599,7 @@ at::Tensor wrap__to_copy(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::_to_copy(dispatchKeySet, self, dtype, layout, device, pin_memory, non_blocking, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__TO_COPY, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);trace.append_arg(non_blocking);trace.append_arg(memory_format);
   return tt;
 }
@@ -9363,6 +9610,7 @@ at::Tensor wrap_to_dtype_layout(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::to(dispatchKeySet, self, dtype, layout, device, pin_memory, non_blocking, copy, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TO_DTYPE_LAYOUT, optional_or_else(dtype, self.dtype().toScalarType()), device);
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);trace.append_arg(non_blocking);trace.append_arg(copy);trace.append_arg(memory_format);
   return tt;
 }
@@ -9373,6 +9621,7 @@ at::Tensor wrap_to_device(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::to(dispatchKeySet, self, device, dtype, non_blocking, copy, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TO_DEVICE, kByte, device);
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(device);trace.append_arg(dtype);trace.append_arg(non_blocking);trace.append_arg(copy);trace.append_arg(memory_format);
   return tt;
 }
@@ -9383,6 +9632,7 @@ at::Tensor wrap_to_dtype(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::to(dispatchKeySet, self, dtype, non_blocking, copy, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TO_DTYPE, kByte, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dtype);trace.append_arg(non_blocking);trace.append_arg(copy);trace.append_arg(memory_format);
   return tt;
 }
@@ -9393,6 +9643,7 @@ at::Tensor wrap_to_other(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::to(dispatchKeySet, self, other, non_blocking, copy, memory_format);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TO_OTHER, other.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(non_blocking);trace.append_arg(copy);trace.append_arg(memory_format);
   return tt;
 }
@@ -9413,6 +9664,7 @@ at::Tensor wrap_combinations(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::combinations(dispatchKeySet, self, r, with_replacement);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_COMBINATIONS, self.dtype(), self.device());
+  set_shape(tt, shape_pad1(self));
   trace.append_arg(self);trace.append_arg(r);trace.append_arg(with_replacement);
   return tt;
 }
@@ -9553,6 +9805,7 @@ at::Tensor wrap_masked_fill_Scalar(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::masked_fill(dispatchKeySet, self, mask, value);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MASKED_FILL_SCALAR, self.dtype(), self.device());
+  set_shape(tt, shape_std_promote(self, mask));
   trace.append_arg(self);trace.append_arg(mask);trace.append_arg(value);
   return tt;
 }
@@ -9575,6 +9828,7 @@ at::Tensor wrap_masked_fill_Tensor(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::masked_fill(dispatchKeySet, self, mask, value);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MASKED_FILL_TENSOR, self.dtype(), self.device());
+  set_shape(tt, shape_std_promote(self, mask, value));
   trace.append_arg(self);trace.append_arg(mask);trace.append_arg(value);
   return tt;
 }
@@ -9597,6 +9851,7 @@ at::Tensor wrap_masked_scatter(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::masked_scatter(dispatchKeySet, self, mask, source);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MASKED_SCATTER, self.dtype(), self.device());
+  set_shape(tt, shape_std_promote(self, mask));
   trace.append_arg(self);trace.append_arg(mask);trace.append_arg(source);
   return tt;
 }
@@ -9607,6 +9862,7 @@ at::Tensor wrap_view(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::view(dispatchKeySet, self, size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VIEW, self.dtype(), self.device());
+  set_shape(tt, size);
   trace.append_arg(self);trace.append_arg(size);
   return tt;
 }
@@ -10175,6 +10431,7 @@ at::Tensor wrap___lshift___Scalar(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::__lshift__(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H___LSHIFT___SCALAR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10185,6 +10442,7 @@ at::Tensor wrap___lshift___Tensor(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::__lshift__(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H___LSHIFT___TENSOR, promote_const(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10231,6 +10489,7 @@ at::Tensor wrap_bitwise_left_shift_Tensor_Scalar(c10::DispatchKeySet dispatchKey
     return at::redispatch::bitwise_left_shift(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BITWISE_LEFT_SHIFT_TENSOR_SCALAR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10265,6 +10524,7 @@ at::Tensor wrap_bitwise_left_shift_Scalar_Tensor(c10::DispatchKeySet dispatchKey
     return at::redispatch::bitwise_left_shift(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BITWISE_LEFT_SHIFT_SCALAR_TENSOR, other.dtype(), other.device());
+  set_shape(tt, other);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10275,6 +10535,7 @@ at::Tensor wrap___rshift___Scalar(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::__rshift__(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H___RSHIFT___SCALAR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10285,6 +10546,7 @@ at::Tensor wrap___rshift___Tensor(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::__rshift__(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H___RSHIFT___TENSOR, promote_const(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10331,6 +10593,7 @@ at::Tensor wrap_bitwise_right_shift_Tensor_Scalar(c10::DispatchKeySet dispatchKe
     return at::redispatch::bitwise_right_shift(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BITWISE_RIGHT_SHIFT_TENSOR_SCALAR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10365,6 +10628,7 @@ at::Tensor wrap_bitwise_right_shift_Scalar_Tensor(c10::DispatchKeySet dispatchKe
     return at::redispatch::bitwise_right_shift(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BITWISE_RIGHT_SHIFT_SCALAR_TENSOR, other.dtype(), other.device());
+  set_shape(tt, other);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10619,6 +10883,7 @@ at::Tensor wrap_triu(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::triu(dispatchKeySet, self, diagonal);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TRIU, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(diagonal);
   return tt;
 }
@@ -10641,6 +10906,7 @@ at::Tensor wrap_tril(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::tril(dispatchKeySet, self, diagonal);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TRIL, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(diagonal);
   return tt;
 }
@@ -10671,6 +10937,7 @@ at::Tensor wrap_trace(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::trace(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TRACE, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);
   return tt;
 }
@@ -10681,6 +10948,7 @@ at::Tensor wrap_trace_backward(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::trace_backward(dispatchKeySet, grad, sizes);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TRACE_BACKWARD, grad.dtype(), grad.device());
+  set_shape(tt, sizes);
   trace.append_arg(grad);trace.append_arg(sizes);
   return tt;
 }
@@ -10703,6 +10971,7 @@ at::Tensor wrap_ne_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::ne(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NE_SCALAR, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10725,6 +10994,7 @@ at::Tensor wrap_ne_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::ne(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NE_TENSOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10771,6 +11041,7 @@ at::Tensor wrap_not_equal_Scalar(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::not_equal(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NOT_EQUAL_SCALAR, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10793,6 +11064,7 @@ at::Tensor wrap_not_equal_Tensor(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::not_equal(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NOT_EQUAL_TENSOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10839,6 +11111,7 @@ at::Tensor wrap_eq_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::eq(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EQ_SCALAR, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10861,6 +11134,7 @@ at::Tensor wrap_eq_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::eq(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EQ_TENSOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10883,6 +11157,7 @@ at::Tensor wrap_ge_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::ge(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_GE_SCALAR, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10905,6 +11180,7 @@ at::Tensor wrap_ge_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::ge(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_GE_TENSOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10951,6 +11227,7 @@ at::Tensor wrap_greater_equal_Scalar(c10::DispatchKeySet dispatchKeySet, const a
     return at::redispatch::greater_equal(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_GREATER_EQUAL_SCALAR, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -10973,6 +11250,7 @@ at::Tensor wrap_greater_equal_Tensor(c10::DispatchKeySet dispatchKeySet, const a
     return at::redispatch::greater_equal(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_GREATER_EQUAL_TENSOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11019,6 +11297,7 @@ at::Tensor wrap_le_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::le(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LE_SCALAR, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11041,6 +11320,7 @@ at::Tensor wrap_le_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::le(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LE_TENSOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11087,6 +11367,7 @@ at::Tensor wrap_less_equal_Scalar(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::less_equal(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LESS_EQUAL_SCALAR, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11109,6 +11390,7 @@ at::Tensor wrap_less_equal_Tensor(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::less_equal(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LESS_EQUAL_TENSOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11155,6 +11437,7 @@ at::Tensor wrap_gt_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::gt(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_GT_SCALAR, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11177,6 +11460,7 @@ at::Tensor wrap_gt_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::gt(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_GT_TENSOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11223,6 +11507,7 @@ at::Tensor wrap_greater_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::greater(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_GREATER_SCALAR, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11245,6 +11530,7 @@ at::Tensor wrap_greater_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::greater(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_GREATER_TENSOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11291,6 +11577,7 @@ at::Tensor wrap_lt_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::lt(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LT_SCALAR, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11313,6 +11600,7 @@ at::Tensor wrap_lt_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::lt(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LT_TENSOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11359,6 +11647,7 @@ at::Tensor wrap_less_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::less(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LESS_SCALAR, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11381,6 +11670,7 @@ at::Tensor wrap_less_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::less(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LESS_TENSOR, kBool, self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -11621,6 +11911,7 @@ at::Tensor wrap__gather_sparse_backward(c10::DispatchKeySet dispatchKeySet, cons
     return at::redispatch::_gather_sparse_backward(dispatchKeySet, self, dim, index, grad);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__GATHER_SPARSE_BACKWARD, grad.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(grad);
   return tt;
 }
@@ -11665,6 +11956,7 @@ at::Tensor wrap_swapaxes(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::swapaxes(dispatchKeySet, self, axis0, axis1);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SWAPAXES, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(axis0);trace.append_arg(axis1);
   return tt;
 }
@@ -11687,6 +11979,7 @@ at::Tensor wrap_swapdims(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::swapdims(dispatchKeySet, self, dim0, dim1);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SWAPDIMS, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dim0);trace.append_arg(dim1);
   return tt;
 }
@@ -11721,6 +12014,7 @@ at::Tensor wrap_cholesky(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::cholesky(dispatchKeySet, self, upper);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CHOLESKY, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(upper);
   return tt;
 }
@@ -11763,6 +12057,7 @@ at::Tensor wrap_cholesky_inverse(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::cholesky_inverse(dispatchKeySet, self, upper);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CHOLESKY_INVERSE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(upper);
   return tt;
 }
@@ -11785,6 +12080,7 @@ at::Tensor wrap_orgqr(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::orgqr(dispatchKeySet, self, input2);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ORGQR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(input2);
   return tt;
 }
@@ -11819,6 +12115,7 @@ at::Tensor wrap_ormqr(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::ormqr(dispatchKeySet, self, input2, input3, left, transpose);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ORMQR, self.dtype(), self.device());
+  set_shape(tt, input3);
   trace.append_arg(self);trace.append_arg(input2);trace.append_arg(input3);trace.append_arg(left);trace.append_arg(transpose);
   return tt;
 }
@@ -11945,6 +12242,7 @@ at::Tensor wrap_sign(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::sign(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SIGN, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -11991,6 +12289,7 @@ at::Tensor wrap_dist(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::dist(dispatchKeySet, self, other, p);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DIST, to_real2(self, other), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(p);
   return tt;
 }
@@ -12037,6 +12336,7 @@ at::Tensor wrap_lerp_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::lerp(dispatchKeySet, self, end, weight);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LERP_SCALAR, self.dtype(), self.device());
+  set_shape(tt, shape_std_promote(self, end));
   trace.append_arg(self);trace.append_arg(end);trace.append_arg(weight);
   return tt;
 }
@@ -12047,6 +12347,7 @@ at::Tensor wrap_lerp_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::lerp(dispatchKeySet, self, end, weight);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LERP_TENSOR, self.dtype(), self.device());
+  set_shape(tt, shape_std_promote(self, end, weight));
   trace.append_arg(self);trace.append_arg(end);trace.append_arg(weight);
   return tt;
 }
@@ -12069,6 +12370,7 @@ at::Tensor wrap_histc(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::histc(dispatchKeySet, self, bins, min, max);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_HISTC, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef(1));
   trace.append_arg(self);trace.append_arg(bins);trace.append_arg(min);trace.append_arg(max);
   return tt;
 }
@@ -12091,6 +12393,7 @@ at::Tensor wrap_fmod_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::fmod(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FMOD_SCALAR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -12209,6 +12512,7 @@ at::Tensor wrap_remainder_Scalar(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::remainder(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_REMAINDER_SCALAR, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -12243,6 +12547,7 @@ at::Tensor wrap_remainder_Scalar_Tensor(c10::DispatchKeySet dispatchKeySet, cons
     return at::redispatch::remainder(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_REMAINDER_SCALAR_TENSOR, bool_to_int(other.dtype().toScalarType()), other.device());
+  set_shape(tt, other);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -12253,6 +12558,7 @@ at::Tensor wrap_min(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
     return at::redispatch::min(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MIN, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);
   return tt;
 }
@@ -12275,6 +12581,7 @@ at::Tensor wrap_max(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
     return at::redispatch::max(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MAX, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);
   return tt;
 }
@@ -12309,6 +12616,7 @@ at::Tensor wrap_max_other(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::max(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MAX_OTHER, promote_const(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -12355,6 +12663,7 @@ at::Tensor wrap_min_other(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::min(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MIN_OTHER, promote_const(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -12377,6 +12686,7 @@ at::Tensor wrap_quantile_scalar(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::quantile(dispatchKeySet, self, q, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_QUANTILE_SCALAR, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
@@ -12399,6 +12709,7 @@ at::Tensor wrap_quantile(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::quantile(dispatchKeySet, self, q, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_QUANTILE, self.dtype(), self.device());
+  set_shape(tt, q);
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
@@ -12421,6 +12732,7 @@ at::Tensor wrap_nanquantile_scalar(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::nanquantile(dispatchKeySet, self, q, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NANQUANTILE_SCALAR, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
@@ -12443,6 +12755,7 @@ at::Tensor wrap_nanquantile(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::nanquantile(dispatchKeySet, self, q, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NANQUANTILE, self.dtype(), self.device());
+  set_shape(tt, q);
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
@@ -12553,6 +12866,7 @@ at::Tensor wrap_msort(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::msort(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MSORT, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -12563,6 +12877,7 @@ at::Tensor wrap_argsort(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::argsort(dispatchKeySet, self, dim, descending);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ARGSORT, kLong, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(descending);
   return tt;
 }
@@ -12583,6 +12898,7 @@ at::Tensor wrap_all(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
     return at::redispatch::all(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ALL, bool_byte(self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);
   return tt;
 }
@@ -12593,6 +12909,7 @@ at::Tensor wrap_any(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
     return at::redispatch::any(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ANY, bool_byte(self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);
   return tt;
 }
@@ -12615,6 +12932,7 @@ at::Tensor wrap_unfold(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::unfold(dispatchKeySet, self, dimension, size, step);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UNFOLD, self.dtype(), self.device());
+  set_shape(tt, shape_pad1(self));
   trace.append_arg(self);trace.append_arg(dimension);trace.append_arg(size);trace.append_arg(step);
   return tt;
 }
@@ -12671,6 +12989,7 @@ at::Tensor wrap_pow_Tensor_Scalar(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::pow(dispatchKeySet, self, exponent);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_POW_TENSOR_SCALAR, bool_to_int(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(exponent);
   return tt;
 }
@@ -12693,6 +13012,7 @@ at::Tensor wrap_float_power_Tensor_Tensor(c10::DispatchKeySet dispatchKeySet, co
     return at::redispatch::float_power(dispatchKeySet, self, exponent);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLOAT_POWER_TENSOR_TENSOR, to_double2(self.dtype().toScalarType(), exponent.dtype().toScalarType()), self.device());
+  set_shape(tt, shape_std_promote(self, exponent));
   trace.append_arg(self);trace.append_arg(exponent);
   return tt;
 }
@@ -12715,6 +13035,7 @@ at::Tensor wrap_float_power_Scalar(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::float_power(dispatchKeySet, self, exponent);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLOAT_POWER_SCALAR, to_double(exponent.dtype().toScalarType()), exponent.device());
+  set_shape(tt, exponent);
   trace.append_arg(self);trace.append_arg(exponent);
   return tt;
 }
@@ -12737,6 +13058,7 @@ at::Tensor wrap_float_power_Tensor_Scalar(c10::DispatchKeySet dispatchKeySet, co
     return at::redispatch::float_power(dispatchKeySet, self, exponent);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLOAT_POWER_TENSOR_SCALAR, to_double(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(exponent);
   return tt;
 }
@@ -12795,6 +13117,7 @@ at::Tensor wrap_normal_Tensor_float(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::normal(dispatchKeySet, mean, std, std::move(generator));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NORMAL_TENSOR_FLOAT, mean.dtype(), mean.device());
+  set_shape(tt, mean);
   trace.append_arg(mean);trace.append_arg(std);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -12817,6 +13140,7 @@ at::Tensor wrap_normal_float_Tensor(c10::DispatchKeySet dispatchKeySet, double m
     return at::redispatch::normal(dispatchKeySet, mean, std, std::move(generator));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NORMAL_FLOAT_TENSOR, std.dtype(), std.device());
+  set_shape(tt, std);
   trace.append_arg(mean);trace.append_arg(std);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -12849,6 +13173,7 @@ at::Tensor wrap_normal_float_float(c10::DispatchKeySet dispatchKeySet, double me
     return at::redispatch::normal(dispatchKeySet, mean, std, size, std::move(generator), dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NORMAL_FLOAT_FLOAT, dtype, device);
+  set_shape(tt, size);
   trace.append_arg(mean);trace.append_arg(std);trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -12871,6 +13196,7 @@ at::Tensor wrap_alias(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::alias(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ALIAS, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -12927,6 +13253,7 @@ at::Tensor wrap_bucketize_Tensor(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::bucketize(dispatchKeySet, self, boundaries, out_int32, right);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BUCKETIZE_TENSOR, kLong, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(boundaries);trace.append_arg(out_int32);trace.append_arg(right);
   return tt;
 }
@@ -12949,6 +13276,7 @@ at::Tensor wrap_bucketize_Scalar(c10::DispatchKeySet dispatchKeySet, const at::S
     return at::redispatch::bucketize(dispatchKeySet, self, boundaries, out_int32, right);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BUCKETIZE_SCALAR, kLong, boundaries.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(boundaries);trace.append_arg(out_int32);trace.append_arg(right);
   return tt;
 }
@@ -12959,6 +13287,7 @@ at::Tensor wrap_searchsorted_Tensor(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::searchsorted(dispatchKeySet, sorted_sequence, self, out_int32, right);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SEARCHSORTED_TENSOR, kLong, sorted_sequence.device());
+  set_shape(tt, self);
   trace.append_arg(sorted_sequence);trace.append_arg(self);trace.append_arg(out_int32);trace.append_arg(right);
   return tt;
 }
@@ -12981,6 +13310,7 @@ at::Tensor wrap_searchsorted_Scalar(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::searchsorted(dispatchKeySet, sorted_sequence, self, out_int32, right);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SEARCHSORTED_SCALAR, kLong, sorted_sequence.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(sorted_sequence);trace.append_arg(self);trace.append_arg(out_int32);trace.append_arg(right);
   return tt;
 }
@@ -13015,6 +13345,7 @@ at::Tensor wrap_mse_loss(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::mse_loss(dispatchKeySet, self, target, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MSE_LOSS, promote_const(self, target), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);
   return tt;
 }
@@ -13037,6 +13368,7 @@ at::Tensor wrap_mse_loss_backward(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::mse_loss_backward(dispatchKeySet, grad_output, self, target, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MSE_LOSS_BACKWARD, grad_output.dtype(), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self, target));
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);
   return tt;
 }
@@ -13059,6 +13391,7 @@ at::Tensor wrap_l1_loss(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::l1_loss(dispatchKeySet, self, target, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_L1_LOSS, toValueType(self.dtype().toScalarType()), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);
   return tt;
 }
@@ -13081,6 +13414,7 @@ at::Tensor wrap_l1_loss_backward(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::l1_loss_backward(dispatchKeySet, grad_output, self, target, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_L1_LOSS_BACKWARD, self.dtype(), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self, target));
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);
   return tt;
 }
@@ -13279,6 +13613,7 @@ at::Tensor wrap_smooth_l1_loss(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::smooth_l1_loss(dispatchKeySet, self, target, reduction, beta);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SMOOTH_L1_LOSS, promote_const(self, target), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(beta);
   return tt;
 }
@@ -13301,6 +13636,7 @@ at::Tensor wrap_smooth_l1_loss_backward(c10::DispatchKeySet dispatchKeySet, cons
     return at::redispatch::smooth_l1_loss_backward(dispatchKeySet, grad_output, self, target, reduction, beta);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SMOOTH_L1_LOSS_BACKWARD, self.dtype(), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self, target));
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(beta);
   return tt;
 }
@@ -13323,6 +13659,7 @@ at::Tensor wrap_huber_loss(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::huber_loss(dispatchKeySet, self, target, reduction, delta);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_HUBER_LOSS, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(delta);
   return tt;
 }
@@ -13345,6 +13682,7 @@ at::Tensor wrap_huber_loss_backward(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::huber_loss_backward(dispatchKeySet, grad_output, self, target, reduction, delta);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_HUBER_LOSS_BACKWARD, grad_output.dtype(), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self, target));
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(delta);
   return tt;
 }
@@ -13367,6 +13705,7 @@ at::Tensor wrap_soft_margin_loss(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::soft_margin_loss(dispatchKeySet, self, target, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SOFT_MARGIN_LOSS, self.dtype(), self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);
   return tt;
 }
@@ -13389,6 +13728,7 @@ at::Tensor wrap_soft_margin_loss_backward(c10::DispatchKeySet dispatchKeySet, co
     return at::redispatch::soft_margin_loss_backward(dispatchKeySet, grad_output, self, target, reduction);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SOFT_MARGIN_LOSS_BACKWARD, self.dtype(), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self, target));
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);
   return tt;
 }
@@ -13469,6 +13809,7 @@ at::Tensor wrap_glu_backward(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::glu_backward(dispatchKeySet, grad_output, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_GLU_BACKWARD, grad_output.dtype(), grad_output.device());
+  set_shape(tt, self);
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
@@ -13491,6 +13832,7 @@ at::Tensor wrap_hardsigmoid(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::hardsigmoid(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_HARDSIGMOID, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -13525,6 +13867,7 @@ at::Tensor wrap_hardtanh(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::hardtanh(dispatchKeySet, self, min_val, max_val);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_HARDTANH, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(min_val);trace.append_arg(max_val);
   return tt;
 }
@@ -13547,6 +13890,7 @@ at::Tensor wrap_hardtanh_backward(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::hardtanh_backward(dispatchKeySet, grad_output, self, min_val, max_val);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_HARDTANH_BACKWARD, promote_const(grad_output, self), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self));
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(min_val);trace.append_arg(max_val);
   return tt;
 }
@@ -13581,6 +13925,7 @@ at::Tensor wrap_hardswish(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::hardswish(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_HARDSWISH, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -13603,6 +13948,7 @@ at::Tensor wrap_hardswish_backward(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::hardswish_backward(dispatchKeySet, grad_output, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_HARDSWISH_BACKWARD, promote_const(grad_output, self), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self));
   trace.append_arg(grad_output);trace.append_arg(self);
   return tt;
 }
@@ -13625,6 +13971,7 @@ at::Tensor wrap_leaky_relu(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::leaky_relu(dispatchKeySet, self, negative_slope);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LEAKY_RELU, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(negative_slope);
   return tt;
 }
@@ -13671,6 +14018,7 @@ at::Tensor wrap_log_sigmoid(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::log_sigmoid(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOG_SIGMOID, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -13693,6 +14041,7 @@ at::Tensor wrap_log_sigmoid_backward(c10::DispatchKeySet dispatchKeySet, const a
     return at::redispatch::log_sigmoid_backward(dispatchKeySet, grad_output, self, buffer);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOG_SIGMOID_BACKWARD, grad_output.dtype(), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self, buffer));
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(buffer);
   return tt;
 }
@@ -13715,6 +14064,7 @@ at::Tensor wrap_rrelu_with_noise(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::rrelu_with_noise(dispatchKeySet, self, noise, lower, upper, training, std::move(generator));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RRELU_WITH_NOISE, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(noise);trace.append_arg(lower);trace.append_arg(upper);trace.append_arg(training);trace.append_arg(std::move(generator));
   return tt;
 }
@@ -13725,6 +14075,7 @@ at::Tensor wrap_rrelu_with_noise_backward(c10::DispatchKeySet dispatchKeySet, co
     return at::redispatch::rrelu_with_noise_backward(dispatchKeySet, grad_output, self, noise, lower, upper, training, self_is_result);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RRELU_WITH_NOISE_BACKWARD, to_float2(grad_output, self), grad_output.device());
+  set_shape(tt, shape_std_promote(grad_output, self));
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(noise);trace.append_arg(lower);trace.append_arg(upper);trace.append_arg(training);trace.append_arg(self_is_result);
   return tt;
 }
@@ -13869,6 +14220,7 @@ at::Tensor wrap_adaptive_avg_pool3d(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::adaptive_avg_pool3d(dispatchKeySet, self, output_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ADAPTIVE_AVG_POOL3D, self.dtype(), self.device());
+  set_shape(tt, nullopt);
   trace.append_arg(self);trace.append_arg(output_size);
   return tt;
 }
@@ -14997,6 +15349,7 @@ at::Tensor wrap_isfinite(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::isfinite(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ISFINITE, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15007,6 +15360,7 @@ at::Tensor wrap_isinf(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
     return at::redispatch::isinf(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ISINF, kBool, self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15085,6 +15439,7 @@ at::Tensor wrap_special_expm1(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::special_expm1(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_EXPM1, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15107,6 +15462,7 @@ at::Tensor wrap_special_exp2(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::special_exp2(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_EXP2, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15129,6 +15485,7 @@ at::Tensor wrap_special_psi(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::special_psi(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_PSI, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15151,6 +15508,7 @@ at::Tensor wrap_special_digamma(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::special_digamma(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_DIGAMMA, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15173,6 +15531,7 @@ at::Tensor wrap_special_gammaln(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::special_gammaln(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_GAMMALN, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15195,6 +15554,7 @@ at::Tensor wrap_special_erf(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::special_erf(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_ERF, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15217,6 +15577,7 @@ at::Tensor wrap_special_erfc(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::special_erfc(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_ERFC, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15251,6 +15612,7 @@ at::Tensor wrap_special_erfinv(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::special_erfinv(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_ERFINV, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15273,6 +15635,7 @@ at::Tensor wrap_special_ndtr(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::special_ndtr(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_NDTR, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15295,6 +15658,7 @@ at::Tensor wrap_special_xlog1py_self_scalar(c10::DispatchKeySet dispatchKeySet, 
     return at::redispatch::special_xlog1py(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_XLOG1PY_SELF_SCALAR, to_float(other.dtype().toScalarType()), other.device());
+  set_shape(tt, other);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -15305,6 +15669,7 @@ at::Tensor wrap_special_xlog1py_other_scalar(c10::DispatchKeySet dispatchKeySet,
     return at::redispatch::special_xlog1py(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_XLOG1PY_OTHER_SCALAR, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -15351,6 +15716,7 @@ at::Tensor wrap_special_xlogy(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::special_xlogy(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_XLOGY, to_float2(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -15361,6 +15727,7 @@ at::Tensor wrap_special_xlogy_self_scalar(c10::DispatchKeySet dispatchKeySet, co
     return at::redispatch::special_xlogy(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_XLOGY_SELF_SCALAR, to_float(other.dtype().toScalarType()), other.device());
+  set_shape(tt, other);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -15371,6 +15738,7 @@ at::Tensor wrap_special_xlogy_other_scalar(c10::DispatchKeySet dispatchKeySet, c
     return at::redispatch::special_xlogy(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_XLOGY_OTHER_SCALAR, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -15417,6 +15785,7 @@ at::Tensor wrap_special_zeta(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::special_zeta(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_ZETA, to_float2(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -15427,6 +15796,7 @@ at::Tensor wrap_special_zeta_self_scalar(c10::DispatchKeySet dispatchKeySet, con
     return at::redispatch::special_zeta(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_ZETA_SELF_SCALAR, to_float(other.dtype().toScalarType()), other.device());
+  set_shape(tt, other);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -15437,6 +15807,7 @@ at::Tensor wrap_special_zeta_other_scalar(c10::DispatchKeySet dispatchKeySet, co
     return at::redispatch::special_zeta(dispatchKeySet, self, other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_ZETA_OTHER_SCALAR, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(other);
   return tt;
 }
@@ -15483,6 +15854,7 @@ at::Tensor wrap_special_i0(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::special_i0(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_I0, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15541,6 +15913,7 @@ at::Tensor wrap_special_logit(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::special_logit(dispatchKeySet, self, eps);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_LOGIT, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(eps);
   return tt;
 }
@@ -15563,6 +15936,7 @@ at::Tensor wrap_special_polygamma(c10::DispatchKeySet dispatchKeySet, int64_t n,
     return at::redispatch::special_polygamma(dispatchKeySet, n, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_POLYGAMMA, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(n);trace.append_arg(self);
   return tt;
 }
@@ -15607,6 +15981,7 @@ at::Tensor wrap_special_expit(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::special_expit(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_EXPIT, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15629,6 +16004,7 @@ at::Tensor wrap_special_sinc(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::special_sinc(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_SINC, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15651,6 +16027,7 @@ at::Tensor wrap_special_round(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::special_round(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_ROUND, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15673,6 +16050,7 @@ at::Tensor wrap_special_log1p(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::special_log1p(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_LOG1P, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -15705,6 +16083,7 @@ at::Tensor wrap_special_multigammaln(c10::DispatchKeySet dispatchKeySet, const a
     return at::redispatch::special_multigammaln(dispatchKeySet, self, p);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_MULTIGAMMALN, to_float(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(p);
   return tt;
 }
@@ -15727,6 +16106,7 @@ at::Tensor wrap_fft_fft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::fft_fft(dispatchKeySet, self, n, dim, norm);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_FFT, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(dim);trace.append_arg(norm);
   return tt;
 }
@@ -15749,6 +16129,7 @@ at::Tensor wrap_fft_ifft(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::fft_ifft(dispatchKeySet, self, n, dim, norm);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_IFFT, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(dim);trace.append_arg(norm);
   return tt;
 }
@@ -15859,6 +16240,7 @@ at::Tensor wrap_fft_fft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::fft_fft2(dispatchKeySet, self, s, dim, norm);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_FFT2, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);
   return tt;
 }
@@ -15881,6 +16263,7 @@ at::Tensor wrap_fft_ifft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::fft_ifft2(dispatchKeySet, self, s, dim, norm);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_IFFT2, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);
   return tt;
 }
@@ -15947,6 +16330,7 @@ at::Tensor wrap_fft_fftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::fft_fftn(dispatchKeySet, self, s, dim, norm);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_FFTN, to_complex(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);
   return tt;
 }
@@ -15969,6 +16353,7 @@ at::Tensor wrap_fft_ifftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::fft_ifftn(dispatchKeySet, self, s, dim, norm);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_IFFTN, to_complex(self.dtype().toScalarType()), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);
   return tt;
 }
@@ -16079,6 +16464,7 @@ at::Tensor wrap_fft_fftshift(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::fft_fftshift(dispatchKeySet, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_FFTSHIFT, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
@@ -16089,6 +16475,7 @@ at::Tensor wrap_fft_ifftshift(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::fft_ifftshift(dispatchKeySet, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_IFFTSHIFT, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
@@ -16099,6 +16486,7 @@ at::Tensor wrap_linalg_cholesky(c10::DispatchKeySet dispatchKeySet, const at::Te
     return at::redispatch::linalg_cholesky(dispatchKeySet, self, upper);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_CHOLESKY, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(upper);
   return tt;
 }
@@ -16121,6 +16509,7 @@ at::Tensor wrap_linalg_det(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::linalg_det(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_DET, self.dtype(), self.device());
+  set_shape(tt, shape_drop2(self));
   trace.append_arg(self);
   return tt;
 }
@@ -16143,6 +16532,7 @@ at::Tensor wrap_det(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self)
     return at::redispatch::det(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DET, self.dtype(), self.device());
+  set_shape(tt, shape_drop2(self));
   trace.append_arg(self);
   return tt;
 }
@@ -16163,6 +16553,7 @@ at::Tensor wrap_linalg_eigvals(c10::DispatchKeySet dispatchKeySet, const at::Ten
     return at::redispatch::linalg_eigvals(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_EIGVALS, self.dtype(), self.device());
+  set_shape(tt, shape_drop1(self));
   trace.append_arg(self);
   return tt;
 }
@@ -16207,6 +16598,7 @@ at::Tensor wrap_linalg_householder_product(c10::DispatchKeySet dispatchKeySet, c
     return at::redispatch::linalg_householder_product(dispatchKeySet, input, tau);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_HOUSEHOLDER_PRODUCT, input.dtype(), input.device());
+  set_shape(tt, input);
   trace.append_arg(input);trace.append_arg(tau);
   return tt;
 }
@@ -16241,6 +16633,7 @@ at::Tensor wrap_linalg_inv(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::linalg_inv(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_INV, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);
   return tt;
 }
@@ -16373,6 +16766,7 @@ at::Tensor wrap_linalg_vector_norm(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::linalg_vector_norm(dispatchKeySet, self, ord, dim, keepdim, dtype);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_VECTOR_NORM, dtype, self.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);
   return tt;
 }
@@ -16461,6 +16855,7 @@ at::Tensor wrap_linalg_cond(c10::DispatchKeySet dispatchKeySet, const at::Tensor
     return at::redispatch::linalg_cond(dispatchKeySet, self, p);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_COND, self.dtype(), self.device());
+  set_shape(tt, shape_drop2(self));
   trace.append_arg(self);trace.append_arg(p);
   return tt;
 }
@@ -16571,6 +16966,7 @@ at::Tensor wrap_linalg_tensorinv(c10::DispatchKeySet dispatchKeySet, const at::T
     return at::redispatch::linalg_tensorinv(dispatchKeySet, self, ind);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_TENSORINV, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(ind);
   return tt;
 }
@@ -16615,6 +17011,7 @@ at::Tensor wrap_linalg_matrix_power(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::linalg_matrix_power(dispatchKeySet, self, n);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_MATRIX_POWER, self.dtype(), self.device());
+  set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(n);
   return tt;
 }
@@ -16637,6 +17034,7 @@ at::Tensor wrap_linalg_matrix_rank(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::linalg_matrix_rank(dispatchKeySet, self, tol, hermitian);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_MATRIX_RANK, self.dtype(), self.device());
+  set_shape(tt, shape_drop2(self));
   trace.append_arg(self);trace.append_arg(tol);trace.append_arg(hermitian);
   return tt;
 }
@@ -16681,6 +17079,7 @@ at::Tensor wrap_linalg_multi_dot(c10::DispatchKeySet dispatchKeySet, at::TensorL
     return at::redispatch::linalg_multi_dot(dispatchKeySet, tensors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_MULTI_DOT, tensors);
+  set_shape(tt, shape_mul(tensors));
   trace.append_arg(tensors);
   return tt;
 }
@@ -16703,6 +17102,7 @@ at::Tensor wrap__test_serialization_subcmul(c10::DispatchKeySet dispatchKeySet, 
     return at::redispatch::_test_serialization_subcmul(dispatchKeySet, self, other, alpha);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__TEST_SERIALIZATION_SUBCMUL, bool_to_int2(self, other), self.device());
+  set_shape(tt, shape_std_promote(self, other));
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   return tt;
 }
@@ -16713,6 +17113,7 @@ at::Tensor wrap__test_optional_intlist(c10::DispatchKeySet dispatchKeySet, const
     return at::redispatch::_test_optional_intlist(dispatchKeySet, values, addends);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__TEST_OPTIONAL_INTLIST, values.dtype(), values.device());
+  set_shape(tt, values);
   trace.append_arg(values);trace.append_arg(addends);
   return tt;
 }
@@ -16723,6 +17124,7 @@ at::Tensor wrap__test_optional_filled_intlist(c10::DispatchKeySet dispatchKeySet
     return at::redispatch::_test_optional_filled_intlist(dispatchKeySet, values, addends);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__TEST_OPTIONAL_FILLED_INTLIST, values.dtype(), values.device());
+  set_shape(tt, values);
   trace.append_arg(values);trace.append_arg(addends);
   return tt;
 }
@@ -16733,6 +17135,7 @@ at::Tensor wrap__test_optional_floatlist(c10::DispatchKeySet dispatchKeySet, con
     return at::redispatch::_test_optional_floatlist(dispatchKeySet, values, addends);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__TEST_OPTIONAL_FLOATLIST, values.dtype(), values.device());
+  set_shape(tt, values);
   trace.append_arg(values);trace.append_arg(addends);
   return tt;
 }
@@ -16753,6 +17156,7 @@ at::Tensor wrap__test_ambiguous_defaults_a(c10::DispatchKeySet dispatchKeySet, c
     return at::redispatch::_test_ambiguous_defaults(dispatchKeySet, dummy, a, b);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__TEST_AMBIGUOUS_DEFAULTS_A, kLong, dummy.device());
+  set_shape(tt, IntArrayRef());
   trace.append_arg(dummy);trace.append_arg(a);trace.append_arg(b);
   return tt;
 }

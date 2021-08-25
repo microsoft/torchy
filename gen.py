@@ -250,6 +250,8 @@ def mk_shape_infer(shape, all_args):
     return f'shape_pick_1st({args[1].expr})'
   if shape == 'JOIN_2_3':
     return f'shape_join({args[1].expr}, {args[2].expr})'
+  if shape == 'PAD1':
+    return f'shape_pad1({args[0].expr})'
   if shape == 'DROP1':
     return f'shape_drop1({args[0].expr})'
   if shape == 'DROP2':
@@ -284,6 +286,11 @@ def gen_dispatch_wrapper(fn):
   if rettype == 'at::Tensor':
     dtype_device = get_dtype_arg(tensor_args, args, fn.func.name)
 
+    set_shape = ''
+    shape_fn = shape_inference.get(str(fn.func.name))
+    if shape_fn:
+      set_shape = f'set_shape(tt, {mk_shape_infer(shape_fn, args)});\n  '
+
     return f'''
 {fndecl} {{
   if (trace.is_flushing()) {{
@@ -291,7 +298,7 @@ def gen_dispatch_wrapper(fn):
     return {redispatch};
   }}
   auto tt = register_new_tensor(dispatchKeySet, {fn_enum(fn)}, {dtype_device});
-  {register_args}
+  {set_shape}{register_args}
   return tt;
 }}'''
 
