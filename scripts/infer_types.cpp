@@ -88,6 +88,12 @@ optional<ScalarType> to_optional(ScalarType ty) {
   return ty;
 }
 
+ScalarType optional_or_default(ScalarType ty) {
+  if (ty == ScalarType::Undefined)
+    return typeMetaToScalarType(at::get_default_dtype());
+  return ty;
+}
+
 struct C {
   const char *name;
 
@@ -330,8 +336,7 @@ struct C {
       is_optional_or21long &= type_trail.size() >= 2 &&
                              optional_or_longelse(to_optional(type_trail[1].ty),
                                                   type_trail[0].ty) == type;
-      is_1_or_default  &= optional_or_default(to_optional(type_trail[0].ty))
-                            == type;
+      is_1_or_default  &= optional_or_default(type_trail[0].ty) == type;
       is_1_or_long     &= optional_or_else(to_optional(type_trail[0].ty), kLong)
                             == type;
     }

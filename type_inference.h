@@ -282,7 +282,3 @@ ScalarType optional_or_else(optional<ScalarType> opt, ScalarType ty) {
 ScalarType optional_or_longelse(optional<ScalarType> opt, ScalarType ty) {
   return optional_or_else(opt, integrals_to_int(ty));
 }
-
-ScalarType optional_or_default(optional<ScalarType> opt) {
-  return opt ? *opt : typeMetaToScalarType(at::get_default_dtype());
-}
