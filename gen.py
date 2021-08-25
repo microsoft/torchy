@@ -183,6 +183,7 @@ def move_if_needed(str, arg):
     'bool',
     'int64_t',
     'double',
+    'at::IntArrayRef'
   }
   free_copy_types = (
     types.ArrayRefCType,

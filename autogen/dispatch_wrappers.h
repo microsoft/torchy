@@ -642,20 +642,20 @@ at::Tensor & wrap_arccos_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
 at::Tensor wrap_avg_pool1d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::avg_pool1d(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), ceil_mode, count_include_pad);
+    return at::redispatch::avg_pool1d(dispatchKeySet, self, kernel_size, stride, padding, ceil_mode, count_include_pad);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_AVG_POOL1D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);
   return tt;
 }
 
 at::Tensor wrap_adaptive_avg_pool1d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::adaptive_avg_pool1d(dispatchKeySet, self, std::move(output_size));
+    return at::redispatch::adaptive_avg_pool1d(dispatchKeySet, self, output_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ADAPTIVE_AVG_POOL1D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(output_size));
+  trace.append_arg(self);trace.append_arg(output_size);
   return tt;
 }
 
@@ -820,20 +820,20 @@ at::Tensor & wrap_addr_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
 at::Tensor wrap_affine_grid_generator(c10::DispatchKeySet dispatchKeySet, const at::Tensor & theta, at::IntArrayRef size, bool align_corners) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::affine_grid_generator(dispatchKeySet, theta, std::move(size), align_corners);
+    return at::redispatch::affine_grid_generator(dispatchKeySet, theta, size, align_corners);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_AFFINE_GRID_GENERATOR, theta.dtype(), theta.device());
-  trace.append_arg(theta);trace.append_arg(std::move(size));trace.append_arg(align_corners);
+  trace.append_arg(theta);trace.append_arg(size);trace.append_arg(align_corners);
   return tt;
 }
 
 at::Tensor wrap_affine_grid_generator_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, at::IntArrayRef size, bool align_corners) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::affine_grid_generator_backward(dispatchKeySet, grad, std::move(size), align_corners);
+    return at::redispatch::affine_grid_generator_backward(dispatchKeySet, grad, size, align_corners);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_AFFINE_GRID_GENERATOR_BACKWARD, grad.dtype(), grad.device());
-  trace.append_arg(grad);trace.append_arg(std::move(size));trace.append_arg(align_corners);
+  trace.append_arg(grad);trace.append_arg(size);trace.append_arg(align_corners);
   return tt;
 }
 
@@ -1134,20 +1134,20 @@ at::Tensor & wrap_arctanh_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
 at::Tensor wrap_as_strided(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<int64_t> storage_offset) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::as_strided(dispatchKeySet, self, std::move(size), std::move(stride), storage_offset);
+    return at::redispatch::as_strided(dispatchKeySet, self, size, stride, storage_offset);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_AS_STRIDED, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(std::move(stride));trace.append_arg(storage_offset);
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(stride);trace.append_arg(storage_offset);
   return tt;
 }
 
 const at::Tensor & wrap_as_strided_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<int64_t> storage_offset) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::as_strided_(dispatchKeySet, self, std::move(size), std::move(stride), storage_offset);
+    return at::redispatch::as_strided_(dispatchKeySet, self, size, stride, storage_offset);
   }
   bool flush = register_in_place(self, H_AS_STRIDED_, dispatchKeySet, eq_shapes(self, size));
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(std::move(stride));trace.append_arg(storage_offset);
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(stride);trace.append_arg(storage_offset);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return self;
@@ -1762,10 +1762,10 @@ at::Tensor & wrap_bmm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
 at::Tensor wrap_broadcast_to(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::broadcast_to(dispatchKeySet, self, std::move(size));
+    return at::redispatch::broadcast_to(dispatchKeySet, self, size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_BROADCAST_TO, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(size));
+  trace.append_arg(self);trace.append_arg(size);
   return tt;
 }
 
@@ -2198,10 +2198,10 @@ at::Tensor & wrap_polar_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
 at::Tensor wrap_constant_pad_nd(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef pad, const at::Scalar & value) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::constant_pad_nd(dispatchKeySet, self, std::move(pad), value);
+    return at::redispatch::constant_pad_nd(dispatchKeySet, self, pad, value);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONSTANT_PAD_ND, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(pad));trace.append_arg(value);
+  trace.append_arg(self);trace.append_arg(pad);trace.append_arg(value);
   return tt;
 }
 
@@ -2218,120 +2218,120 @@ at::Tensor wrap_contiguous(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
 at::Tensor wrap_convolution(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::convolution(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), transposed, std::move(output_padding), groups);
+    return at::redispatch::convolution(dispatchKeySet, input, weight, bias, stride, padding, dilation, transposed, output_padding, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONVOLUTION, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(transposed);trace.append_arg(std::move(output_padding));trace.append_arg(groups);
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(transposed);trace.append_arg(output_padding);trace.append_arg(groups);
   return tt;
 }
 
 at::Tensor wrap_convolution_overrideable(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::convolution_overrideable(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), transposed, std::move(output_padding), groups);
+    return at::redispatch::convolution_overrideable(dispatchKeySet, input, weight, bias, stride, padding, dilation, transposed, output_padding, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONVOLUTION_OVERRIDEABLE, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(transposed);trace.append_arg(std::move(output_padding));trace.append_arg(groups);
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(transposed);trace.append_arg(output_padding);trace.append_arg(groups);
   return tt;
 }
 
 at::Tensor wrap__convolution(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups, bool benchmark, bool deterministic, bool cudnn_enabled, bool allow_tf32) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_convolution(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), transposed, std::move(output_padding), groups, benchmark, deterministic, cudnn_enabled, allow_tf32);
+    return at::redispatch::_convolution(dispatchKeySet, input, weight, bias, stride, padding, dilation, transposed, output_padding, groups, benchmark, deterministic, cudnn_enabled, allow_tf32);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CONVOLUTION, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(transposed);trace.append_arg(std::move(output_padding));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(cudnn_enabled);trace.append_arg(allow_tf32);
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(transposed);trace.append_arg(output_padding);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(cudnn_enabled);trace.append_arg(allow_tf32);
   return tt;
 }
 
 at::Tensor wrap__convolution_deprecated(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding, int64_t groups, bool benchmark, bool deterministic, bool cudnn_enabled) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_convolution(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), transposed, std::move(output_padding), groups, benchmark, deterministic, cudnn_enabled);
+    return at::redispatch::_convolution(dispatchKeySet, input, weight, bias, stride, padding, dilation, transposed, output_padding, groups, benchmark, deterministic, cudnn_enabled);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CONVOLUTION_DEPRECATED, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(transposed);trace.append_arg(std::move(output_padding));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(cudnn_enabled);
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(transposed);trace.append_arg(output_padding);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(cudnn_enabled);
   return tt;
 }
 
 at::Tensor wrap__convolution_mode(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, c10::string_view padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_convolution_mode(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
+    return at::redispatch::_convolution_mode(dispatchKeySet, input, weight, bias, stride, std::move(padding), dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CONVOLUTION_MODE, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(std::move(padding));trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
 at::Tensor wrap__convolution_nogroup(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool transposed, at::IntArrayRef output_padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_convolution_nogroup(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), transposed, std::move(output_padding));
+    return at::redispatch::_convolution_nogroup(dispatchKeySet, input, weight, bias, stride, padding, dilation, transposed, output_padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CONVOLUTION_NOGROUP, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(transposed);trace.append_arg(std::move(output_padding));
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(transposed);trace.append_arg(output_padding);
   return tt;
 }
 
 at::Tensor wrap_conv1d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::conv1d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
+    return at::redispatch::conv1d(dispatchKeySet, input, weight, bias, stride, padding, dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONV1D, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
 at::Tensor wrap_conv2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::conv2d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
+    return at::redispatch::conv2d(dispatchKeySet, input, weight, bias, stride, padding, dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONV2D, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
 at::Tensor wrap_conv3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::conv3d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
+    return at::redispatch::conv3d(dispatchKeySet, input, weight, bias, stride, padding, dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONV3D, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
 at::Tensor wrap_conv1d_padding(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, c10::string_view padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::conv1d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
+    return at::redispatch::conv1d(dispatchKeySet, input, weight, bias, stride, std::move(padding), dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONV1D_PADDING, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(std::move(padding));trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
 at::Tensor wrap_conv2d_padding(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, c10::string_view padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::conv2d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
+    return at::redispatch::conv2d(dispatchKeySet, input, weight, bias, stride, std::move(padding), dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONV2D_PADDING, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(std::move(padding));trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
 at::Tensor wrap_conv3d_padding(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, c10::string_view padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::conv3d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
+    return at::redispatch::conv3d(dispatchKeySet, input, weight, bias, stride, std::move(padding), dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONV3D_PADDING, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(std::move(padding));trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
@@ -2348,30 +2348,30 @@ at::Tensor wrap_conv_tbc(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
 at::Tensor wrap_conv_transpose1d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, int64_t groups, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::conv_transpose1d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(output_padding), groups, std::move(dilation));
+    return at::redispatch::conv_transpose1d(dispatchKeySet, input, weight, bias, stride, padding, output_padding, groups, dilation);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONV_TRANSPOSE1D, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(output_padding));trace.append_arg(groups);trace.append_arg(std::move(dilation));
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(groups);trace.append_arg(dilation);
   return tt;
 }
 
 at::Tensor wrap_conv_transpose2d_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, int64_t groups, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::conv_transpose2d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(output_padding), groups, std::move(dilation));
+    return at::redispatch::conv_transpose2d(dispatchKeySet, input, weight, bias, stride, padding, output_padding, groups, dilation);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONV_TRANSPOSE2D_INPUT, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(output_padding));trace.append_arg(groups);trace.append_arg(std::move(dilation));
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(groups);trace.append_arg(dilation);
   return tt;
 }
 
 at::Tensor wrap_conv_transpose3d_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, int64_t groups, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::conv_transpose3d(dispatchKeySet, input, weight, bias, std::move(stride), std::move(padding), std::move(output_padding), groups, std::move(dilation));
+    return at::redispatch::conv_transpose3d(dispatchKeySet, input, weight, bias, stride, padding, output_padding, groups, dilation);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONV_TRANSPOSE3D_INPUT, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(output_padding));trace.append_arg(groups);trace.append_arg(std::move(dilation));
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(groups);trace.append_arg(dilation);
   return tt;
 }
 
@@ -2424,10 +2424,10 @@ at::Tensor wrap_cosine_embedding_loss(c10::DispatchKeySet dispatchKeySet, const 
 at::Tensor wrap_count_nonzero_dim_IntList(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::count_nonzero(dispatchKeySet, self, std::move(dim));
+    return at::redispatch::count_nonzero(dispatchKeySet, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_COUNT_NONZERO_DIM_INTLIST, kLong, self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));
+  trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
 
@@ -2484,120 +2484,120 @@ at::Tensor wrap_cudnn_affine_grid_generator_backward(c10::DispatchKeySet dispatc
 at::Tensor wrap_cudnn_convolution_deprecated(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution(dispatchKeySet, self, weight, bias, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::cudnn_convolution(dispatchKeySet, self, weight, bias, padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION_DEPRECATED, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
 at::Tensor wrap_cudnn_convolution_deprecated2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution(dispatchKeySet, self, weight, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::cudnn_convolution(dispatchKeySet, self, weight, padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION_DEPRECATED2, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
 at::Tensor wrap_cudnn_convolution(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution(dispatchKeySet, self, weight, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic, allow_tf32);
+    return at::redispatch::cudnn_convolution(dispatchKeySet, self, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
   return tt;
 }
 
 at::Tensor wrap_cudnn_convolution_backward_input(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef self_size, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution_backward_input(dispatchKeySet, std::move(self_size), grad_output, weight, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic, allow_tf32);
+    return at::redispatch::cudnn_convolution_backward_input(dispatchKeySet, self_size, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION_BACKWARD_INPUT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(std::move(self_size));trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
+  trace.append_arg(self_size);trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
   return tt;
 }
 
 at::Tensor wrap_cudnn_convolution_backward_weight(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution_backward_weight(dispatchKeySet, std::move(weight_size), grad_output, self, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic, allow_tf32);
+    return at::redispatch::cudnn_convolution_backward_weight(dispatchKeySet, weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION_BACKWARD_WEIGHT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(std::move(weight_size));trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
+  trace.append_arg(weight_size);trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
   return tt;
 }
 
 at::Tensor wrap_cudnn_convolution_transpose_deprecated(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution_transpose(dispatchKeySet, self, weight, bias, std::move(padding), std::move(output_padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::cudnn_convolution_transpose(dispatchKeySet, self, weight, bias, padding, output_padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION_TRANSPOSE_DEPRECATED, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(padding));trace.append_arg(std::move(output_padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
 at::Tensor wrap_cudnn_convolution_transpose_deprecated2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution_transpose(dispatchKeySet, self, weight, std::move(padding), std::move(output_padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::cudnn_convolution_transpose(dispatchKeySet, self, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION_TRANSPOSE_DEPRECATED2, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(padding));trace.append_arg(std::move(output_padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
 at::Tensor wrap_cudnn_convolution_transpose(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution_transpose(dispatchKeySet, self, weight, std::move(padding), std::move(output_padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic, allow_tf32);
+    return at::redispatch::cudnn_convolution_transpose(dispatchKeySet, self, weight, padding, output_padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION_TRANSPOSE, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(padding));trace.append_arg(std::move(output_padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
   return tt;
 }
 
 at::Tensor wrap_cudnn_convolution_transpose_backward_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution_transpose_backward_input(dispatchKeySet, grad_output, weight, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic, allow_tf32);
+    return at::redispatch::cudnn_convolution_transpose_backward_input(dispatchKeySet, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION_TRANSPOSE_BACKWARD_INPUT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
+  trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
   return tt;
 }
 
 at::Tensor wrap_cudnn_convolution_transpose_backward_weight(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic, bool allow_tf32) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution_transpose_backward_weight(dispatchKeySet, std::move(weight_size), grad_output, self, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic, allow_tf32);
+    return at::redispatch::cudnn_convolution_transpose_backward_weight(dispatchKeySet, weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic, allow_tf32);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION_TRANSPOSE_BACKWARD_WEIGHT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(std::move(weight_size));trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
+  trace.append_arg(weight_size);trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);trace.append_arg(allow_tf32);
   return tt;
 }
 
 at::Tensor wrap_cudnn_convolution_relu(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution_relu(dispatchKeySet, self, weight, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
+    return at::redispatch::cudnn_convolution_relu(dispatchKeySet, self, weight, bias, stride, padding, dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION_RELU, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
 at::Tensor wrap_cudnn_convolution_add_relu(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, const at::Tensor & z, const c10::optional<at::Scalar> & alpha, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::cudnn_convolution_add_relu(dispatchKeySet, self, weight, z, alpha, bias, std::move(stride), std::move(padding), std::move(dilation), groups);
+    return at::redispatch::cudnn_convolution_add_relu(dispatchKeySet, self, weight, z, alpha, bias, stride, padding, dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CUDNN_CONVOLUTION_ADD_RELU, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(z);trace.append_arg(alpha);trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(z);trace.append_arg(alpha);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
@@ -2746,10 +2746,10 @@ at::Tensor wrap_cumulative_trapezoid_dx(c10::DispatchKeySet dispatchKeySet, cons
 at::Tensor wrap_ctc_loss_IntList(c10::DispatchKeySet dispatchKeySet, const at::Tensor & log_probs, const at::Tensor & targets, at::IntArrayRef input_lengths, at::IntArrayRef target_lengths, int64_t blank, int64_t reduction, bool zero_infinity) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::ctc_loss(dispatchKeySet, log_probs, targets, std::move(input_lengths), std::move(target_lengths), blank, reduction, zero_infinity);
+    return at::redispatch::ctc_loss(dispatchKeySet, log_probs, targets, input_lengths, target_lengths, blank, reduction, zero_infinity);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CTC_LOSS_INTLIST, log_probs.dtype(), log_probs.device());
-  trace.append_arg(log_probs);trace.append_arg(targets);trace.append_arg(std::move(input_lengths));trace.append_arg(std::move(target_lengths));trace.append_arg(blank);trace.append_arg(reduction);trace.append_arg(zero_infinity);
+  trace.append_arg(log_probs);trace.append_arg(targets);trace.append_arg(input_lengths);trace.append_arg(target_lengths);trace.append_arg(blank);trace.append_arg(reduction);trace.append_arg(zero_infinity);
   return tt;
 }
 
@@ -2766,10 +2766,10 @@ at::Tensor wrap_ctc_loss_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Te
 at::Tensor wrap__ctc_loss_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, const at::Tensor & log_probs, const at::Tensor & targets, at::IntArrayRef input_lengths, at::IntArrayRef target_lengths, const at::Tensor & neg_log_likelihood, const at::Tensor & log_alpha, int64_t blank, bool zero_infinity) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_ctc_loss_backward(dispatchKeySet, grad, log_probs, targets, std::move(input_lengths), std::move(target_lengths), neg_log_likelihood, log_alpha, blank, zero_infinity);
+    return at::redispatch::_ctc_loss_backward(dispatchKeySet, grad, log_probs, targets, input_lengths, target_lengths, neg_log_likelihood, log_alpha, blank, zero_infinity);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CTC_LOSS_BACKWARD, grad.dtype(), grad.device());
-  trace.append_arg(grad);trace.append_arg(log_probs);trace.append_arg(targets);trace.append_arg(std::move(input_lengths));trace.append_arg(std::move(target_lengths));trace.append_arg(neg_log_likelihood);trace.append_arg(log_alpha);trace.append_arg(blank);trace.append_arg(zero_infinity);
+  trace.append_arg(grad);trace.append_arg(log_probs);trace.append_arg(targets);trace.append_arg(input_lengths);trace.append_arg(target_lengths);trace.append_arg(neg_log_likelihood);trace.append_arg(log_alpha);trace.append_arg(blank);trace.append_arg(zero_infinity);
   return tt;
 }
 
@@ -2816,10 +2816,10 @@ at::Tensor wrap_diagonal_Dimname(c10::DispatchKeySet dispatchKeySet, const at::T
 at::Tensor wrap_diagonal_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, at::IntArrayRef input_sizes, int64_t offset, int64_t dim1, int64_t dim2) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::diagonal_backward(dispatchKeySet, grad, std::move(input_sizes), offset, dim1, dim2);
+    return at::redispatch::diagonal_backward(dispatchKeySet, grad, input_sizes, offset, dim1, dim2);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DIAGONAL_BACKWARD, grad.dtype(), grad.device());
-  trace.append_arg(grad);trace.append_arg(std::move(input_sizes));trace.append_arg(offset);trace.append_arg(dim1);trace.append_arg(dim2);
+  trace.append_arg(grad);trace.append_arg(input_sizes);trace.append_arg(offset);trace.append_arg(dim1);trace.append_arg(dim2);
   return tt;
 }
 
@@ -3308,100 +3308,100 @@ at::Tensor wrap__embedding_bag_per_sample_weights_backward(c10::DispatchKeySet d
 at::Tensor wrap_empty_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::empty(dispatchKeySet, std::move(size), std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory, std::move(memory_format));
+    return at::redispatch::empty(dispatchKeySet, size, std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory, std::move(memory_format));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EMPTY_NAMES, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);trace.append_arg(std::move(memory_format));
+  trace.append_arg(size);trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);trace.append_arg(std::move(memory_format));
   return tt;
 }
 
 at::Tensor wrap_empty_memory_format(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::empty(dispatchKeySet, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory, std::move(memory_format));
+    return at::redispatch::empty(dispatchKeySet, size, std::move(dtype), std::move(layout), std::move(device), pin_memory, std::move(memory_format));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EMPTY_MEMORY_FORMAT, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);trace.append_arg(std::move(memory_format));
+  trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);trace.append_arg(std::move(memory_format));
   return tt;
 }
 
 at::Tensor wrap_new_empty(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::new_empty(dispatchKeySet, self, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::new_empty(dispatchKeySet, self, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEW_EMPTY, optional_or_else(dtype, self.dtype().toScalarType()), device);
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_new_empty_strided(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::new_empty_strided(dispatchKeySet, self, std::move(size), std::move(stride), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::new_empty_strided(dispatchKeySet, self, size, stride, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEW_EMPTY_STRIDED, optional_or_else(dtype, self.dtype().toScalarType()), device);
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(std::move(stride));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(stride);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_new_full(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, const at::Scalar & fill_value, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::new_full(dispatchKeySet, self, std::move(size), fill_value, std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::new_full(dispatchKeySet, self, size, fill_value, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEW_FULL, optional_or_else(dtype, self.dtype().toScalarType()), device);
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(fill_value);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(fill_value);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_new_zeros(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::new_zeros(dispatchKeySet, self, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::new_zeros(dispatchKeySet, self, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEW_ZEROS, optional_or_else(dtype, self.dtype().toScalarType()), device);
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_new_ones(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::new_ones(dispatchKeySet, self, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::new_ones(dispatchKeySet, self, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NEW_ONES, optional_or_else(dtype, self.dtype().toScalarType()), device);
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap__empty_affine_quantized(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, double scale, int64_t zero_point, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_empty_affine_quantized(dispatchKeySet, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory, scale, zero_point, std::move(memory_format));
+    return at::redispatch::_empty_affine_quantized(dispatchKeySet, size, std::move(dtype), std::move(layout), std::move(device), pin_memory, scale, zero_point, std::move(memory_format));
   }
   auto tt = register_new_tensor(dispatchKeySet, H__EMPTY_AFFINE_QUANTIZED, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);trace.append_arg(scale);trace.append_arg(zero_point);trace.append_arg(std::move(memory_format));
+  trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);trace.append_arg(scale);trace.append_arg(zero_point);trace.append_arg(std::move(memory_format));
   return tt;
 }
 
 at::Tensor wrap__empty_per_channel_affine_quantized(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, const at::Tensor & scales, const at::Tensor & zero_points, int64_t axis, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_empty_per_channel_affine_quantized(dispatchKeySet, std::move(size), scales, zero_points, axis, std::move(dtype), std::move(layout), std::move(device), pin_memory, std::move(memory_format));
+    return at::redispatch::_empty_per_channel_affine_quantized(dispatchKeySet, size, scales, zero_points, axis, std::move(dtype), std::move(layout), std::move(device), pin_memory, std::move(memory_format));
   }
   auto tt = register_new_tensor(dispatchKeySet, H__EMPTY_PER_CHANNEL_AFFINE_QUANTIZED, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(scales);trace.append_arg(zero_points);trace.append_arg(axis);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);trace.append_arg(std::move(memory_format));
+  trace.append_arg(size);trace.append_arg(scales);trace.append_arg(zero_points);trace.append_arg(axis);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);trace.append_arg(std::move(memory_format));
   return tt;
 }
 
 const at::Tensor & wrap_resize_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::resize_(dispatchKeySet, self, std::move(size), std::move(memory_format));
+    return at::redispatch::resize_(dispatchKeySet, self, size, std::move(memory_format));
   }
   bool flush = register_in_place(self, H_RESIZE_, dispatchKeySet, eq_shapes(self, size));
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(std::move(memory_format));
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(std::move(memory_format));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return self;
@@ -3410,20 +3410,20 @@ const at::Tensor & wrap_resize_(c10::DispatchKeySet dispatchKeySet, const at::Te
 at::Tensor wrap_empty_quantized(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, const at::Tensor & qtensor, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory, c10::optional<at::MemoryFormat> memory_format) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::empty_quantized(dispatchKeySet, std::move(size), qtensor, std::move(dtype), std::move(layout), std::move(device), pin_memory, std::move(memory_format));
+    return at::redispatch::empty_quantized(dispatchKeySet, size, qtensor, std::move(dtype), std::move(layout), std::move(device), pin_memory, std::move(memory_format));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EMPTY_QUANTIZED, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(qtensor);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);trace.append_arg(std::move(memory_format));
+  trace.append_arg(size);trace.append_arg(qtensor);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);trace.append_arg(std::move(memory_format));
   return tt;
 }
 
 at::Tensor & wrap_empty_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::MemoryFormat> memory_format, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::empty_outf(dispatchKeySet, std::move(size), std::move(memory_format), out);
+    return at::redispatch::empty_outf(dispatchKeySet, size, std::move(memory_format), out);
   }
   bool flush = register_in_place(out, H_EMPTY_OUT, dispatchKeySet, true);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(memory_format));trace.append_arg(out);
+  trace.append_arg(size);trace.append_arg(std::move(memory_format));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -3442,10 +3442,10 @@ at::Tensor wrap_empty_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
 at::Tensor wrap_empty_strided(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, at::IntArrayRef stride, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::empty_strided(dispatchKeySet, std::move(size), std::move(stride), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::empty_strided(dispatchKeySet, size, stride, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EMPTY_STRIDED, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(stride));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(stride);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
@@ -3512,10 +3512,10 @@ at::Tensor & wrap_expm1_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
 at::Tensor wrap_expand(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, bool implicit) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::expand(dispatchKeySet, self, std::move(size), implicit);
+    return at::redispatch::expand(dispatchKeySet, self, size, implicit);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EXPAND, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(implicit);
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(implicit);
   return tt;
 }
 
@@ -3616,20 +3616,20 @@ at::Tensor wrap_flatten_DimnameList(c10::DispatchKeySet dispatchKeySet, const at
 at::Tensor wrap_unflatten_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t dim, at::IntArrayRef sizes, c10::optional<at::DimnameList> names) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::unflatten(dispatchKeySet, self, dim, std::move(sizes), std::move(names));
+    return at::redispatch::unflatten(dispatchKeySet, self, dim, sizes, std::move(names));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UNFLATTEN_INT, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(std::move(sizes));trace.append_arg(std::move(names));
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(sizes);trace.append_arg(std::move(names));
   return tt;
 }
 
 at::Tensor wrap_unflatten_Dimname(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::Dimname dim, at::IntArrayRef sizes, at::DimnameList names) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::unflatten(dispatchKeySet, self, std::move(dim), std::move(sizes), std::move(names));
+    return at::redispatch::unflatten(dispatchKeySet, self, std::move(dim), sizes, std::move(names));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UNFLATTEN_DIMNAME, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(std::move(sizes));trace.append_arg(std::move(names));
+  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(sizes);trace.append_arg(std::move(names));
   return tt;
 }
 
@@ -3762,30 +3762,30 @@ at::Tensor & wrap_frac_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
 at::Tensor wrap_full_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, const at::Scalar & fill_value, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::full(dispatchKeySet, std::move(size), fill_value, std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::full(dispatchKeySet, size, fill_value, std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FULL_NAMES, optional_or_else(dtype, kLong), device);
-  trace.append_arg(std::move(size));trace.append_arg(fill_value);trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(fill_value);trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_full(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, const at::Scalar & fill_value, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::full(dispatchKeySet, std::move(size), fill_value, std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::full(dispatchKeySet, size, fill_value, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FULL, optional_or_else(dtype, kLong), device);
-  trace.append_arg(std::move(size));trace.append_arg(fill_value);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(fill_value);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor & wrap_full_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, const at::Scalar & fill_value, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::full_outf(dispatchKeySet, std::move(size), fill_value, out);
+    return at::redispatch::full_outf(dispatchKeySet, size, fill_value, out);
   }
   bool flush = register_in_place(out, H_FULL_OUT, dispatchKeySet, true);
-  trace.append_arg(std::move(size));trace.append_arg(fill_value);trace.append_arg(out);
+  trace.append_arg(size);trace.append_arg(fill_value);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -3988,20 +3988,20 @@ at::Tensor wrap_group_norm(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
 at::Tensor wrap__fft_r2c(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, bool onesided) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_fft_r2c(dispatchKeySet, self, std::move(dim), normalization, onesided);
+    return at::redispatch::_fft_r2c(dispatchKeySet, self, dim, normalization, onesided);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__FFT_R2C, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(normalization);trace.append_arg(onesided);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(normalization);trace.append_arg(onesided);
   return tt;
 }
 
 at::Tensor & wrap__fft_r2c_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, bool onesided, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_fft_r2c_outf(dispatchKeySet, self, std::move(dim), normalization, onesided, out);
+    return at::redispatch::_fft_r2c_outf(dispatchKeySet, self, dim, normalization, onesided, out);
   }
   bool flush = register_in_place(out, H__FFT_R2C_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(normalization);trace.append_arg(onesided);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(normalization);trace.append_arg(onesided);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -4010,20 +4010,20 @@ at::Tensor & wrap__fft_r2c_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
 at::Tensor wrap__fft_c2r(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, int64_t last_dim_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_fft_c2r(dispatchKeySet, self, std::move(dim), normalization, last_dim_size);
+    return at::redispatch::_fft_c2r(dispatchKeySet, self, dim, normalization, last_dim_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__FFT_C2R, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(normalization);trace.append_arg(last_dim_size);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(normalization);trace.append_arg(last_dim_size);
   return tt;
 }
 
 at::Tensor & wrap__fft_c2r_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, int64_t last_dim_size, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_fft_c2r_outf(dispatchKeySet, self, std::move(dim), normalization, last_dim_size, out);
+    return at::redispatch::_fft_c2r_outf(dispatchKeySet, self, dim, normalization, last_dim_size, out);
   }
   bool flush = register_in_place(out, H__FFT_C2R_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(normalization);trace.append_arg(last_dim_size);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(normalization);trace.append_arg(last_dim_size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -4032,20 +4032,20 @@ at::Tensor & wrap__fft_c2r_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
 at::Tensor wrap__fft_c2c(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, bool forward) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_fft_c2c(dispatchKeySet, self, std::move(dim), normalization, forward);
+    return at::redispatch::_fft_c2c(dispatchKeySet, self, dim, normalization, forward);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__FFT_C2C, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(normalization);trace.append_arg(forward);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(normalization);trace.append_arg(forward);
   return tt;
 }
 
 at::Tensor & wrap__fft_c2c_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, int64_t normalization, bool forward, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_fft_c2c_outf(dispatchKeySet, self, std::move(dim), normalization, forward, out);
+    return at::redispatch::_fft_c2c_outf(dispatchKeySet, self, dim, normalization, forward, out);
   }
   bool flush = register_in_place(out, H__FFT_C2C_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(normalization);trace.append_arg(forward);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(normalization);trace.append_arg(forward);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -4292,10 +4292,10 @@ at::Tensor & wrap_kron_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
 at::Tensor wrap_layer_norm(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, at::IntArrayRef normalized_shape, const c10::optional<at::Tensor> & weight, const c10::optional<at::Tensor> & bias, double eps, bool cudnn_enable) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::layer_norm(dispatchKeySet, input, std::move(normalized_shape), weight, bias, eps, cudnn_enable);
+    return at::redispatch::layer_norm(dispatchKeySet, input, normalized_shape, weight, bias, eps, cudnn_enable);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LAYER_NORM, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(std::move(normalized_shape));trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(eps);trace.append_arg(cudnn_enable);
+  trace.append_arg(input);trace.append_arg(normalized_shape);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(eps);trace.append_arg(cudnn_enable);
   return tt;
 }
 
@@ -4356,10 +4356,10 @@ at::Tensor wrap_mkldnn_linear(c10::DispatchKeySet dispatchKeySet, const at::Tens
 at::Tensor wrap_mkldnn_linear_backward_input(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef input_size, const at::Tensor & grad_output, const at::Tensor & weight) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mkldnn_linear_backward_input(dispatchKeySet, std::move(input_size), grad_output, weight);
+    return at::redispatch::mkldnn_linear_backward_input(dispatchKeySet, input_size, grad_output, weight);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MKLDNN_LINEAR_BACKWARD_INPUT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(std::move(input_size));trace.append_arg(grad_output);trace.append_arg(weight);
+  trace.append_arg(input_size);trace.append_arg(grad_output);trace.append_arg(weight);
   return tt;
 }
 
@@ -4816,20 +4816,20 @@ at::Tensor & wrap_logcumsumexp_dimname_out(c10::DispatchKeySet dispatchKeySet, c
 at::Tensor wrap_logsumexp(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::logsumexp(dispatchKeySet, self, std::move(dim), keepdim);
+    return at::redispatch::logsumexp(dispatchKeySet, self, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LOGSUMEXP, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor & wrap_logsumexp_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::logsumexp_outf(dispatchKeySet, self, std::move(dim), keepdim, out);
+    return at::redispatch::logsumexp_outf(dispatchKeySet, self, dim, keepdim, out);
   }
   bool flush = register_in_place(out, H_LOGSUMEXP_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -4976,30 +4976,30 @@ at::Tensor & wrap__compute_linear_combination_out(c10::DispatchKeySet dispatchKe
 at::Tensor wrap_value_selecting_reduction_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, int64_t dim, const at::Tensor & indices, at::IntArrayRef sizes, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::value_selecting_reduction_backward(dispatchKeySet, grad, dim, indices, std::move(sizes), keepdim);
+    return at::redispatch::value_selecting_reduction_backward(dispatchKeySet, grad, dim, indices, sizes, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VALUE_SELECTING_REDUCTION_BACKWARD, grad.dtype(), grad.device());
-  trace.append_arg(grad);trace.append_arg(dim);trace.append_arg(indices);trace.append_arg(std::move(sizes));trace.append_arg(keepdim);
+  trace.append_arg(grad);trace.append_arg(dim);trace.append_arg(indices);trace.append_arg(sizes);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor wrap_amax(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::amax(dispatchKeySet, self, std::move(dim), keepdim);
+    return at::redispatch::amax(dispatchKeySet, self, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_AMAX, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor & wrap_amax_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::amax_outf(dispatchKeySet, self, std::move(dim), keepdim, out);
+    return at::redispatch::amax_outf(dispatchKeySet, self, dim, keepdim, out);
   }
   bool flush = register_in_place(out, H_AMAX_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -5008,90 +5008,90 @@ at::Tensor & wrap_amax_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
 at::Tensor wrap_max_pool1d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_pool1d(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode);
+    return at::redispatch::max_pool1d(dispatchKeySet, self, kernel_size, stride, padding, dilation, ceil_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MAX_POOL1D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);
   return tt;
 }
 
 at::Tensor wrap_max_pool2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_pool2d(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode);
+    return at::redispatch::max_pool2d(dispatchKeySet, self, kernel_size, stride, padding, dilation, ceil_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MAX_POOL2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);
   return tt;
 }
 
 at::Tensor wrap_mkldnn_max_pool2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mkldnn_max_pool2d(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode);
+    return at::redispatch::mkldnn_max_pool2d(dispatchKeySet, self, kernel_size, stride, padding, dilation, ceil_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MKLDNN_MAX_POOL2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);
   return tt;
 }
 
 at::Tensor wrap_mkldnn_max_pool2d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & output, const at::Tensor & input, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mkldnn_max_pool2d_backward(dispatchKeySet, grad_output, output, input, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode);
+    return at::redispatch::mkldnn_max_pool2d_backward(dispatchKeySet, grad_output, output, input, kernel_size, stride, padding, dilation, ceil_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MKLDNN_MAX_POOL2D_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(output);trace.append_arg(input);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);
+  trace.append_arg(grad_output);trace.append_arg(output);trace.append_arg(input);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);
   return tt;
 }
 
 at::Tensor wrap_mkldnn_max_pool3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mkldnn_max_pool3d(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode);
+    return at::redispatch::mkldnn_max_pool3d(dispatchKeySet, self, kernel_size, stride, padding, dilation, ceil_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MKLDNN_MAX_POOL3D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);
   return tt;
 }
 
 at::Tensor wrap_mkldnn_max_pool3d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & output, const at::Tensor & input, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mkldnn_max_pool3d_backward(dispatchKeySet, grad_output, output, input, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode);
+    return at::redispatch::mkldnn_max_pool3d_backward(dispatchKeySet, grad_output, output, input, kernel_size, stride, padding, dilation, ceil_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MKLDNN_MAX_POOL3D_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(output);trace.append_arg(input);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);
+  trace.append_arg(grad_output);trace.append_arg(output);trace.append_arg(input);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);
   return tt;
 }
 
 at::Tensor wrap_quantized_max_pool1d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::quantized_max_pool1d(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode);
+    return at::redispatch::quantized_max_pool1d(dispatchKeySet, self, kernel_size, stride, padding, dilation, ceil_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_QUANTIZED_MAX_POOL1D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);
   return tt;
 }
 
 at::Tensor wrap_quantized_max_pool2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::quantized_max_pool2d(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode);
+    return at::redispatch::quantized_max_pool2d(dispatchKeySet, self, kernel_size, stride, padding, dilation, ceil_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_QUANTIZED_MAX_POOL2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);
   return tt;
 }
 
 at::Tensor wrap_max_pool3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_pool3d(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode);
+    return at::redispatch::max_pool3d(dispatchKeySet, self, kernel_size, stride, padding, dilation, ceil_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MAX_POOL3D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);
   return tt;
 }
 
@@ -5108,20 +5108,20 @@ at::Tensor wrap_mean(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
 at::Tensor wrap_mean_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mean(dispatchKeySet, self, std::move(dim), keepdim, std::move(dtype));
+    return at::redispatch::mean(dispatchKeySet, self, dim, keepdim, std::move(dtype));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MEAN_DIM, optional_or_else(dtype, self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
   return tt;
 }
 
 at::Tensor & wrap_mean_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mean_outf(dispatchKeySet, self, std::move(dim), keepdim, std::move(dtype), out);
+    return at::redispatch::mean_outf(dispatchKeySet, self, dim, keepdim, std::move(dtype), out);
   }
   bool flush = register_in_place(out, H_MEAN_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -5172,20 +5172,20 @@ at::Tensor wrap_nanmedian(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
 at::Tensor wrap_amin(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::amin(dispatchKeySet, self, std::move(dim), keepdim);
+    return at::redispatch::amin(dispatchKeySet, self, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_AMIN, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor & wrap_amin_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::amin_outf(dispatchKeySet, self, std::move(dim), keepdim, out);
+    return at::redispatch::amin_outf(dispatchKeySet, self, dim, keepdim, out);
   }
   bool flush = register_in_place(out, H_AMIN_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -5194,40 +5194,40 @@ at::Tensor & wrap_amin_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
 at::Tensor wrap_mkldnn_convolution(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mkldnn_convolution(dispatchKeySet, self, weight, bias, std::move(padding), std::move(stride), std::move(dilation), groups);
+    return at::redispatch::mkldnn_convolution(dispatchKeySet, self, weight, bias, padding, stride, dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MKLDNN_CONVOLUTION, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
 at::Tensor wrap_mkldnn_convolution_backward_input(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef self_size, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool bias_defined) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mkldnn_convolution_backward_input(dispatchKeySet, std::move(self_size), grad_output, weight, std::move(padding), std::move(stride), std::move(dilation), groups, bias_defined);
+    return at::redispatch::mkldnn_convolution_backward_input(dispatchKeySet, self_size, grad_output, weight, padding, stride, dilation, groups, bias_defined);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MKLDNN_CONVOLUTION_BACKWARD_INPUT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(std::move(self_size));trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(bias_defined);
+  trace.append_arg(self_size);trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(bias_defined);
   return tt;
 }
 
 at::Tensor wrap_miopen_convolution(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::miopen_convolution(dispatchKeySet, self, weight, bias, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::miopen_convolution(dispatchKeySet, self, weight, bias, padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MIOPEN_CONVOLUTION, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
 at::Tensor wrap_miopen_convolution_backward_input(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef self_size, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::miopen_convolution_backward_input(dispatchKeySet, std::move(self_size), grad_output, weight, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::miopen_convolution_backward_input(dispatchKeySet, self_size, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MIOPEN_CONVOLUTION_BACKWARD_INPUT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(std::move(self_size));trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(self_size);trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
@@ -5244,70 +5244,70 @@ at::Tensor wrap_miopen_convolution_backward_bias(c10::DispatchKeySet dispatchKey
 at::Tensor wrap_miopen_convolution_backward_weight(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::miopen_convolution_backward_weight(dispatchKeySet, std::move(weight_size), grad_output, self, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::miopen_convolution_backward_weight(dispatchKeySet, weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MIOPEN_CONVOLUTION_BACKWARD_WEIGHT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(std::move(weight_size));trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(weight_size);trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
 at::Tensor wrap_miopen_convolution_transpose(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::miopen_convolution_transpose(dispatchKeySet, self, weight, bias, std::move(padding), std::move(output_padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::miopen_convolution_transpose(dispatchKeySet, self, weight, bias, padding, output_padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MIOPEN_CONVOLUTION_TRANSPOSE, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(padding));trace.append_arg(std::move(output_padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
 at::Tensor wrap_miopen_convolution_transpose_backward_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::miopen_convolution_transpose_backward_input(dispatchKeySet, grad_output, weight, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::miopen_convolution_transpose_backward_input(dispatchKeySet, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MIOPEN_CONVOLUTION_TRANSPOSE_BACKWARD_INPUT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
 at::Tensor wrap_miopen_convolution_transpose_backward_weight(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::miopen_convolution_transpose_backward_weight(dispatchKeySet, std::move(weight_size), grad_output, self, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::miopen_convolution_transpose_backward_weight(dispatchKeySet, weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MIOPEN_CONVOLUTION_TRANSPOSE_BACKWARD_WEIGHT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(std::move(weight_size));trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(weight_size);trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
 at::Tensor wrap_miopen_depthwise_convolution(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::miopen_depthwise_convolution(dispatchKeySet, self, weight, bias, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::miopen_depthwise_convolution(dispatchKeySet, self, weight, bias, padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MIOPEN_DEPTHWISE_CONVOLUTION, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
 at::Tensor wrap_miopen_depthwise_convolution_backward_input(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef self_size, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::miopen_depthwise_convolution_backward_input(dispatchKeySet, std::move(self_size), grad_output, weight, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::miopen_depthwise_convolution_backward_input(dispatchKeySet, self_size, grad_output, weight, padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MIOPEN_DEPTHWISE_CONVOLUTION_BACKWARD_INPUT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(std::move(self_size));trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(self_size);trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
 at::Tensor wrap_miopen_depthwise_convolution_backward_weight(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef weight_size, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups, bool benchmark, bool deterministic) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::miopen_depthwise_convolution_backward_weight(dispatchKeySet, std::move(weight_size), grad_output, self, std::move(padding), std::move(stride), std::move(dilation), groups, benchmark, deterministic);
+    return at::redispatch::miopen_depthwise_convolution_backward_weight(dispatchKeySet, weight_size, grad_output, self, padding, stride, dilation, groups, benchmark, deterministic);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MIOPEN_DEPTHWISE_CONVOLUTION_BACKWARD_WEIGHT, grad_output.dtype(), grad_output.device());
-  trace.append_arg(std::move(weight_size));trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
+  trace.append_arg(weight_size);trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);trace.append_arg(benchmark);trace.append_arg(deterministic);
   return tt;
 }
 
@@ -5608,60 +5608,60 @@ at::Tensor wrap_batch_norm_backward_elemt(c10::DispatchKeySet dispatchKeySet, co
 at::Tensor wrap__nnpack_spatial_convolution(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & weight, const c10::optional<at::Tensor> & bias, at::IntArrayRef padding, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_nnpack_spatial_convolution(dispatchKeySet, input, weight, bias, std::move(padding), std::move(stride));
+    return at::redispatch::_nnpack_spatial_convolution(dispatchKeySet, input, weight, bias, padding, stride);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__NNPACK_SPATIAL_CONVOLUTION, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));
+  trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(padding);trace.append_arg(stride);
   return tt;
 }
 
 at::Tensor wrap__nnpack_spatial_convolution_backward_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, const at::Tensor & grad_output, const at::Tensor & weight, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_nnpack_spatial_convolution_backward_input(dispatchKeySet, input, grad_output, weight, std::move(padding));
+    return at::redispatch::_nnpack_spatial_convolution_backward_input(dispatchKeySet, input, grad_output, weight, padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__NNPACK_SPATIAL_CONVOLUTION_BACKWARD_INPUT, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(std::move(padding));
+  trace.append_arg(input);trace.append_arg(grad_output);trace.append_arg(weight);trace.append_arg(padding);
   return tt;
 }
 
 at::Tensor wrap__nnpack_spatial_convolution_backward_weight(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, at::IntArrayRef weightsize, const at::Tensor & grad_output, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_nnpack_spatial_convolution_backward_weight(dispatchKeySet, input, std::move(weightsize), grad_output, std::move(padding));
+    return at::redispatch::_nnpack_spatial_convolution_backward_weight(dispatchKeySet, input, weightsize, grad_output, padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__NNPACK_SPATIAL_CONVOLUTION_BACKWARD_WEIGHT, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(std::move(weightsize));trace.append_arg(grad_output);trace.append_arg(std::move(padding));
+  trace.append_arg(input);trace.append_arg(weightsize);trace.append_arg(grad_output);trace.append_arg(padding);
   return tt;
 }
 
 at::Tensor wrap_ones_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::ones(dispatchKeySet, std::move(size), std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::ones(dispatchKeySet, size, std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ONES_NAMES, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_ones(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::ones(dispatchKeySet, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::ones(dispatchKeySet, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ONES, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor & wrap_ones_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::ones_outf(dispatchKeySet, std::move(size), out);
+    return at::redispatch::ones_outf(dispatchKeySet, size, out);
   }
   bool flush = register_in_place(out, H_ONES_OUT, dispatchKeySet, true);
-  trace.append_arg(std::move(size));trace.append_arg(out);
+  trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -5770,20 +5770,20 @@ at::Tensor wrap_cosine_similarity(c10::DispatchKeySet dispatchKeySet, const at::
 at::Tensor wrap_permute(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dims) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::permute(dispatchKeySet, self, std::move(dims));
+    return at::redispatch::permute(dispatchKeySet, self, dims);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_PERMUTE, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dims));
+  trace.append_arg(self);trace.append_arg(dims);
   return tt;
 }
 
 at::Tensor wrap_movedim_intlist(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef source, at::IntArrayRef destination) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::movedim(dispatchKeySet, self, std::move(source), std::move(destination));
+    return at::redispatch::movedim(dispatchKeySet, self, source, destination);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MOVEDIM_INTLIST, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(source));trace.append_arg(std::move(destination));
+  trace.append_arg(self);trace.append_arg(source);trace.append_arg(destination);
   return tt;
 }
 
@@ -5800,10 +5800,10 @@ at::Tensor wrap_movedim_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor
 at::Tensor wrap_moveaxis_intlist(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef source, at::IntArrayRef destination) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::moveaxis(dispatchKeySet, self, std::move(source), std::move(destination));
+    return at::redispatch::moveaxis(dispatchKeySet, self, source, destination);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MOVEAXIS_INTLIST, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(source));trace.append_arg(std::move(destination));
+  trace.append_arg(self);trace.append_arg(source);trace.append_arg(destination);
   return tt;
 }
 
@@ -5978,50 +5978,50 @@ at::Tensor wrap_scalar_tensor(c10::DispatchKeySet dispatchKeySet, const at::Scal
 at::Tensor wrap_rand_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::rand(dispatchKeySet, std::move(size), std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::rand(dispatchKeySet, size, std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RAND_NAMES, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_rand_generator_with_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::rand(dispatchKeySet, std::move(size), std::move(generator), std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::rand(dispatchKeySet, size, std::move(generator), std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RAND_GENERATOR_WITH_NAMES, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_rand(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::rand(dispatchKeySet, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::rand(dispatchKeySet, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RAND, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_rand_generator(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::rand(dispatchKeySet, std::move(size), std::move(generator), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::rand(dispatchKeySet, size, std::move(generator), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RAND_GENERATOR, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor & wrap_rand_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::rand_outf(dispatchKeySet, std::move(size), out);
+    return at::redispatch::rand_outf(dispatchKeySet, size, out);
   }
   bool flush = register_in_place(out, H_RAND_OUT, dispatchKeySet, true);
-  trace.append_arg(std::move(size));trace.append_arg(out);
+  trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -6030,10 +6030,10 @@ at::Tensor & wrap_rand_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef s
 at::Tensor & wrap_rand_generator_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::rand_outf(dispatchKeySet, std::move(size), std::move(generator), out);
+    return at::redispatch::rand_outf(dispatchKeySet, size, std::move(generator), out);
   }
   bool flush = register_in_place(out, H_RAND_GENERATOR_OUT, dispatchKeySet, true);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(out);
+  trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -6052,50 +6052,50 @@ at::Tensor wrap_rand_like(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
 at::Tensor wrap_randint(c10::DispatchKeySet dispatchKeySet, int64_t high, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randint(dispatchKeySet, high, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::randint(dispatchKeySet, high, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDINT, dtype, device);
-  trace.append_arg(high);trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(high);trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_randint_generator(c10::DispatchKeySet dispatchKeySet, int64_t high, at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randint(dispatchKeySet, high, std::move(size), std::move(generator), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::randint(dispatchKeySet, high, size, std::move(generator), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDINT_GENERATOR, dtype, device);
-  trace.append_arg(high);trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(high);trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_randint_low(c10::DispatchKeySet dispatchKeySet, int64_t low, int64_t high, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randint(dispatchKeySet, low, high, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::randint(dispatchKeySet, low, high, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDINT_LOW, dtype, device);
-  trace.append_arg(low);trace.append_arg(high);trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(low);trace.append_arg(high);trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_randint_low_generator(c10::DispatchKeySet dispatchKeySet, int64_t low, int64_t high, at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randint(dispatchKeySet, low, high, std::move(size), std::move(generator), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::randint(dispatchKeySet, low, high, size, std::move(generator), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDINT_LOW_GENERATOR, dtype, device);
-  trace.append_arg(low);trace.append_arg(high);trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(low);trace.append_arg(high);trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor & wrap_randint_out(c10::DispatchKeySet dispatchKeySet, int64_t high, at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randint_outf(dispatchKeySet, high, std::move(size), out);
+    return at::redispatch::randint_outf(dispatchKeySet, high, size, out);
   }
   bool flush = register_in_place(out, H_RANDINT_OUT, dispatchKeySet, true);
-  trace.append_arg(high);trace.append_arg(std::move(size));trace.append_arg(out);
+  trace.append_arg(high);trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -6104,10 +6104,10 @@ at::Tensor & wrap_randint_out(c10::DispatchKeySet dispatchKeySet, int64_t high, 
 at::Tensor & wrap_randint_generator_out(c10::DispatchKeySet dispatchKeySet, int64_t high, at::IntArrayRef size, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randint_outf(dispatchKeySet, high, std::move(size), std::move(generator), out);
+    return at::redispatch::randint_outf(dispatchKeySet, high, size, std::move(generator), out);
   }
   bool flush = register_in_place(out, H_RANDINT_GENERATOR_OUT, dispatchKeySet, true);
-  trace.append_arg(high);trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(out);
+  trace.append_arg(high);trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -6116,10 +6116,10 @@ at::Tensor & wrap_randint_generator_out(c10::DispatchKeySet dispatchKeySet, int6
 at::Tensor & wrap_randint_low_out(c10::DispatchKeySet dispatchKeySet, int64_t low, int64_t high, at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randint_outf(dispatchKeySet, low, high, std::move(size), out);
+    return at::redispatch::randint_outf(dispatchKeySet, low, high, size, out);
   }
   bool flush = register_in_place(out, H_RANDINT_LOW_OUT, dispatchKeySet, false);
-  trace.append_arg(low);trace.append_arg(high);trace.append_arg(std::move(size));trace.append_arg(out);
+  trace.append_arg(low);trace.append_arg(high);trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -6128,10 +6128,10 @@ at::Tensor & wrap_randint_low_out(c10::DispatchKeySet dispatchKeySet, int64_t lo
 at::Tensor & wrap_randint_low_generator_out(c10::DispatchKeySet dispatchKeySet, int64_t low, int64_t high, at::IntArrayRef size, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randint_outf(dispatchKeySet, low, high, std::move(size), std::move(generator), out);
+    return at::redispatch::randint_outf(dispatchKeySet, low, high, size, std::move(generator), out);
   }
   bool flush = register_in_place(out, H_RANDINT_LOW_GENERATOR_OUT, dispatchKeySet, false);
-  trace.append_arg(low);trace.append_arg(high);trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(out);
+  trace.append_arg(low);trace.append_arg(high);trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -6160,50 +6160,50 @@ at::Tensor wrap_randint_like_low_dtype(c10::DispatchKeySet dispatchKeySet, const
 at::Tensor wrap_randn(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randn(dispatchKeySet, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::randn(dispatchKeySet, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDN, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_randn_generator(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randn(dispatchKeySet, std::move(size), std::move(generator), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::randn(dispatchKeySet, size, std::move(generator), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDN_GENERATOR, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_randn_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randn(dispatchKeySet, std::move(size), std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::randn(dispatchKeySet, size, std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDN_NAMES, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_randn_generator_with_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randn(dispatchKeySet, std::move(size), std::move(generator), std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::randn(dispatchKeySet, size, std::move(generator), std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RANDN_GENERATOR_WITH_NAMES, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor & wrap_randn_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randn_outf(dispatchKeySet, std::move(size), out);
+    return at::redispatch::randn_outf(dispatchKeySet, size, out);
   }
   bool flush = register_in_place(out, H_RANDN_OUT, dispatchKeySet, true);
-  trace.append_arg(std::move(size));trace.append_arg(out);
+  trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -6212,10 +6212,10 @@ at::Tensor & wrap_randn_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef 
 at::Tensor & wrap_randn_generator_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::randn_outf(dispatchKeySet, std::move(size), std::move(generator), out);
+    return at::redispatch::randn_outf(dispatchKeySet, size, std::move(generator), out);
   }
   bool flush = register_in_place(out, H_RANDN_GENERATOR_OUT, dispatchKeySet, true);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(out);
+  trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -6400,10 +6400,10 @@ at::Tensor & wrap_negative_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
 at::Tensor wrap_repeat(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef repeats) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::repeat(dispatchKeySet, self, std::move(repeats));
+    return at::redispatch::repeat(dispatchKeySet, self, repeats);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_REPEAT, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(repeats));
+  trace.append_arg(self);trace.append_arg(repeats);
   return tt;
 }
 
@@ -6440,30 +6440,30 @@ at::Tensor wrap_repeat_interleave_self_int(c10::DispatchKeySet dispatchKeySet, c
 at::Tensor wrap_reshape(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef shape) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::reshape(dispatchKeySet, self, std::move(shape));
+    return at::redispatch::reshape(dispatchKeySet, self, shape);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RESHAPE, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(shape));
+  trace.append_arg(self);trace.append_arg(shape);
   return tt;
 }
 
 at::Tensor wrap__reshape_alias(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_reshape_alias(dispatchKeySet, self, std::move(size), std::move(stride));
+    return at::redispatch::_reshape_alias(dispatchKeySet, self, size, stride);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__RESHAPE_ALIAS, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(std::move(stride));
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(stride);
   return tt;
 }
 
 at::Tensor wrap__mkldnn_reshape(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef shape) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_mkldnn_reshape(dispatchKeySet, self, std::move(shape));
+    return at::redispatch::_mkldnn_reshape(dispatchKeySet, self, shape);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__MKLDNN_RESHAPE, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(shape));
+  trace.append_arg(self);trace.append_arg(shape);
   return tt;
 }
 
@@ -6678,10 +6678,10 @@ at::Tensor wrap_select_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
 at::Tensor wrap_select_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, at::IntArrayRef input_sizes, int64_t dim, int64_t index) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::select_backward(dispatchKeySet, grad, std::move(input_sizes), dim, index);
+    return at::redispatch::select_backward(dispatchKeySet, grad, input_sizes, dim, index);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SELECT_BACKWARD, grad.dtype(), grad.device());
-  trace.append_arg(grad);trace.append_arg(std::move(input_sizes));trace.append_arg(dim);trace.append_arg(index);
+  trace.append_arg(grad);trace.append_arg(input_sizes);trace.append_arg(dim);trace.append_arg(index);
   return tt;
 }
 
@@ -6968,10 +6968,10 @@ at::Tensor wrap_slice_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tenso
 at::Tensor wrap_slice_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, at::IntArrayRef input_sizes, int64_t dim, int64_t start, int64_t end, int64_t step) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::slice_backward(dispatchKeySet, grad, std::move(input_sizes), dim, start, end, step);
+    return at::redispatch::slice_backward(dispatchKeySet, grad, input_sizes, dim, start, end, step);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SLICE_BACKWARD, grad.dtype(), grad.device());
-  trace.append_arg(grad);trace.append_arg(std::move(input_sizes));trace.append_arg(dim);trace.append_arg(start);trace.append_arg(end);trace.append_arg(step);
+  trace.append_arg(grad);trace.append_arg(input_sizes);trace.append_arg(dim);trace.append_arg(start);trace.append_arg(end);trace.append_arg(step);
   return tt;
 }
 
@@ -7280,10 +7280,10 @@ at::Tensor wrap_sum_dim_DimnameList(c10::DispatchKeySet dispatchKeySet, const at
 at::Tensor & wrap_sum_IntList_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::sum_outf(dispatchKeySet, self, std::move(dim), keepdim, std::move(dtype), out);
+    return at::redispatch::sum_outf(dispatchKeySet, self, dim, keepdim, std::move(dtype), out);
   }
   bool flush = register_in_place(out, H_SUM_INTLIST_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -7314,20 +7314,20 @@ at::Tensor wrap_nansum(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
 at::Tensor wrap_nansum_dim_IntList(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::nansum(dispatchKeySet, self, std::move(dim), keepdim, std::move(dtype));
+    return at::redispatch::nansum(dispatchKeySet, self, dim, keepdim, std::move(dtype));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NANSUM_DIM_INTLIST, optional_or_longelse(dtype, self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
   return tt;
 }
 
 at::Tensor & wrap_nansum_IntList_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::nansum_outf(dispatchKeySet, self, std::move(dim), keepdim, std::move(dtype), out);
+    return at::redispatch::nansum_outf(dispatchKeySet, self, dim, keepdim, std::move(dtype), out);
   }
   bool flush = register_in_place(out, H_NANSUM_INTLIST_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -7336,10 +7336,10 @@ at::Tensor & wrap_nansum_IntList_out(c10::DispatchKeySet dispatchKeySet, const a
 at::Tensor wrap_sum_to_size(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::sum_to_size(dispatchKeySet, self, std::move(size));
+    return at::redispatch::sum_to_size(dispatchKeySet, self, size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SUM_TO_SIZE, integrals_to_int(self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(size));
+  trace.append_arg(self);trace.append_arg(size);
   return tt;
 }
 
@@ -7412,30 +7412,30 @@ at::Tensor wrap_std(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self,
 at::Tensor wrap_std_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::std(dispatchKeySet, self, std::move(dim), unbiased, keepdim);
+    return at::redispatch::std(dispatchKeySet, self, dim, unbiased, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_STD_DIM, toValueType(self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(unbiased);trace.append_arg(keepdim);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(unbiased);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor wrap_std_correction(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> dim, c10::optional<int64_t> correction, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::std(dispatchKeySet, self, std::move(dim), correction, keepdim);
+    return at::redispatch::std(dispatchKeySet, self, dim, correction, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_STD_CORRECTION, toValueType(self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(correction);trace.append_arg(keepdim);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(correction);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor & wrap_std_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::std_outf(dispatchKeySet, self, std::move(dim), unbiased, keepdim, out);
+    return at::redispatch::std_outf(dispatchKeySet, self, dim, unbiased, keepdim, out);
   }
   bool flush = register_in_place(out, H_STD_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(unbiased);trace.append_arg(keepdim);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(unbiased);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -7444,10 +7444,10 @@ at::Tensor & wrap_std_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
 at::Tensor & wrap_std_correction_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> dim, c10::optional<int64_t> correction, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::std_outf(dispatchKeySet, self, std::move(dim), correction, keepdim, out);
+    return at::redispatch::std_outf(dispatchKeySet, self, dim, correction, keepdim, out);
   }
   bool flush = register_in_place(out, H_STD_CORRECTION_OUT, dispatchKeySet, eq_shapes(out, IntArrayRef()));
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(correction);trace.append_arg(keepdim);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(correction);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -7612,20 +7612,20 @@ at::Tensor & wrap_tanh_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
 at::Tensor wrap_tensordot(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, at::IntArrayRef dims_self, at::IntArrayRef dims_other) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::tensordot(dispatchKeySet, self, other, std::move(dims_self), std::move(dims_other));
+    return at::redispatch::tensordot(dispatchKeySet, self, other, dims_self, dims_other);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TENSORDOT, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(other);trace.append_arg(std::move(dims_self));trace.append_arg(std::move(dims_other));
+  trace.append_arg(self);trace.append_arg(other);trace.append_arg(dims_self);trace.append_arg(dims_other);
   return tt;
 }
 
 at::Tensor & wrap_tensordot_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, at::IntArrayRef dims_self, at::IntArrayRef dims_other, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::tensordot_outf(dispatchKeySet, self, other, std::move(dims_self), std::move(dims_other), out);
+    return at::redispatch::tensordot_outf(dispatchKeySet, self, other, dims_self, dims_other, out);
   }
   bool flush = register_in_place(out, H_TENSORDOT_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(other);trace.append_arg(std::move(dims_self));trace.append_arg(std::move(dims_other));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(other);trace.append_arg(dims_self);trace.append_arg(dims_other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -7678,10 +7678,10 @@ at::Tensor wrap_threshold_backward(c10::DispatchKeySet dispatchKeySet, const at:
 at::Tensor wrap_tile(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dims) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::tile(dispatchKeySet, self, std::move(dims));
+    return at::redispatch::tile(dispatchKeySet, self, dims);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TILE, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dims));
+  trace.append_arg(self);trace.append_arg(dims);
   return tt;
 }
 
@@ -7752,10 +7752,10 @@ at::Tensor wrap_one_hot(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
 at::Tensor wrap_flip(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dims) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::flip(dispatchKeySet, self, std::move(dims));
+    return at::redispatch::flip(dispatchKeySet, self, dims);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLIP, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dims));
+  trace.append_arg(self);trace.append_arg(dims);
   return tt;
 }
 
@@ -7782,20 +7782,20 @@ at::Tensor wrap_flipud(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
 at::Tensor wrap_roll(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef shifts, at::IntArrayRef dims) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::roll(dispatchKeySet, self, std::move(shifts), std::move(dims));
+    return at::redispatch::roll(dispatchKeySet, self, shifts, dims);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ROLL, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(shifts));trace.append_arg(std::move(dims));
+  trace.append_arg(self);trace.append_arg(shifts);trace.append_arg(dims);
   return tt;
 }
 
 at::Tensor wrap_rot90(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, int64_t k, at::IntArrayRef dims) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::rot90(dispatchKeySet, self, k, std::move(dims));
+    return at::redispatch::rot90(dispatchKeySet, self, k, dims);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ROT90, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(k);trace.append_arg(std::move(dims));
+  trace.append_arg(self);trace.append_arg(k);trace.append_arg(dims);
   return tt;
 }
 
@@ -7842,10 +7842,10 @@ at::Tensor wrap_trapz_dx(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
 at::Tensor wrap__trilinear(c10::DispatchKeySet dispatchKeySet, const at::Tensor & i1, const at::Tensor & i2, const at::Tensor & i3, at::IntArrayRef expand1, at::IntArrayRef expand2, at::IntArrayRef expand3, at::IntArrayRef sumdim, int64_t unroll_dim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_trilinear(dispatchKeySet, i1, i2, i3, std::move(expand1), std::move(expand2), std::move(expand3), std::move(sumdim), unroll_dim);
+    return at::redispatch::_trilinear(dispatchKeySet, i1, i2, i3, expand1, expand2, expand3, sumdim, unroll_dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__TRILINEAR, i1.dtype(), i1.device());
-  trace.append_arg(i1);trace.append_arg(i2);trace.append_arg(i3);trace.append_arg(std::move(expand1));trace.append_arg(std::move(expand2));trace.append_arg(std::move(expand3));trace.append_arg(std::move(sumdim));trace.append_arg(unroll_dim);
+  trace.append_arg(i1);trace.append_arg(i2);trace.append_arg(i3);trace.append_arg(expand1);trace.append_arg(expand2);trace.append_arg(expand3);trace.append_arg(sumdim);trace.append_arg(unroll_dim);
   return tt;
 }
 
@@ -7940,10 +7940,10 @@ at::Tensor wrap_type_as(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
 at::Tensor wrap__unsafe_view(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_unsafe_view(dispatchKeySet, self, std::move(size));
+    return at::redispatch::_unsafe_view(dispatchKeySet, self, size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__UNSAFE_VIEW, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(size));
+  trace.append_arg(self);trace.append_arg(size);
   return tt;
 }
 
@@ -7992,30 +7992,30 @@ at::Tensor wrap_var(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self,
 at::Tensor wrap_var_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::var(dispatchKeySet, self, std::move(dim), unbiased, keepdim);
+    return at::redispatch::var(dispatchKeySet, self, dim, unbiased, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VAR_DIM, toValueType(self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(unbiased);trace.append_arg(keepdim);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(unbiased);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor wrap_var_correction(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> dim, c10::optional<int64_t> correction, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::var(dispatchKeySet, self, std::move(dim), correction, keepdim);
+    return at::redispatch::var(dispatchKeySet, self, dim, correction, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VAR_CORRECTION, toValueType(self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(correction);trace.append_arg(keepdim);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(correction);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor & wrap_var_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool unbiased, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::var_outf(dispatchKeySet, self, std::move(dim), unbiased, keepdim, out);
+    return at::redispatch::var_outf(dispatchKeySet, self, dim, unbiased, keepdim, out);
   }
   bool flush = register_in_place(out, H_VAR_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(unbiased);trace.append_arg(keepdim);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(unbiased);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -8024,10 +8024,10 @@ at::Tensor & wrap_var_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
 at::Tensor & wrap_var_correction_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> dim, c10::optional<int64_t> correction, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::var_outf(dispatchKeySet, self, std::move(dim), correction, keepdim, out);
+    return at::redispatch::var_outf(dispatchKeySet, self, dim, correction, keepdim, out);
   }
   bool flush = register_in_place(out, H_VAR_CORRECTION_OUT, dispatchKeySet, eq_shapes(out, IntArrayRef()));
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(correction);trace.append_arg(keepdim);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(correction);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -8160,30 +8160,30 @@ at::Tensor wrap__weight_norm(c10::DispatchKeySet dispatchKeySet, const at::Tenso
 at::Tensor wrap_zeros_names(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::DimnameList> names, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::zeros(dispatchKeySet, std::move(size), std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::zeros(dispatchKeySet, size, std::move(names), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ZEROS_NAMES, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(names));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_zeros(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::zeros(dispatchKeySet, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::zeros(dispatchKeySet, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ZEROS, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor & wrap_zeros_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::zeros_outf(dispatchKeySet, std::move(size), out);
+    return at::redispatch::zeros_outf(dispatchKeySet, size, out);
   }
   bool flush = register_in_place(out, H_ZEROS_OUT, dispatchKeySet, true);
-  trace.append_arg(std::move(size));trace.append_arg(out);
+  trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -8272,10 +8272,10 @@ at::Tensor wrap_native_norm(c10::DispatchKeySet dispatchKeySet, const at::Tensor
 at::Tensor wrap_native_norm_ScalarOpt_dim_dtype(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & p, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::native_norm(dispatchKeySet, self, p, std::move(dim), keepdim, std::move(dtype));
+    return at::redispatch::native_norm(dispatchKeySet, self, p, dim, keepdim, std::move(dtype));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NATIVE_NORM_SCALAROPT_DIM_DTYPE, dtype, self.device());
-  trace.append_arg(self);trace.append_arg(p);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
+  trace.append_arg(self);trace.append_arg(p);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
   return tt;
 }
 
@@ -8302,30 +8302,30 @@ at::Tensor wrap__sparse_sum_dtype(c10::DispatchKeySet dispatchKeySet, const at::
 at::Tensor wrap__sparse_sum_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_sparse_sum(dispatchKeySet, self, std::move(dim));
+    return at::redispatch::_sparse_sum(dispatchKeySet, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SPARSE_SUM_DIM, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));
+  trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
 
 at::Tensor wrap__sparse_sum_dim_dtype(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, at::ScalarType dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_sparse_sum(dispatchKeySet, self, std::move(dim), std::move(dtype));
+    return at::redispatch::_sparse_sum(dispatchKeySet, self, dim, std::move(dtype));
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SPARSE_SUM_DIM_DTYPE, dtype, self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(std::move(dtype));
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(std::move(dtype));
   return tt;
 }
 
 at::Tensor wrap__sparse_sum_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, const at::Tensor & self, at::IntArrayRef dim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_sparse_sum_backward(dispatchKeySet, grad, self, std::move(dim));
+    return at::redispatch::_sparse_sum_backward(dispatchKeySet, grad, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SPARSE_SUM_BACKWARD, grad.dtype(), grad.device());
-  trace.append_arg(grad);trace.append_arg(self);trace.append_arg(std::move(dim));
+  trace.append_arg(grad);trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
 
@@ -8432,30 +8432,30 @@ at::Tensor wrap_norm_Scalar(c10::DispatchKeySet dispatchKeySet, const at::Tensor
 at::Tensor wrap_norm_ScalarOpt_dim_dtype(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & p, at::IntArrayRef dim, bool keepdim, at::ScalarType dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::norm(dispatchKeySet, self, p, std::move(dim), keepdim, std::move(dtype));
+    return at::redispatch::norm(dispatchKeySet, self, p, dim, keepdim, std::move(dtype));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NORM_SCALAROPT_DIM_DTYPE, dtype, self.device());
-  trace.append_arg(self);trace.append_arg(p);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
+  trace.append_arg(self);trace.append_arg(p);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
   return tt;
 }
 
 at::Tensor wrap_norm_ScalarOpt_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & p, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::norm(dispatchKeySet, self, p, std::move(dim), keepdim);
+    return at::redispatch::norm(dispatchKeySet, self, p, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NORM_SCALAROPT_DIM, toValueType(self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(p);trace.append_arg(std::move(dim));trace.append_arg(keepdim);
+  trace.append_arg(self);trace.append_arg(p);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor & wrap_norm_dtype_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & p, at::IntArrayRef dim, bool keepdim, at::ScalarType dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::norm_outf(dispatchKeySet, self, p, std::move(dim), keepdim, std::move(dtype), out);
+    return at::redispatch::norm_outf(dispatchKeySet, self, p, dim, keepdim, std::move(dtype), out);
   }
   bool flush = register_in_place(out, H_NORM_DTYPE_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(p);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(p);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -8464,10 +8464,10 @@ at::Tensor & wrap_norm_dtype_out(c10::DispatchKeySet dispatchKeySet, const at::T
 at::Tensor & wrap_norm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & p, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::norm_outf(dispatchKeySet, self, p, std::move(dim), keepdim, out);
+    return at::redispatch::norm_outf(dispatchKeySet, self, p, dim, keepdim, out);
   }
   bool flush = register_in_place(out, H_NORM_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(p);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(p);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -8530,20 +8530,20 @@ at::Tensor wrap_frobenius_norm(c10::DispatchKeySet dispatchKeySet, const at::Ten
 at::Tensor wrap_frobenius_norm_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::frobenius_norm(dispatchKeySet, self, std::move(dim), keepdim);
+    return at::redispatch::frobenius_norm(dispatchKeySet, self, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FROBENIUS_NORM_DIM, toValueType(self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor & wrap_frobenius_norm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::frobenius_norm_outf(dispatchKeySet, self, std::move(dim), keepdim, out);
+    return at::redispatch::frobenius_norm_outf(dispatchKeySet, self, dim, keepdim, out);
   }
   bool flush = register_in_place(out, H_FROBENIUS_NORM_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -8574,20 +8574,20 @@ at::Tensor & wrap_nuclear_norm_out(c10::DispatchKeySet dispatchKeySet, const at:
 at::Tensor wrap_nuclear_norm_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::nuclear_norm(dispatchKeySet, self, std::move(dim), keepdim);
+    return at::redispatch::nuclear_norm(dispatchKeySet, self, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NUCLEAR_NORM_DIM, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor & wrap_nuclear_norm_dim_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::nuclear_norm_outf(dispatchKeySet, self, std::move(dim), keepdim, out);
+    return at::redispatch::nuclear_norm_outf(dispatchKeySet, self, dim, keepdim, out);
   }
   bool flush = register_in_place(out, H_NUCLEAR_NORM_DIM_OUT, dispatchKeySet, eq_shapes(out, shape_drop2(self)));
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -8840,10 +8840,10 @@ at::Tensor & wrap_addmm_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, 
 at::Tensor wrap_sparse_csr_tensor_crow_col_value_size(c10::DispatchKeySet dispatchKeySet, const at::Tensor & crow_indices, const at::Tensor & col_indices, const at::Tensor & values, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::sparse_csr_tensor(dispatchKeySet, crow_indices, col_indices, values, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::sparse_csr_tensor(dispatchKeySet, crow_indices, col_indices, values, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPARSE_CSR_TENSOR_CROW_COL_VALUE_SIZE, dtype, device);
-  trace.append_arg(crow_indices);trace.append_arg(col_indices);trace.append_arg(values);trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(crow_indices);trace.append_arg(col_indices);trace.append_arg(values);trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
@@ -8860,20 +8860,20 @@ at::Tensor wrap_sparse_csr_tensor_crow_col_value(c10::DispatchKeySet dispatchKey
 at::Tensor wrap__sparse_csr_tensor_unsafe(c10::DispatchKeySet dispatchKeySet, const at::Tensor & crow_indices, const at::Tensor & col_indices, const at::Tensor & values, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_sparse_csr_tensor_unsafe(dispatchKeySet, crow_indices, col_indices, values, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::_sparse_csr_tensor_unsafe(dispatchKeySet, crow_indices, col_indices, values, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SPARSE_CSR_TENSOR_UNSAFE, dtype, device);
-  trace.append_arg(crow_indices);trace.append_arg(col_indices);trace.append_arg(values);trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(crow_indices);trace.append_arg(col_indices);trace.append_arg(values);trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap_sparse_coo_tensor_size(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::sparse_coo_tensor(dispatchKeySet, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::sparse_coo_tensor(dispatchKeySet, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPARSE_COO_TENSOR_SIZE, dtype, device);
-  trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
@@ -8890,50 +8890,50 @@ at::Tensor wrap_sparse_coo_tensor_indices(c10::DispatchKeySet dispatchKeySet, co
 at::Tensor wrap_sparse_coo_tensor_indices_size(c10::DispatchKeySet dispatchKeySet, const at::Tensor & indices, const at::Tensor & values, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::sparse_coo_tensor(dispatchKeySet, indices, values, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::sparse_coo_tensor(dispatchKeySet, indices, values, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPARSE_COO_TENSOR_INDICES_SIZE, dtype, device);
-  trace.append_arg(indices);trace.append_arg(values);trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(indices);trace.append_arg(values);trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap__sparse_coo_tensor_unsafe(c10::DispatchKeySet dispatchKeySet, const at::Tensor & indices, const at::Tensor & values, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_sparse_coo_tensor_unsafe(dispatchKeySet, indices, values, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::_sparse_coo_tensor_unsafe(dispatchKeySet, indices, values, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SPARSE_COO_TENSOR_UNSAFE, dtype, device);
-  trace.append_arg(indices);trace.append_arg(values);trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(indices);trace.append_arg(values);trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap__sparse_coo_tensor_with_dims(c10::DispatchKeySet dispatchKeySet, int64_t sparse_dim, int64_t dense_dim, at::IntArrayRef size, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_sparse_coo_tensor_with_dims(dispatchKeySet, sparse_dim, dense_dim, std::move(size), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::_sparse_coo_tensor_with_dims(dispatchKeySet, sparse_dim, dense_dim, size, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SPARSE_COO_TENSOR_WITH_DIMS, dtype, device);
-  trace.append_arg(sparse_dim);trace.append_arg(dense_dim);trace.append_arg(std::move(size));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(sparse_dim);trace.append_arg(dense_dim);trace.append_arg(size);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor wrap__sparse_coo_tensor_with_dims_and_tensors(c10::DispatchKeySet dispatchKeySet, int64_t sparse_dim, int64_t dense_dim, at::IntArrayRef size, const at::Tensor & indices, const at::Tensor & values, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_sparse_coo_tensor_with_dims_and_tensors(dispatchKeySet, sparse_dim, dense_dim, std::move(size), indices, values, std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::_sparse_coo_tensor_with_dims_and_tensors(dispatchKeySet, sparse_dim, dense_dim, size, indices, values, std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__SPARSE_COO_TENSOR_WITH_DIMS_AND_TENSORS, dtype, device);
-  trace.append_arg(sparse_dim);trace.append_arg(dense_dim);trace.append_arg(std::move(size));trace.append_arg(indices);trace.append_arg(values);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(sparse_dim);trace.append_arg(dense_dim);trace.append_arg(size);trace.append_arg(indices);trace.append_arg(values);trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 const at::Tensor & wrap_sparse_resize_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, int64_t sparse_dim, int64_t dense_dim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::sparse_resize_(dispatchKeySet, self, std::move(size), sparse_dim, dense_dim);
+    return at::redispatch::sparse_resize_(dispatchKeySet, self, size, sparse_dim, dense_dim);
   }
   bool flush = register_in_place(self, H_SPARSE_RESIZE_, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(sparse_dim);trace.append_arg(dense_dim);
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(sparse_dim);trace.append_arg(dense_dim);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return self;
@@ -8942,10 +8942,10 @@ const at::Tensor & wrap_sparse_resize_(c10::DispatchKeySet dispatchKeySet, const
 const at::Tensor & wrap_sparse_resize_and_clear_(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size, int64_t sparse_dim, int64_t dense_dim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::sparse_resize_and_clear_(dispatchKeySet, self, std::move(size), sparse_dim, dense_dim);
+    return at::redispatch::sparse_resize_and_clear_(dispatchKeySet, self, size, sparse_dim, dense_dim);
   }
   bool flush = register_in_place(self, H_SPARSE_RESIZE_AND_CLEAR_, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(size));trace.append_arg(sparse_dim);trace.append_arg(dense_dim);
+  trace.append_arg(self);trace.append_arg(size);trace.append_arg(sparse_dim);trace.append_arg(dense_dim);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return self;
@@ -9140,20 +9140,20 @@ at::Tensor wrap_to_mkldnn(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
 at::Tensor wrap_mkldnn_reorder_conv2d_weight(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mkldnn_reorder_conv2d_weight(dispatchKeySet, self, std::move(padding), std::move(stride), std::move(dilation), groups);
+    return at::redispatch::mkldnn_reorder_conv2d_weight(dispatchKeySet, self, padding, stride, dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MKLDNN_REORDER_CONV2D_WEIGHT, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(self);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
 at::Tensor wrap_mkldnn_reorder_conv3d_weight(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef padding, at::IntArrayRef stride, at::IntArrayRef dilation, int64_t groups) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mkldnn_reorder_conv3d_weight(dispatchKeySet, self, std::move(padding), std::move(stride), std::move(dilation), groups);
+    return at::redispatch::mkldnn_reorder_conv3d_weight(dispatchKeySet, self, padding, stride, dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MKLDNN_REORDER_CONV3D_WEIGHT, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(std::move(dilation));trace.append_arg(groups);
+  trace.append_arg(self);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
 
@@ -9480,10 +9480,10 @@ at::Tensor wrap_quantized_rnn_tanh_cell(c10::DispatchKeySet dispatchKeySet, cons
 at::Tensor wrap__pack_padded_sequence_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, at::IntArrayRef input_size, const at::Tensor & batch_sizes, bool batch_first) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_pack_padded_sequence_backward(dispatchKeySet, grad, std::move(input_size), batch_sizes, batch_first);
+    return at::redispatch::_pack_padded_sequence_backward(dispatchKeySet, grad, input_size, batch_sizes, batch_first);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__PACK_PADDED_SEQUENCE_BACKWARD, grad.dtype(), grad.device());
-  trace.append_arg(grad);trace.append_arg(std::move(input_size));trace.append_arg(batch_sizes);trace.append_arg(batch_first);
+  trace.append_arg(grad);trace.append_arg(input_size);trace.append_arg(batch_sizes);trace.append_arg(batch_first);
   return tt;
 }
 
@@ -9502,10 +9502,10 @@ at::Tensor & wrap_set__source_Storage(c10::DispatchKeySet dispatchKeySet, at::Te
 at::Tensor & wrap_set__source_Storage_storage_offset(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, at::Storage source, int64_t storage_offset, at::IntArrayRef size, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::set_(dispatchKeySet, self, std::move(source), storage_offset, std::move(size), std::move(stride));
+    return at::redispatch::set_(dispatchKeySet, self, std::move(source), storage_offset, size, stride);
   }
   bool flush = register_in_place(self, H_SET__SOURCE_STORAGE_STORAGE_OFFSET, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(source));trace.append_arg(storage_offset);trace.append_arg(std::move(size));trace.append_arg(std::move(stride));
+  trace.append_arg(self);trace.append_arg(std::move(source));trace.append_arg(storage_offset);trace.append_arg(size);trace.append_arg(stride);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return self;
@@ -9604,10 +9604,10 @@ at::Tensor wrap_masked_scatter(c10::DispatchKeySet dispatchKeySet, const at::Ten
 at::Tensor wrap_view(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::view(dispatchKeySet, self, std::move(size));
+    return at::redispatch::view(dispatchKeySet, self, size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VIEW, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(size));
+  trace.append_arg(self);trace.append_arg(size);
   return tt;
 }
 
@@ -10572,10 +10572,10 @@ at::Tensor wrap_diag(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
 at::Tensor wrap_diag_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, at::IntArrayRef input_sizes, int64_t diagonal) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::diag_backward(dispatchKeySet, grad, std::move(input_sizes), diagonal);
+    return at::redispatch::diag_backward(dispatchKeySet, grad, input_sizes, diagonal);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_DIAG_BACKWARD, grad.dtype(), grad.device());
-  trace.append_arg(grad);trace.append_arg(std::move(input_sizes));trace.append_arg(diagonal);
+  trace.append_arg(grad);trace.append_arg(input_sizes);trace.append_arg(diagonal);
   return tt;
 }
 
@@ -10678,10 +10678,10 @@ at::Tensor wrap_trace(c10::DispatchKeySet dispatchKeySet, const at::Tensor & sel
 at::Tensor wrap_trace_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, at::IntArrayRef sizes) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::trace_backward(dispatchKeySet, grad, std::move(sizes));
+    return at::redispatch::trace_backward(dispatchKeySet, grad, sizes);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TRACE_BACKWARD, grad.dtype(), grad.device());
-  trace.append_arg(grad);trace.append_arg(std::move(sizes));
+  trace.append_arg(grad);trace.append_arg(sizes);
   return tt;
 }
 
@@ -11500,10 +11500,10 @@ at::Tensor wrap_index_select_dimname(c10::DispatchKeySet dispatchKeySet, const a
 at::Tensor wrap_index_select_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad, at::IntArrayRef self_sizes, int64_t dim, const at::Tensor & index) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::index_select_backward(dispatchKeySet, grad, std::move(self_sizes), dim, index);
+    return at::redispatch::index_select_backward(dispatchKeySet, grad, self_sizes, dim, index);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_INDEX_SELECT_BACKWARD, grad.dtype(), grad.device());
-  trace.append_arg(grad);trace.append_arg(std::move(self_sizes));trace.append_arg(dim);trace.append_arg(index);
+  trace.append_arg(grad);trace.append_arg(self_sizes);trace.append_arg(dim);trace.append_arg(index);
   return tt;
 }
 
@@ -12622,10 +12622,10 @@ at::Tensor wrap_unfold(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
 at::Tensor wrap_unfold_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_in, at::IntArrayRef input_sizes, int64_t dim, int64_t size, int64_t step) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::unfold_backward(dispatchKeySet, grad_in, std::move(input_sizes), dim, size, step);
+    return at::redispatch::unfold_backward(dispatchKeySet, grad_in, input_sizes, dim, size, step);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UNFOLD_BACKWARD, grad_in.dtype(), grad_in.device());
-  trace.append_arg(grad_in);trace.append_arg(std::move(input_sizes));trace.append_arg(dim);trace.append_arg(size);trace.append_arg(step);
+  trace.append_arg(grad_in);trace.append_arg(input_sizes);trace.append_arg(dim);trace.append_arg(size);trace.append_arg(step);
   return tt;
 }
 
@@ -12846,20 +12846,20 @@ at::Tensor wrap_normal_Tensor_Tensor(c10::DispatchKeySet dispatchKeySet, const a
 at::Tensor wrap_normal_float_float(c10::DispatchKeySet dispatchKeySet, double mean, double std, at::IntArrayRef size, c10::optional<at::Generator> generator, c10::optional<at::ScalarType> dtype, c10::optional<at::Layout> layout, c10::optional<at::Device> device, c10::optional<bool> pin_memory) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::normal(dispatchKeySet, mean, std, std::move(size), std::move(generator), std::move(dtype), std::move(layout), std::move(device), pin_memory);
+    return at::redispatch::normal(dispatchKeySet, mean, std, size, std::move(generator), std::move(dtype), std::move(layout), std::move(device), pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_NORMAL_FLOAT_FLOAT, dtype, device);
-  trace.append_arg(mean);trace.append_arg(std);trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
+  trace.append_arg(mean);trace.append_arg(std);trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(std::move(dtype));trace.append_arg(std::move(layout));trace.append_arg(std::move(device));trace.append_arg(pin_memory);
   return tt;
 }
 
 at::Tensor & wrap_normal_float_float_out(c10::DispatchKeySet dispatchKeySet, double mean, double std, at::IntArrayRef size, c10::optional<at::Generator> generator, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::normal_outf(dispatchKeySet, mean, std, std::move(size), std::move(generator), out);
+    return at::redispatch::normal_outf(dispatchKeySet, mean, std, size, std::move(generator), out);
   }
   bool flush = register_in_place(out, H_NORMAL_FLOAT_FLOAT_OUT, dispatchKeySet, true);
-  trace.append_arg(mean);trace.append_arg(std);trace.append_arg(std::move(size));trace.append_arg(std::move(generator));trace.append_arg(out);
+  trace.append_arg(mean);trace.append_arg(std);trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -13792,10 +13792,10 @@ at::Tensor & wrap_softshrink_backward_grad_input(c10::DispatchKeySet dispatchKey
 at::Tensor & wrap_adaptive_avg_pool2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::adaptive_avg_pool2d_outf(dispatchKeySet, self, std::move(output_size), out);
+    return at::redispatch::adaptive_avg_pool2d_outf(dispatchKeySet, self, output_size, out);
   }
   bool flush = register_in_place(out, H_ADAPTIVE_AVG_POOL2D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -13804,20 +13804,20 @@ at::Tensor & wrap_adaptive_avg_pool2d_out(c10::DispatchKeySet dispatchKeySet, co
 at::Tensor wrap_adaptive_avg_pool2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::adaptive_avg_pool2d(dispatchKeySet, self, std::move(output_size));
+    return at::redispatch::adaptive_avg_pool2d(dispatchKeySet, self, output_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ADAPTIVE_AVG_POOL2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(output_size));
+  trace.append_arg(self);trace.append_arg(output_size);
   return tt;
 }
 
 at::Tensor wrap_mkldnn_adaptive_avg_pool2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::mkldnn_adaptive_avg_pool2d(dispatchKeySet, self, std::move(output_size));
+    return at::redispatch::mkldnn_adaptive_avg_pool2d(dispatchKeySet, self, output_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MKLDNN_ADAPTIVE_AVG_POOL2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(output_size));
+  trace.append_arg(self);trace.append_arg(output_size);
   return tt;
 }
 
@@ -13834,10 +13834,10 @@ at::Tensor wrap_mkldnn_adaptive_avg_pool2d_backward(c10::DispatchKeySet dispatch
 at::Tensor wrap__adaptive_avg_pool2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_adaptive_avg_pool2d(dispatchKeySet, self, std::move(output_size));
+    return at::redispatch::_adaptive_avg_pool2d(dispatchKeySet, self, output_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__ADAPTIVE_AVG_POOL2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(output_size));
+  trace.append_arg(self);trace.append_arg(output_size);
   return tt;
 }
 
@@ -13854,10 +13854,10 @@ at::Tensor wrap__adaptive_avg_pool2d_backward(c10::DispatchKeySet dispatchKeySet
 at::Tensor & wrap_adaptive_avg_pool3d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::adaptive_avg_pool3d_outf(dispatchKeySet, self, std::move(output_size), out);
+    return at::redispatch::adaptive_avg_pool3d_outf(dispatchKeySet, self, output_size, out);
   }
   bool flush = register_in_place(out, H_ADAPTIVE_AVG_POOL3D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -13866,20 +13866,20 @@ at::Tensor & wrap_adaptive_avg_pool3d_out(c10::DispatchKeySet dispatchKeySet, co
 at::Tensor wrap_adaptive_avg_pool3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::adaptive_avg_pool3d(dispatchKeySet, self, std::move(output_size));
+    return at::redispatch::adaptive_avg_pool3d(dispatchKeySet, self, output_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ADAPTIVE_AVG_POOL3D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(output_size));
+  trace.append_arg(self);trace.append_arg(output_size);
   return tt;
 }
 
 at::Tensor wrap__adaptive_avg_pool3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_adaptive_avg_pool3d(dispatchKeySet, self, std::move(output_size));
+    return at::redispatch::_adaptive_avg_pool3d(dispatchKeySet, self, output_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__ADAPTIVE_AVG_POOL3D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(output_size));
+  trace.append_arg(self);trace.append_arg(output_size);
   return tt;
 }
 
@@ -13932,10 +13932,10 @@ at::Tensor & wrap_adaptive_max_pool3d_backward_grad_input(c10::DispatchKeySet di
 at::Tensor & wrap_avg_pool2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::avg_pool2d_outf(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), ceil_mode, count_include_pad, divisor_override, out);
+    return at::redispatch::avg_pool2d_outf(dispatchKeySet, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override, out);
   }
   bool flush = register_in_place(out, H_AVG_POOL2D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -13944,20 +13944,20 @@ at::Tensor & wrap_avg_pool2d_out(c10::DispatchKeySet dispatchKeySet, const at::T
 at::Tensor wrap_avg_pool2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::avg_pool2d(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), ceil_mode, count_include_pad, divisor_override);
+    return at::redispatch::avg_pool2d(dispatchKeySet, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_AVG_POOL2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);
   return tt;
 }
 
 at::Tensor & wrap_avg_pool2d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::avg_pool2d_backward_outf(dispatchKeySet, grad_output, self, std::move(kernel_size), std::move(stride), std::move(padding), ceil_mode, count_include_pad, divisor_override, grad_input);
+    return at::redispatch::avg_pool2d_backward_outf(dispatchKeySet, grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override, grad_input);
   }
   bool flush = register_in_place(grad_input, H_AVG_POOL2D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -13966,20 +13966,20 @@ at::Tensor & wrap_avg_pool2d_backward_grad_input(c10::DispatchKeySet dispatchKey
 at::Tensor wrap_avg_pool2d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::avg_pool2d_backward(dispatchKeySet, grad_output, self, std::move(kernel_size), std::move(stride), std::move(padding), ceil_mode, count_include_pad, divisor_override);
+    return at::redispatch::avg_pool2d_backward(dispatchKeySet, grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_AVG_POOL2D_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);
   return tt;
 }
 
 at::Tensor & wrap_avg_pool3d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::avg_pool3d_outf(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), ceil_mode, count_include_pad, divisor_override, out);
+    return at::redispatch::avg_pool3d_outf(dispatchKeySet, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override, out);
   }
   bool flush = register_in_place(out, H_AVG_POOL3D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -13988,20 +13988,20 @@ at::Tensor & wrap_avg_pool3d_out(c10::DispatchKeySet dispatchKeySet, const at::T
 at::Tensor wrap_avg_pool3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::avg_pool3d(dispatchKeySet, self, std::move(kernel_size), std::move(stride), std::move(padding), ceil_mode, count_include_pad, divisor_override);
+    return at::redispatch::avg_pool3d(dispatchKeySet, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_AVG_POOL3D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);
   return tt;
 }
 
 at::Tensor & wrap_avg_pool3d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::avg_pool3d_backward_outf(dispatchKeySet, grad_output, self, std::move(kernel_size), std::move(stride), std::move(padding), ceil_mode, count_include_pad, divisor_override, grad_input);
+    return at::redispatch::avg_pool3d_backward_outf(dispatchKeySet, grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override, grad_input);
   }
   bool flush = register_in_place(grad_input, H_AVG_POOL3D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14010,20 +14010,20 @@ at::Tensor & wrap_avg_pool3d_backward_grad_input(c10::DispatchKeySet dispatchKey
 at::Tensor wrap_avg_pool3d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::avg_pool3d_backward(dispatchKeySet, grad_output, self, std::move(kernel_size), std::move(stride), std::move(padding), ceil_mode, count_include_pad, divisor_override);
+    return at::redispatch::avg_pool3d_backward(dispatchKeySet, grad_output, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_AVG_POOL3D_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);
   return tt;
 }
 
 at::Tensor & wrap_fractional_max_pool2d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & indices, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fractional_max_pool2d_backward_outf(dispatchKeySet, grad_output, self, std::move(kernel_size), std::move(output_size), indices, grad_input);
+    return at::redispatch::fractional_max_pool2d_backward_outf(dispatchKeySet, grad_output, self, kernel_size, output_size, indices, grad_input);
   }
   bool flush = register_in_place(grad_input, H_FRACTIONAL_MAX_POOL2D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(output_size));trace.append_arg(indices);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(output_size);trace.append_arg(indices);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14032,20 +14032,20 @@ at::Tensor & wrap_fractional_max_pool2d_backward_grad_input(c10::DispatchKeySet 
 at::Tensor wrap_fractional_max_pool2d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & indices) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fractional_max_pool2d_backward(dispatchKeySet, grad_output, self, std::move(kernel_size), std::move(output_size), indices);
+    return at::redispatch::fractional_max_pool2d_backward(dispatchKeySet, grad_output, self, kernel_size, output_size, indices);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FRACTIONAL_MAX_POOL2D_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(output_size));trace.append_arg(indices);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(output_size);trace.append_arg(indices);
   return tt;
 }
 
 at::Tensor & wrap_fractional_max_pool3d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & indices, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fractional_max_pool3d_backward_outf(dispatchKeySet, grad_output, self, std::move(kernel_size), std::move(output_size), indices, grad_input);
+    return at::redispatch::fractional_max_pool3d_backward_outf(dispatchKeySet, grad_output, self, kernel_size, output_size, indices, grad_input);
   }
   bool flush = register_in_place(grad_input, H_FRACTIONAL_MAX_POOL3D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(output_size));trace.append_arg(indices);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(output_size);trace.append_arg(indices);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14054,20 +14054,20 @@ at::Tensor & wrap_fractional_max_pool3d_backward_grad_input(c10::DispatchKeySet 
 at::Tensor wrap_fractional_max_pool3d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef output_size, const at::Tensor & indices) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fractional_max_pool3d_backward(dispatchKeySet, grad_output, self, std::move(kernel_size), std::move(output_size), indices);
+    return at::redispatch::fractional_max_pool3d_backward(dispatchKeySet, grad_output, self, kernel_size, output_size, indices);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FRACTIONAL_MAX_POOL3D_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(output_size));trace.append_arg(indices);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(output_size);trace.append_arg(indices);
   return tt;
 }
 
 at::Tensor & wrap_max_pool2d_with_indices_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, const at::Tensor & indices, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_pool2d_with_indices_backward_outf(dispatchKeySet, grad_output, self, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode, indices, grad_input);
+    return at::redispatch::max_pool2d_with_indices_backward_outf(dispatchKeySet, grad_output, self, kernel_size, stride, padding, dilation, ceil_mode, indices, grad_input);
   }
   bool flush = register_in_place(grad_input, H_MAX_POOL2D_WITH_INDICES_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);trace.append_arg(indices);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);trace.append_arg(indices);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14076,10 +14076,10 @@ at::Tensor & wrap_max_pool2d_with_indices_backward_grad_input(c10::DispatchKeySe
 at::Tensor & wrap_max_pool3d_with_indices_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, const at::Tensor & indices, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_pool3d_with_indices_backward_outf(dispatchKeySet, grad_output, self, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode, indices, grad_input);
+    return at::redispatch::max_pool3d_with_indices_backward_outf(dispatchKeySet, grad_output, self, kernel_size, stride, padding, dilation, ceil_mode, indices, grad_input);
   }
   bool flush = register_in_place(grad_input, H_MAX_POOL3D_WITH_INDICES_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);trace.append_arg(indices);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);trace.append_arg(indices);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14088,20 +14088,20 @@ at::Tensor & wrap_max_pool3d_with_indices_backward_grad_input(c10::DispatchKeySe
 at::Tensor wrap_max_pool3d_with_indices_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, bool ceil_mode, const at::Tensor & indices) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_pool3d_with_indices_backward(dispatchKeySet, grad_output, self, std::move(kernel_size), std::move(stride), std::move(padding), std::move(dilation), ceil_mode, indices);
+    return at::redispatch::max_pool3d_with_indices_backward(dispatchKeySet, grad_output, self, kernel_size, stride, padding, dilation, ceil_mode, indices);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MAX_POOL3D_WITH_INDICES_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(ceil_mode);trace.append_arg(indices);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);trace.append_arg(indices);
   return tt;
 }
 
 at::Tensor & wrap_max_unpool2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_unpool2d_outf(dispatchKeySet, self, indices, std::move(output_size), out);
+    return at::redispatch::max_unpool2d_outf(dispatchKeySet, self, indices, output_size, out);
   }
   bool flush = register_in_place(out, H_MAX_UNPOOL2D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(indices);trace.append_arg(std::move(output_size));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14110,20 +14110,20 @@ at::Tensor & wrap_max_unpool2d_out(c10::DispatchKeySet dispatchKeySet, const at:
 at::Tensor wrap_max_unpool2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_unpool2d(dispatchKeySet, self, indices, std::move(output_size));
+    return at::redispatch::max_unpool2d(dispatchKeySet, self, indices, output_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MAX_UNPOOL2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(indices);trace.append_arg(std::move(output_size));
+  trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);
   return tt;
 }
 
 at::Tensor & wrap_max_unpool2d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_unpool2d_backward_outf(dispatchKeySet, grad_output, self, indices, std::move(output_size), grad_input);
+    return at::redispatch::max_unpool2d_backward_outf(dispatchKeySet, grad_output, self, indices, output_size, grad_input);
   }
   bool flush = register_in_place(grad_input, H_MAX_UNPOOL2D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(std::move(output_size));trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14132,20 +14132,20 @@ at::Tensor & wrap_max_unpool2d_backward_grad_input(c10::DispatchKeySet dispatchK
 at::Tensor wrap_max_unpool2d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_unpool2d_backward(dispatchKeySet, grad_output, self, indices, std::move(output_size));
+    return at::redispatch::max_unpool2d_backward(dispatchKeySet, grad_output, self, indices, output_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MAX_UNPOOL2D_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(std::move(output_size));
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);
   return tt;
 }
 
 at::Tensor & wrap_max_unpool3d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_unpool3d_outf(dispatchKeySet, self, indices, std::move(output_size), std::move(stride), std::move(padding), out);
+    return at::redispatch::max_unpool3d_outf(dispatchKeySet, self, indices, output_size, stride, padding, out);
   }
   bool flush = register_in_place(out, H_MAX_UNPOOL3D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(indices);trace.append_arg(std::move(output_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14154,20 +14154,20 @@ at::Tensor & wrap_max_unpool3d_out(c10::DispatchKeySet dispatchKeySet, const at:
 at::Tensor wrap_max_unpool3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::IntArrayRef stride, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_unpool3d(dispatchKeySet, self, indices, std::move(output_size), std::move(stride), std::move(padding));
+    return at::redispatch::max_unpool3d(dispatchKeySet, self, indices, output_size, stride, padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MAX_UNPOOL3D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(indices);trace.append_arg(std::move(output_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));
+  trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);trace.append_arg(stride);trace.append_arg(padding);
   return tt;
 }
 
 at::Tensor & wrap_max_unpool3d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_unpool3d_backward_outf(dispatchKeySet, grad_output, self, indices, std::move(output_size), std::move(stride), std::move(padding), grad_input);
+    return at::redispatch::max_unpool3d_backward_outf(dispatchKeySet, grad_output, self, indices, output_size, stride, padding, grad_input);
   }
   bool flush = register_in_place(grad_input, H_MAX_UNPOOL3D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(std::move(output_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14176,20 +14176,20 @@ at::Tensor & wrap_max_unpool3d_backward_grad_input(c10::DispatchKeySet dispatchK
 at::Tensor wrap_max_unpool3d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, const at::Tensor & indices, at::IntArrayRef output_size, at::IntArrayRef stride, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::max_unpool3d_backward(dispatchKeySet, grad_output, self, indices, std::move(output_size), std::move(stride), std::move(padding));
+    return at::redispatch::max_unpool3d_backward(dispatchKeySet, grad_output, self, indices, output_size, stride, padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MAX_UNPOOL3D_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(std::move(output_size));trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);trace.append_arg(stride);trace.append_arg(padding);
   return tt;
 }
 
 at::Tensor & wrap_reflection_pad1d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::reflection_pad1d_outf(dispatchKeySet, self, std::move(padding), out);
+    return at::redispatch::reflection_pad1d_outf(dispatchKeySet, self, padding, out);
   }
   bool flush = register_in_place(out, H_REFLECTION_PAD1D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14198,20 +14198,20 @@ at::Tensor & wrap_reflection_pad1d_out(c10::DispatchKeySet dispatchKeySet, const
 at::Tensor wrap_reflection_pad1d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::reflection_pad1d(dispatchKeySet, self, std::move(padding));
+    return at::redispatch::reflection_pad1d(dispatchKeySet, self, padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_REFLECTION_PAD1D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(padding));
+  trace.append_arg(self);trace.append_arg(padding);
   return tt;
 }
 
 at::Tensor & wrap_reflection_pad1d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::reflection_pad1d_backward_outf(dispatchKeySet, grad_output, self, std::move(padding), grad_input);
+    return at::redispatch::reflection_pad1d_backward_outf(dispatchKeySet, grad_output, self, padding, grad_input);
   }
   bool flush = register_in_place(grad_input, H_REFLECTION_PAD1D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14220,10 +14220,10 @@ at::Tensor & wrap_reflection_pad1d_backward_grad_input(c10::DispatchKeySet dispa
 at::Tensor & wrap_reflection_pad2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::reflection_pad2d_outf(dispatchKeySet, self, std::move(padding), out);
+    return at::redispatch::reflection_pad2d_outf(dispatchKeySet, self, padding, out);
   }
   bool flush = register_in_place(out, H_REFLECTION_PAD2D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14232,20 +14232,20 @@ at::Tensor & wrap_reflection_pad2d_out(c10::DispatchKeySet dispatchKeySet, const
 at::Tensor wrap_reflection_pad2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::reflection_pad2d(dispatchKeySet, self, std::move(padding));
+    return at::redispatch::reflection_pad2d(dispatchKeySet, self, padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_REFLECTION_PAD2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(padding));
+  trace.append_arg(self);trace.append_arg(padding);
   return tt;
 }
 
 at::Tensor & wrap_reflection_pad2d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::reflection_pad2d_backward_outf(dispatchKeySet, grad_output, self, std::move(padding), grad_input);
+    return at::redispatch::reflection_pad2d_backward_outf(dispatchKeySet, grad_output, self, padding, grad_input);
   }
   bool flush = register_in_place(grad_input, H_REFLECTION_PAD2D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14254,20 +14254,20 @@ at::Tensor & wrap_reflection_pad2d_backward_grad_input(c10::DispatchKeySet dispa
 at::Tensor wrap_reflection_pad2d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::reflection_pad2d_backward(dispatchKeySet, grad_output, self, std::move(padding));
+    return at::redispatch::reflection_pad2d_backward(dispatchKeySet, grad_output, self, padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_REFLECTION_PAD2D_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);
   return tt;
 }
 
 at::Tensor & wrap_reflection_pad3d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::reflection_pad3d_outf(dispatchKeySet, self, std::move(padding), out);
+    return at::redispatch::reflection_pad3d_outf(dispatchKeySet, self, padding, out);
   }
   bool flush = register_in_place(out, H_REFLECTION_PAD3D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14276,10 +14276,10 @@ at::Tensor & wrap_reflection_pad3d_out(c10::DispatchKeySet dispatchKeySet, const
 at::Tensor & wrap_reflection_pad3d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::reflection_pad3d_backward_outf(dispatchKeySet, grad_output, self, std::move(padding), grad_input);
+    return at::redispatch::reflection_pad3d_backward_outf(dispatchKeySet, grad_output, self, padding, grad_input);
   }
   bool flush = register_in_place(grad_input, H_REFLECTION_PAD3D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14288,10 +14288,10 @@ at::Tensor & wrap_reflection_pad3d_backward_grad_input(c10::DispatchKeySet dispa
 at::Tensor & wrap_replication_pad1d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::replication_pad1d_outf(dispatchKeySet, self, std::move(padding), out);
+    return at::redispatch::replication_pad1d_outf(dispatchKeySet, self, padding, out);
   }
   bool flush = register_in_place(out, H_REPLICATION_PAD1D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14300,10 +14300,10 @@ at::Tensor & wrap_replication_pad1d_out(c10::DispatchKeySet dispatchKeySet, cons
 at::Tensor & wrap_replication_pad1d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::replication_pad1d_backward_outf(dispatchKeySet, grad_output, self, std::move(padding), grad_input);
+    return at::redispatch::replication_pad1d_backward_outf(dispatchKeySet, grad_output, self, padding, grad_input);
   }
   bool flush = register_in_place(grad_input, H_REPLICATION_PAD1D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14312,10 +14312,10 @@ at::Tensor & wrap_replication_pad1d_backward_grad_input(c10::DispatchKeySet disp
 at::Tensor & wrap_replication_pad2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::replication_pad2d_outf(dispatchKeySet, self, std::move(padding), out);
+    return at::redispatch::replication_pad2d_outf(dispatchKeySet, self, padding, out);
   }
   bool flush = register_in_place(out, H_REPLICATION_PAD2D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14324,10 +14324,10 @@ at::Tensor & wrap_replication_pad2d_out(c10::DispatchKeySet dispatchKeySet, cons
 at::Tensor & wrap_replication_pad2d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::replication_pad2d_backward_outf(dispatchKeySet, grad_output, self, std::move(padding), grad_input);
+    return at::redispatch::replication_pad2d_backward_outf(dispatchKeySet, grad_output, self, padding, grad_input);
   }
   bool flush = register_in_place(grad_input, H_REPLICATION_PAD2D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14336,20 +14336,20 @@ at::Tensor & wrap_replication_pad2d_backward_grad_input(c10::DispatchKeySet disp
 at::Tensor wrap_replication_pad2d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::replication_pad2d_backward(dispatchKeySet, grad_output, self, std::move(padding));
+    return at::redispatch::replication_pad2d_backward(dispatchKeySet, grad_output, self, padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_REPLICATION_PAD2D_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);
   return tt;
 }
 
 at::Tensor & wrap_replication_pad3d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::replication_pad3d_outf(dispatchKeySet, self, std::move(padding), out);
+    return at::redispatch::replication_pad3d_outf(dispatchKeySet, self, padding, out);
   }
   bool flush = register_in_place(out, H_REPLICATION_PAD3D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14358,10 +14358,10 @@ at::Tensor & wrap_replication_pad3d_out(c10::DispatchKeySet dispatchKeySet, cons
 at::Tensor & wrap_replication_pad3d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::replication_pad3d_backward_outf(dispatchKeySet, grad_output, self, std::move(padding), grad_input);
+    return at::redispatch::replication_pad3d_backward_outf(dispatchKeySet, grad_output, self, padding, grad_input);
   }
   bool flush = register_in_place(grad_input, H_REPLICATION_PAD3D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14370,160 +14370,160 @@ at::Tensor & wrap_replication_pad3d_backward_grad_input(c10::DispatchKeySet disp
 at::Tensor wrap_replication_pad3d_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, const at::Tensor & self, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::replication_pad3d_backward(dispatchKeySet, grad_output, self, std::move(padding));
+    return at::redispatch::replication_pad3d_backward(dispatchKeySet, grad_output, self, padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_REPLICATION_PAD3D_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(std::move(padding));
+  trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);
   return tt;
 }
 
 at::Tensor wrap_upsample_linear1d_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_linear1d(dispatchKeySet, input, std::move(output_size), align_corners, scale_factors);
+    return at::redispatch::upsample_linear1d(dispatchKeySet, input, output_size, align_corners, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_LINEAR1D_VEC, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(std::move(output_size));trace.append_arg(align_corners);trace.append_arg(scale_factors);
+  trace.append_arg(input);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_linear1d_backward_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_linear1d_backward(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), align_corners, scale_factors);
+    return at::redispatch::upsample_linear1d_backward(dispatchKeySet, grad_output, output_size, input_size, align_corners, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_LINEAR1D_BACKWARD_VEC, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(align_corners);trace.append_arg(scale_factors);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_bilinear2d_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_bilinear2d(dispatchKeySet, input, std::move(output_size), align_corners, scale_factors);
+    return at::redispatch::upsample_bilinear2d(dispatchKeySet, input, output_size, align_corners, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_BILINEAR2D_VEC, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(std::move(output_size));trace.append_arg(align_corners);trace.append_arg(scale_factors);
+  trace.append_arg(input);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_bilinear2d_backward_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_bilinear2d_backward(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), align_corners, scale_factors);
+    return at::redispatch::upsample_bilinear2d_backward(dispatchKeySet, grad_output, output_size, input_size, align_corners, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_BILINEAR2D_BACKWARD_VEC, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(align_corners);trace.append_arg(scale_factors);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_trilinear3d_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_trilinear3d(dispatchKeySet, input, std::move(output_size), align_corners, scale_factors);
+    return at::redispatch::upsample_trilinear3d(dispatchKeySet, input, output_size, align_corners, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_TRILINEAR3D_VEC, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(std::move(output_size));trace.append_arg(align_corners);trace.append_arg(scale_factors);
+  trace.append_arg(input);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_trilinear3d_backward_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_trilinear3d_backward(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), align_corners, scale_factors);
+    return at::redispatch::upsample_trilinear3d_backward(dispatchKeySet, grad_output, output_size, input_size, align_corners, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_TRILINEAR3D_BACKWARD_VEC, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(align_corners);trace.append_arg(scale_factors);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_bicubic2d_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_bicubic2d(dispatchKeySet, input, std::move(output_size), align_corners, scale_factors);
+    return at::redispatch::upsample_bicubic2d(dispatchKeySet, input, output_size, align_corners, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_BICUBIC2D_VEC, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(std::move(output_size));trace.append_arg(align_corners);trace.append_arg(scale_factors);
+  trace.append_arg(input);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_bicubic2d_backward_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_bicubic2d_backward(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), align_corners, scale_factors);
+    return at::redispatch::upsample_bicubic2d_backward(dispatchKeySet, grad_output, output_size, input_size, align_corners, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_BICUBIC2D_BACKWARD_VEC, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(align_corners);trace.append_arg(scale_factors);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_nearest1d_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest1d(dispatchKeySet, input, std::move(output_size), scale_factors);
+    return at::redispatch::upsample_nearest1d(dispatchKeySet, input, output_size, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_NEAREST1D_VEC, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(std::move(output_size));trace.append_arg(scale_factors);
+  trace.append_arg(input);trace.append_arg(output_size);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_nearest1d_backward_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest1d_backward(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), scale_factors);
+    return at::redispatch::upsample_nearest1d_backward(dispatchKeySet, grad_output, output_size, input_size, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_NEAREST1D_BACKWARD_VEC, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(scale_factors);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_nearest2d_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest2d(dispatchKeySet, input, std::move(output_size), scale_factors);
+    return at::redispatch::upsample_nearest2d(dispatchKeySet, input, output_size, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_NEAREST2D_VEC, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(std::move(output_size));trace.append_arg(scale_factors);
+  trace.append_arg(input);trace.append_arg(output_size);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_nearest2d_backward_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest2d_backward(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), scale_factors);
+    return at::redispatch::upsample_nearest2d_backward(dispatchKeySet, grad_output, output_size, input_size, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_NEAREST2D_BACKWARD_VEC, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(scale_factors);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_nearest3d_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & input, c10::optional<at::IntArrayRef> output_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest3d(dispatchKeySet, input, std::move(output_size), scale_factors);
+    return at::redispatch::upsample_nearest3d(dispatchKeySet, input, output_size, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_NEAREST3D_VEC, input.dtype(), input.device());
-  trace.append_arg(input);trace.append_arg(std::move(output_size));trace.append_arg(scale_factors);
+  trace.append_arg(input);trace.append_arg(output_size);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor wrap_upsample_nearest3d_backward_vec(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, c10::optional<at::IntArrayRef> output_size, at::IntArrayRef input_size, c10::optional<at::ArrayRef<double>> scale_factors) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest3d_backward(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), scale_factors);
+    return at::redispatch::upsample_nearest3d_backward(dispatchKeySet, grad_output, output_size, input_size, scale_factors);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_NEAREST3D_BACKWARD_VEC, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(scale_factors);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(scale_factors);
   return tt;
 }
 
 at::Tensor & wrap_upsample_linear1d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, bool align_corners, c10::optional<double> scales, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_linear1d_outf(dispatchKeySet, self, std::move(output_size), align_corners, scales, out);
+    return at::redispatch::upsample_linear1d_outf(dispatchKeySet, self, output_size, align_corners, scales, out);
   }
   bool flush = register_in_place(out, H_UPSAMPLE_LINEAR1D_OUT, dispatchKeySet, eq_shapes(out, shape_matmul(self, output_size)));
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(align_corners);trace.append_arg(scales);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scales);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14532,10 +14532,10 @@ at::Tensor & wrap_upsample_linear1d_out(c10::DispatchKeySet dispatchKeySet, cons
 at::Tensor & wrap_upsample_linear1d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<double> scales, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_linear1d_backward_outf(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), align_corners, scales, grad_input);
+    return at::redispatch::upsample_linear1d_backward_outf(dispatchKeySet, grad_output, output_size, input_size, align_corners, scales, grad_input);
   }
   bool flush = register_in_place(grad_input, H_UPSAMPLE_LINEAR1D_BACKWARD_GRAD_INPUT, dispatchKeySet, eq_shapes(grad_input, input_size));
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(align_corners);trace.append_arg(scales);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scales);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14544,10 +14544,10 @@ at::Tensor & wrap_upsample_linear1d_backward_grad_input(c10::DispatchKeySet disp
 at::Tensor & wrap_upsample_bilinear2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_bilinear2d_outf(dispatchKeySet, self, std::move(output_size), align_corners, scales_h, scales_w, out);
+    return at::redispatch::upsample_bilinear2d_outf(dispatchKeySet, self, output_size, align_corners, scales_h, scales_w, out);
   }
   bool flush = register_in_place(out, H_UPSAMPLE_BILINEAR2D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14556,20 +14556,20 @@ at::Tensor & wrap_upsample_bilinear2d_out(c10::DispatchKeySet dispatchKeySet, co
 at::Tensor wrap_upsample_bilinear2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_bilinear2d(dispatchKeySet, self, std::move(output_size), align_corners, scales_h, scales_w);
+    return at::redispatch::upsample_bilinear2d(dispatchKeySet, self, output_size, align_corners, scales_h, scales_w);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_BILINEAR2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);
   return tt;
 }
 
 at::Tensor & wrap_upsample_bilinear2d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_bilinear2d_backward_outf(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), align_corners, scales_h, scales_w, grad_input);
+    return at::redispatch::upsample_bilinear2d_backward_outf(dispatchKeySet, grad_output, output_size, input_size, align_corners, scales_h, scales_w, grad_input);
   }
   bool flush = register_in_place(grad_input, H_UPSAMPLE_BILINEAR2D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14578,10 +14578,10 @@ at::Tensor & wrap_upsample_bilinear2d_backward_grad_input(c10::DispatchKeySet di
 at::Tensor & wrap_upsample_bicubic2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_bicubic2d_outf(dispatchKeySet, self, std::move(output_size), align_corners, scales_h, scales_w, out);
+    return at::redispatch::upsample_bicubic2d_outf(dispatchKeySet, self, output_size, align_corners, scales_h, scales_w, out);
   }
   bool flush = register_in_place(out, H_UPSAMPLE_BICUBIC2D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14590,10 +14590,10 @@ at::Tensor & wrap_upsample_bicubic2d_out(c10::DispatchKeySet dispatchKeySet, con
 at::Tensor & wrap_upsample_bicubic2d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_bicubic2d_backward_outf(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), align_corners, scales_h, scales_w, grad_input);
+    return at::redispatch::upsample_bicubic2d_backward_outf(dispatchKeySet, grad_output, output_size, input_size, align_corners, scales_h, scales_w, grad_input);
   }
   bool flush = register_in_place(grad_input, H_UPSAMPLE_BICUBIC2D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14602,10 +14602,10 @@ at::Tensor & wrap_upsample_bicubic2d_backward_grad_input(c10::DispatchKeySet dis
 at::Tensor & wrap_upsample_trilinear3d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, bool align_corners, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_trilinear3d_outf(dispatchKeySet, self, std::move(output_size), align_corners, scales_d, scales_h, scales_w, out);
+    return at::redispatch::upsample_trilinear3d_outf(dispatchKeySet, self, output_size, align_corners, scales_d, scales_h, scales_w, out);
   }
   bool flush = register_in_place(out, H_UPSAMPLE_TRILINEAR3D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(align_corners);trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14614,10 +14614,10 @@ at::Tensor & wrap_upsample_trilinear3d_out(c10::DispatchKeySet dispatchKeySet, c
 at::Tensor & wrap_upsample_trilinear3d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, bool align_corners, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_trilinear3d_backward_outf(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), align_corners, scales_d, scales_h, scales_w, grad_input);
+    return at::redispatch::upsample_trilinear3d_backward_outf(dispatchKeySet, grad_output, output_size, input_size, align_corners, scales_d, scales_h, scales_w, grad_input);
   }
   bool flush = register_in_place(grad_input, H_UPSAMPLE_TRILINEAR3D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(align_corners);trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14626,10 +14626,10 @@ at::Tensor & wrap_upsample_trilinear3d_backward_grad_input(c10::DispatchKeySet d
 at::Tensor & wrap_upsample_nearest1d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, c10::optional<double> scales, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest1d_outf(dispatchKeySet, self, std::move(output_size), scales, out);
+    return at::redispatch::upsample_nearest1d_outf(dispatchKeySet, self, output_size, scales, out);
   }
   bool flush = register_in_place(out, H_UPSAMPLE_NEAREST1D_OUT, dispatchKeySet, eq_shapes(out, shape_matmul(self, output_size)));
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(scales);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(scales);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14638,10 +14638,10 @@ at::Tensor & wrap_upsample_nearest1d_out(c10::DispatchKeySet dispatchKeySet, con
 at::Tensor & wrap_upsample_nearest1d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, c10::optional<double> scales, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest1d_backward_outf(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), scales, grad_input);
+    return at::redispatch::upsample_nearest1d_backward_outf(dispatchKeySet, grad_output, output_size, input_size, scales, grad_input);
   }
   bool flush = register_in_place(grad_input, H_UPSAMPLE_NEAREST1D_BACKWARD_GRAD_INPUT, dispatchKeySet, eq_shapes(grad_input, input_size));
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(scales);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(scales);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14650,10 +14650,10 @@ at::Tensor & wrap_upsample_nearest1d_backward_grad_input(c10::DispatchKeySet dis
 at::Tensor & wrap_upsample_nearest2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest2d_outf(dispatchKeySet, self, std::move(output_size), scales_h, scales_w, out);
+    return at::redispatch::upsample_nearest2d_outf(dispatchKeySet, self, output_size, scales_h, scales_w, out);
   }
   bool flush = register_in_place(out, H_UPSAMPLE_NEAREST2D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14662,20 +14662,20 @@ at::Tensor & wrap_upsample_nearest2d_out(c10::DispatchKeySet dispatchKeySet, con
 at::Tensor wrap_upsample_nearest2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, c10::optional<double> scales_h, c10::optional<double> scales_w) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest2d(dispatchKeySet, self, std::move(output_size), scales_h, scales_w);
+    return at::redispatch::upsample_nearest2d(dispatchKeySet, self, output_size, scales_h, scales_w);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_NEAREST2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(scales_h);trace.append_arg(scales_w);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(scales_h);trace.append_arg(scales_w);
   return tt;
 }
 
 at::Tensor & wrap_upsample_nearest2d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest2d_backward_outf(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), scales_h, scales_w, grad_input);
+    return at::redispatch::upsample_nearest2d_backward_outf(dispatchKeySet, grad_output, output_size, input_size, scales_h, scales_w, grad_input);
   }
   bool flush = register_in_place(grad_input, H_UPSAMPLE_NEAREST2D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14684,10 +14684,10 @@ at::Tensor & wrap_upsample_nearest2d_backward_grad_input(c10::DispatchKeySet dis
 at::Tensor & wrap_upsample_nearest3d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest3d_outf(dispatchKeySet, self, std::move(output_size), scales_d, scales_h, scales_w, out);
+    return at::redispatch::upsample_nearest3d_outf(dispatchKeySet, self, output_size, scales_d, scales_h, scales_w, out);
   }
   bool flush = register_in_place(out, H_UPSAMPLE_NEAREST3D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14696,20 +14696,20 @@ at::Tensor & wrap_upsample_nearest3d_out(c10::DispatchKeySet dispatchKeySet, con
 at::Tensor wrap_upsample_nearest3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest3d(dispatchKeySet, self, std::move(output_size), scales_d, scales_h, scales_w);
+    return at::redispatch::upsample_nearest3d(dispatchKeySet, self, output_size, scales_d, scales_h, scales_w);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UPSAMPLE_NEAREST3D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);
   return tt;
 }
 
 at::Tensor & wrap_upsample_nearest3d_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, at::IntArrayRef output_size, at::IntArrayRef input_size, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::upsample_nearest3d_backward_outf(dispatchKeySet, grad_output, std::move(output_size), std::move(input_size), scales_d, scales_h, scales_w, grad_input);
+    return at::redispatch::upsample_nearest3d_backward_outf(dispatchKeySet, grad_output, output_size, input_size, scales_d, scales_h, scales_w, grad_input);
   }
   bool flush = register_in_place(grad_input, H_UPSAMPLE_NEAREST3D_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(std::move(output_size));trace.append_arg(std::move(input_size));trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14754,10 +14754,10 @@ at::Tensor & wrap_tanh_backward_grad_input(c10::DispatchKeySet dispatchKeySet, c
 at::Tensor & wrap_slow_conv_transpose2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::slow_conv_transpose2d_outf(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding), std::move(output_padding), std::move(dilation), out);
+    return at::redispatch::slow_conv_transpose2d_outf(dispatchKeySet, self, weight, kernel_size, bias, stride, padding, output_padding, dilation, out);
   }
   bool flush = register_in_place(out, H_SLOW_CONV_TRANSPOSE2D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(output_padding));trace.append_arg(std::move(dilation));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(dilation);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14766,10 +14766,10 @@ at::Tensor & wrap_slow_conv_transpose2d_out(c10::DispatchKeySet dispatchKeySet, 
 at::Tensor & wrap_slow_conv_transpose3d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::slow_conv_transpose3d_outf(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding), std::move(output_padding), std::move(dilation), out);
+    return at::redispatch::slow_conv_transpose3d_outf(dispatchKeySet, self, weight, kernel_size, bias, stride, padding, output_padding, dilation, out);
   }
   bool flush = register_in_place(out, H_SLOW_CONV_TRANSPOSE3D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(output_padding));trace.append_arg(std::move(dilation));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(dilation);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14778,20 +14778,20 @@ at::Tensor & wrap_slow_conv_transpose3d_out(c10::DispatchKeySet dispatchKeySet, 
 at::Tensor wrap_slow_conv_transpose3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef output_padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::slow_conv_transpose3d(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding), std::move(output_padding), std::move(dilation));
+    return at::redispatch::slow_conv_transpose3d(dispatchKeySet, self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SLOW_CONV_TRANSPOSE3D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(output_padding));trace.append_arg(std::move(dilation));
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(dilation);
   return tt;
 }
 
 at::Tensor & wrap_thnn_conv2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::thnn_conv2d_outf(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding), out);
+    return at::redispatch::thnn_conv2d_outf(dispatchKeySet, self, weight, kernel_size, bias, stride, padding, out);
   }
   bool flush = register_in_place(out, H_THNN_CONV2D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14800,20 +14800,20 @@ at::Tensor & wrap_thnn_conv2d_out(c10::DispatchKeySet dispatchKeySet, const at::
 at::Tensor wrap_thnn_conv2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::thnn_conv2d(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding));
+    return at::redispatch::thnn_conv2d(dispatchKeySet, self, weight, kernel_size, bias, stride, padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_THNN_CONV2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);
   return tt;
 }
 
 const at::Tensor & wrap__conv_depthwise2d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation, const at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_conv_depthwise2d_outf(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding), std::move(dilation), out);
+    return at::redispatch::_conv_depthwise2d_outf(dispatchKeySet, self, weight, kernel_size, bias, stride, padding, dilation, out);
   }
   bool flush = register_in_place(out, H__CONV_DEPTHWISE2D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14822,30 +14822,30 @@ const at::Tensor & wrap__conv_depthwise2d_out(c10::DispatchKeySet dispatchKeySet
 at::Tensor wrap__conv_depthwise2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_conv_depthwise2d(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding), std::move(dilation));
+    return at::redispatch::_conv_depthwise2d(dispatchKeySet, self, weight, kernel_size, bias, stride, padding, dilation);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__CONV_DEPTHWISE2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);
   return tt;
 }
 
 at::Tensor wrap_conv_depthwise3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::conv_depthwise3d(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding), std::move(dilation));
+    return at::redispatch::conv_depthwise3d(dispatchKeySet, self, weight, kernel_size, bias, stride, padding, dilation);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONV_DEPTHWISE3D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);
   return tt;
 }
 
 at::Tensor & wrap_slow_conv3d_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::slow_conv3d_outf(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding), out);
+    return at::redispatch::slow_conv3d_outf(dispatchKeySet, self, weight, kernel_size, bias, stride, padding, out);
   }
   bool flush = register_in_place(out, H_SLOW_CONV3D_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14854,40 +14854,40 @@ at::Tensor & wrap_slow_conv3d_out(c10::DispatchKeySet dispatchKeySet, const at::
 at::Tensor wrap_slow_conv3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::slow_conv3d(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding));
+    return at::redispatch::slow_conv3d(dispatchKeySet, self, weight, kernel_size, bias, stride, padding);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SLOW_CONV3D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);
   return tt;
 }
 
 at::Tensor wrap_slow_conv_dilated2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::slow_conv_dilated2d(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding), std::move(dilation));
+    return at::redispatch::slow_conv_dilated2d(dispatchKeySet, self, weight, kernel_size, bias, stride, padding, dilation);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SLOW_CONV_DILATED2D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);
   return tt;
 }
 
 at::Tensor wrap_slow_conv_dilated3d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & weight, at::IntArrayRef kernel_size, const c10::optional<at::Tensor> & bias, at::IntArrayRef stride, at::IntArrayRef padding, at::IntArrayRef dilation) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::slow_conv_dilated3d(dispatchKeySet, self, weight, std::move(kernel_size), bias, std::move(stride), std::move(padding), std::move(dilation));
+    return at::redispatch::slow_conv_dilated3d(dispatchKeySet, self, weight, kernel_size, bias, stride, padding, dilation);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SLOW_CONV_DILATED3D, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(std::move(kernel_size));trace.append_arg(bias);trace.append_arg(std::move(stride));trace.append_arg(std::move(padding));trace.append_arg(std::move(dilation));
+  trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);
   return tt;
 }
 
 at::Tensor & wrap_col2im_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::col2im_outf(dispatchKeySet, self, std::move(output_size), std::move(kernel_size), std::move(dilation), std::move(padding), std::move(stride), out);
+    return at::redispatch::col2im_outf(dispatchKeySet, self, output_size, kernel_size, dilation, padding, stride, out);
   }
   bool flush = register_in_place(out, H_COL2IM_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(dilation));trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14896,20 +14896,20 @@ at::Tensor & wrap_col2im_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
 at::Tensor wrap_col2im(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef output_size, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::col2im(dispatchKeySet, self, std::move(output_size), std::move(kernel_size), std::move(dilation), std::move(padding), std::move(stride));
+    return at::redispatch::col2im(dispatchKeySet, self, output_size, kernel_size, dilation, padding, stride);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_COL2IM, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(output_size));trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(dilation));trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));
+  trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);
   return tt;
 }
 
 at::Tensor & wrap_col2im_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::col2im_backward_outf(dispatchKeySet, grad_output, std::move(kernel_size), std::move(dilation), std::move(padding), std::move(stride), grad_input);
+    return at::redispatch::col2im_backward_outf(dispatchKeySet, grad_output, kernel_size, dilation, padding, stride, grad_input);
   }
   bool flush = register_in_place(grad_input, H_COL2IM_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(dilation));trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14918,10 +14918,10 @@ at::Tensor & wrap_col2im_backward_grad_input(c10::DispatchKeySet dispatchKeySet,
 at::Tensor wrap_col2im_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::col2im_backward(dispatchKeySet, grad_output, std::move(kernel_size), std::move(dilation), std::move(padding), std::move(stride));
+    return at::redispatch::col2im_backward(dispatchKeySet, grad_output, kernel_size, dilation, padding, stride);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_COL2IM_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(dilation));trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));
+  trace.append_arg(grad_output);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);
   return tt;
 }
 
@@ -14950,10 +14950,10 @@ at::Tensor & wrap_column_stack_out(c10::DispatchKeySet dispatchKeySet, at::Tenso
 at::Tensor & wrap_im2col_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::im2col_outf(dispatchKeySet, self, std::move(kernel_size), std::move(dilation), std::move(padding), std::move(stride), out);
+    return at::redispatch::im2col_outf(dispatchKeySet, self, kernel_size, dilation, padding, stride, out);
   }
   bool flush = register_in_place(out, H_IM2COL_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(dilation));trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -14962,20 +14962,20 @@ at::Tensor & wrap_im2col_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
 at::Tensor wrap_im2col(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::im2col(dispatchKeySet, self, std::move(kernel_size), std::move(dilation), std::move(padding), std::move(stride));
+    return at::redispatch::im2col(dispatchKeySet, self, kernel_size, dilation, padding, stride);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_IM2COL, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(dilation));trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));
+  trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);
   return tt;
 }
 
 at::Tensor & wrap_im2col_backward_grad_input(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, at::IntArrayRef input_size, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride, at::Tensor & grad_input) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::im2col_backward_outf(dispatchKeySet, grad_output, std::move(input_size), std::move(kernel_size), std::move(dilation), std::move(padding), std::move(stride), grad_input);
+    return at::redispatch::im2col_backward_outf(dispatchKeySet, grad_output, input_size, kernel_size, dilation, padding, stride, grad_input);
   }
   bool flush = register_in_place(grad_input, H_IM2COL_BACKWARD_GRAD_INPUT, dispatchKeySet, false);
-  trace.append_arg(grad_output);trace.append_arg(std::move(input_size));trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(dilation));trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));trace.append_arg(grad_input);
+  trace.append_arg(grad_output);trace.append_arg(input_size);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return grad_input;
@@ -14984,10 +14984,10 @@ at::Tensor & wrap_im2col_backward_grad_input(c10::DispatchKeySet dispatchKeySet,
 at::Tensor wrap_im2col_backward(c10::DispatchKeySet dispatchKeySet, const at::Tensor & grad_output, at::IntArrayRef input_size, at::IntArrayRef kernel_size, at::IntArrayRef dilation, at::IntArrayRef padding, at::IntArrayRef stride) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::im2col_backward(dispatchKeySet, grad_output, std::move(input_size), std::move(kernel_size), std::move(dilation), std::move(padding), std::move(stride));
+    return at::redispatch::im2col_backward(dispatchKeySet, grad_output, input_size, kernel_size, dilation, padding, stride);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_IM2COL_BACKWARD, grad_output.dtype(), grad_output.device());
-  trace.append_arg(grad_output);trace.append_arg(std::move(input_size));trace.append_arg(std::move(kernel_size));trace.append_arg(std::move(dilation));trace.append_arg(std::move(padding));trace.append_arg(std::move(stride));
+  trace.append_arg(grad_output);trace.append_arg(input_size);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);
   return tt;
 }
 
@@ -15582,20 +15582,20 @@ at::Tensor & wrap_special_polygamma_out(c10::DispatchKeySet dispatchKeySet, int6
 at::Tensor wrap_special_logsumexp(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::special_logsumexp(dispatchKeySet, self, std::move(dim), keepdim);
+    return at::redispatch::special_logsumexp(dispatchKeySet, self, dim, keepdim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SPECIAL_LOGSUMEXP, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);
   return tt;
 }
 
 at::Tensor & wrap_special_logsumexp_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, at::IntArrayRef dim, bool keepdim, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::special_logsumexp_outf(dispatchKeySet, self, std::move(dim), keepdim, out);
+    return at::redispatch::special_logsumexp_outf(dispatchKeySet, self, dim, keepdim, out);
   }
   bool flush = register_in_place(out, H_SPECIAL_LOGSUMEXP_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -15856,20 +15856,20 @@ at::Tensor & wrap_fft_ihfft_out(c10::DispatchKeySet dispatchKeySet, const at::Te
 at::Tensor wrap_fft_fft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_fft2(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
+    return at::redispatch::fft_fft2(dispatchKeySet, self, s, dim, std::move(norm));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_FFT2, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));
   return tt;
 }
 
 at::Tensor & wrap_fft_fft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_fft2_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
+    return at::redispatch::fft_fft2_outf(dispatchKeySet, self, s, dim, std::move(norm), out);
   }
   bool flush = register_in_place(out, H_FFT_FFT2_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -15878,20 +15878,20 @@ at::Tensor & wrap_fft_fft2_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
 at::Tensor wrap_fft_ifft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_ifft2(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
+    return at::redispatch::fft_ifft2(dispatchKeySet, self, s, dim, std::move(norm));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_IFFT2, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));
   return tt;
 }
 
 at::Tensor & wrap_fft_ifft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_ifft2_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
+    return at::redispatch::fft_ifft2_outf(dispatchKeySet, self, s, dim, std::move(norm), out);
   }
   bool flush = register_in_place(out, H_FFT_IFFT2_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -15900,20 +15900,20 @@ at::Tensor & wrap_fft_ifft2_out(c10::DispatchKeySet dispatchKeySet, const at::Te
 at::Tensor wrap_fft_rfft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_rfft2(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
+    return at::redispatch::fft_rfft2(dispatchKeySet, self, s, dim, std::move(norm));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_RFFT2, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));
   return tt;
 }
 
 at::Tensor & wrap_fft_rfft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_rfft2_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
+    return at::redispatch::fft_rfft2_outf(dispatchKeySet, self, s, dim, std::move(norm), out);
   }
   bool flush = register_in_place(out, H_FFT_RFFT2_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -15922,20 +15922,20 @@ at::Tensor & wrap_fft_rfft2_out(c10::DispatchKeySet dispatchKeySet, const at::Te
 at::Tensor wrap_fft_irfft2(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_irfft2(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
+    return at::redispatch::fft_irfft2(dispatchKeySet, self, s, dim, std::move(norm));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_IRFFT2, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));
   return tt;
 }
 
 at::Tensor & wrap_fft_irfft2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, at::IntArrayRef dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_irfft2_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
+    return at::redispatch::fft_irfft2_outf(dispatchKeySet, self, s, dim, std::move(norm), out);
   }
   bool flush = register_in_place(out, H_FFT_IRFFT2_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -15944,20 +15944,20 @@ at::Tensor & wrap_fft_irfft2_out(c10::DispatchKeySet dispatchKeySet, const at::T
 at::Tensor wrap_fft_fftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_fftn(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
+    return at::redispatch::fft_fftn(dispatchKeySet, self, s, dim, std::move(norm));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_FFTN, to_complex(self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));
   return tt;
 }
 
 at::Tensor & wrap_fft_fftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_fftn_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
+    return at::redispatch::fft_fftn_outf(dispatchKeySet, self, s, dim, std::move(norm), out);
   }
   bool flush = register_in_place(out, H_FFT_FFTN_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -15966,20 +15966,20 @@ at::Tensor & wrap_fft_fftn_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
 at::Tensor wrap_fft_ifftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_ifftn(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
+    return at::redispatch::fft_ifftn(dispatchKeySet, self, s, dim, std::move(norm));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_IFFTN, to_complex(self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));
   return tt;
 }
 
 at::Tensor & wrap_fft_ifftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_ifftn_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
+    return at::redispatch::fft_ifftn_outf(dispatchKeySet, self, s, dim, std::move(norm), out);
   }
   bool flush = register_in_place(out, H_FFT_IFFTN_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -15988,20 +15988,20 @@ at::Tensor & wrap_fft_ifftn_out(c10::DispatchKeySet dispatchKeySet, const at::Te
 at::Tensor wrap_fft_rfftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_rfftn(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
+    return at::redispatch::fft_rfftn(dispatchKeySet, self, s, dim, std::move(norm));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_RFFTN, to_complex(self.dtype().toScalarType()), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));
   return tt;
 }
 
 at::Tensor & wrap_fft_rfftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_rfftn_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
+    return at::redispatch::fft_rfftn_outf(dispatchKeySet, self, s, dim, std::move(norm), out);
   }
   bool flush = register_in_place(out, H_FFT_RFFTN_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -16010,20 +16010,20 @@ at::Tensor & wrap_fft_rfftn_out(c10::DispatchKeySet dispatchKeySet, const at::Te
 at::Tensor wrap_fft_irfftn(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_irfftn(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm));
+    return at::redispatch::fft_irfftn(dispatchKeySet, self, s, dim, std::move(norm));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_IRFFTN, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));
   return tt;
 }
 
 at::Tensor & wrap_fft_irfftn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> s, c10::optional<at::IntArrayRef> dim, c10::optional<c10::string_view> norm, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_irfftn_outf(dispatchKeySet, self, std::move(s), std::move(dim), std::move(norm), out);
+    return at::redispatch::fft_irfftn_outf(dispatchKeySet, self, s, dim, std::move(norm), out);
   }
   bool flush = register_in_place(out, H_FFT_IRFFTN_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(s));trace.append_arg(std::move(dim));trace.append_arg(std::move(norm));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(std::move(norm));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -16076,20 +16076,20 @@ at::Tensor & wrap_fft_rfftfreq_out(c10::DispatchKeySet dispatchKeySet, int64_t n
 at::Tensor wrap_fft_fftshift(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> dim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_fftshift(dispatchKeySet, self, std::move(dim));
+    return at::redispatch::fft_fftshift(dispatchKeySet, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_FFTSHIFT, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));
+  trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
 
 at::Tensor wrap_fft_ifftshift(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::optional<at::IntArrayRef> dim) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::fft_ifftshift(dispatchKeySet, self, std::move(dim));
+    return at::redispatch::fft_ifftshift(dispatchKeySet, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FFT_IFFTSHIFT, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(std::move(dim));
+  trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
 
@@ -16326,30 +16326,30 @@ at::Tensor & wrap_ger_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
 at::Tensor wrap_linalg_norm(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_norm(dispatchKeySet, self, ord, std::move(dim), keepdim, std::move(dtype));
+    return at::redispatch::linalg_norm(dispatchKeySet, self, ord, dim, keepdim, std::move(dtype));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_NORM, dtype, self.device());
-  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
+  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
   return tt;
 }
 
 at::Tensor wrap_linalg_norm_ord_str(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_norm(dispatchKeySet, self, std::move(ord), std::move(dim), keepdim, std::move(dtype));
+    return at::redispatch::linalg_norm(dispatchKeySet, self, std::move(ord), dim, keepdim, std::move(dtype));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_NORM_ORD_STR, dtype, self.device());
-  trace.append_arg(self);trace.append_arg(std::move(ord));trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
+  trace.append_arg(self);trace.append_arg(std::move(ord));trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
   return tt;
 }
 
 at::Tensor & wrap_linalg_norm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const c10::optional<at::Scalar> & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_norm_outf(dispatchKeySet, self, ord, std::move(dim), keepdim, std::move(dtype), out);
+    return at::redispatch::linalg_norm_outf(dispatchKeySet, self, ord, dim, keepdim, std::move(dtype), out);
   }
   bool flush = register_in_place(out, H_LINALG_NORM_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -16358,10 +16358,10 @@ at::Tensor & wrap_linalg_norm_out(c10::DispatchKeySet dispatchKeySet, const at::
 at::Tensor & wrap_linalg_norm_ord_str_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_norm_outf(dispatchKeySet, self, std::move(ord), std::move(dim), keepdim, std::move(dtype), out);
+    return at::redispatch::linalg_norm_outf(dispatchKeySet, self, std::move(ord), dim, keepdim, std::move(dtype), out);
   }
   bool flush = register_in_place(out, H_LINALG_NORM_ORD_STR_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(ord));trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(std::move(ord));trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -16370,20 +16370,20 @@ at::Tensor & wrap_linalg_norm_ord_str_out(c10::DispatchKeySet dispatchKeySet, co
 at::Tensor wrap_linalg_vector_norm(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_vector_norm(dispatchKeySet, self, ord, std::move(dim), keepdim, std::move(dtype));
+    return at::redispatch::linalg_vector_norm(dispatchKeySet, self, ord, dim, keepdim, std::move(dtype));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_VECTOR_NORM, dtype, self.device());
-  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
+  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
   return tt;
 }
 
 at::Tensor & wrap_linalg_vector_norm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & ord, c10::optional<at::IntArrayRef> dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_vector_norm_outf(dispatchKeySet, self, ord, std::move(dim), keepdim, std::move(dtype), out);
+    return at::redispatch::linalg_vector_norm_outf(dispatchKeySet, self, ord, dim, keepdim, std::move(dtype), out);
   }
   bool flush = register_in_place(out, H_LINALG_VECTOR_NORM_OUT, dispatchKeySet, eq_shapes(out, IntArrayRef()));
-  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -16392,20 +16392,20 @@ at::Tensor & wrap_linalg_vector_norm_out(c10::DispatchKeySet dispatchKeySet, con
 at::Tensor wrap_linalg_matrix_norm(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & ord, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_matrix_norm(dispatchKeySet, self, ord, std::move(dim), keepdim, std::move(dtype));
+    return at::redispatch::linalg_matrix_norm(dispatchKeySet, self, ord, dim, keepdim, std::move(dtype));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_MATRIX_NORM, dtype, self.device());
-  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
+  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
   return tt;
 }
 
 at::Tensor & wrap_linalg_matrix_norm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Scalar & ord, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_matrix_norm_outf(dispatchKeySet, self, ord, std::move(dim), keepdim, std::move(dtype), out);
+    return at::redispatch::linalg_matrix_norm_outf(dispatchKeySet, self, ord, dim, keepdim, std::move(dtype), out);
   }
   bool flush = register_in_place(out, H_LINALG_MATRIX_NORM_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -16414,20 +16414,20 @@ at::Tensor & wrap_linalg_matrix_norm_out(c10::DispatchKeySet dispatchKeySet, con
 at::Tensor wrap_linalg_matrix_norm_str_ord(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view ord, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_matrix_norm(dispatchKeySet, self, std::move(ord), std::move(dim), keepdim, std::move(dtype));
+    return at::redispatch::linalg_matrix_norm(dispatchKeySet, self, std::move(ord), dim, keepdim, std::move(dtype));
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_MATRIX_NORM_STR_ORD, dtype, self.device());
-  trace.append_arg(self);trace.append_arg(std::move(ord));trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
+  trace.append_arg(self);trace.append_arg(std::move(ord));trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));
   return tt;
 }
 
 at::Tensor & wrap_linalg_matrix_norm_str_ord_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, c10::string_view ord, at::IntArrayRef dim, bool keepdim, c10::optional<at::ScalarType> dtype, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_matrix_norm_outf(dispatchKeySet, self, std::move(ord), std::move(dim), keepdim, std::move(dtype), out);
+    return at::redispatch::linalg_matrix_norm_outf(dispatchKeySet, self, std::move(ord), dim, keepdim, std::move(dtype), out);
   }
   bool flush = register_in_place(out, H_LINALG_MATRIX_NORM_STR_ORD_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(std::move(ord));trace.append_arg(std::move(dim));trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(std::move(ord));trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(std::move(dtype));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -16590,20 +16590,20 @@ at::Tensor & wrap_linalg_tensorinv_out(c10::DispatchKeySet dispatchKeySet, const
 at::Tensor wrap_linalg_tensorsolve(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, c10::optional<at::IntArrayRef> dims) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_tensorsolve(dispatchKeySet, self, other, std::move(dims));
+    return at::redispatch::linalg_tensorsolve(dispatchKeySet, self, other, dims);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_LINALG_TENSORSOLVE, self.dtype(), self.device());
-  trace.append_arg(self);trace.append_arg(other);trace.append_arg(std::move(dims));
+  trace.append_arg(self);trace.append_arg(other);trace.append_arg(dims);
   return tt;
 }
 
 at::Tensor & wrap_linalg_tensorsolve_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self, const at::Tensor & other, c10::optional<at::IntArrayRef> dims, at::Tensor & out) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::linalg_tensorsolve_outf(dispatchKeySet, self, other, std::move(dims), out);
+    return at::redispatch::linalg_tensorsolve_outf(dispatchKeySet, self, other, dims, out);
   }
   bool flush = register_in_place(out, H_LINALG_TENSORSOLVE_OUT, dispatchKeySet, false);
-  trace.append_arg(self);trace.append_arg(other);trace.append_arg(std::move(dims));trace.append_arg(out);
+  trace.append_arg(self);trace.append_arg(other);trace.append_arg(dims);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
   return out;
@@ -16710,20 +16710,20 @@ at::Tensor wrap__test_serialization_subcmul(c10::DispatchKeySet dispatchKeySet, 
 at::Tensor wrap__test_optional_intlist(c10::DispatchKeySet dispatchKeySet, const at::Tensor & values, c10::optional<at::IntArrayRef> addends) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_test_optional_intlist(dispatchKeySet, values, std::move(addends));
+    return at::redispatch::_test_optional_intlist(dispatchKeySet, values, addends);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__TEST_OPTIONAL_INTLIST, values.dtype(), values.device());
-  trace.append_arg(values);trace.append_arg(std::move(addends));
+  trace.append_arg(values);trace.append_arg(addends);
   return tt;
 }
 
 at::Tensor wrap__test_optional_filled_intlist(c10::DispatchKeySet dispatchKeySet, const at::Tensor & values, c10::optional<at::IntArrayRef> addends) {
   if (trace.is_flushing()) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
-    return at::redispatch::_test_optional_filled_intlist(dispatchKeySet, values, std::move(addends));
+    return at::redispatch::_test_optional_filled_intlist(dispatchKeySet, values, addends);
   }
   auto tt = register_new_tensor(dispatchKeySet, H__TEST_OPTIONAL_FILLED_INTLIST, values.dtype(), values.device());
-  trace.append_arg(values);trace.append_arg(std::move(addends));
+  trace.append_arg(values);trace.append_arg(addends);
   return tt;
 }
 

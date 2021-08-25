@@ -397,16 +397,20 @@ static std::vector<int64_t> tmp_shape;
   auto shape_##v = shape_of(v); \
   if (!shape_##v) return {}
 
-optional<IntArrayRef> shape_matmul(const Tensor &a, const Tensor &b) {
+optional<IntArrayRef> shape_matmul(const Tensor &a, IntArrayRef shape_b) {
   GET_SHAPE(a);
+  return tmp_shape = shape_matmul(*shape_a, shape_b);
+}
+
+optional<IntArrayRef> shape_matmul(const Tensor &a, const Tensor &b) {
   GET_SHAPE(b);
-  return tmp_shape = shape_matmul(shape_a, shape_b)
+  return shape_matmul(a, *shape_b);
 }
 
 optional<IntArrayRef> shape_mul(const Tensor &a, const Tensor &b) {
   GET_SHAPE(a);
   GET_SHAPE(b);
-  return tmp_shape = shape_mul(shape_a, shape_b)
+  return tmp_shape = shape_mul(*shape_a, *shape_b);
 }
 
 optional<IntArrayRef> shape_pick_1st(const Tensor &t) {
@@ -417,7 +421,7 @@ optional<IntArrayRef> shape_pick_1st(const Tensor &t) {
 optional<IntArrayRef> shape_join(const Tensor &a, const Tensor &b) {
   GET_SHAPE(a);
   GET_SHAPE(b);
-  return tmp_shape = shape_join(shape_a, shape_b);
+  return tmp_shape = shape_join(*shape_a, *shape_b);
 }
 
 optional<IntArrayRef> shape_drop1(const Tensor &t) {
@@ -433,7 +437,7 @@ optional<IntArrayRef> shape_drop2(const Tensor &t) {
 bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
   if (!s1 || !s2)
     return false;
-  return s1 == s2;
+  return *s1 == *s2;
 }
 
 bool eq_shapes(const Tensor &t1, const Tensor &t2) {
