@@ -106,7 +106,11 @@ unsigned mul(unsigned a, unsigned b) {
 }
 
 unsigned mult(unsigned a, unsigned b) {
-  return lookup_shape(shape_mult(all_shapes[a], all_shapes[b]));
+  auto &shape_a = all_shapes[a];
+  auto &shape_b = all_shapes[b];
+  if (shape_a.empty() || shape_b.empty())
+    return -1u;
+  return lookup_shape(shape_mult(shape_a, shape_b));
 }
 
 unsigned mul_last(unsigned a, unsigned b) {
