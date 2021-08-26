@@ -73,6 +73,8 @@ Tensor new_tensor(unsigned shape) {
 #include "../shape_inference.h"
 
 unsigned standard_promote(unsigned a, unsigned b) {
+  if (a == -1u) return b;
+  if (b == -1u) return a;
   return lookup_shape(shape_std_promote(all_shapes[a], all_shapes[b]));
 }
 
