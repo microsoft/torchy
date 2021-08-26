@@ -26,6 +26,7 @@ def get(tensors, type):
 def mk_arg(arg, tensors):
   type = arg.type.cpp_type()
   dispatch_types = [
+    'at::ScalarType',
     'at::IntArrayRef',
     'const c10::optional<at::Scalar> &',
     'c10::optional<at::ScalarType>',

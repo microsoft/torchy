@@ -210,6 +210,7 @@ def move_if_needed(str, arg):
 def is_shape_arg(arg):
   type = arg.type.cpp_type()
   dispatch_types = [
+    'at::ScalarType',
     'at::IntArrayRef',
     'c10::optional<at::ScalarType>',
   ]
