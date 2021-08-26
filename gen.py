@@ -62,10 +62,17 @@ def to_scalar_type(v):
 def is_type_arg(arg):
   type = arg.type.cpp_type()
   dispatch_types = [
+    'at::ScalarType',
     'const c10::optional<at::Scalar> &',
     'c10::optional<at::ScalarType>',
   ]
   return 'Tensor' in type or type in dispatch_types
+
+def to_dtype(arg):
+  type = arg.type.cpp_type()
+  if type == 'at::ScalarType':
+    return arg.expr
+  return f'{arg.expr}.dtype()'
 
 
 def mk_dtype_infer(type, all_args):
@@ -82,11 +89,11 @@ def mk_dtype_infer(type, all_args):
   if type == 'EQ_PROMOTED_CONST':
     return f'promote_const({", ".join(t.expr for t in args)})'
   if type == 'EQ_SECOND':
-    return f'{args[1].expr}.dtype()'
+    return to_dtype(args[1])
   if type == 'EQ_THIRD':
-    return f'{args[2].expr}.dtype()'
+    return to_dtype(args[2])
   if type == 'EQ_FOURTH':
-    return f'{args[3].expr}.dtype()'
+    return to_dtype(args[3])
   if type == 'BOOLBYTE':
     return f'bool_byte({args[0].expr}.dtype().toScalarType())'
   if type == 'BOOL2INT':
@@ -210,9 +217,7 @@ def move_if_needed(str, arg):
 def is_shape_arg(arg):
   type = arg.type.cpp_type()
   dispatch_types = [
-    'at::ScalarType',
     'at::IntArrayRef',
-    'c10::optional<at::ScalarType>',
   ]
   return 'Tensor' in type or type in dispatch_types
 

@@ -9623,7 +9623,7 @@ at::Tensor wrap_to_device(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::to(dispatchKeySet, self, device, dtype, non_blocking, copy, memory_format);
   }
-  auto tt = register_new_tensor(dispatchKeySet, H_TO_DEVICE, kByte, device);
+  auto tt = register_new_tensor(dispatchKeySet, H_TO_DEVICE, dtype, device);
   set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(device);trace.append_arg(dtype);trace.append_arg(non_blocking);trace.append_arg(copy);trace.append_arg(memory_format);
   return tt;
@@ -9634,7 +9634,7 @@ at::Tensor wrap_to_dtype(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::to(dispatchKeySet, self, dtype, non_blocking, copy, memory_format);
   }
-  auto tt = register_new_tensor(dispatchKeySet, H_TO_DTYPE, kByte, self.device());
+  auto tt = register_new_tensor(dispatchKeySet, H_TO_DTYPE, dtype, self.device());
   set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dtype);trace.append_arg(non_blocking);trace.append_arg(copy);trace.append_arg(memory_format);
   return tt;

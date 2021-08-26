@@ -401,6 +401,23 @@ optional<IntArrayRef> shape_of(const Tensor &t) {
   return t.sizes();
 }
 
+optional<IntArrayRef> shape_of(const optional<Tensor> &t) {
+  return shape_of(*t);
+}
+
+optional<IntArrayRef> shape_of(IntArrayRef shape) {
+  return shape;
+}
+
+bool empty_opt_tensor(const optional<Tensor> &t) {
+  return !t;
+}
+
+template <typename T>
+bool empty_opt_tensor(const T&) {
+  return false;
+}
+
 static std::vector<int64_t> tmp_shape;
 
 #include "shape_inference.h"
@@ -409,22 +426,19 @@ static std::vector<int64_t> tmp_shape;
   auto shape_##v = shape_of(v); \
   if (!shape_##v) return {}
 
-optional<IntArrayRef> shape_std_promote(IntArrayRef shape_a, const Tensor &b) {
-  GET_SHAPE(b);
-  return tmp_shape = shape_std_promote(shape_a, *shape_b);
-}
-
-optional<IntArrayRef> shape_std_promote(const Tensor &a, const Tensor &b) {
-  GET_SHAPE(a);
-  return shape_std_promote(*shape_a, b);
+optional<IntArrayRef> shape_std_promote(IntArrayRef shape) {
+  return shape;
 }
 
 template <typename A, typename B, typename... Tail>
 optional<IntArrayRef> shape_std_promote(A &a, B &b, Tail&&... tail) {
-  auto shape = shape_std_promote(a, b);
-  if (!shape)
-    return {};
-  return shape_std_promote(*shape, forward<Tail>(tail)...);
+  GET_SHAPE(a);
+  if (empty_opt_tensor(b))
+    return shape_std_promote(*shape_a, forward<Tail>(tail)...);
+
+  GET_SHAPE(b);
+  tmp_shape = shape_std_promote(*shape_a, *shape_b);
+  return shape_std_promote(tmp_shape, forward<Tail>(tail)...);
 }
 
 optional<IntArrayRef> shape_matmul(const Tensor &a, IntArrayRef shape_b) {
