@@ -25,10 +25,21 @@ using Shape = vector<long>;
 vector<Shape> all_shapes;
 map<Shape, unsigned> map_shapes;
 
+template <typename T>
+unsigned lookup_shape(T &&shape) {
+  auto p = map_shapes.emplace(forward<T>(shape), all_shapes.size());
+  if (p.second)
+    all_shapes.emplace_back(p.first->first);
+  return p.first->second;
+}
+
+unsigned lookup_shape(IntArrayRef shape) {
+  return lookup_shape(shape.vec());
+}
+
 void fill_vector(Shape &shape, unsigned dims, unsigned i) {
   if (i == dims) {
-    map_shapes[shape] = all_shapes.size();
-    all_shapes.emplace_back(shape);
+    lookup_shape(shape);
     return;
   }
 
@@ -49,23 +60,14 @@ void init_shapes() {
   }
   num_test_shapes = all_shapes.size();
   assert(num_test_shapes == map_shapes.size());
+
+  // add one more shape for layout tests
+  lookup_shape({-1});
 }
 
-template <typename T>
-unsigned lookup_shape(T &&shape) {
-  auto p = map_shapes.emplace(forward<T>(shape), all_shapes.size());
-  if (p.second)
-    all_shapes.emplace_back(p.first->first);
-  return p.first->second;
-}
-
-unsigned lookup_shape(IntArrayRef shape) {
-  return lookup_shape(shape.vec());
-}
-
-Tensor new_tensor(unsigned shape) {
+Tensor new_tensor(unsigned shape, ScalarType ty) {
   IntArrayRef ref(all_shapes[shape]);
-  auto t = native::empty_cpu(ref, kFloat);
+  auto t = native::empty_cpu(ref, ty);
   native::ones_out(ref, t);
   return t;
 }
@@ -202,10 +204,12 @@ struct C {
   void call(function<Tensor(Tensor&, Tail...)> fn) {
     for (unsigned shape = 0; shape < num_test_shapes; ++shape) {
       type_trail.push_back(shape);
-      call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-        auto t = new_tensor(shape);
-        return fn(t, args...);
-      }});
+      for (auto ty :  { kShort, kFloat }) {
+        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+          auto t = new_tensor(shape, ty);
+          return fn(t, args...);
+        }});
+      }
       type_trail.pop_back();
     }
   }
@@ -234,12 +238,14 @@ struct C {
       type_trail.push_back(shape);
       for (unsigned shape2 = 0; shape2 < num_test_shapes; ++shape2) {
         type_trail.push_back(shape2);
-        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-          Tensor ts[2] = { new_tensor(shape),
-                           new_tensor(shape2) };
-          ArrayRef<Tensor> aref(ts);
-          return fn(aref, args...);
-        }});
+        for (auto ty :  { kShort, kFloat }) {
+          call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+            Tensor ts[2] = { new_tensor(shape, ty),
+                             new_tensor(shape2, ty) };
+            ArrayRef<Tensor> aref(ts);
+            return fn(aref, args...);
+          }});
+        }
         type_trail.pop_back();
       }
       type_trail.pop_back();
@@ -252,11 +258,13 @@ struct C {
       type_trail.push_back(shape);
       for (unsigned shape2 = 0; shape2 < num_test_shapes; ++shape2) {
         type_trail.push_back(shape2);
-        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-          List<c10::optional<Tensor>> list({ new_tensor(shape),
-                                             new_tensor(shape2) });
-          return fn(list, args...);
-        }});
+        for (auto ty :  { kShort, kFloat }) {
+          call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+            List<c10::optional<Tensor>> list({ new_tensor(shape, ty),
+                                               new_tensor(shape2, ty) });
+            return fn(list, args...);
+          }});
+        }
         type_trail.pop_back();
       }
       type_trail.pop_back();
@@ -273,7 +281,8 @@ struct C {
 
   template <typename... Tail>
   void call(function<Tensor(IntArrayRef&, Tail...)> fn) {
-    for (unsigned shape = 0; shape < num_test_shapes; ++shape) {
+    // Note here we want <= to test one extra shape
+    for (unsigned shape = 0; shape <= num_test_shapes; ++shape) {
       type_trail.push_back(shape);
       call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
         IntArrayRef s(all_shapes[shape]);

@@ -1312,7 +1312,6 @@ shape_inference = {
   'rename_': 'EQ_FIRST',
   'repeat': 'MULLAST_1ST_2ND',
   'requires_grad_': 'EQ_FIRST',
-  'reshape': 'EQ_SECOND',
   'reshape_as': 'EQ_SECOND',
   'resize_': 'EQ_SECOND',
   'resize_as_': 'EQ_SECOND',

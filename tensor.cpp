@@ -117,7 +117,7 @@ public:
   }
 
   void set_shape(IntArrayRef shape) {
-    // TODO
+    sizes_and_strides_.set_sizes(shape);
     has_shape_data = true;
   }
 

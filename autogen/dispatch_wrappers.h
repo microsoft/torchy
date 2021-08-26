@@ -6608,7 +6608,6 @@ at::Tensor wrap_reshape(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::reshape(dispatchKeySet, self, shape);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RESHAPE, self.dtype(), self.device());
-  set_shape(tt, shape);
   trace.append_arg(self);trace.append_arg(shape);
   return tt;
 }
