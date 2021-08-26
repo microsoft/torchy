@@ -340,13 +340,20 @@ void end_update_in_place(uintptr_t tt) {
     ((TorchyTensor*)tt)->endInPlaceUpdate();
 }
 
+ScalarType tensor_get_dtype(uintptr_t tt) {
+  assert(tt != DUMMY_TORCHY);
+  // TODO: compact once upstream catches up
+  auto ty = ((TorchyTensor*)tt)->dtype();
+  return ty.toScalarType();
+}
+
 bool tensor_has_shape(uintptr_t tt) {
   return tt != DUMMY_TORCHY && ((TorchyTensor*)tt)->hasShapeData();
 }
 
-void tensor_print_shape(ostream &os, uintptr_t tt) {
+IntArrayRef tensor_get_shape(uintptr_t tt) {
   assert(tt != DUMMY_TORCHY);
-  os << ((TorchyTensor*)tt)->sizes();
+  return ((TorchyTensor*)tt)->sizes();
 }
 
 

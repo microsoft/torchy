@@ -129,20 +129,20 @@ public:
 }
 
 void TensorOp::print(ostream &os, InputMap &inputs) const {
-    os << id;
+  os << '<' << tensor_get_dtype(someTensor()) << "> " << id;
 
-    if (!needsComputing()) {
-      os << " [dead]";
-      return;
-    }
+  if (!needsComputing()) {
+    os << " [dead]";
+    return;
+  }
 
-    bool first = true;
-    for (auto &arg : args) {
-      os << (first ? " " : ", ");
-      first = false;
+  bool first = true;
+  for (auto &arg : args) {
+    os << (first ? " " : ", ");
+    first = false;
 
-      visit(printer(os, inputs), arg);
-    }
+    visit(printer(os, inputs), arg);
+  }
 
   if (refs > observable)
     os << " #refs=" << (refs - observable);
@@ -152,7 +152,7 @@ void TensorOp::print(ostream &os, InputMap &inputs) const {
 
   if (auto t = someTensor())
     if (tensor_has_shape(t))
-      tensor_print_shape(os << " shape=", t);
+      os << " shape=" << tensor_get_shape(t);
 }
 
 
