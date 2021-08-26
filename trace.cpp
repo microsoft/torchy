@@ -129,7 +129,10 @@ public:
 }
 
 void TensorOp::print(ostream &os, InputMap &inputs) const {
-  os << '<' << tensor_get_dtype(someTensor()) << "> " << id;
+  if (auto t = someTensor())
+    if (tensor_has_dtype(t))
+      os << '<' << tensor_get_dtype(t) << "> ";
+  os << id;
 
   if (!needsComputing()) {
     os << " [dead]";

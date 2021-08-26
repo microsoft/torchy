@@ -16,6 +16,7 @@ void set(uintptr_t torchy, const at::Tensor &t);
 void init_update_in_place(uintptr_t torchy);
 void end_update_in_place(uintptr_t torchy);
 
+bool tensor_has_dtype(uintptr_t tt);
 at::ScalarType tensor_get_dtype(uintptr_t tt);
 bool tensor_has_shape(uintptr_t tt);
 at::IntArrayRef tensor_get_shape(uintptr_t tt);

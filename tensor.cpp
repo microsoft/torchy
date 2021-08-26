@@ -340,6 +340,10 @@ void end_update_in_place(uintptr_t tt) {
     ((TorchyTensor*)tt)->endInPlaceUpdate();
 }
 
+bool tensor_has_dtype(uintptr_t tt) {
+  return tt != DUMMY_TORCHY;;
+}
+
 ScalarType tensor_get_dtype(uintptr_t tt) {
   assert(tt != DUMMY_TORCHY);
   // TODO: compact once upstream catches up
