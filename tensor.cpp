@@ -80,11 +80,8 @@ class TorchyTensor final : public TensorImpl {
 
 public:
   TorchyTensor(DispatchKeySet key_set, caffe2::TypeMeta dtype,
-               const c10::optional<c10::Device> &device_opt)
-    : TensorImpl(key_set, dtype, device_opt) {}
-
-  TorchyTensor(caffe2::TypeMeta dtype, c10::Device device)
-    : TensorImpl(DISPATCHKEY, dtype, device) {}
+               c10::optional<c10::Device> device_opt)
+    : TensorImpl(key_set | DispatchKeySet(DISPATCHKEY), dtype, device_opt) {}
 
   TorchyTensor(Tensor &&t)
     : TensorImpl(t.key_set() | DispatchKeySet(DISPATCHKEY),
@@ -542,7 +539,7 @@ bool eq_shapes(const Tensor &t1, optional<IntArrayRef> s2) {
 
 Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
                            caffe2::TypeMeta dtype, c10::Device device) {
-  auto tt = at::detail::make_tensor<TorchyTensor>(dtype, device);
+  auto tt = at::detail::make_tensor<TorchyTensor>(ks, dtype, device);
   auto tt_ptr = tt.getIntrusivePtr().get();
   unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, op, ks);
   static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
