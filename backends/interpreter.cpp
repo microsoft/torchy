@@ -133,7 +133,7 @@ void run(Trace &t) {
       continue;
 
 #if 0
-    std::cout << "Dispatch " << op.id << std::endl;
+    std::cerr << "Dispatch " << op.id << std::endl;
 #endif
 
     DispatchKeyComputer visitor(op.dispatch_key);

@@ -204,11 +204,14 @@ struct C {
   void call(function<Tensor(Tensor&, Tail...)> fn) {
     for (unsigned shape = 0; shape < num_test_shapes; ++shape) {
       type_trail.push_back(shape);
-      for (auto ty :  { kShort, kFloat }) {
+      auto sz = results.size();
+      for (auto ty : { kShort, kFloat }) {
         call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
           auto t = new_tensor(shape, ty);
           return fn(t, args...);
         }});
+        if (results.size() != sz)
+          break;
       }
       type_trail.pop_back();
     }
@@ -238,13 +241,16 @@ struct C {
       type_trail.push_back(shape);
       for (unsigned shape2 = 0; shape2 < num_test_shapes; ++shape2) {
         type_trail.push_back(shape2);
-        for (auto ty :  { kShort, kFloat }) {
+        auto sz = results.size();
+        for (auto ty : { kShort, kFloat }) {
           call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
             Tensor ts[2] = { new_tensor(shape, ty),
                              new_tensor(shape2, ty) };
             ArrayRef<Tensor> aref(ts);
             return fn(aref, args...);
           }});
+          if (results.size() != sz)
+            break;
         }
         type_trail.pop_back();
       }
@@ -258,12 +264,15 @@ struct C {
       type_trail.push_back(shape);
       for (unsigned shape2 = 0; shape2 < num_test_shapes; ++shape2) {
         type_trail.push_back(shape2);
-        for (auto ty :  { kShort, kFloat }) {
+        auto sz = results.size();
+        for (auto ty : { kShort, kFloat }) {
           call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
             List<c10::optional<Tensor>> list({ new_tensor(shape, ty),
                                                new_tensor(shape2, ty) });
             return fn(list, args...);
           }});
+          if (results.size() != sz)
+            break;
         }
         type_trail.pop_back();
       }

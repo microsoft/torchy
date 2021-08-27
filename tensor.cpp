@@ -86,7 +86,9 @@ public:
   TorchyTensor(caffe2::TypeMeta dtype, c10::Device device)
     : TensorImpl(DISPATCHKEY, dtype, device) {}
 
-  TorchyTensor(Tensor &&t) : TensorImpl(DISPATCHKEY, t.dtype(), t.device()) {
+  TorchyTensor(Tensor &&t)
+    : TensorImpl(t.key_set() | DispatchKeySet(DISPATCHKEY),
+                 t.dtype(), t.device()) {
     set(t);
 
     // steal pyobj & friends
@@ -119,6 +121,9 @@ public:
   void set_shape(IntArrayRef shape) {
     sizes_and_strides_.set_sizes(shape);
     has_shape_data = true;
+
+    // must be run after setting has_shape_data as it calls sizes()
+    refresh_numel();
   }
 
   void set_no_shape_info() {
@@ -213,8 +218,7 @@ public:
   }
 
   int64_t numel() const override {
-    // TODO
-    if (!has_shape_data || true)
+    if (!has_shape_data)
       ensure_materialized(STATS(FlushReason::NUMEL));
     return TensorImpl::numel();
   }
