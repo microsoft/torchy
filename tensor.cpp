@@ -124,7 +124,7 @@ public:
 
   void set_shape(IntArrayRef shape) {
     sizes_and_strides_.set_sizes(shape);
-    has_shape_data = true;
+    store_shape();
 
     // must be run after setting has_shape_data as it calls sizes()
     refresh_numel();
