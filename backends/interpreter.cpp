@@ -8,6 +8,12 @@
 #include <ATen/RedispatchFunctions.h>
 #include <type_traits>
 
+//#define DEBUG_DISPATCH
+
+#ifdef DEBUG_DISPATCH
+# include <iostream>
+#endif
+
 using namespace at;
 
 static void init_update_in_place(TensorOp &op) {
@@ -23,6 +29,15 @@ static void end_update_in_place(TensorOp &op) {
       end_update_in_place(tensor);
   }
 }
+
+#ifndef NDEBUG
+static void finish_trace(TensorOp &op) {
+  for (auto tensor : op.tensors) {
+    if (tensor != 0)
+      finish_trace(tensor);
+  }
+}
+#endif
 
 static void set(TensorOp &op, const Tensor &t) {
   for (auto tensor : op.tensors) {
@@ -132,7 +147,7 @@ void run(Trace &t) {
     if (!op.needsComputing())
       continue;
 
-#if 0
+#ifdef DEBUG_DISPATCH
     std::cerr << "Dispatch " << op.id << std::endl;
 #endif
 
@@ -159,6 +174,13 @@ void run(Trace &t) {
     // generated redispatch code only reaches here for in-place ops
     end_update_in_place(op);
   }
+
+#ifndef NDEBUG
+  for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
+    finish_trace(ops[i]);
+  }
+#endif
+
 }
 
 }

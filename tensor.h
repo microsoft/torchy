@@ -15,6 +15,9 @@ unsigned trace_idx(const at::Tensor &t);
 void set(uintptr_t torchy, const at::Tensor &t);
 void init_update_in_place(uintptr_t torchy);
 void end_update_in_place(uintptr_t torchy);
+#ifndef NDEBUG
+void finish_trace(uintptr_t torchy);
+#endif
 
 bool tensor_has_dtype(uintptr_t tt);
 at::ScalarType tensor_get_dtype(uintptr_t tt);

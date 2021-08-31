@@ -24,6 +24,12 @@ class TorchyTensor final : public TensorImpl {
   unsigned trace_idx = -1u;
   bool has_shape_data = false;
 #ifndef NDEBUG
+  // True if an inplace operation may not preserve the shape.
+  // A trace may have multiple ops over a same tensor. If one of those ops is
+  // in-place, it may change the shape. As we only keep the inferred shape for
+  // the last op, we cannot use the information for checking the shapes
+  // of prev ops (for debugging purposes).
+  bool has_multiple_shapes = false;
   uint8_t inferred_shape_dims;
   array<unsigned, 5> inferred_shape;
 #endif
@@ -43,7 +49,7 @@ class TorchyTensor final : public TensorImpl {
 
   void check_inferred_shape() {
 #ifndef NDEBUG
-    if (!has_shape_data || shared())
+    if (!has_shape_data || has_multiple_shapes)
       return;
     auto real_shape = TensorImpl::sizes();
     assert(real_shape.size() == inferred_shape_dims);
@@ -73,6 +79,7 @@ class TorchyTensor final : public TensorImpl {
   void copy_torchy_data(const TorchyTensor *tt) {
     has_shape_data      = tt->has_shape_data;
 #ifndef NDEBUG
+    has_multiple_shapes = tt->has_multiple_shapes;
     inferred_shape_dims = tt->inferred_shape_dims;
     inferred_shape      = tt->inferred_shape;
 #endif
@@ -125,7 +132,16 @@ public:
 
   void set_no_shape_info() {
     has_shape_data = false;
+#ifndef NDEBUG
+    has_multiple_shapes = true;
+#endif
   }
+
+#ifndef NDEBUG
+  void resetMultipleShapes() {
+    has_multiple_shapes = false;
+  }
+#endif
 
   unsigned getTraceIdx() const { return trace_idx; }
   bool hasShapeData() const { return has_shape_data; }
@@ -341,8 +357,15 @@ void end_update_in_place(uintptr_t tt) {
     ((TorchyTensor*)tt)->endInPlaceUpdate();
 }
 
+#ifndef NDEBUG
+void finish_trace(uintptr_t tt) {
+  if (tt != DUMMY_TORCHY)
+    ((TorchyTensor*)tt)->resetMultipleShapes();
+}
+#endif
+
 bool tensor_has_dtype(uintptr_t tt) {
-  return tt != DUMMY_TORCHY;;
+  return tt != DUMMY_TORCHY;
 }
 
 ScalarType tensor_get_dtype(uintptr_t tt) {
