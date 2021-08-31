@@ -89,11 +89,13 @@ unsigned standard_promote(const vector<unsigned> &shapes) {
 }
 
 unsigned pick_1st(unsigned s) {
+  if (s == -1u) return -1u;
   auto &shape = all_shapes[s];
   return shape.empty() ? -1u : lookup_shape({ shape[0] });
 }
 
 unsigned matmul(unsigned a, unsigned b) {
+  if (a == -1u || b == -1u) return -1u;
   auto &shape_a = all_shapes[a];
   auto &shape_b = all_shapes[b];
   if (shape_a.empty() || shape_b.empty())
@@ -102,6 +104,7 @@ unsigned matmul(unsigned a, unsigned b) {
 }
 
 unsigned mul(unsigned a, unsigned b) {
+  if (a == -1u || b == -1u) return -1u;
   auto &shape_a = all_shapes[a];
   auto &shape_b = all_shapes[b];
   if (shape_a.empty() || shape_b.empty())
@@ -110,6 +113,7 @@ unsigned mul(unsigned a, unsigned b) {
 }
 
 unsigned mult(unsigned a, unsigned b) {
+  if (a == -1u || b == -1u) return -1u;
   auto &shape_a = all_shapes[a];
   auto &shape_b = all_shapes[b];
   if (shape_a.empty() || shape_b.empty())
@@ -118,18 +122,22 @@ unsigned mult(unsigned a, unsigned b) {
 }
 
 unsigned mul_last(unsigned a, unsigned b) {
+  if (a == -1u || b == -1u) return -1u;
   return lookup_shape(shape_mul_last(all_shapes[a], all_shapes[b]));
 }
 
 unsigned join(unsigned a, unsigned b) {
+  if (a == -1u || b == -1u) return -1u;
   return lookup_shape(shape_join(all_shapes[a], all_shapes[b]));
 }
 
 unsigned pad1(unsigned s) {
+  if (s == -1u) return -1u;
   return lookup_shape(shape_pad1(all_shapes[s]));
 }
 
 unsigned drop1(unsigned s) {
+  if (s == -1u) return -1u;
   auto res = all_shapes[s];
   if (res.size() < 1)
     return -1u;
@@ -138,6 +146,7 @@ unsigned drop1(unsigned s) {
 }
 
 unsigned drop2(unsigned s) {
+  if (s == -1u) return -1u;
   auto res = all_shapes[s];
   if (res.size() < 2)
     return -1u;
@@ -147,6 +156,7 @@ unsigned drop2(unsigned s) {
 }
 
 unsigned reshape(unsigned s, unsigned to) {
+  if (s == -1u || to == -1u) return -1u;
   return lookup_shape(shape_reshape(all_shapes[s], all_shapes[to]));
 }
 
