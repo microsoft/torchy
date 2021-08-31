@@ -102,3 +102,15 @@ std::vector<int64_t> shape_pad1(IntArrayRef s) {
   res.push_back(1);
   return res;
 }
+
+std::vector<int64_t>
+shape_transpose(IntArrayRef s, int64_t dim1, int64_t dim2) {
+  auto res = s.vec();
+  if (dim1 < 0)
+    dim1 += res.size();
+  if (dim2 < 0)
+    dim2 += res.size();
+  assert((unsigned)dim1 < res.size() && (unsigned)dim2 < res.size());
+  swap(res[dim1], res[dim2]);
+  return res;
+}

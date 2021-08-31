@@ -12,6 +12,16 @@ from tools.codegen.api import types
 yaml_path = PYTORCH + '/aten/src/ATen/native/native_functions.yaml'
 native_functions = parse_native_yaml(yaml_path)
 
+shape_exceptions = {
+  'transpose.int' : 'TRANSPOSE',
+  'transpose_' : ''
+}
+
+def get_shape_infer_fn(fn):
+  name = str(fn.func.name)
+  return shape_exceptions.get(name, shape_inference.get(name))
+
+
 @with_native_function
 def skip_fn(fn):
   allowed_ret_types = {
@@ -262,6 +272,8 @@ def mk_shape_infer(shape, all_args):
     return f'shape_drop1({args[0].expr})'
   if shape == 'DROP2':
     return f'shape_drop2({args[0].expr})'
+  if shape == 'TRANSPOSE':
+    return f'shape_transpose({args[0].expr}, {all_args[1].expr}, {all_args[2].expr})'
 
   print('mk_shape_infer', shape)
   return 'nullopt'
@@ -293,7 +305,7 @@ def gen_dispatch_wrapper(fn):
     dtype_device = get_dtype_arg(tensor_args, args, fn.func.name)
 
     set_shape = ''
-    shape_fn = shape_inference.get(str(fn.func.name))
+    shape_fn = get_shape_infer_fn(fn)
     if shape_fn:
       set_shape = f'set_shape(tt, {mk_shape_infer(shape_fn, args)});\n  '
 
@@ -315,7 +327,7 @@ def gen_dispatch_wrapper(fn):
   ret = fn_output(fn)
 
   keeps_shape = 'false'
-  shape_fn = shape_inference.get(str(fn.func.name))
+  shape_fn = get_shape_infer_fn(fn)
   if (shape_fn == 'EQ_FIRST' and len(tensor_args) >= 1 and tensor_args[0].expr == ret) or\
      (shape_fn == 'EQ_SECOND' and len(tensor_args) >= 2 and tensor_args[1].expr == ret) or\
      (shape_fn == 'EQ_THIRD' and len(tensor_args) >= 3 and tensor_args[2].expr == ret):

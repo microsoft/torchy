@@ -546,6 +546,12 @@ optional<IntArrayRef> shape_drop2(const Tensor &t) {
   return IntArrayRef(shape_t->data(), shape_t->size()-2);
 }
 
+optional<IntArrayRef>
+shape_transpose(const Tensor &t, int64_t dim1, int64_t dim2) {
+  GET_SHAPE(t);
+  return tmp_shape = shape_transpose(*shape_t, dim1, dim2);
+}
+
 bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
   if (!s1 || !s2)
     return false;

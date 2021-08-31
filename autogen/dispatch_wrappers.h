@@ -7895,7 +7895,7 @@ at::Tensor wrap_transpose_int(c10::DispatchKeySet dispatchKeySet, const at::Tens
     return at::redispatch::transpose(dispatchKeySet, self, dim0, dim1);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_TRANSPOSE_INT, self.dtype(), self.device());
-  set_shape(tt, self);
+  set_shape(tt, shape_transpose(self, dim0, dim1));
   trace.append_arg(self);trace.append_arg(dim0);trace.append_arg(dim1);
   return tt;
 }
@@ -7925,7 +7925,7 @@ at::Tensor & wrap_transpose_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::transpose_(dispatchKeySet, self, dim0, dim1);
   }
-  bool flush = register_in_place(self, H_TRANSPOSE_, dispatchKeySet, true);
+  bool flush = register_in_place(self, H_TRANSPOSE_, dispatchKeySet, false);
   trace.append_arg(self);trace.append_arg(dim0);trace.append_arg(dim1);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
