@@ -146,6 +146,10 @@ unsigned drop2(unsigned s) {
   return lookup_shape(move(res));
 }
 
+unsigned reshape(unsigned s, unsigned to) {
+  return lookup_shape(shape_reshape(all_shapes[s], all_shapes[to]));
+}
+
 struct Result {
   vector<unsigned> inputs;
   unsigned output;
@@ -333,6 +337,7 @@ struct C {
     bool is_pad1 = true;
     bool is_drop1 = true;
     bool is_drop2 = true;
+    bool is_reshape = true;
 
     for (auto &result : results) {
       auto &trail = result.inputs;
@@ -370,6 +375,8 @@ struct C {
       TEST(is_pad1,      out == pad1(trail[0]));
       TEST(is_drop1,     out == drop1(trail[0]));
       TEST(is_drop2,     out == drop2(trail[0]));
+      TEST(is_reshape,   trail.size() >= 2 &&
+                         out == reshape(trail[0], trail[1]));
     }
 
     cout << name;
@@ -406,6 +413,7 @@ struct C {
     PRINT(is_pad1, "PAD1")
     PRINT(is_drop1, "DROP1")
     PRINT(is_drop2, "DROP2")
+    PRINT(is_reshape, "RESHAPE")
 
     cout << ": NON_STANDARD:\n";
 

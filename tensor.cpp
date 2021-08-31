@@ -552,6 +552,12 @@ shape_transpose(const Tensor &t, int64_t dim1, int64_t dim2) {
   return tmp_shape = shape_transpose(*shape_t, dim1, dim2);
 }
 
+optional<IntArrayRef>
+shape_reshape(const Tensor &t, IntArrayRef to) {
+  GET_SHAPE(t);
+  return tmp_shape = shape_reshape(*shape_t, to);
+}
+
 bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
   if (!s1 || !s2)
     return false;

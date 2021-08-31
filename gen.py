@@ -274,6 +274,8 @@ def mk_shape_infer(shape, all_args):
     return f'shape_drop2({args[0].expr})'
   if shape == 'TRANSPOSE':
     return f'shape_transpose({args[0].expr}, {all_args[1].expr}, {all_args[2].expr})'
+  if shape == 'RESHAPE':
+    return f'shape_reshape({args[0].expr}, {args[1].expr})'
 
   print('mk_shape_infer', shape)
   return 'nullopt'

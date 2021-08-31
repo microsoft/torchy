@@ -114,3 +114,25 @@ shape_transpose(IntArrayRef s, int64_t dim1, int64_t dim2) {
   swap(res[dim1], res[dim2]);
   return res;
 }
+
+std::vector<int64_t> shape_reshape(IntArrayRef s, IntArrayRef to) {
+  auto res = to.vec();
+
+  // A single -1 value should be filled with the remaining implied num of elems
+  int64_t other = 1;
+  int64_t *minus1 = nullptr;
+
+  for (auto &i : res) {
+    if (i == -1) {
+      minus1 = &i;
+    } else {
+      other *= i;
+    }
+  }
+  if (minus1) {
+    auto nelems = accumulate(s.begin(), s.end(), 1, multiplies<int64_t>());
+    *minus1 = nelems / other;
+  }
+
+  return res;
+}

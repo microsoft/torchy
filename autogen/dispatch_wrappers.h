@@ -6613,6 +6613,7 @@ at::Tensor wrap_reshape(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::reshape(dispatchKeySet, self, shape);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_RESHAPE, self.dtype(), self.device());
+  set_shape(tt, shape_reshape(self, shape));
   trace.append_arg(self);trace.append_arg(shape);
   return tt;
 }
@@ -9867,6 +9868,7 @@ at::Tensor wrap_view(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
     return at::redispatch::view(dispatchKeySet, self, size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VIEW, self.dtype(), self.device());
+  set_shape(tt, shape_reshape(self, size));
   trace.append_arg(self);trace.append_arg(size);
   return tt;
 }
