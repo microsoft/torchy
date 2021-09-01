@@ -13,8 +13,11 @@ yaml_path = PYTORCH + '/aten/src/ATen/native/native_functions.yaml'
 native_functions = parse_native_yaml(yaml_path)
 
 shape_exceptions = {
-  'transpose.int' : 'TRANSPOSE',
-  'transpose_' : ''
+  'arange.start_out'  : 'ARANGE',
+  'arange.start_step' : 'ARANGE',
+  'select.int'        : 'SELECT',
+  'transpose.int'     : 'TRANSPOSE',
+  'transpose_'        : ''
 }
 
 def get_shape_infer_fn(fn):
@@ -276,6 +279,10 @@ def mk_shape_infer(shape, all_args):
     return f'shape_transpose({args[0].expr}, {all_args[1].expr}, {all_args[2].expr})'
   if shape == 'RESHAPE':
     return f'shape_reshape({args[0].expr}, {args[1].expr})'
+  if shape == 'SELECT':
+    return f'shape_select({args[0].expr}, {all_args[1].expr})'
+  if shape == 'ARANGE':
+    return f'shape_arange({all_args[0].expr}, {all_args[1].expr}, {all_args[2].expr})'
 
   print('mk_shape_infer', shape)
   return 'nullopt'

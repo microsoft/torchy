@@ -964,6 +964,7 @@ at::Tensor wrap_arange_start_step(c10::DispatchKeySet dispatchKeySet, const at::
     return at::redispatch::arange(dispatchKeySet, start, end, step, dtype, layout, device, pin_memory);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ARANGE_START_STEP, dtype, device);
+  set_shape(tt, shape_arange(start, end, step));
   trace.append_arg(start);trace.append_arg(end);trace.append_arg(step);trace.append_arg(dtype);trace.append_arg(layout);trace.append_arg(device);trace.append_arg(pin_memory);
   return tt;
 }
@@ -985,7 +986,7 @@ at::Tensor & wrap_arange_start_out(c10::DispatchKeySet dispatchKeySet, const at:
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::arange_outf(dispatchKeySet, start, end, step, out);
   }
-  bool flush = register_in_place(out, H_ARANGE_START_OUT, dispatchKeySet, false);
+  bool flush = register_in_place(out, H_ARANGE_START_OUT, dispatchKeySet, eq_shapes(out, shape_arange(start, end, step)));
   trace.append_arg(start);trace.append_arg(end);trace.append_arg(step);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
@@ -6857,6 +6858,7 @@ at::Tensor wrap_select_int(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::select(dispatchKeySet, self, dim, index);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SELECT_INT, self.dtype(), self.device());
+  set_shape(tt, shape_select(self, dim));
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);
   return tt;
 }

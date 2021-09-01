@@ -136,3 +136,28 @@ std::vector<int64_t> shape_reshape(IntArrayRef s, IntArrayRef to) {
 
   return res;
 }
+
+std::vector<int64_t> shape_select(IntArrayRef s, int64_t dim) {
+  auto res = s.vec();
+  if (dim < 0)
+    dim += res.size();
+  assert((unsigned)dim < res.size());
+  res.erase(res.begin() + dim);
+  return res;
+}
+
+std::vector<int64_t> shape_arange_vec(const at::Scalar &start,
+                                      const at::Scalar &end,
+                                      const at::Scalar &step) {
+  int64_t res = 0;
+  if (start.isIntegral(true)) {
+    assert(end.isIntegral(true) && step.isIntegral(true));
+    auto s = step.to<int64_t>();
+    res = (end.to<int64_t>() - start.to<int64_t>() + s - 1) / s;
+  } else if (start.isFloatingPoint()) {
+    res = ceil((end.to<double>() - start.to<double>()) / step.to<double>());
+  } else {
+    assert(false);
+  }
+  return { res };
+}
