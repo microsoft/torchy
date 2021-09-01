@@ -177,3 +177,25 @@ std::vector<int64_t> shape_embedding(IntArrayRef w, IntArrayRef idxs) {
   res.push_back(w.back());
   return res;
 }
+
+std::vector<int64_t> shape_slice(IntArrayRef s, int64_t dim,
+                                 c10::optional<int64_t> start_opt,
+                                 c10::optional<int64_t> end_opt,
+                                 int64_t step) {
+  auto limit = s[dim];
+  int64_t start = start_opt.value_or(0);
+  int64_t end   = min(end_opt.value_or(limit), limit);
+  if (start < 0)
+    start += limit;
+  return { (end - start + step - 1) / step };
+}
+
+std::vector<int64_t> shape_conv2d(IntArrayRef input, IntArrayRef kernel,
+                                  IntArrayRef stride, IntArrayRef padding,
+                                  IntArrayRef dilation, int64_t out_channels) {
+  int64_t h_out = ((input[2] + 2*padding[0] - dilation[0] * (kernel[0]-1) - 1) /
+                   stride[0]) + 1;
+  int64_t w_out = ((input[3] + 2*padding[1] - dilation[1] * (kernel[1]-1) - 1) /
+                   stride[1]) + 1;
+  return { input[0], out_channels, h_out, w_out};
+}

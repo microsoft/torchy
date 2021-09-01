@@ -2361,6 +2361,7 @@ at::Tensor wrap_conv2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor & in
     return at::redispatch::conv2d(dispatchKeySet, input, weight, bias, stride, padding, dilation, groups);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_CONV2D, input.dtype(), input.device());
+  set_shape(tt, shape_conv2d(input, weight, stride, padding, dilation));
   trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(groups);
   return tt;
 }
@@ -5157,6 +5158,7 @@ at::Tensor wrap_max_pool2d(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
     return at::redispatch::max_pool2d(dispatchKeySet, self, kernel_size, stride, padding, dilation, ceil_mode);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MAX_POOL2D, self.dtype(), self.device());
+  set_shape(tt, shape_conv2d(self, kernel_size, stride, padding, dilation));
   trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);
   return tt;
 }
@@ -7159,7 +7161,7 @@ at::Tensor wrap_slice_Tensor(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     return at::redispatch::slice(dispatchKeySet, self, dim, start, end, step);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_SLICE_TENSOR, self.dtype(), self.device());
-  set_shape(tt, self);
+  set_shape(tt, shape_slice(self, dim, start, end, step));
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(start);trace.append_arg(end);trace.append_arg(step);
   return tt;
 }

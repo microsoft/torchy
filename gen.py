@@ -15,8 +15,11 @@ native_functions = parse_native_yaml(yaml_path)
 shape_exceptions = {
   'arange.start_out'  : 'ARANGE',
   'arange.start_step' : 'ARANGE',
+  'conv2d'            : 'CONV2D',
   'embedding'         : 'EMBEDDING',
+  'max_pool2d'        : 'CONV2D',
   'select.int'        : 'SELECT',
+  'slice.Tensor'      : 'SLICE',
   'transpose.int'     : 'TRANSPOSE',
   'transpose_'        : '',
   'unsqueeze'         : 'UNSQUEEZE',
@@ -290,6 +293,11 @@ def mk_shape_infer(shape, all_args):
     return f'shape_arange({all_args[0].expr}, {all_args[1].expr}, {all_args[2].expr})'
   if shape == 'EMBEDDING':
     return f'shape_embedding({args[0].expr}, {args[1].expr})'
+  if shape == 'SLICE':
+    return f'shape_slice({args[0].expr}, {all_args[1].expr}, {all_args[2].expr}, {all_args[3].expr}, {all_args[4].expr})'
+  if shape == 'CONV2D':
+    off = 0 if args[2].type.cpp_type() == 'at::IntArrayRef' else 1
+    return f'shape_conv2d({args[0].expr}, {args[1].expr}, {args[2+off].expr}, {args[3+off].expr}, {args[4+off].expr})'
 
   print('mk_shape_infer', shape)
   return 'nullopt'

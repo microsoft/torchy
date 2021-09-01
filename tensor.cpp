@@ -51,10 +51,22 @@ class TorchyTensor final : public TensorImpl {
 #ifndef NDEBUG
     if (!has_shape_data || has_multiple_shapes)
       return;
+
     auto real_shape = TensorImpl::sizes();
-    assert(real_shape.size() == inferred_shape_dims);
+
+    auto error = [&]() {
+      cerr << "Bad shape. Real: " << real_shape << " / Inferred: "
+           << ArrayRef<unsigned>(inferred_shape.data(), inferred_shape_dims)
+           << endl;
+      assert(0);
+    };
+
+    if (real_shape.size() != inferred_shape_dims)
+      error();
+
     for (unsigned i = 0; i < inferred_shape_dims; ++i) {
-      assert(real_shape[i] == inferred_shape[i]);
+      if (real_shape[i] != inferred_shape[i])
+        error();
     }
 #endif
   }
@@ -576,6 +588,31 @@ optional<IntArrayRef> shape_embedding(const Tensor &w, const Tensor &idxs) {
   GET_SHAPE(w);
   GET_SHAPE(idxs);
   return tmp_shape = shape_embedding(*shape_w, *shape_idxs);
+}
+
+optional<IntArrayRef> shape_slice(const Tensor &t, int64_t dim,
+                                  optional<int64_t> start_opt,
+                                  optional<int64_t> end_opt, int64_t step) {
+  GET_SHAPE(t);
+  return tmp_shape = shape_slice(*shape_t, dim, start_opt, end_opt, step);
+}
+
+optional<IntArrayRef> shape_conv2d(const Tensor &in, IntArrayRef kernel,
+                                   IntArrayRef stride, IntArrayRef pad,
+                                   IntArrayRef dilation,
+                                   optional<int64_t> out_opt = {}) {
+  GET_SHAPE(in);
+  int64_t out = out_opt.value_or((*shape_in)[1]);
+  return
+    tmp_shape = shape_conv2d(*shape_in, kernel, stride, pad, dilation, out);
+}
+
+optional<IntArrayRef> shape_conv2d(const Tensor &in, const Tensor &w,
+                                   IntArrayRef stride, IntArrayRef pad,
+                                   IntArrayRef dilation) {
+  GET_SHAPE(w);
+  return shape_conv2d(in, shape_w->slice(2, 2), stride, pad, dilation,
+                      (*shape_w)[0]);
 }
 
 bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
