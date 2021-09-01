@@ -3283,6 +3283,7 @@ at::Tensor wrap_embedding(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::embedding(dispatchKeySet, weight, indices, padding_idx, scale_grad_by_freq, sparse);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_EMBEDDING, weight.dtype(), weight.device());
+  set_shape(tt, shape_embedding(weight, indices));
   trace.append_arg(weight);trace.append_arg(indices);trace.append_arg(padding_idx);trace.append_arg(scale_grad_by_freq);trace.append_arg(sparse);
   return tt;
 }
@@ -8176,6 +8177,7 @@ at::Tensor wrap_unsqueeze(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
     return at::redispatch::unsqueeze(dispatchKeySet, self, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UNSQUEEZE, self.dtype(), self.device());
+  set_shape(tt, shape_unsqueeze(self, dim));
   trace.append_arg(self);trace.append_arg(dim);
   return tt;
 }
@@ -8185,7 +8187,7 @@ at::Tensor & wrap_unsqueeze_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::unsqueeze_(dispatchKeySet, self, dim);
   }
-  bool flush = register_in_place(self, H_UNSQUEEZE_, dispatchKeySet, false);
+  bool flush = register_in_place(self, H_UNSQUEEZE_, dispatchKeySet, eq_shapes(self, shape_unsqueeze(self, dim)));
   trace.append_arg(self);trace.append_arg(dim);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));

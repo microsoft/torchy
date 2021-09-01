@@ -15,9 +15,12 @@ native_functions = parse_native_yaml(yaml_path)
 shape_exceptions = {
   'arange.start_out'  : 'ARANGE',
   'arange.start_step' : 'ARANGE',
+  'embedding'         : 'EMBEDDING',
   'select.int'        : 'SELECT',
   'transpose.int'     : 'TRANSPOSE',
-  'transpose_'        : ''
+  'transpose_'        : '',
+  'unsqueeze'         : 'UNSQUEEZE',
+  'unsqueeze_'        : 'UNSQUEEZE',
 }
 
 def get_shape_infer_fn(fn):
@@ -281,8 +284,12 @@ def mk_shape_infer(shape, all_args):
     return f'shape_reshape({args[0].expr}, {args[1].expr})'
   if shape == 'SELECT':
     return f'shape_select({args[0].expr}, {all_args[1].expr})'
+  if shape == 'UNSQUEEZE':
+    return f'shape_unsqueeze({args[0].expr}, {all_args[1].expr})'
   if shape == 'ARANGE':
     return f'shape_arange({all_args[0].expr}, {all_args[1].expr}, {all_args[2].expr})'
+  if shape == 'EMBEDDING':
+    return f'shape_embedding({args[0].expr}, {args[1].expr})'
 
   print('mk_shape_infer', shape)
   return 'nullopt'

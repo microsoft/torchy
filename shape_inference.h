@@ -146,6 +146,15 @@ std::vector<int64_t> shape_select(IntArrayRef s, int64_t dim) {
   return res;
 }
 
+std::vector<int64_t> shape_unsqueeze(IntArrayRef s, int64_t dim) {
+  auto res = s.vec();
+  if (dim < 0)
+    dim += res.size() + 1;
+  assert((unsigned)dim <= res.size());
+  res.insert(res.begin() + dim, 1);
+  return res;
+}
+
 std::vector<int64_t> shape_arange_vec(const at::Scalar &start,
                                       const at::Scalar &end,
                                       const at::Scalar &step) {
@@ -160,4 +169,11 @@ std::vector<int64_t> shape_arange_vec(const at::Scalar &start,
     assert(false);
   }
   return { res };
+}
+
+std::vector<int64_t> shape_embedding(IntArrayRef w, IntArrayRef idxs) {
+  auto res = idxs.vec();
+  assert(w.size() == 2);
+  res.push_back(w.back());
+  return res;
 }

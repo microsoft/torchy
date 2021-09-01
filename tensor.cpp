@@ -562,9 +562,20 @@ optional<IntArrayRef> shape_select(const Tensor &t, int64_t dim) {
   return tmp_shape = shape_select(*shape_t, dim);
 }
 
+optional<IntArrayRef> shape_unsqueeze(const Tensor &t, int64_t dim) {
+  GET_SHAPE(t);
+  return tmp_shape = shape_unsqueeze(*shape_t, dim);
+}
+
 optional<IntArrayRef> shape_arange(const Scalar &start, const Scalar &end,
                                    const Scalar &step) {
   return tmp_shape = shape_arange_vec(start, end, step);
+}
+
+optional<IntArrayRef> shape_embedding(const Tensor &w, const Tensor &idxs) {
+  GET_SHAPE(w);
+  GET_SHAPE(idxs);
+  return tmp_shape = shape_embedding(*shape_w, *shape_idxs);
 }
 
 bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
