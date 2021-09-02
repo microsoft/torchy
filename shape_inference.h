@@ -182,12 +182,14 @@ std::vector<int64_t> shape_slice(IntArrayRef s, int64_t dim,
                                  c10::optional<int64_t> start_opt,
                                  c10::optional<int64_t> end_opt,
                                  int64_t step) {
+  auto res = s.vec();
   auto limit = s[dim];
   int64_t start = start_opt.value_or(0);
   int64_t end   = min(end_opt.value_or(limit), limit);
   if (start < 0)
     start += limit;
-  return { (end - start + step - 1) / step };
+  res[dim] = (end - start + step - 1) / step;
+  return res;
 }
 
 std::vector<int64_t> shape_conv2d(IntArrayRef input, IntArrayRef kernel,
