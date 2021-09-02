@@ -155,6 +155,23 @@ std::vector<int64_t> shape_unsqueeze(IntArrayRef s, int64_t dim) {
   return res;
 }
 
+std::vector<int64_t> shape_flatten(IntArrayRef s, int64_t start, int64_t end) {
+  if (s.empty())
+    return { 1 };
+
+  if (end < 0)
+    end += s.size();
+
+  auto res = s.vec();
+  int64_t n = 1;
+  for (int64_t i = start; i <= end; ++i) {
+    n *= res[i];
+  }
+  res[start] = n;
+  res.erase(res.begin() + start + 1, res.begin() + end + 1);
+  return res;
+}
+
 std::vector<int64_t> shape_arange_vec(const at::Scalar &start,
                                       const at::Scalar &end,
                                       const at::Scalar &step) {
@@ -183,12 +200,43 @@ std::vector<int64_t> shape_slice(IntArrayRef s, int64_t dim,
                                  c10::optional<int64_t> end_opt,
                                  int64_t step) {
   auto res = s.vec();
+  if (dim < 0)
+    dim += s.size();
+
   auto limit = s[dim];
   int64_t start = start_opt.value_or(0);
   int64_t end   = min(end_opt.value_or(limit), limit);
   if (start < 0)
     start += limit;
   res[dim] = (end - start + step - 1) / step;
+  return res;
+}
+
+std::vector<int64_t> shape_stack(IntArrayRef s, unsigned n, int64_t dim) {
+  auto res = s.vec();
+  if (dim < 0)
+    dim += s.size();
+  res.insert(res.begin() + dim, n);
+  return res;
+}
+
+std::vector<int64_t>
+shape_argmax(IntArrayRef s, c10::optional<int64_t> opt_dim, bool keepdim) {
+  if (!opt_dim) {
+    if (!keepdim)
+      return {};
+    return std::vector<int64_t>(s.size(), 1);
+  }
+
+  auto res = s.vec();
+  int64_t dim = *opt_dim;
+  if (dim < 0)
+    dim += s.size();
+
+  if (keepdim)
+    res[dim] = 1;
+  else
+    res.erase(res.begin() + dim);
   return res;
 }
 
@@ -200,4 +248,10 @@ std::vector<int64_t> shape_conv2d(IntArrayRef input, IntArrayRef kernel,
   int64_t w_out = ((input[3] + 2*padding[1] - dilation[1] * (kernel[1]-1) - 1) /
                    stride[1]) + 1;
   return { input[0], out_channels, h_out, w_out};
+}
+
+std::vector<int64_t> shape_pool2d(IntArrayRef in, IntArrayRef shape) {
+  std::vector<int64_t> res(in.begin(), in.end()-2);
+  res.insert(res.end(), shape.begin(), shape.end());
+  return res;
 }

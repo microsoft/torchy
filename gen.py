@@ -15,11 +15,16 @@ native_functions = parse_native_yaml(yaml_path)
 shape_exceptions = {
   'arange.start_out'  : 'ARANGE',
   'arange.start_step' : 'ARANGE',
+  'argmax.out'        : 'ARGMAX',
+  'argmin.out'        : 'ARGMAX',
   'conv2d'            : 'CONV2D',
   'embedding'         : 'EMBEDDING',
+  'flatten.using_ints': 'FLATTEN',
   'max_pool2d'        : 'CONV2D',
   'select.int'        : 'SELECT',
   'slice.Tensor'      : 'SLICE',
+  'stack'             : 'STACK',
+  'stack.out'         : 'STACK',
   'transpose.int'     : 'TRANSPOSE',
   'transpose_'        : '',
   'unsqueeze'         : 'UNSQUEEZE',
@@ -289,15 +294,23 @@ def mk_shape_infer(shape, all_args):
     return f'shape_select({args[0].expr}, {all_args[1].expr})'
   if shape == 'UNSQUEEZE':
     return f'shape_unsqueeze({args[0].expr}, {all_args[1].expr})'
+  if shape == 'FLATTEN':
+    return f'shape_flatten({args[0].expr}, {all_args[1].expr}, {all_args[2].expr})'
   if shape == 'ARANGE':
     return f'shape_arange({all_args[0].expr}, {all_args[1].expr}, {all_args[2].expr})'
   if shape == 'EMBEDDING':
     return f'shape_embedding({args[0].expr}, {args[1].expr})'
   if shape == 'SLICE':
     return f'shape_slice({args[0].expr}, {all_args[1].expr}, {all_args[2].expr}, {all_args[3].expr}, {all_args[4].expr})'
+  if shape == 'STACK':
+    return f'shape_stack({args[0].expr}, {all_args[1].expr})'
+  if shape == 'ARGMAX':
+    return f'shape_argmax({args[0].expr}, {all_args[1].expr}, {all_args[2].expr})'
   if shape == 'CONV2D':
     off = 0 if args[2].type.cpp_type() == 'at::IntArrayRef' else 1
     return f'shape_conv2d({args[0].expr}, {args[1].expr}, {args[2+off].expr}, {args[3+off].expr}, {args[4+off].expr})'
+  if shape == 'POOL2D':
+    return f'shape_pool2d({args[0].expr}, {args[1].expr})'
 
   print('mk_shape_infer', shape)
   return 'nullopt'

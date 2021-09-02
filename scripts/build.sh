@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PYTORCH=../pytorch
-CFLAGS="-Wall -O3 -march=native"
+CFLAGS="-Wall -O3 -march=native -Wno-unused-function"
 LIB_DIR=`realpath $PYTORCH/build/lib.*/torch/lib`
 
 for f in `ls scripts/*.cpp` ; do

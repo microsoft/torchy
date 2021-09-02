@@ -672,6 +672,7 @@ shape_inference = {
   'acosh.out': 'EQ_FIRST',
   'acosh_': 'EQ_FIRST',
   'adaptive_avg_pool1d': 'MATMUL_1ST_2ND',
+  'adaptive_avg_pool2d': 'POOL2D',
   'adaptive_avg_pool3d': 'ALL <1, 1, 1>',
   'add.Scalar': 'EQ_FIRST',
   'add.Tensor': 'STD_PROMOTE',

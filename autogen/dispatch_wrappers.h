@@ -1008,7 +1008,7 @@ at::Tensor & wrap_argmax_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::argmax_outf(dispatchKeySet, self, dim, keepdim, out);
   }
-  bool flush = register_in_place(out, H_ARGMAX_OUT, dispatchKeySet, false);
+  bool flush = register_in_place(out, H_ARGMAX_OUT, dispatchKeySet, eq_shapes(out, shape_argmax(self, dim, keepdim)));
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
@@ -1020,7 +1020,7 @@ at::Tensor & wrap_argmin_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::argmin_outf(dispatchKeySet, self, dim, keepdim, out);
   }
-  bool flush = register_in_place(out, H_ARGMIN_OUT, dispatchKeySet, false);
+  bool flush = register_in_place(out, H_ARGMIN_OUT, dispatchKeySet, eq_shapes(out, shape_argmax(self, dim, keepdim)));
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
@@ -3678,7 +3678,7 @@ at::Tensor wrap_flatten_using_ints(c10::DispatchKeySet dispatchKeySet, const at:
     return at::redispatch::flatten(dispatchKeySet, self, start_dim, end_dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_FLATTEN_USING_INTS, self.dtype(), self.device());
-  set_shape(tt, self);
+  set_shape(tt, shape_flatten(self, start_dim, end_dim));
   trace.append_arg(self);trace.append_arg(start_dim);trace.append_arg(end_dim);
   return tt;
 }
@@ -7337,6 +7337,7 @@ at::Tensor wrap_stack(c10::DispatchKeySet dispatchKeySet, at::TensorList tensors
     return at::redispatch::stack(dispatchKeySet, tensors, dim);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_STACK, promote_tys(tensors), device_of(tensors));
+  set_shape(tt, shape_stack(tensors, dim));
   trace.append_arg(tensors);trace.append_arg(dim);
   return tt;
 }
@@ -7346,7 +7347,7 @@ at::Tensor & wrap_stack_out(c10::DispatchKeySet dispatchKeySet, at::TensorList t
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::stack_outf(dispatchKeySet, tensors, dim, out);
   }
-  bool flush = register_in_place(out, H_STACK_OUT, dispatchKeySet, false);
+  bool flush = register_in_place(out, H_STACK_OUT, dispatchKeySet, eq_shapes(out, shape_stack(tensors, dim)));
   trace.append_arg(tensors);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
@@ -14187,6 +14188,7 @@ at::Tensor wrap_adaptive_avg_pool2d(c10::DispatchKeySet dispatchKeySet, const at
     return at::redispatch::adaptive_avg_pool2d(dispatchKeySet, self, output_size);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_ADAPTIVE_AVG_POOL2D, self.dtype(), self.device());
+  set_shape(tt, shape_pool2d(self, output_size));
   trace.append_arg(self);trace.append_arg(output_size);
   return tt;
 }

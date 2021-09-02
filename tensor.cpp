@@ -497,7 +497,7 @@ optional<IntArrayRef> shape_mul(const Tensor &a, const Tensor &b) {
   return tmp_shape = shape_mul(*shape_a, *shape_b);
 }
 
-optional<IntArrayRef> shape_mul(const TensorList &lst) {
+optional<IntArrayRef> shape_mul(TensorList lst) {
   if (lst.empty())
     return {};
 
@@ -579,6 +579,12 @@ optional<IntArrayRef> shape_unsqueeze(const Tensor &t, int64_t dim) {
   return tmp_shape = shape_unsqueeze(*shape_t, dim);
 }
 
+optional<IntArrayRef>
+shape_flatten(const Tensor &t, int64_t start, int64_t end) {
+  GET_SHAPE(t);
+  return tmp_shape = shape_flatten(*shape_t, start, end);
+}
+
 optional<IntArrayRef> shape_arange(const Scalar &start, const Scalar &end,
                                    const Scalar &step) {
   return tmp_shape = shape_arange_vec(start, end, step);
@@ -597,6 +603,19 @@ optional<IntArrayRef> shape_slice(const Tensor &t, int64_t dim,
   return tmp_shape = shape_slice(*shape_t, dim, start_opt, end_opt, step);
 }
 
+optional<IntArrayRef> shape_stack(TensorList lst, int64_t dim) {
+  auto shape = shape_of(lst[0]);
+  if (!shape)
+    return {};
+  return tmp_shape = shape_stack(*shape, lst.size(), dim);
+}
+
+optional<IntArrayRef>
+shape_argmax(const Tensor &t, optional<int64_t> dim, bool keepdim) {
+  GET_SHAPE(t);
+  return tmp_shape = shape_argmax(*shape_t, dim, keepdim);
+}
+
 optional<IntArrayRef> shape_conv2d(const Tensor &in, IntArrayRef kernel,
                                    IntArrayRef stride, IntArrayRef pad,
                                    IntArrayRef dilation,
@@ -613,6 +632,11 @@ optional<IntArrayRef> shape_conv2d(const Tensor &in, const Tensor &w,
   GET_SHAPE(w);
   return shape_conv2d(in, shape_w->slice(2, 2), stride, pad, dilation,
                       (*shape_w)[0]);
+}
+
+optional<IntArrayRef> shape_pool2d(const Tensor &in, IntArrayRef shape) {
+  GET_SHAPE(in);
+  return tmp_shape = shape_pool2d(*shape_in, shape);
 }
 
 bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
