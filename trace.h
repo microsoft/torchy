@@ -67,6 +67,8 @@ struct TensorOp {
     return refs > 0;
   }
 
+  bool operator!=(const at::Tensor &t) const;
+
   void print(std::ostream &os,
              std::map<const at::TensorImpl*, unsigned> &inputs) const;
 

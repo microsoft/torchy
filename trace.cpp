@@ -56,15 +56,26 @@ uintptr_t TensorOp::someTensor() const {
   return I == tensors.end() ? 0 : *I;
 }
 
+bool TensorOp::operator!=(const Tensor &t) const {
+  auto *t_ptr = t.getIntrusivePtr().get();
+  for (auto ptr : tensors) {
+    if (ptr == (uintptr_t)t_ptr)
+      return false;
+  }
+  return true;
+}
+
 namespace {
 using InputMap = map<const TensorImpl*, unsigned>;
 
 class printer {
   ostream &os;
   InputMap &inputs;
+  const TensorOp &op;
 
 public:
-  printer(ostream &os, InputMap &inputs) : os(os), inputs(inputs) {}
+  printer(ostream &os, InputMap &inputs, const TensorOp &op)
+    : os(os), inputs(inputs), op(op) {}
 
   template<typename T>
   ostream& operator()(const T &a) {
@@ -73,7 +84,7 @@ public:
 
   ostream& operator()(const Tensor &t) {
     auto idx = trace_idx(t);
-    if (idx != -1u)
+    if (idx != -1u && op != t)
       return os << '%' << idx;
 
     auto n = inputs.emplace(t.getIntrusivePtr().get(),
@@ -144,7 +155,7 @@ void TensorOp::print(ostream &os, InputMap &inputs) const {
     os << (first ? " " : ", ");
     first = false;
 
-    visit(printer(os, inputs), arg);
+    visit(printer(os, inputs, *this), arg);
   }
 
   if (refs > observable)
