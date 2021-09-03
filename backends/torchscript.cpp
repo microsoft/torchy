@@ -28,11 +28,9 @@ class ValGen {
 public:
   ValGen(Graph &g, ValueMap &map) : g(g), map(map) {}
 
-//insertConstant(const IValue& val <-- Scalar)
-
   template<typename T>
   Value* operator()(const T &a) {
-    return nullptr; // TODO
+    return g.insertConstant(a);
   }
 
   Value* operator()(const Tensor &t) {
@@ -45,34 +43,50 @@ public:
   template<typename T>
   Value* operator()(const optional<T> &a) {
     if (!a)
-      return g.createNone();
+      return g.createNone()->output();
     return (*this)(*a);
   }
 
   template<typename T>
   Value* operator()(const std::vector<T> &l) {
-    /*
+    std::vector<Value*> vals;
     for (const auto &elem : l) {
+      vals.emplace_back((*this)(elem));
     }
-    */
-    return nullptr; // TODO
+    return g.createList(vals[0]->type(), vals)->output();
   }
 
   template<typename T>
   Value* operator()(const List<T> &l) {
-    /*
+    std::vector<Value*> vals;
     for (const auto &it : l) {
+      vals.emplace_back((*this)(it));
     }
-    */
-   //createList(const TypePtr& elem_type, at::ArrayRef<Value*> values);
+    return g.createList(vals[0]->type(), vals)->output();
+  }
+
+  Value* operator()(const Device &d) {
+    std::cerr << "DEVICE" << std::endl;
     return nullptr; // TODO
   }
 
-  Value* operator()(const Storage &s) {
+  Value* operator()(const Dimname &d) {
+    std::cerr << "DIMNAME" << std::endl;
     return nullptr; // TODO
   }
 
   Value* operator()(const Generator &g) {
+    std::cerr << "GENERATOR" << std::endl;
+    return nullptr; // TODO
+  }
+
+  Value* operator()(const MemoryFormat &m) {
+    std::cerr << "MEMORYFORMAT" << std::endl;
+    return nullptr; // TODO
+  }
+
+  Value* operator()(const Storage &s) {
+    std::cerr << "STORAGE" << std::endl;
     return nullptr; // TODO
   }
 };
@@ -99,7 +113,7 @@ void run(Trace &t) {
 
     unsigned num_inputs = 0;
     for (auto &arg : op.args) {
-      op_inputs[num_inputs++] = val_gen(arg);
+      op_inputs[num_inputs++] = visit(val_gen, arg);
     }
 
     Node *n = graph->create(Symbol::aten(op_name(op.id)),
