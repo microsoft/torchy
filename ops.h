@@ -10,4 +10,5 @@ enum TorchOp {
 #include "autogen/ops_enum.h"
 };
 
+const char* op_name(TorchOp op);
 std::ostream& operator<<(std::ostream &os, TorchOp op);
