@@ -19,14 +19,29 @@ using namespace torch::jit;
 
 namespace {
 
+std::string cut_overload(const char *fn) {
+  auto *dot = strchr(fn, '.');
+  return dot ? std::string(fn, dot - fn) : fn;
+}
+
+void set(TensorOp &op, const Tensor &t) {
+  for (auto tensor : op.tensors) {
+    if (tensor != 0)
+      ::set(tensor, t);
+  }
+}
+
+
 using ValueMap = std::map<const TensorImpl*, Value*>;
 
 class ValGen {
   Graph &g;
   ValueMap &map;
+  Stack &inputs;
 
 public:
-  ValGen(Graph &g, ValueMap &map) : g(g), map(map) {}
+  ValGen(Graph &g, ValueMap &map, Stack &inputs)
+    : g(g), map(map), inputs(inputs) {}
 
   template<typename T>
   Value* operator()(const T &a) {
@@ -35,8 +50,10 @@ public:
 
   Value* operator()(const Tensor &t) {
     auto &v = map[t.getIntrusivePtr().get()];
-    if (!v)
+    if (!v) {
       v = g.addInput();
+      inputs.emplace_back(t);
+    }
     return v;
   }
 
@@ -118,13 +135,14 @@ namespace torchscript {
 void run(Trace &t) {
   auto *ops = t.getOps();
   Value *outputs[MAX_TRACE_LENGTH];
+  uint8_t output_ops[MAX_TRACE_LENGTH];
   unsigned num_outputs = 0;
-  Stack fn_inputs;
+  Stack stack;
   ValueMap val_map;
   Value *op_inputs[MAX_NUM_INPUTS];
 
   auto graph = std::make_shared<Graph>();
-  ValGen val_gen(*graph, val_map);
+  ValGen val_gen(*graph, val_map, stack);
 
   for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
     auto &op = ops[i];
@@ -136,13 +154,21 @@ void run(Trace &t) {
       op_inputs[num_inputs++] = visit(val_gen, arg);
     }
 
-    Node *n = graph->create(Symbol::aten(op_name(op.id)),
+    Node *n = graph->create(Symbol::aten(cut_overload(op_name(op.id))),
                             at::ArrayRef<Value*>(op_inputs, num_inputs));
+    if (!n->maybeOperator()) {
+      std::cerr << "Op not supported by TorchScript: " << op_name(op.id)
+                << std::endl;
+      // prints a nice error msg with supported overloads
+      n->getOperator();
+    }
     graph->appendNode(n);
 
     Value *v = n->output();
-    if (op.observable)
+    if (op.observable) {
+      output_ops[num_outputs] = i;
       outputs[num_outputs++] = v;
+    }
 
     for (auto tt : op.tensors) {
       if (auto *t = is_impl(tt))
@@ -166,7 +192,29 @@ void run(Trace &t) {
   assert((graph->lint(), true));
 
   GraphFunction fn("torchy", move(graph), {});
-  fn.run(fn_inputs);
+
+#ifdef DEBUG_GRAPH
+  fn.optimized_graph()->print(std::cerr << "\nOptimized graph:\n");
+#endif
+
+  fn.run(stack);
+  // inputs are consumed, and the output is passed back on the stack
+  assert(stack.size() == 1);
+
+  if (num_outputs > 1) {
+    assert(stack[0].isTuple());
+    auto t = std::move(stack[0]).toTuple();
+    auto &elems = t->elements();
+    assert(elems.size() == num_outputs);
+
+    for (unsigned i = 0; i < num_outputs; ++i) {
+      assert(elems[i].isTensor());
+      set(ops[output_ops[i]], std::move(elems[i]).toTensor());
+    }
+  } else {
+    assert(stack[0].isTensor());
+    set(ops[output_ops[0]], std::move(stack[0]).toTensor());
+  }
 }
 
 }
