@@ -38,6 +38,7 @@ class ValGen {
   Graph &g;
   ValueMap &map;
   Stack &inputs;
+  Value *none_val = nullptr;
 
 public:
   ValGen(Graph &g, ValueMap &map, Stack &inputs)
@@ -59,8 +60,14 @@ public:
 
   template<typename T>
   Value* operator()(const optional<T> &a) {
-    if (!a)
-      return g.createNone()->output();
+    if (!a) {
+      if (!none_val) {
+        auto *n = g.createNone();
+        g.appendNode(n);
+        none_val = n->output();
+      }
+      return none_val;
+    }
     return (*this)(*a);
   }
 
@@ -109,11 +116,6 @@ public:
 
   Value* operator()(const MemoryFormat &m) {
     std::cerr << "MEMORYFORMAT" << std::endl;
-    return nullptr; // TODO
-  }
-
-  Value* operator()(const ScalarType &s) {
-    std::cerr << "SCALARTYPE" << std::endl;
     return nullptr; // TODO
   }
 
@@ -195,6 +197,7 @@ void run(Trace &t) {
 
 #ifdef DEBUG_GRAPH
   fn.optimized_graph()->print(std::cerr << "\nOptimized graph:\n");
+  std::cerr << '\n';
 #endif
 
   fn.run(stack);
