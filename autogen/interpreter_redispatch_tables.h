@@ -748,8 +748,6 @@ at::Tensor(*const redispatch_ptrs_58[])(DispatchKeySet, int64_t, c10::optional<a
   at::redispatch::randperm,
 };
 
-#define FIRST_INPLACE_OP H_FULL_OUT
-
 at::Tensor &(*const redispatch_ptrs_59[])(DispatchKeySet, at::IntArrayRef, at::Tensor &) = {
   at::redispatch::ones_outf,
   at::redispatch::rand_outf,

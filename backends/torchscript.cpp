@@ -1,6 +1,7 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
+#include "autogen/ops_data.h"
 #include "tensor.h"
 #include "trace.h"
 #include <torch/csrc/jit/api/method.h>
@@ -24,6 +25,29 @@ std::string cut_overload(const char *fn) {
   return dot ? std::string(fn, dot - fn) : fn;
 }
 
+void init_update_in_place(TensorOp &op) {
+  for (auto tensor : op.tensors) {
+    if (tensor != 0)
+      ::init_update_in_place(tensor);
+  }
+}
+
+void end_update_in_place(TensorOp &op) {
+  for (auto tensor : op.tensors) {
+    if (tensor != 0)
+      ::end_update_in_place(tensor);
+  }
+}
+
+#ifndef NDEBUG
+void finish_trace(TensorOp &op) {
+  for (auto tensor : op.tensors) {
+    if (tensor != 0)
+      ::finish_trace(tensor);
+  }
+}
+#endif
+
 void set(TensorOp &op, const Tensor &t) {
   for (auto tensor : op.tensors) {
     if (tensor != 0)
@@ -44,6 +68,15 @@ public:
   ValGen(Graph &g, ValueMap &map, Stack &inputs)
     : g(g), map(map), inputs(inputs) {}
 
+  Value* mk_none() {
+    if (!none_val) {
+      auto *n = g.createNone();
+      g.appendNode(n);
+      none_val = n->output();
+    }
+    return none_val;
+  }
+
   template<typename T>
   Value* operator()(const T &a) {
     return g.insertConstant(a);
@@ -60,15 +93,7 @@ public:
 
   template<typename T>
   Value* operator()(const optional<T> &a) {
-    if (!a) {
-      if (!none_val) {
-        auto *n = g.createNone();
-        g.appendNode(n);
-        none_val = n->output();
-      }
-      return none_val;
-    }
-    return (*this)(*a);
+    return a ? (*this)(*a) : mk_none();
   }
 
   template<typename T>
@@ -93,41 +118,6 @@ public:
     g.appendNode(n);
     return n->output();
   }
-
-  Value* operator()(const Device &d) {
-    std::cerr << "DEVICE" << std::endl;
-    return nullptr; // TODO
-  }
-
-  Value* operator()(const Dimname &d) {
-    std::cerr << "DIMNAME" << std::endl;
-    return nullptr; // TODO
-  }
-
-  Value* operator()(const Generator &g) {
-    std::cerr << "GENERATOR" << std::endl;
-    return nullptr; // TODO
-  }
-
-  Value* operator()(const Layout &l) {
-    std::cerr << "LAYOUT" << std::endl;
-    return nullptr; // TODO
-  }
-
-  Value* operator()(const MemoryFormat &m) {
-    std::cerr << "MEMORYFORMAT" << std::endl;
-    return nullptr; // TODO
-  }
-
-  Value* operator()(const Storage &s) {
-    std::cerr << "STORAGE" << std::endl;
-    return nullptr; // TODO
-  }
-
-  Value* operator()(const std::string &s) {
-    std::cerr << "STRING" << std::endl;
-    return nullptr; // TODO
-  }
 };
 }
 
@@ -151,6 +141,9 @@ void run(Trace &t) {
     if (!op.needsComputing())
       continue;
 
+    if (op.id >= FIRST_INPLACE_OP)
+      init_update_in_place(op);
+
     unsigned num_inputs = 0;
     for (auto &arg : op.args) {
       op_inputs[num_inputs++] = visit(val_gen, arg);
@@ -167,7 +160,7 @@ void run(Trace &t) {
     graph->appendNode(n);
 
     Value *v = n->output();
-    if (op.observable) {
+    if (op.observable && op.id < FIRST_INPLACE_OP) {
       output_ops[num_outputs] = i;
       outputs[num_outputs++] = v;
     }
@@ -178,13 +171,14 @@ void run(Trace &t) {
     }
   }
 
-  if (num_outputs > 1) {
+  if (num_outputs == 0) {
+    graph->registerOutput(val_gen.mk_none());
+  } else if (num_outputs == 1) {
+    graph->registerOutput(outputs[0]);
+  } else if (num_outputs > 1) {
     auto *t = graph->createTuple(at::ArrayRef<Value*>(outputs, num_outputs));
     graph->appendNode(t);
     graph->registerOutput(t->output());
-  } else {
-    assert(num_outputs == 1);
-    graph->registerOutput(outputs[0]);
   }
 
 #ifdef DEBUG_GRAPH
@@ -204,7 +198,12 @@ void run(Trace &t) {
   // inputs are consumed, and the output is passed back on the stack
   assert(stack.size() == 1);
 
-  if (num_outputs > 1) {
+  // patch tensors with the output
+  if (num_outputs == 1) {
+    assert(stack[0].isTensor());
+    set(ops[output_ops[0]], std::move(stack[0]).toTensor());
+  }
+  else if (num_outputs > 1) {
     assert(stack[0].isTuple());
     auto t = std::move(stack[0]).toTuple();
     auto &elems = t->elements();
@@ -214,9 +213,15 @@ void run(Trace &t) {
       assert(elems[i].isTensor());
       set(ops[output_ops[i]], std::move(elems[i]).toTensor());
     }
-  } else {
-    assert(stack[0].isTensor());
-    set(ops[output_ops[0]], std::move(stack[0]).toTensor());
+  }
+
+  for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
+    auto &op = ops[i];
+    if (op.id >= FIRST_INPLACE_OP)
+      end_update_in_place(op);
+#ifndef NDEBUG
+    finish_trace(op);
+#endif
   }
 }
 

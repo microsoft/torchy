@@ -439,6 +439,7 @@ fd3 = open('autogen/ops_enum.h', 'w')
 fd4 = open('autogen/ops_names.h', 'w')
 fd5 = open('autogen/interpreter_redispatch.h', 'w')
 fd6 = open('autogen/interpreter_redispatch_tables.h', 'w')
+fd7 = open('autogen/ops_data.h', 'w')
 
 total = 0
 for fn in native_functions.native_functions:
@@ -461,7 +462,7 @@ is_first_inplace = True
 for ((inplace, code, sig), entries) in interpreter_code:
   if inplace and is_first_inplace:
     is_first_inplace = False
-    print(f'#define FIRST_INPLACE_OP {entries[0][0]}\n', file=fd6)
+    print(f'#define FIRST_INPLACE_OP {entries[0][0]}\n', file=fd7)
 
   for (enum, ptr) in entries:
     print(f'case {enum}:', file=fd5)

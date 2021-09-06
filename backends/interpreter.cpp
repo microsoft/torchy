@@ -1,6 +1,7 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
+#include "autogen/ops_data.h"
 #include "dispatch.h"
 #include "tensor.h"
 #include "trace.h"
