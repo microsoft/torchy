@@ -9,7 +9,7 @@
 using namespace at;
 using namespace torch::jit;
 
-//#define DEBUG_GRAPH
+#define DEBUG_GRAPH
 
 #ifdef DEBUG_GRAPH
 # include <iostream>
@@ -53,16 +53,21 @@ public:
     for (const auto &elem : l) {
       vals.emplace_back((*this)(elem));
     }
-    return g.createList(vals[0]->type(), vals)->output();
+    auto *n = g.createList(vals[0]->type(), vals);
+    g.appendNode(n);
+    return n->output();
   }
 
   template<typename T>
   Value* operator()(const List<T> &l) {
     std::vector<Value*> vals;
     for (const auto &it : l) {
-      vals.emplace_back((*this)(it));
+      const T &elem = it;
+      vals.emplace_back((*this)(elem));
     }
-    return g.createList(vals[0]->type(), vals)->output();
+    auto *n = g.createList(vals[0]->type(), vals);
+    g.appendNode(n);
+    return n->output();
   }
 
   Value* operator()(const Device &d) {
@@ -80,13 +85,28 @@ public:
     return nullptr; // TODO
   }
 
+  Value* operator()(const Layout &l) {
+    std::cerr << "LAYOUT" << std::endl;
+    return nullptr; // TODO
+  }
+
   Value* operator()(const MemoryFormat &m) {
     std::cerr << "MEMORYFORMAT" << std::endl;
     return nullptr; // TODO
   }
 
+  Value* operator()(const ScalarType &s) {
+    std::cerr << "SCALARTYPE" << std::endl;
+    return nullptr; // TODO
+  }
+
   Value* operator()(const Storage &s) {
     std::cerr << "STORAGE" << std::endl;
+    return nullptr; // TODO
+  }
+
+  Value* operator()(const std::string &s) {
+    std::cerr << "STRING" << std::endl;
     return nullptr; // TODO
   }
 };
@@ -118,8 +138,25 @@ void run(Trace &t) {
 
     Node *n = graph->create(Symbol::aten(op_name(op.id)),
                             at::ArrayRef<Value*>(op_inputs, num_inputs));
+    graph->appendNode(n);
+
+    Value *v = n->output();
     if (op.observable)
-      outputs[num_outputs++] = n->output();
+      outputs[num_outputs++] = v;
+
+    for (auto tt : op.tensors) {
+      if (auto *t = is_impl(tt))
+        val_map.emplace(t, v);
+    }
+  }
+
+  if (num_outputs > 1) {
+    auto *t = graph->createTuple(at::ArrayRef<Value*>(outputs, num_outputs));
+    graph->appendNode(t);
+    graph->registerOutput(t->output());
+  } else {
+    assert(num_outputs == 1);
+    graph->registerOutput(outputs[0]);
   }
 
 #ifdef DEBUG_GRAPH
@@ -127,14 +164,6 @@ void run(Trace &t) {
 #endif
 
   assert((graph->lint(), true));
-
-  if (num_outputs > 1) {
-    auto *t = graph->createTuple(at::ArrayRef<Value*>(outputs, num_outputs));
-    graph->registerOutput(t->output());
-  } else {
-    assert(num_outputs == 1);
-    graph->registerOutput(outputs[0]);
-  }
 
   GraphFunction fn("torchy", move(graph), {});
   fn.run(fn_inputs);
