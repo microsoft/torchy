@@ -52,6 +52,10 @@ bool TensorOp::hasTensors() const {
            != tensors.end();
 }
 
+unsigned TensorOp::numTensors() const {
+  return count_if(tensors.begin(), tensors.end(), [](auto t) { return t!=0; });
+}
+
 uintptr_t TensorOp::someTensor() const {
   auto I = find_if(tensors.begin(), tensors.end(), [](auto t) { return t!=0; });
   return I == tensors.end() ? 0 : *I;
@@ -159,8 +163,12 @@ void TensorOp::print(ostream &os, InputMap &inputs) const {
     visit(printer(os, inputs, *this), arg);
   }
 
-  if (refs > observable)
-    os << " #refs=" << (refs - observable);
+  auto n_tensors = numTensors();
+  assert(n_tensors >= observable);
+  assert(refs >= n_tensors);
+
+  if (refs > 0)
+    os << " #refs E/I=" << n_tensors << '/' << (refs - n_tensors);
 
   if (observable)
     os << " #output";

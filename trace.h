@@ -77,6 +77,7 @@ private:
   void incref();
   void decref(TensorOp *ops);
   bool hasTensors() const;
+  unsigned numTensors() const;
   uintptr_t someTensor() const;
 
   friend class Trace;
