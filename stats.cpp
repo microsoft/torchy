@@ -95,6 +95,7 @@ array<unsigned, MAX_TRACE_LENGTH+1> num_trace_deads;
 unordered_map<string, vector<float>> trace_run_time;
 unordered_map<string, unordered_map<string, unsigned>> trace_successors;
 string first_trace, current_trace, last_trace;
+unsigned torchscript_failures = 0;
 
 struct PrintStats {
   ~PrintStats() {
@@ -146,7 +147,8 @@ struct PrintStats {
              << p.first << "\n\n";
     }
 
-    cerr << "Number of traces:\t" << total
+    cerr << "Number of Torchscript failures:\t" << torchscript_failures
+         << "\nNumber of traces:\t" << total
          << "\nDistinct traces:\t" << trace_run_time.size() << '\n';
 
     cerr << endl;
@@ -287,6 +289,10 @@ void stats_register_trace_time(const StopWatch &run_time) {
   if (!last_trace.empty())
     ++trace_successors[last_trace][current_trace];
   last_trace = move(current_trace);
+}
+
+void stats_inc_torchscript_fail() {
+  ++torchscript_failures;
 }
 
 #endif

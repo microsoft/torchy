@@ -2,6 +2,7 @@
 // Distributed under the MIT license that can be found in the LICENSE file.
 
 #include "autogen/ops_data.h"
+#include "config.h"
 #include "tensor.h"
 #include "trace.h"
 #include <torch/csrc/jit/api/method.h>
@@ -118,13 +119,18 @@ public:
     g.appendNode(n);
     return n->output();
   }
+
+  // unsupported by TorchScript
+  Value* operator()(const Storage&) {
+    return nullptr;
+  }
 };
 }
 
 
 namespace torchscript {
 
-void run(Trace &t) {
+bool run(Trace &t) {
   auto *ops = t.getOps();
   Value *outputs[MAX_TRACE_LENGTH];
   uint8_t output_ops[MAX_TRACE_LENGTH];
@@ -146,7 +152,12 @@ void run(Trace &t) {
 
     unsigned num_inputs = 0;
     for (auto &arg : op.args) {
-      op_inputs[num_inputs++] = visit(val_gen, arg);
+      auto *v = visit(val_gen, arg);
+      if (!v) {
+        stats_inc_torchscript_fail();
+        return false;
+      }
+      op_inputs[num_inputs++] = v;
     }
 
     Node *n = graph->create(Symbol::aten(cut_overload(op_name(op.id))),
@@ -223,6 +234,7 @@ void run(Trace &t) {
     finish_trace(op);
 #endif
   }
+  return true;
 }
 
 }

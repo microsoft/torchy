@@ -16,7 +16,7 @@ using namespace at;
 using namespace std;
 
 namespace interpreter { void run(Trace &t); }
-namespace torchscript { void run(Trace &t); }
+namespace torchscript { bool run(Trace &t); }
 
 void TensorOp::destroy() {
   args.clear();
@@ -334,8 +334,10 @@ void Trace::flush(STATS(FlushReason reason)) {
 #endif
 
   STATS(StopWatch run_time);
-  interpreter::run(*this);
-  //torchscript::run(*this);
+  // try torchscript first; fallback to the interpreter if it can't handle this
+  if (!torchscript::run(*this))
+    interpreter::run(*this);
+
   STATS(run_time.stop());
 
   stats_register_trace_time(run_time);
