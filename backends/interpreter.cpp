@@ -159,8 +159,6 @@ void run(Trace &t) {
     auto ks
       = visitor.ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
 
-    ThreadLocalState::setThreadLocalState(op.tls);
-
     if (op.id >= FIRST_INPLACE_OP)
       init_update_in_place(op);
 

@@ -16,10 +16,10 @@ using namespace at;
 using namespace std;
 
 namespace interpreter { void run(Trace &t); }
+namespace torchscript { void run(Trace &t); }
 
 void TensorOp::destroy() {
   args.clear();
-  tls.~ThreadLocalState();
 }
 
 void TensorOp::incref() {
@@ -233,7 +233,6 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
   assert(op.args.empty());
   op.refs = 1;
   op.observable = true;
-  op.tls = ThreadLocalState();
   op.dispatch_key = ks;
   return next_op++;
 }
@@ -336,6 +335,7 @@ void Trace::flush(STATS(FlushReason reason)) {
 
   STATS(StopWatch run_time);
   interpreter::run(*this);
+  //torchscript::run(*this);
   STATS(run_time.stop());
 
   stats_register_trace_time(run_time);
