@@ -57,7 +57,8 @@ unsigned TensorOp::numTensors() const {
 }
 
 uintptr_t TensorOp::someTensor() const {
-  auto I = find_if(tensors.begin(), tensors.end(), [](auto t) { return t!=0; });
+  auto I = find_if(tensors.begin(), tensors.end(),
+                   [](auto t) { return t != 0 && t != DUMMY_TORCHY; });
   return I == tensors.end() ? 0 : *I;
 }
 
@@ -77,10 +78,11 @@ class printer {
   ostream &os;
   InputMap &inputs;
   const TensorOp &op;
+  unsigned op_idx;
 
 public:
-  printer(ostream &os, InputMap &inputs, const TensorOp &op)
-    : os(os), inputs(inputs), op(op) {}
+  printer(ostream &os, InputMap &inputs, const TensorOp &op, unsigned op_idx)
+    : os(os), inputs(inputs), op(op), op_idx(op_idx) {}
 
   template<typename T>
   ostream& operator()(const T &a) {
@@ -89,7 +91,7 @@ public:
 
   ostream& operator()(const Tensor &t) {
     auto idx = trace_idx(t);
-    if (idx != -1u && op != t)
+    if (idx != -1u && (op != t || idx < op_idx))
       return os << '%' << idx;
 
     auto n = inputs.emplace(t.getIntrusivePtr().get(),
@@ -144,7 +146,7 @@ public:
 };
 }
 
-void TensorOp::print(ostream &os, InputMap &inputs) const {
+void TensorOp::print(ostream &os, InputMap &inputs, unsigned idx) const {
   auto t = someTensor();
   if (t && tensor_has_dtype(t))
     os << '<' << tensor_get_dtype(t) << "> ";
@@ -160,7 +162,7 @@ void TensorOp::print(ostream &os, InputMap &inputs) const {
     os << (first ? " " : ", ");
     first = false;
 
-    visit(printer(os, inputs, *this), arg);
+    visit(printer(os, inputs, *this, idx), arg);
   }
 
   auto n_tensors = numTensors();
@@ -343,9 +345,15 @@ void Trace::flush(STATS(FlushReason reason)) {
   cerr << "Flush trace\n" << *this << endl;
 #endif
 
+#ifdef TORCHY_RELEASE
+  bool force_interpreter = false;
+#else
+  bool force_interpreter = getenv("TORCHY_FORCE_INTERPRETER");
+#endif
+
   STATS(StopWatch run_time);
   // try torchscript first; fallback to the interpreter if it can't handle this
-  if (!torchscript::run(*this))
+  if (force_interpreter || !torchscript::run(*this))
     interpreter::run(*this);
 
   STATS(run_time.stop());
@@ -368,7 +376,7 @@ ostream& operator<<(ostream &os, const Trace &t) {
   map<const TensorImpl*, unsigned> inputs_map;
   for (unsigned i = 0; i < t.next_op; ++i) {
     os << '%' << i << " = ";
-    t.ops[i].print(os, inputs_map);
+    t.ops[i].print(os, inputs_map, i);
     os << '\n';
   }
 
