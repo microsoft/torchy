@@ -57,6 +57,7 @@ struct TensorOp {
   // TODO: investigate if specializing this for the common case
   // e.g. 2 tensors makes sense (would save space + 1 mem alloc)
   std::vector<UnionInputTy> args;
+  at::ThreadLocalState tls;
   c10::DispatchKeySet dispatch_key;
   TorchOp id;
   uint16_t refs;

@@ -20,6 +20,7 @@ namespace torchscript { bool run(Trace &t); }
 
 void TensorOp::destroy() {
   args.clear();
+  tls.~ThreadLocalState();
 }
 
 void TensorOp::incref() {
@@ -233,6 +234,7 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
   assert(op.args.empty());
   op.refs = 1;
   op.observable = true;
+  op.tls = ThreadLocalState();
   op.dispatch_key = ks;
   return next_op++;
 }
