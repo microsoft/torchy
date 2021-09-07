@@ -675,7 +675,7 @@ Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
                            caffe2::TypeMeta dtype,
                            c10::optional<at::Device> device) {
   // see build/aten/src/ATen/RegisterBackendSelect.cpp for redispatching logic
-  auto dev = device ? *device : Device(kCPU);
+  auto dev = device.value_or(kCPU);
   return register_new_tensor(ks, op, dtype, dev);
 }
 

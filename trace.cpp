@@ -141,9 +141,9 @@ public:
 }
 
 void TensorOp::print(ostream &os, InputMap &inputs) const {
-  if (auto t = someTensor())
-    if (tensor_has_dtype(t))
-      os << '<' << tensor_get_dtype(t) << "> ";
+  auto t = someTensor();
+  if (t && tensor_has_dtype(t))
+    os << '<' << tensor_get_dtype(t) << "> ";
   os << id;
 
   if (!needsComputing()) {
@@ -165,9 +165,8 @@ void TensorOp::print(ostream &os, InputMap &inputs) const {
   if (observable)
     os << " #output";
 
-  if (auto t = someTensor())
-    if (tensor_has_shape(t))
-      os << " shape=" << tensor_get_shape(t);
+  if (t && tensor_has_shape(t))
+    os << " shape=" << tensor_get_shape(t);
 }
 
 
@@ -297,20 +296,21 @@ void Trace::flush(STATS(FlushReason reason)) {
     unordered_map<uintptr_t, pair<uint16_t, uint16_t>> refs;
     refs.reserve(next_op);
 
+    TensorVisitor visitor([&](const Tensor &t) {
+      auto I = refs.find((uintptr_t)t.getIntrusivePtr().get());
+      // all refs are inputs -> not observable
+      if (I != refs.end() && --I->second.first == 0) {
+        refs.erase(I);
+        auto &argop = ops[I->second.second];
+        argop.observable = false;
+        argop.decref(ops);
+      }
+    });
+
     for (unsigned i = 0; i < next_op; ++i) {
       auto &op = ops[i];
 
       if (i > 0) {
-        TensorVisitor visitor([&](const Tensor &t) {
-          auto I = refs.find((uintptr_t)t.getIntrusivePtr().get());
-          // all refs are inputs -> not observable
-          if (I != refs.end() && --I->second.first == 0) {
-            refs.erase(I);
-            auto &argop = ops[I->second.second];
-            argop.observable = false;
-            argop.decref(ops);
-          }
-        });
         for (auto &arg : op.args) {
           visit(visitor, arg);
         }
