@@ -1,2 +1,3 @@
+*.h linguist-language=C++
 tests/lit/* linguist-vendored
 tests/lit/lit/formats/torchytest.py linguist-vendored=false

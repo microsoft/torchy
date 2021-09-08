@@ -7,11 +7,12 @@ from .base import TestFormat
 import os, signal, subprocess, tempfile
 
 
-def executeCommand(command):
+def executeCommand(command, env={}):
+  env.update(os.environ)
   p = subprocess.Popen(command,
                        stdout=subprocess.PIPE,
                        stderr=subprocess.PIPE,
-                       env=os.environ)
+                       env=env)
   out,err = p.communicate()
   exit_code = p.wait()
 
@@ -29,6 +30,17 @@ def executeCommand(command):
   except:
     err = str(err)
   return out, err, exit_code
+
+
+def check(out, name, cmd, env={}):
+  out_torchy, err, exit_code = executeCommand(cmd, env)
+  if exit_code != 0:
+    return lit.Test.FAIL, f'{name}\n{err}\nexit code: {exit_code}'
+
+  if out != out_torchy:
+    return lit.Test.FAIL, f'{name}\n{out}\nvs\n{out_torchy}'
+
+  return lit.Test.PASS, ''
 
 
 class TorchyTest(TestFormat):
@@ -53,11 +65,13 @@ class TorchyTest(TestFormat):
     if err or exit_code != 0:
       return lit.Test.FAIL, err + f'\nexit code: {exit_code}'
 
-    out_torchy, err, exit_code = executeCommand(['python', test, '--torchy'])
-    if exit_code != 0:
-      return lit.Test.FAIL, err + f'\nexit code: {exit_code}'
+    err,msg = check(out, 'Torchy TS', ['python', test, '--torchy'])
+    if err != lit.Test.PASS:
+      return err, msg
 
-    if out != out_torchy:
-      return lit.Test.FAIL, f'{out}\nvs\n{out_torchy}'
+    err,msg = check(out, 'Torchy Interpreter', ['python', test, '--torchy'],
+                    {'TORCHY_FORCE_INTERPRETER' : '1'})
+    if err != lit.Test.PASS:
+      return err, msg
 
     return lit.Test.PASS, ''
