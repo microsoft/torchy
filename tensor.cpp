@@ -300,12 +300,13 @@ public:
     auto copy
       = c10::make_intrusive<TorchyTensor>(key_set_, data_type_, device_opt_);
 
+    copy_tensor_metadata(this, copy.get(), forward<T>(version_counter),
+                         allow_tensor_metadata_change);
+
     if (trace_idx != -1u)
       trace.add_shared(trace_idx, (uintptr_t)copy.get());
     copy->trace_idx = trace_idx;
 
-    copy_tensor_metadata(this, copy.get(), forward<T>(version_counter),
-                         allow_tensor_metadata_change);
     // overriden by copy_tensor_metadata
     copy->key_set_= copy->key_set_.add(DISPATCHKEY);
     copy->numel_  = numel_;
@@ -332,6 +333,10 @@ public:
       trace.set_unobservable(trace_idx, (uintptr_t)this);
     trace_idx = -1u;
 
+    TensorImpl::shallow_copy_from(impl);
+    // overriden by copy_tensor_metadata
+    key_set_ = key_set_.add(DISPATCHKEY);
+
     if (auto tt = dynamic_cast<TorchyTensor*>(impl.get())) {
       if (tt->trace_idx != -1u) {
         trace.add_shared(tt->trace_idx, (uintptr_t)this);
@@ -339,10 +344,6 @@ public:
       }
       copy_torchy_data(tt);
     }
-
-    TensorImpl::shallow_copy_from(impl);
-    // overriden by copy_tensor_metadata
-    key_set_ = key_set_.add(DISPATCHKEY);
   }
 };
 }
