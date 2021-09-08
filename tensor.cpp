@@ -100,11 +100,9 @@ class TorchyTensor final : public TensorImpl {
 public:
   TorchyTensor(DispatchKeySet key_set, caffe2::TypeMeta dtype,
                c10::optional<c10::Device> device_opt)
-    : TensorImpl(key_set | DispatchKeySet(DISPATCHKEY), dtype, device_opt) {}
+    : TensorImpl(key_set.add(DISPATCHKEY), dtype, device_opt) {}
 
-  TorchyTensor(Tensor &&t)
-    : TensorImpl(t.key_set() | DispatchKeySet(DISPATCHKEY),
-                 t.dtype(), t.device()) {
+  TorchyTensor(Tensor &&t) : TensorImpl(t.key_set(), t.dtype(), t.device()) {
     set(t);
 
     // steal pyobj & friends
@@ -167,6 +165,8 @@ public:
     auto *other = t.getIntrusivePtr().get();
     copy_tensor_metadata(other, this, other->version_counter(),
                          other->allow_tensor_metadata_change());
+    // overriden by copy_tensor_metadata
+    key_set_= key_set_.add(DISPATCHKEY);
 
     set_materialized(true);
 
@@ -306,7 +306,9 @@ public:
 
     copy_tensor_metadata(this, copy.get(), forward<T>(version_counter),
                          allow_tensor_metadata_change);
-    copy->numel_ = numel_;
+    // overriden by copy_tensor_metadata
+    copy->key_set_= copy->key_set_.add(DISPATCHKEY);
+    copy->numel_  = numel_;
     copy->copy_torchy_data(this);
     return copy;
   }
@@ -339,6 +341,8 @@ public:
     }
 
     TensorImpl::shallow_copy_from(impl);
+    // overriden by copy_tensor_metadata
+    key_set_ = key_set_.add(DISPATCHKEY);
   }
 };
 }
