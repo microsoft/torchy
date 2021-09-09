@@ -141,6 +141,7 @@ struct DispatchKeyComputer {
 namespace interpreter {
 
 void run(Trace &t) {
+  ThreadLocalState tls;
   auto *ops = t.getOps();
 
   for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
@@ -182,6 +183,7 @@ void run(Trace &t) {
   }
 #endif
 
+  ThreadLocalState::setThreadLocalState(tls);
 }
 
 }
