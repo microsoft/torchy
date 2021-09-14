@@ -115,6 +115,13 @@ shape_transpose(IntArrayRef s, int64_t dim1, int64_t dim2) {
   return res;
 }
 
+std::vector<int64_t> shape_transpose2d(IntArrayRef s) {
+  auto res = s.vec();
+  if (res.size() >= 2)
+    swap(res[0], res[1]);
+  return res;
+}
+
 std::vector<int64_t> shape_reshape(IntArrayRef s, IntArrayRef to) {
   auto res = to.vec();
 

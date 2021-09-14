@@ -1537,6 +1537,8 @@ shape_inference = {
   'swapaxes_': 'EQ_FIRST',
   'swapdims': 'EQ_FIRST',
   'swapdims_': 'EQ_FIRST',
+  't': 'TRANSPOSE2D',
+  't_': 'TRANSPOSE2D',
   'tan': 'EQ_FIRST',
   'tan.out': 'EQ_FIRST',
   'tan_': 'EQ_FIRST',

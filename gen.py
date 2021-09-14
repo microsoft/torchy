@@ -311,6 +311,8 @@ def mk_shape_infer(shape, all_args):
     return f'shape_conv2d({args[0].expr}, {args[1].expr}, {args[2+off].expr}, {args[3+off].expr}, {args[4+off].expr})'
   if shape == 'POOL2D':
     return f'shape_pool2d({args[0].expr}, {args[1].expr})'
+  if shape == 'TRANSPOSE2D':
+    return f'shape_transpose2d({args[0].expr})'
 
   print('mk_shape_infer', shape)
   return 'nullopt'
@@ -462,7 +464,7 @@ is_first_inplace = True
 for ((inplace, code, sig), entries) in interpreter_code:
   if inplace and is_first_inplace:
     is_first_inplace = False
-    print(f'#define FIRST_INPLACE_OP {entries[0][0]}\n', file=fd7)
+    print(f'#define FIRST_INPLACE_OP {entries[0][0]}', file=fd7)
 
   for (enum, ptr) in entries:
     print(f'case {enum}:', file=fd5)

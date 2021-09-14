@@ -7760,6 +7760,7 @@ at::Tensor wrap_t(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self) {
     return at::redispatch::t(dispatchKeySet, self);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_T, self.dtype(), self.device());
+  set_shape(tt, shape_transpose2d(self));
   trace.append_arg(self);
   return tt;
 }
@@ -7769,7 +7770,7 @@ at::Tensor & wrap_t_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::t_(dispatchKeySet, self);
   }
-  bool flush = register_in_place(self, H_T_, dispatchKeySet, false);
+  bool flush = register_in_place(self, H_T_, dispatchKeySet, eq_shapes(self, shape_transpose2d(self)));
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));

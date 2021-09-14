@@ -167,6 +167,11 @@ unsigned pool2d(unsigned in, unsigned shape) {
   return lookup_shape(shape_pool2d(s_in, all_shapes[shape]));
 }
 
+unsigned transpose2d(unsigned s) {
+  if (s == -1u) return -1u;
+  return lookup_shape(shape_transpose2d(all_shapes[s]));
+}
+
 struct Result {
   vector<unsigned> inputs;
   unsigned output;
@@ -356,6 +361,7 @@ struct C {
     bool is_drop2 = true;
     bool is_reshape = true;
     bool is_pool2d = true;
+    bool is_transpose2d = true;
 
     for (auto &result : results) {
       auto &trail = result.inputs;
@@ -397,6 +403,7 @@ struct C {
                          out == reshape(trail[0], trail[1]));
       TEST(is_pool2d,    trail.size() >= 2 &&
                          out == pool2d(trail[0], trail[1]));
+      TEST(is_transpose2d, out == transpose2d(trail[0]));
     }
 
     cout << name;
@@ -435,6 +442,7 @@ struct C {
     PRINT(is_drop2, "DROP2")
     PRINT(is_reshape, "RESHAPE")
     PRINT(is_pool2d, "POOL2D")
+    PRINT(is_transpose2d, "TRANSPOSE2D")
 
     cout << ": NON_STANDARD:\n";
 
