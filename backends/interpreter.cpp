@@ -2,10 +2,9 @@
 // Distributed under the MIT license that can be found in the LICENSE file.
 
 #include "autogen/ops_data.h"
+#include "common.h"
 #include "dispatch.h"
-#include "tensor.h"
 #include "trace.h"
-#include <ATen/core/List.h>
 #include <ATen/RedispatchFunctions.h>
 #include <type_traits>
 
@@ -16,36 +15,6 @@
 #endif
 
 using namespace at;
-
-static void init_update_in_place(TensorOp &op) {
-  for (auto tensor : op.tensors) {
-    if (tensor != 0)
-      init_update_in_place(tensor);
-  }
-}
-
-static void end_update_in_place(TensorOp &op) {
-  for (auto tensor : op.tensors) {
-    if (tensor != 0)
-      end_update_in_place(tensor);
-  }
-}
-
-#ifndef NDEBUG
-static void finish_trace(TensorOp &op) {
-  for (auto tensor : op.tensors) {
-    if (tensor != 0)
-      finish_trace(tensor);
-  }
-}
-#endif
-
-static void set(TensorOp &op, const Tensor &t) {
-  for (auto tensor : op.tensors) {
-    if (tensor != 0)
-      set(tensor, t);
-  }
-}
 
 namespace {
 
@@ -177,11 +146,9 @@ void run(Trace &t) {
     end_update_in_place(op);
   }
 
-#ifndef NDEBUG
   for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
     finish_trace(ops[i]);
   }
-#endif
 
   ThreadLocalState::setThreadLocalState(tls);
 }

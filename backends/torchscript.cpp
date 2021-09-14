@@ -2,8 +2,7 @@
 // Distributed under the MIT license that can be found in the LICENSE file.
 
 #include "autogen/ops_data.h"
-#include "config.h"
-#include "tensor.h"
+#include "common.h"
 #include "trace.h"
 #include <torch/csrc/jit/api/method.h>
 #include <map>
@@ -25,37 +24,6 @@ std::string cut_overload(const char *fn) {
   auto *dot = strchr(fn, '.');
   return dot ? std::string(fn, dot - fn) : fn;
 }
-
-void init_update_in_place(TensorOp &op) {
-  for (auto tensor : op.tensors) {
-    if (tensor != 0)
-      ::init_update_in_place(tensor);
-  }
-}
-
-void end_update_in_place(TensorOp &op) {
-  for (auto tensor : op.tensors) {
-    if (tensor != 0)
-      ::end_update_in_place(tensor);
-  }
-}
-
-#ifndef NDEBUG
-void finish_trace(TensorOp &op) {
-  for (auto tensor : op.tensors) {
-    if (tensor != 0)
-      ::finish_trace(tensor);
-  }
-}
-#endif
-
-void set(TensorOp &op, const Tensor &t) {
-  for (auto tensor : op.tensors) {
-    if (tensor != 0)
-      ::set(tensor, t);
-  }
-}
-
 
 using ValueMap = std::map<const TensorImpl*, Value*>;
 
@@ -230,9 +198,7 @@ bool run(Trace &t) {
     auto &op = ops[i];
     if (op.id >= FIRST_INPLACE_OP)
       end_update_in_place(op);
-#ifndef NDEBUG
     finish_trace(op);
-#endif
   }
   return true;
 }

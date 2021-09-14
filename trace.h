@@ -154,4 +154,19 @@ public:
   void flush(STATS(FlushReason reason));
 
   friend std::ostream& operator<<(std::ostream &os, const Trace &t);
+  friend struct PretendFlushing;
+
+  struct PretendFlushing {
+    Trace &t;
+    bool old_val;
+
+    PretendFlushing(Trace &t) : t(t) {
+      old_val = t.flushing;
+      t.flushing = true;
+    }
+
+    ~PretendFlushing() {
+      t.flushing = old_val;
+    }
+  };
 };

@@ -89,6 +89,7 @@ class TorchyTensor final : public TensorImpl {
   }
 
   void copy_torchy_data(const TorchyTensor *tt) {
+    trace_idx           = tt->trace_idx;
     has_shape_data      = tt->has_shape_data;
 #ifndef NDEBUG
     has_multiple_shapes = tt->has_multiple_shapes;
@@ -194,6 +195,19 @@ public:
     store_shape();
   }
 
+  template <typename T>
+  void copy_metadata(const TorchyTensor &other, T &&version_counter,
+                     bool allow_tensor_metadata_change) {
+    Trace::PretendFlushing tmp(trace);
+    copy_tensor_metadata(&other, this, forward<T>(version_counter),
+                         allow_tensor_metadata_change);
+
+    // overriden by copy_tensor_metadata
+    key_set_ = key_set_.add(DISPATCHKEY);
+    numel_   = other.numel_;
+    copy_torchy_data(&other);
+  }
+
   void ensure_materialized(STATS(FlushReason reason)) const {
     if (!trace.is_flushing() && !materialized()) {
       assert(trace_idx != -1u);
@@ -297,20 +311,26 @@ public:
   c10::intrusive_ptr<TensorImpl>
   my_shallow_copy_and_detach(T &&version_counter,
                              bool allow_tensor_metadata_change) const {
+    if (key_set_.has(DispatchKey::Python) &&
+        !c10::impl::tls_is_dispatch_key_excluded(DispatchKey::Python)) {
+      auto r = pyobj_interpreter_.load(std::memory_order_acquire)->detach(this);
+      if (r) {
+        r->set_version_counter(forward<T>(version_counter));
+        r->set_allow_tensor_metadata_change(allow_tensor_metadata_change);
+        return r;
+      }
+      // otherwise just copy the TensorImpl and not the PyObject.  Since
+      // the interpreter is dead no one can call us out on it
+    }
+
     auto copy
       = c10::make_intrusive<TorchyTensor>(key_set_, data_type_, device_opt_);
 
-    copy_tensor_metadata(this, copy.get(), forward<T>(version_counter),
-                         allow_tensor_metadata_change);
-
     if (trace_idx != -1u)
       trace.add_shared(trace_idx, (uintptr_t)copy.get());
-    copy->trace_idx = trace_idx;
 
-    // overriden by copy_tensor_metadata
-    copy->key_set_= copy->key_set_.add(DISPATCHKEY);
-    copy->numel_  = numel_;
-    copy->copy_torchy_data(this);
+    copy->copy_metadata(*this, forward<T>(version_counter),
+                        allow_tensor_metadata_change);
     return copy;
   }
 
@@ -333,17 +353,21 @@ public:
       trace.set_unobservable(trace_idx, (uintptr_t)this);
     trace_idx = -1u;
 
-    TensorImpl::shallow_copy_from(impl);
-    // overriden by copy_tensor_metadata
-    key_set_ = key_set_.add(DISPATCHKEY);
-
     if (auto tt = dynamic_cast<TorchyTensor*>(impl.get())) {
-      if (tt->trace_idx != -1u) {
+      if (tt->trace_idx != -1u)
         trace.add_shared(tt->trace_idx, (uintptr_t)this);
-        trace_idx = tt->trace_idx;
-      }
       copy_torchy_data(tt);
     }
+
+    {
+      Trace::PretendFlushing tmp(trace);
+      copy_tensor_metadata(impl.get(), this, version_counter(),
+                           allow_tensor_metadata_change());
+      refresh_numel();
+    }
+
+    // overriden by copy_tensor_metadata
+    key_set_ = key_set_.add(DISPATCHKEY);
   }
 };
 }
@@ -373,9 +397,18 @@ void init_update_in_place(uintptr_t tt) {
     ((TorchyTensor*)tt)->initInPlaceUpdate();
 }
 
-void end_update_in_place(uintptr_t tt) {
+void end_update_in_place_first(uintptr_t tt) {
   if (tt != DUMMY_TORCHY)
     ((TorchyTensor*)tt)->endInPlaceUpdate();
+}
+
+void end_update_in_place_copy(uintptr_t dst, uintptr_t src) {
+  assert(dst != DUMMY_TORCHY);
+  if (src != DUMMY_TORCHY) {
+    auto tt = (TorchyTensor*)src;
+    ((TorchyTensor*)dst)->copy_metadata(*tt, tt->version_counter(),
+                                        tt->allow_tensor_metadata_change());
+  }
 }
 
 #ifndef NDEBUG

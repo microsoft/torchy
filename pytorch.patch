@@ -20,12 +20,12 @@ index ff29b68dc4..cfae0dc783 100644
      resizable_ = false;
 +    reserved_ = false;
    }
-
+ 
    // This method can be used only after storage construction and cannot be used
 @@ -194,13 +195,18 @@ struct C10_API StorageImpl final : public c10::intrusive_ptr_target {
      return received_cuda_;
    }
-
+ 
 +  bool & reserved() {
 +    return reserved_;
 +  }
@@ -43,10 +43,10 @@ index ff29b68dc4..cfae0dc783 100644
  };
  } // namespace c10
 diff --git a/c10/core/TensorImpl.cpp b/c10/core/TensorImpl.cpp
-index a0c7673641..3c027a4a17 100644
+index de829c4937..d859fe1613 100644
 --- a/c10/core/TensorImpl.cpp
 +++ b/c10/core/TensorImpl.cpp
-@@ -480,9 +480,12 @@ void TensorImpl::copy_tensor_metadata_except_version_counter(
+@@ -555,9 +555,12 @@ void TensorImpl::copy_tensor_metadata_except_version_counter(
      const TensorImpl* src_impl,
      TensorImpl* dest_impl,
      bool allow_tensor_metadata_change) {
@@ -61,4 +61,4 @@ index a0c7673641..3c027a4a17 100644
 +  dest_impl->storage_offset_ = src_impl->storage_offset();
    dest_impl->data_type_ = src_impl->data_type_;
    dest_impl->device_opt_ = src_impl->device_opt_;
-   dest_impl->key_set_ = src_impl->key_set_;
+   dest_impl->key_set_ = src_impl->key_set_.remove(DispatchKey::Python);
