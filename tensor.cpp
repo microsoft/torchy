@@ -686,6 +686,12 @@ optional<IntArrayRef> shape_pool2d(const Tensor &in, IntArrayRef shape) {
   return tmp_shape = shape_pool2d(*shape_in, shape);
 }
 
+optional<IntArrayRef>
+shape_reduce(const Tensor &t, IntArrayRef dims, bool keepdim) {
+  GET_SHAPE(t);
+  return tmp_shape = shape_reduce(*shape_t, dims, keepdim);
+}
+
 bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
   if (!s1 || !s2)
     return false;

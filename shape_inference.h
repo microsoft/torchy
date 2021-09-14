@@ -262,3 +262,23 @@ std::vector<int64_t> shape_pool2d(IntArrayRef in, IntArrayRef shape) {
   res.insert(res.end(), shape.begin(), shape.end());
   return res;
 }
+
+std::vector<int64_t>
+shape_reduce(IntArrayRef s, IntArrayRef dims0, bool keepdim) {
+  auto dims = dims0.vec();
+  for (auto &dim : dims) {
+    if (dim < 0)
+      dim += s.size();
+  }
+  sort(dims.begin(), dims.end());
+
+  auto res = s.vec();
+  unsigned i = 0;
+  for (auto dim : dims) {
+    if (keepdim)
+      res[dim] = 1;
+    else
+      res.erase(res.begin() + dim - i++);
+  }
+  return res;
+}

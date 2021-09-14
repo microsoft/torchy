@@ -5250,6 +5250,7 @@ at::Tensor wrap_mean_dim(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
     return at::redispatch::mean(dispatchKeySet, self, dim, keepdim, dtype);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_MEAN_DIM, optional_or_else(dtype, self.dtype().toScalarType()), self.device());
+  set_shape(tt, shape_reduce(self, dim, keepdim));
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);
   return tt;
 }
