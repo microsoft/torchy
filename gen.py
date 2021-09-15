@@ -265,6 +265,8 @@ def mk_shape_infer(shape, all_args):
     return f'shape_std_promote({", ".join([arg.expr for arg in args])})'
   if shape == 'PROMOTE_1_2':
     return f'shape_std_promote({args[0].expr}, {args[1].expr})'
+  if shape == 'PROMOTE_1_2_3':
+    return f'shape_std_promote({args[0].expr}, {args[1].expr}, {args[2].expr})'
   if shape == 'MATMUL_1ST_2ND':
     return f'shape_matmul({args[0].expr}, {args[1].expr})'
   if shape == 'MATMUL_2ND_3RD':

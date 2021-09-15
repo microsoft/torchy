@@ -11953,7 +11953,7 @@ at::Tensor & wrap_addcmul_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::addcmul_outf(dispatchKeySet, self, tensor1, tensor2, value, out);
   }
-  bool flush = register_in_place(out, H_ADDCMUL_OUT, dispatchKeySet, false);
+  bool flush = register_in_place(out, H_ADDCMUL_OUT, dispatchKeySet, eq_shapes(out, shape_std_promote(self, tensor1, tensor2)));
   trace.append_arg(self);trace.append_arg(tensor1);trace.append_arg(tensor2);trace.append_arg(value);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));

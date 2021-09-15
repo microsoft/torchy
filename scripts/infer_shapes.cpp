@@ -80,6 +80,10 @@ unsigned standard_promote(unsigned a, unsigned b) {
   return lookup_shape(shape_std_promote(all_shapes[a], all_shapes[b]));
 }
 
+unsigned standard_promote(unsigned a, unsigned b, unsigned c) {
+  return standard_promote(standard_promote(a, b), c);
+}
+
 unsigned standard_promote(const vector<unsigned> &shapes) {
   unsigned shape = shapes[0];
   for (auto sh : shapes) {
@@ -349,6 +353,7 @@ struct C {
     bool eq_third = true;
     bool std_promote = true;
     bool promote_1_2 = true;
+    bool promote_1_2_3 = true;
     bool pick_1st_2nd = true;
     bool mul_1_2 = true;
     bool mult_1_2 = true;
@@ -386,6 +391,8 @@ struct C {
       TEST(std_promote,  out == standard_promote(trail));
       TEST(promote_1_2,  trail.size() >= 2 &&
                          out == standard_promote(trail[0], trail[1]));
+      TEST(promote_1_2_3, trail.size() >= 3 &&
+                          out == standard_promote(trail[0], trail[1],trail[2]));
       TEST(pick_1st_2nd, trail.size() >= 2 && out == pick_1st(trail[1]));
       TEST(mul_1_2,      trail.size() >= 2 && out == mul(trail[0], trail[1]));
       TEST(mult_1_2,     trail.size() >= 2 && out == mult(trail[0], trail[1]));
@@ -430,6 +437,7 @@ struct C {
     PRINT(eq_third, "EQ_THIRD")
     PRINT(std_promote, "STD_PROMOTE")
     PRINT(promote_1_2, "PROMOTE_1_2")
+    PRINT(promote_1_2_3, "PROMOTE_1_2_3")
     PRINT(pick_1st_2nd, "PICK_1ST_2ND")
     PRINT(mul_1_2, "MUL_1ST_2ND")
     PRINT(mult_1_2, "MULT_1ST_2ND")

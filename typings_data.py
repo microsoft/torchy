@@ -682,6 +682,7 @@ shape_inference = {
   'addcdiv': 'STD_PROMOTE',
   'addcdiv_': 'EQ_FIRST',
   'addcmul': 'STD_PROMOTE',
+  'addcmul.out': 'PROMOTE_1_2_3',
   'addcmul_': 'EQ_FIRST',
   'addmm': 'MATMUL_2ND_3RD',
   'addmm.out': 'MATMUL_2ND_3RD',
