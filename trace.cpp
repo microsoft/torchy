@@ -15,6 +15,8 @@
 using namespace at;
 using namespace std;
 
+static bool force_interpreter = getenv("TORCHY_FORCE_INTERPRETER");
+
 namespace interpreter { void run(Trace &t); }
 namespace torchscript { bool run(Trace &t); }
 
@@ -343,12 +345,6 @@ void Trace::flush(STATS(FlushReason reason)) {
 
 #ifdef TORCHY_PRINT_TRACE_ON_FLUSH
   cerr << "Flush trace\n" << *this << endl;
-#endif
-
-#ifdef TORCHY_RELEASE
-  bool force_interpreter = false;
-#else
-  bool force_interpreter = getenv("TORCHY_FORCE_INTERPRETER");
 #endif
 
   STATS(StopWatch run_time);
