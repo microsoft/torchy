@@ -343,6 +343,15 @@ def gen_dispatch_wrapper(fn):
 
   dispatchkey = "dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);"
 
+  # emit pass-through wrapper for unsupported functions
+  if skip_fn(fn):
+    return f'''
+{fndecl} {{
+  stats_inc_unsupported_wrapper();
+  {dispatchkey}
+  return {redispatch};
+}}'''
+
   # returns a tensor and takes tensors as arguments
   # e.g. add(x, y)
   if rettype == 'at::Tensor':
@@ -450,11 +459,12 @@ fd7 = open('autogen/ops_data.h', 'w')
 
 total = 0
 for fn in native_functions.native_functions:
-  if skip_fn(fn):
-    continue
   total += 1
   print(gen_dispatch_wrapper(fn), file=fd1)
   print(gen_torch_library_table(fn), file=fd2)
+
+  if skip_fn(fn):
+    continue
   gen_ops_names(fn)
   gen_interpreter_redispatch(fn)
 

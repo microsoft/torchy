@@ -786,10 +786,6 @@ bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks,
 
 #include "autogen/dispatch_wrappers.h"
 
-TORCH_LIBRARY_IMPL(_, DISPATCHKEY_NO_NS, m) {
-  m.fallback(torch::CppFunction::makeFallthrough());
-}
-
 TORCH_LIBRARY_IMPL(aten, DISPATCHKEY_NO_NS, m) {
 #include "autogen/torch_library_table.h"
 }
