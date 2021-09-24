@@ -92,6 +92,7 @@ array<unsigned, (unsigned)FlushReason::NUM_REASONS> flush_reasons_count;
 array<unsigned, MAX_TRACE_LENGTH+1> trace_size;
 array<unsigned, MAX_TRACE_LENGTH+1> num_trace_outputs;
 array<unsigned, MAX_TRACE_LENGTH+1> num_trace_deads;
+vector<pair<float, string>> trace_compile_time;
 unordered_map<string, vector<float>> trace_run_time;
 unordered_map<string, unordered_map<string, unsigned>> trace_successors;
 string first_trace, current_trace, last_trace;
@@ -146,6 +147,17 @@ struct PrintStats {
         cerr << "Trace executed " << p.second.size() << " times ("
              << unsigned(median(p.second) * 1000000.0) << " us)\n"
              << p.first << "\n\n";
+    }
+
+    print_header("Slowest Trace Compilation");
+    sort(trace_compile_time.begin(), trace_compile_time.end());
+    {
+      auto I = trace_compile_time.rbegin(), E = trace_compile_time.rend();
+      for (unsigned i = 0; i < 10 && I != E; ++i, ++I) {
+        cerr << "Trace compiled in "
+             << unsigned(I->first * 1000000.0) << " us\n"
+             << I->second << "\n\n";
+      }
     }
 
     cerr << "Number of Torchscript failures:\t" << torchscript_failures
@@ -269,7 +281,7 @@ void stats_register_trace(const Trace &t, FlushReason reason) {
   for (unsigned i = 0; i < num_ops; ++i) {
     auto &op = ops[i];
     num_outputs += op.observable;
-    num_deads   += !op.needsComputing();
+    num_deads   += op.dead;
   }
   assert(num_outputs > 0);
   ++num_trace_outputs[num_outputs];
@@ -283,6 +295,10 @@ void stats_register_trace(const Trace &t, FlushReason reason) {
 
   if (first_trace.empty())
     first_trace = current_trace;
+}
+
+void stats_register_compile_time(const StopWatch &run_time) {
+  trace_compile_time.emplace_back(run_time.seconds(), current_trace);
 }
 
 void stats_register_trace_time(const StopWatch &run_time) {

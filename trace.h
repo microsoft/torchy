@@ -4,7 +4,10 @@
 // Distributed under the MIT license that can be found in the LICENSE file.
 
 #include "config.h"
+#include "autogen/ops_data.h"
+#include "backends/backends.h"
 #include "ops.h"
+#include <ATen/core/ivalue.h>
 #include <ATen/Tensor.h>
 #include <ATen/ThreadLocalState.h>
 #include <c10/core/DispatchKeySet.h>
@@ -15,28 +18,47 @@
 #include <map>
 #include <memory>
 #include <ostream>
+#include <unordered_map>
 #include <vector>
 
 #define MAX_TRACE_LENGTH 64
+
+class InputIdx {
+  int idx;
+public:
+  InputIdx(unsigned idx, bool input) : idx(input ? idx : ~idx) {}
+
+  bool is_input() const { return idx >= 0; }
+  bool is_trace() const { return idx < 0; }
+
+  unsigned input_idx() const {
+    assert(is_input());
+    return idx;
+  }
+
+  unsigned trace_idx() const {
+    assert(!is_input());
+    return ~idx;
+  }
+
+  bool operator==(const InputIdx &rhs) const { return idx == rhs.idx; }
+};
 
 using UnionInputTy = c10::variant<
   bool,
   double,
   int64_t,
+  InputIdx,
   at::Device,
   at::Dimname,
   at::MemoryFormat,
   at::ScalarType,
-  at::Storage,
-  at::Tensor,
-  c10::List<c10::optional<at::Tensor>>,
   c10::optional<bool>,
   c10::optional<double>,
   c10::optional<int64_t>,
-  c10::optional<at::Generator>,
+  c10::optional<InputIdx>,
   c10::optional<at::MemoryFormat>,
   c10::optional<at::Scalar>,
-  c10::optional<at::Tensor>,
   c10::optional<c10::Device>,
   c10::optional<c10::Layout>,
   c10::optional<c10::ScalarType>,
@@ -44,39 +66,46 @@ using UnionInputTy = c10::variant<
   c10::Scalar,
   std::string,
   std::vector<long>,
+  std::vector<InputIdx>,
+  std::vector<c10::optional<InputIdx>>,
   std::vector<at::Dimname>,
-  std::vector<at::Tensor>,
   c10::optional<std::vector<double>>,
   c10::optional<std::vector<long>>,
   c10::optional<std::vector<at::Dimname>>
 >;
 
-struct TensorOp {
-  // TODO: measure typical amount of sharing
-  std::array<uintptr_t, 3> tensors;
-  // TODO: investigate if specializing this for the common case
-  // e.g. 2 tensors makes sense (would save space + 1 mem alloc)
+struct TraceOpDef {
   std::vector<UnionInputTy> args;
+  TorchOp id;
+  bool observable;
+  bool dead;
+
+  bool inplace() const {
+    return id >= FIRST_INPLACE_OP;
+  }
+
+  bool operator==(const TraceOpDef &rhs) const;
+
+private:
+  void destroy();
+
+  friend class Trace;
+};
+
+
+struct TraceOpRunTimeData {
+  std::array<uintptr_t, 3> tensors;
   at::ThreadLocalState tls;
   c10::DispatchKeySet dispatch_key;
-  TorchOp id;
   uint16_t refs;
-  bool observable;
+  bool inplace;
 
   bool needsComputing() const {
     return refs > 0;
   }
 
-  bool operator!=(const at::Tensor &t) const;
-
-  void print(std::ostream &os,
-             std::map<const at::TensorImpl*, unsigned> &inputs,
-             unsigned idx) const;
-
 private:
   void destroy();
-  void incref();
-  void decref(TensorOp *ops);
   bool hasTensors() const;
   unsigned numTensors() const;
   uintptr_t someTensor() const;
@@ -85,66 +114,95 @@ private:
 };
 
 
+struct TraceCacheKey {
+  std::unique_ptr<TraceOpDef[]> ops;
+  unsigned num_ops;
+  // TODO: some backends may want shape information of inputs to specialize code
+
+  TraceCacheKey(TraceOpDef *ops, unsigned num_ops)
+    : ops(ops), num_ops(num_ops) {}
+
+  bool operator==(const TraceCacheKey &rhs) const;
+};
+
+struct TraceCacheKeyHash {
+  size_t operator()(const TraceCacheKey &key) const;
+};
+
+struct TraceCacheData {
+  void *program = nullptr;
+  TorchyBackend *backend = nullptr;
+
+  TraceCacheData(void *program, TorchyBackend *backend)
+    : program(program), backend(backend) {}
+
+  TraceCacheData(TraceCacheData &&other) {
+    std::swap(program, other.program);
+    std::swap(backend, other.backend);
+  }
+
+  ~TraceCacheData();
+};
+
+using InputData = std::vector<c10::IValue>;
+
 class Trace {
-  TensorOp ops[MAX_TRACE_LENGTH];
+  TraceOpDef          ops[MAX_TRACE_LENGTH];
+  TraceOpRunTimeData data[MAX_TRACE_LENGTH];
+  InputData inputs;
+
+  std::unordered_map<TraceCacheKey, TraceCacheData, TraceCacheKeyHash> cache;
   unsigned next_op = 0;
   bool flushing = false;
   bool destroyed = false;
 
-  template <typename T>
-  void incref(const T &t) {}
+  void incref(unsigned idx);
+  void decref(unsigned idx);
+  InputIdx get_tensor_idx(const at::Tensor &t);
+  TraceCacheKey mk_trace_key();
 
-  void incref(const at::Tensor &t);
-  void incref(const c10::optional<at::Tensor> &t);
-  void incref(const at::TensorList &l);
-  void incref(const c10::List<c10::optional<at::Tensor>> &l);
+  void print(std::ostream &os, unsigned idx) const;
 
 public:
   ~Trace();
 
   bool is_flushing() const { return flushing; }
   unsigned numOps() const { return next_op; }
-  const TensorOp* getOps() const { return ops; }
-  TensorOp* getOps() { return ops; }
+  const TraceOpDef* getOps() const { return ops; }
+  TraceOpDef* getOps() { return ops; }
+  const TraceOpRunTimeData* getRuntimeData() const { return data; }
+  InputData& getInputs() { return inputs; }
+  const InputData& getInputs() const { return inputs; }
 
   template<typename A>
   void append_arg(A &&arg) {
-    incref(arg);
     ops[next_op-1].args.emplace_back(std::forward<A>(arg));
   }
 
   template<typename T>
   void append_arg(at::ArrayRef<T> arg) {
-    incref(arg);
     ops[next_op-1].args.emplace_back(arg.vec());
   }
 
   template<typename T>
   void append_arg(c10::optional<at::ArrayRef<T>> arg) {
     c10::optional<std::vector<T>> copy;
-    if (arg) {
-      incref(*arg);
-      copy = arg->vec();
-    }
-    ops[next_op-1].args.emplace_back(std::move(copy));
-  }
-
-  void append_arg(c10::string_view arg) {
-    ops[next_op-1].args.emplace_back(std::string(arg.data(), arg.size()));
-  }
-
-  void append_arg(c10::optional<c10::string_view> arg) {
-    c10::optional<std::string> copy;
     if (arg)
-      copy = std::string(arg->data(), arg->size());
+      copy = arg->vec();
     ops[next_op-1].args.emplace_back(std::move(copy));
   }
 
-  template<typename T>
-  void append_arg(const c10::List<T> &arg) {
-    incref(arg);
-    ops[next_op-1].args.emplace_back(arg.copy());
+  void append_arg(const at::Tensor &arg);
+  void append_arg(at::Tensor &arg) {
+    append_arg(const_cast<const at::Tensor&>(arg));
   }
+  void append_arg(at::ArrayRef<at::Tensor> arg);
+  void append_arg(c10::optional<at::Tensor> arg);
+  void append_arg(const c10::List<c10::optional<at::Tensor>> &arg);
+  void append_arg(at::Storage &&arg);
+  void append_arg(c10::optional<at::Generator> &&arg);
+  void append_arg(c10::string_view arg);
+  void append_arg(c10::optional<c10::string_view> arg);
 
   unsigned register_tensor(uintptr_t tensor, TorchOp op_id,
                            c10::DispatchKeySet ks);

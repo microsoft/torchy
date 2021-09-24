@@ -427,20 +427,20 @@ def gen_interpreter_redispatch(fn):
   for i, arg in enumerate(dispatcher_exprs):
     type = arg.type.cpp_type(strip_ref=False)
     type = type.replace('const ', '')
-    args.append(f'load<{type}>()(op.args[{i}])')
+    args.append(f'load<{type}>()(op.args[{i}], load_state)')
 
   redispatch = f'<FN>(ks, {", ".join(args)})'
   rettype = dispatcher_sig.returns_type().cpp_type()
 
   if rettype == 'at::Tensor':
-    code = f'set(op, {redispatch});\n  continue;'
+    code = f'results[i] = {redispatch};\n  break;'
     inplace = False
 
   # in-place op
   else:
     assert rettype == 'at::Tensor &' or rettype == 'const at::Tensor &'
     inplace = True
-    code = f'{redispatch};\n  break;'
+    code = f'results[i] = {redispatch};\n  break;'
 
   signature = dispatcher_sig.type()
   fn_ptr = f'at::redispatch::{sig.name()}'

@@ -1,10 +1,8 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
-#include "autogen/ops_data.h"
 #include "common.h"
 #include "dispatch.h"
-#include "trace.h"
 #include <ATen/RedispatchFunctions.h>
 #include <type_traits>
 
@@ -18,30 +16,44 @@ using namespace at;
 
 namespace {
 
+struct LoadState {
+  InputData &inputs;
+  Tensor *results;
+  std::vector<std::unique_ptr<std::vector<Tensor>>> tmp_vectors;
+  std::vector<std::unique_ptr<c10::List<c10::optional<Tensor>>>> tmp_lists;
+
+  void reset() {
+    tmp_vectors.clear();
+    tmp_lists.clear();
+  }
+};
+
+#define LOAD_ARGS UnionInputTy &arg, LoadState &load_state
+
 template <typename T>
 struct load {
-  T operator()(UnionInputTy &arg) {
+  T operator()(LOAD_ARGS) {
     return std::move(get<T>(arg));
   }
 };
 
 template <typename T>
 struct load<T&> {
-  T& operator()(UnionInputTy &arg) {
+  T& operator()(LOAD_ARGS) {
     return get<T>(arg);
   }
 };
 
 template <typename T>
 struct load<ArrayRef<T>> {
-  ArrayRef<T> operator()(UnionInputTy &arg) {
+  ArrayRef<T> operator()(LOAD_ARGS) {
     return get<std::vector<T>>(arg);
   }
 };
 
 template <typename T>
 struct load<c10::optional<ArrayRef<T>>> {
-  c10::optional<ArrayRef<T>> operator()(UnionInputTy &arg) {
+  c10::optional<ArrayRef<T>> operator()(LOAD_ARGS) {
     auto &opt = get<c10::optional<std::vector<T>>>(arg);
     if (!opt)
       return c10::nullopt;
@@ -50,89 +62,131 @@ struct load<c10::optional<ArrayRef<T>>> {
 };
 
 template <>
-c10::string_view load<c10::string_view>::operator()(UnionInputTy &arg) {
-  return get<std::string>(arg);
-}
-
-template <>
-c10::optional<c10::string_view>
-load<c10::optional<c10::string_view>>::operator()(UnionInputTy &arg) {
-  auto &opt = get<c10::optional<std::string>>(arg);
-  if (!opt)
-    return c10::nullopt;
-  return *opt;
-}
-
-#include "autogen/interpreter_redispatch_tables.h"
-
-struct DispatchKeyComputer {
-  c10::DispatchKeySet ks;
-
-  DispatchKeyComputer(c10::DispatchKeySet ks) : ks(ks) {}
-
-  template <typename T>
-  void operator()(const T&) {}
-
-  void operator()(const at::Tensor &t) {
-    ks = ks | t.key_set();
-  }
-
-  void operator()(const at::Generator &gen) {
-    if (gen.defined())
-      ks = ks | gen.key_set();
-  }
-
-  template<typename T>
-  void operator()(const c10::optional<T> &opt) {
-    if (opt)
-      (*this)(*opt);
-  }
-
-  template<typename T>
-  void operator()(const std::vector<T> &l) {
-    for (const auto &elem : l) {
-      (*this)(elem);
-    }
-  }
-
-  template<typename T>
-  void operator()(const at::List<T> &l) {
-    for (const auto &it : l) {
-      const T &elem = it;
-      (*this)(elem);
-    }
+struct load<c10::string_view> {
+  c10::string_view operator()(LOAD_ARGS) {
+    return get<std::string>(arg);
   }
 };
 
+template <>
+struct load<c10::optional<c10::string_view>> {
+  c10::optional<c10::string_view> operator()(LOAD_ARGS) {
+    auto &opt = get<c10::optional<std::string>>(arg);
+    if (!opt)
+      return c10::nullopt;
+    return *opt;
+  }
+};
+
+Tensor& get_tensor(InputIdx idx, LoadState &load_state) {
+  return idx.is_input() ? load_state.inputs[idx.input_idx()].toTensor()
+                        : load_state.results[idx.trace_idx()];
+}
+
+template <>
+struct load<Tensor&> {
+  Tensor& operator()(LOAD_ARGS) {
+    return get_tensor(get<InputIdx>(arg), load_state);
+  }
+};
+
+template <>
+struct load<optional<Tensor>&> {
+  optional<Tensor> operator()(LOAD_ARGS) {
+    auto idx = get<optional<InputIdx>>(arg);
+    if (!idx)
+      return c10::nullopt;
+    return get_tensor(*idx, load_state);
+  }
+};
+
+template <>
+struct load<TensorList> {
+  TensorList operator()(LOAD_ARGS) {
+    auto vect = std::make_unique<std::vector<Tensor>>();
+    for (auto idx : get<std::vector<InputIdx>>(arg)) {
+      vect->emplace_back(get_tensor(idx, load_state));
+    }
+    auto ret = vect.get();
+    load_state.tmp_vectors.emplace_back(std::move(vect));
+    return *ret;
+  }
+};
+
+template <>
+struct load<c10::List<c10::optional<Tensor>>&> {
+  c10::List<c10::optional<Tensor>>& operator()(LOAD_ARGS) {
+    auto lst = std::make_unique<c10::List<c10::optional<Tensor>>>();
+    for (auto idx : get<std::vector<c10::optional<InputIdx>>>(arg)) {
+      lst->push_back(
+        idx ? make_optional(get_tensor(*idx, load_state)) : c10::nullopt);
+    }
+    auto ret = lst.get();
+    load_state.tmp_lists.emplace_back(std::move(lst));
+    return *ret;
+  }
+};
+
+template <>
+struct load<Storage> {
+  Storage operator()(LOAD_ARGS) {
+    // Storage input is never shared; can be moved
+    return
+      std::move(load_state.inputs[get<InputIdx>(arg).input_idx()]).toStorage();
+  }
+};
+
+template <>
+struct load<c10::optional<Generator>> {
+  c10::optional<Generator> operator()(LOAD_ARGS) {
+    auto idx = get<c10::optional<InputIdx>>(arg);
+    if (!idx)
+      return c10::nullopt;
+    return load_state.inputs[idx->input_idx()].toGenerator();
+  }
+};
+
+#include "autogen/interpreter_redispatch_tables.h"
+
 }
 
 
-namespace interpreter {
+void Interpreter::run(const void *prog, Trace &t) {
+  Tensor results[MAX_TRACE_LENGTH];
+  LoadState load_state{t.getInputs(), results};
 
-void run(Trace &t) {
   ThreadLocalState tls;
   auto *ops = t.getOps();
+  auto *data = t.getRuntimeData();
 
   for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
     auto &op = ops[i];
-    if (!op.needsComputing())
+    auto &rdata = data[i];
+    if (op.dead)
       continue;
 
 #ifdef DEBUG_DISPATCH
     std::cerr << "Dispatch " << op.id << std::endl;
 #endif
 
-    DispatchKeyComputer visitor(op.dispatch_key);
-    for (auto &arg : op.args) {
-      visit(visitor, arg);
+    auto ks = rdata.dispatch_key;
+    for (auto &arg : t.getInputs()) {
+      if (arg.isTensor()) {
+        ks = ks | arg.toTensor().key_set();
+      } else if (arg.isGenerator()) {
+        const auto &gen = arg.toGenerator();
+        if (gen.defined())
+          ks = ks | gen.key_set();
+      } else {
+        assert(arg.isStorage());
+      }
     }
-    auto ks
-      = visitor.ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    ks = ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
 
-    ThreadLocalState::setThreadLocalState(op.tls);
+    ThreadLocalState::setThreadLocalState(rdata.tls);
 
-    if (op.id >= FIRST_INPLACE_OP)
-      init_update_in_place(op);
+    if (rdata.inplace)
+      init_update_in_place(rdata);
 
     switch (op.id) {
 
@@ -142,15 +196,17 @@ void run(Trace &t) {
         assert(0 && "Unhandled op");
     }
 
-    // generated redispatch code only reaches here for in-place ops
-    end_update_in_place(op);
+    if (rdata.inplace) {
+      end_update_in_place(rdata);
+    } else {
+      set(rdata, results[i]);
+    }
+    load_state.reset();
   }
 
   for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
-    finish_trace(ops[i]);
+    finish_trace(data[i]);
   }
 
   ThreadLocalState::setThreadLocalState(tls);
-}
-
 }

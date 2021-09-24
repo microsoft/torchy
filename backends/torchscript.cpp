@@ -1,9 +1,7 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
-#include "autogen/ops_data.h"
 #include "common.h"
-#include "trace.h"
 #include <torch/csrc/jit/api/method.h>
 #include <map>
 
@@ -25,17 +23,19 @@ std::string cut_overload(const char *fn) {
   return dot ? std::string(fn, dot - fn) : fn;
 }
 
-using ValueMap = std::map<const TensorImpl*, Value*>;
-
 class ValGen {
   Graph &g;
-  ValueMap &map;
-  Stack &inputs;
+  Value **results;
+  std::vector<Value*> inputs;
   Value *none_val = nullptr;
 
 public:
-  ValGen(Graph &g, ValueMap &map, Stack &inputs)
-    : g(g), map(map), inputs(inputs) {}
+  ValGen(Graph &g, Value **results, const Stack &in_stack)
+    : g(g), results(results) {
+    for (unsigned i = 0, e = in_stack.size(); i < e; ++i) {
+      inputs.push_back(g.addInput());
+    }
+  }
 
   Value* mk_none() {
     if (!none_val) {
@@ -51,13 +51,8 @@ public:
     return g.insertConstant(a);
   }
 
-  Value* operator()(const Tensor &t) {
-    auto &v = map[t.getIntrusivePtr().get()];
-    if (!v) {
-      v = g.addInput();
-      inputs.emplace_back(t);
-    }
-    return v;
+  Value* operator()(const InputIdx &in) {
+    return in.is_input() ? inputs[in.input_idx()] : results[in.trace_idx()];
   }
 
   template<typename T>
@@ -75,55 +70,41 @@ public:
     g.appendNode(n);
     return n->output();
   }
-
-  template<typename T>
-  Value* operator()(const List<T> &l) {
-    std::vector<Value*> vals;
-    for (const auto &it : l) {
-      const T &elem = it;
-      vals.emplace_back((*this)(elem));
-    }
-    auto *n = g.createList(vals[0]->type(), vals);
-    g.appendNode(n);
-    return n->output();
-  }
-
-  // unsupported by TorchScript
-  Value* operator()(const Storage&) {
-    return nullptr;
-  }
 };
+
+struct CompiledProgram {
+  std::unique_ptr<GraphFunction> fn;
+  uint8_t output_ops[MAX_TRACE_LENGTH];
+  unsigned num_outputs = 0;
+};
+
 }
 
 
-namespace torchscript {
-
-bool run(Trace &t) {
+void* TorchScript::compile(const Trace &t) {
   auto *ops = t.getOps();
+  Value *results[MAX_TRACE_LENGTH];
   Value *outputs[MAX_TRACE_LENGTH];
-  uint8_t output_ops[MAX_TRACE_LENGTH];
-  unsigned num_outputs = 0;
-  Stack stack;
-  ValueMap val_map;
   Value *op_inputs[MAX_NUM_INPUTS];
 
+  auto prog = std::make_unique<CompiledProgram>();
+  auto &output_ops  = prog->output_ops;
+  auto &num_outputs = prog->num_outputs;
+
   auto graph = std::make_shared<Graph>();
-  ValGen val_gen(*graph, val_map, stack);
+  ValGen val_gen(*graph, results, t.getInputs());
 
   for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
     auto &op = ops[i];
-    if (!op.needsComputing())
+    if (op.dead)
       continue;
-
-    if (op.id >= FIRST_INPLACE_OP)
-      init_update_in_place(op);
 
     unsigned num_inputs = 0;
     for (auto &arg : op.args) {
       auto *v = visit(val_gen, arg);
       if (!v) {
         stats_inc_torchscript_fail();
-        return false;
+        return nullptr;
       }
       op_inputs[num_inputs++] = v;
     }
@@ -131,22 +112,22 @@ bool run(Trace &t) {
     Node *n = graph->create(Symbol::aten(cut_overload(op_name(op.id))),
                             at::ArrayRef<Value*>(op_inputs, num_inputs));
     if (!n->maybeOperator()) {
+#ifdef DEBUG_GRAPH
       std::cerr << "Op not supported by TorchScript: " << op_name(op.id)
                 << std::endl;
       // prints a nice error msg with supported overloads
       n->getOperator();
+#endif
+      stats_inc_torchscript_fail();
+      return nullptr;
     }
     graph->appendNode(n);
 
     Value *v = n->output();
-    if (op.observable && op.id < FIRST_INPLACE_OP) {
+    results[i] = v;
+    if (op.observable && !op.inplace()) {
       output_ops[num_outputs] = i;
       outputs[num_outputs++] = v;
-    }
-
-    for (auto tt : op.tensors) {
-      if (auto *t = is_impl(tt))
-        val_map.emplace(t, v);
     }
   }
 
@@ -166,21 +147,42 @@ bool run(Trace &t) {
 
   assert((graph->lint(), true));
 
-  GraphFunction fn("torchy", move(graph), {});
+  prog->fn
+    = std::make_unique<GraphFunction>("torchy", move(graph),
+                                      std::function<void(GraphFunction&)>());
 
 #ifdef DEBUG_GRAPH
-  fn.optimized_graph()->print(std::cerr << "\nOptimized graph:\n");
+  prog->fn->optimized_graph()->print(std::cerr << "\nOptimized graph:\n");
   std::cerr << '\n';
 #endif
 
-  fn.run(stack);
+  return prog.release();
+}
+
+void TorchScript::run(const void *ptr, Trace &t) {
+  auto prog = (const CompiledProgram*)ptr;
+  auto &output_ops = prog->output_ops;
+  auto num_outputs = prog->num_outputs;
+  auto *data = t.getRuntimeData();
+
+  // FIXME: we don't take TLS or dispatch keys into account here
+  // may break more complicated programs..
+
+  for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
+    auto &op = data[i];
+    if (op.needsComputing() && op.inplace)
+      init_update_in_place(op);
+  }
+
+  auto &stack = t.getInputs();
+  prog->fn->run(stack);
   // inputs are consumed, and the output is passed back on the stack
   assert(stack.size() == 1);
 
   // patch tensors with the output
   if (num_outputs == 1) {
     assert(stack[0].isTensor());
-    set(ops[output_ops[0]], std::move(stack[0]).toTensor());
+    set(data[output_ops[0]], std::move(stack[0]).toTensor());
   }
   else if (num_outputs > 1) {
     assert(stack[0].isTuple());
@@ -190,17 +192,18 @@ bool run(Trace &t) {
 
     for (unsigned i = 0; i < num_outputs; ++i) {
       assert(elems[i].isTensor());
-      set(ops[output_ops[i]], std::move(elems[i]).toTensor());
+      set(data[output_ops[i]], std::move(elems[i]).toTensor());
     }
   }
 
   for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
-    auto &op = ops[i];
-    if (op.id >= FIRST_INPLACE_OP)
+    auto &op = data[i];
+    if (op.needsComputing() && op.inplace)
       end_update_in_place(op);
     finish_trace(op);
   }
-  return true;
 }
 
+void TorchScript::destroy(void *prog) {
+  delete (CompiledProgram*)prog;
 }

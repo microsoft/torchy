@@ -3,20 +3,22 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
-#include <ATen/Tensor.h>
+class InputIdx;
 
 class TensorVisitor {
-  std::function<void(const at::Tensor&)> visit;
+  std::function<void(InputIdx)> visit;
+  InputData &inputs;
 
 public:
-  TensorVisitor(std::function<void(const at::Tensor&)> &&visit)
-   : visit(std::move(visit)) {}
+  TensorVisitor(std::function<void(InputIdx)> &&visit, InputData &inputs)
+   : visit(std::move(visit)), inputs(inputs) {}
 
   template <typename T>
   void operator()(const T&) {}
 
-  void operator()(const at::Tensor &t) {
-    visit(t);
+  void operator()(const InputIdx &idx) {
+    if (idx.is_trace() || inputs[idx.input_idx()].isTensor())
+      visit(idx);
   }
 
   template<typename T>
@@ -28,14 +30,6 @@ public:
   template<typename T>
   void operator()(const std::vector<T> &l) {
     for (const auto &elem : l) {
-      (*this)(elem);
-    }
-  }
-
-  template<typename T>
-  void operator()(const at::List<T> &l) {
-    for (const auto &it : l) {
-      const T &elem = it;
       (*this)(elem);
     }
   }

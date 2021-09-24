@@ -2,6 +2,7 @@
 // Distributed under the MIT license that can be found in the LICENSE file.
 
 #include "trace.h"
+#include "backends/backends.h"
 #include "stopwatch.h"
 #include "tensor.h"
 #include "utils.h"
@@ -15,90 +16,113 @@
 using namespace at;
 using namespace std;
 
-static bool force_interpreter = getenv("TORCHY_FORCE_INTERPRETER");
+static Interpreter interpreter;
+static TorchScript torchscript;
+static TorchyBackend *backend
+  = getenv("TORCHY_FORCE_INTERPRETER")
+      ? (TorchyBackend*)&interpreter : (TorchyBackend*)&torchscript;
 
-namespace interpreter { void run(Trace &t); }
-namespace torchscript { bool run(Trace &t); }
+bool TraceOpDef::operator==(const TraceOpDef &rhs) const {
+  return id == rhs.id && observable == rhs.observable && dead == rhs.dead &&
+         args == rhs.args;
+}
 
-void TensorOp::destroy() {
+void TraceOpDef::destroy() {
   args.clear();
+}
+
+void TraceOpRunTimeData::destroy() {
   tls.~ThreadLocalState();
 }
 
-void TensorOp::incref() {
-  assert(observable);
-  ++refs;
-  assert(refs != 0);
+void Trace::incref(unsigned idx) {
+  assert(idx < next_op);
+  auto &op    = ops[idx];
+  auto &rdata = data[idx];
+  assert(op.observable && !op.dead && rdata.refs > 0);
+  ++rdata.refs;
+  assert(rdata.refs != 0);
 }
 
-void TensorOp::decref(TensorOp *ops) {
-  assert(refs > 0);
-  --refs;
+void Trace::decref(unsigned idx) {
+  assert(idx < next_op);
+  auto &op    = ops[idx];
+  auto &rdata = data[idx];
+  assert(!op.dead && rdata.refs > 0);
+  --rdata.refs;
 
-  if (refs == 0) {
-    TensorVisitor visitor([&](const Tensor &t) {
-      auto idx = trace_idx(t);
-      if (idx != -1u)
-        ops[idx].decref(ops);
-    });
-    for (auto &arg : args) {
+  if (rdata.refs == 0) {
+    TensorVisitor visitor([&](InputIdx idx) {
+      if (idx.is_trace())
+        decref(idx.trace_idx());
+    }, inputs);
+    for (auto &arg : op.args) {
       visit(visitor, arg);
     }
-    assert(!observable && !hasTensors());
-    destroy();
+    assert(!op.observable && !rdata.hasTensors());
+    op.dead = true;
+    op.destroy();
+    rdata.destroy();
   }
 }
 
-bool TensorOp::hasTensors() const {
+bool TraceOpRunTimeData::hasTensors() const {
   return find_if(tensors.begin(), tensors.end(), [](auto t) { return t != 0; })
            != tensors.end();
 }
 
-unsigned TensorOp::numTensors() const {
+unsigned TraceOpRunTimeData::numTensors() const {
   return count_if(tensors.begin(), tensors.end(), [](auto t) { return t!=0; });
 }
 
-uintptr_t TensorOp::someTensor() const {
+uintptr_t TraceOpRunTimeData::someTensor() const {
   auto I = find_if(tensors.begin(), tensors.end(),
                    [](auto t) { return t != 0 && t != DUMMY_TORCHY; });
   return I == tensors.end() ? 0 : *I;
 }
 
-bool TensorOp::operator!=(const Tensor &t) const {
-  auto *t_ptr = t.getIntrusivePtr().get();
-  for (auto ptr : tensors) {
-    if (ptr == (uintptr_t)t_ptr)
-      return false;
-  }
-  return true;
+bool TraceCacheKey::operator==(const TraceCacheKey &rhs) const {
+  if (num_ops != rhs.num_ops)
+    return false;
+  return equal(ops.get(), &ops[num_ops], rhs.ops.get());
 }
 
+size_t TraceCacheKeyHash::operator()(const TraceCacheKey &key) const {
+  size_t hash = 0;
+  // we only hash the prefix of the trace ops
+  // this enables us to discover quickly traces that need deoptimization
+  // and prefix of traces for speculative execution
+  unsigned bits = 11;
+  unsigned max_rounds = (sizeof(size_t) * 8) / bits;
+  for (unsigned i = 0; i < min(key.num_ops, max_rounds); ++i) {
+    hash = (hash << bits) | key.ops[i].id;
+  }
+  return hash;
+}
+
+TraceCacheData::~TraceCacheData() {
+  if (backend)
+    backend->destroy(program);
+}
+
+
 namespace {
-using InputMap = map<const TensorImpl*, unsigned>;
 
 class printer {
   ostream &os;
-  InputMap &inputs;
-  const TensorOp &op;
-  unsigned op_idx;
 
 public:
-  printer(ostream &os, InputMap &inputs, const TensorOp &op, unsigned op_idx)
-    : os(os), inputs(inputs), op(op), op_idx(op_idx) {}
+  printer(ostream &os) : os(os) {}
 
   template<typename T>
   ostream& operator()(const T &a) {
     return os << a;
   }
 
-  ostream& operator()(const Tensor &t) {
-    auto idx = trace_idx(t);
-    if (idx != -1u && (op != t || idx < op_idx))
-      return os << '%' << idx;
-
-    auto n = inputs.emplace(t.getIntrusivePtr().get(),
-                            (unsigned)inputs.size()).first->second;
-    return os << "in<" << n << '>';
+  ostream& operator()(const InputIdx &idx) {
+    if (idx.is_input())
+      return os << "in<" << idx.input_idx() << '>';
+    return os << '%' << idx.trace_idx();
   }
 
   template<typename T>
@@ -119,97 +143,120 @@ public:
     }
     return os << ']';
   }
-
-  template<typename T>
-  ostream& operator()(const List<T> &l) {
-    os << '(';
-    bool first = true;
-    for (const auto &it : l) {
-      if (!first) os << ", ";
-      first = false;
-
-      const T &elem = it;
-      (*this)(elem);
-    }
-    return os << ')';
-  }
-
-  ostream& operator()(const Storage &s) {
-    if (!s)
-      return os << "storage(null)";
-    return os << "storage(" << s.nbytes() << ')';
-  }
-
-  ostream& operator()(const Generator &g) {
-    if (!g.defined())
-      return os << "generator(null)";
-    return os << "generator(" << g.current_seed() << ", " << g.device() << ')';
-  }
 };
 }
 
-void TensorOp::print(ostream &os, InputMap &inputs, unsigned idx) const {
-  auto t = someTensor();
+void Trace::print(ostream &os, unsigned idx) const {
+  assert(idx < next_op);
+  auto &op    = ops[idx];
+  auto &rdata = data[idx];
+
+  auto t = rdata.someTensor();
   if (t && tensor_has_dtype(t))
     os << '<' << tensor_get_dtype(t) << "> ";
-  os << id;
+  os << op.id;
 
-  if (!needsComputing()) {
+  if (op.dead) {
     os << " [dead]";
     return;
   }
 
   bool first = true;
-  for (auto &arg : args) {
+  for (auto &arg : op.args) {
     os << (first ? " " : ", ");
     first = false;
 
-    visit(printer(os, inputs, *this, idx), arg);
+    visit(printer(os), arg);
   }
 
-  auto n_tensors = numTensors();
-  assert(n_tensors >= observable);
-  assert(refs >= n_tensors);
+  auto n_tensors = rdata.numTensors();
+  assert(n_tensors >= op.observable);
+  assert(rdata.refs >= n_tensors);
 
-  if (refs > 0)
-    os << " #refs E/I=" << n_tensors << '/' << (refs - n_tensors);
+  if (rdata.refs > 0)
+    os << " #refs E/I=" << n_tensors << '/' << (rdata.refs - n_tensors);
 
-  if (observable)
+  if (op.observable)
     os << " #output";
 
   if (t && tensor_has_shape(t))
     os << " shape=" << tensor_get_shape(t);
 }
 
-
 Trace::~Trace() {
   destroyed = true;
 }
 
-void Trace::incref(const Tensor &t) {
+InputIdx Trace::get_tensor_idx(const Tensor &t) {
   auto idx = trace_idx(t);
   if (idx != -1u) {
     assert(idx < next_op);
-    ops[idx].incref();
+    // check if this is also an input tensor
+    // e.g. for inplace ops we have %0 = op %0 <-- but we want in<0> there
+    if (idx != next_op-1) {
+      incref(idx);
+      return { idx, false };
+    }
   }
+  inputs.emplace_back(t);
+  return { (unsigned)inputs.size()-1, true };
 }
 
-void Trace::incref(const optional<Tensor> &t) {
-  if (t)
-    incref(*t);
+void Trace::append_arg(const Tensor &t) {
+  auto val = get_tensor_idx(t);
+  ops[next_op-1].args.emplace_back(move(val));
 }
 
-void Trace::incref(const TensorList &l) {
-  for (auto &t : l) {
-    incref(t);
+void Trace::append_arg(ArrayRef<Tensor> arg) {
+  vector<InputIdx> val;
+  for (auto &t : arg) {
+    val.emplace_back(get_tensor_idx(t));
   }
+  ops[next_op-1].args.emplace_back(move(val));
 }
 
-void Trace::incref(const List<optional<Tensor>> &l) {
-  for (const auto &t : l) {
-    const optional<Tensor> &opt = t;
-    incref(opt);
+void Trace::append_arg(optional<Tensor> arg) {
+  optional<InputIdx> val;
+  if (arg)
+    val = get_tensor_idx(*arg);
+  ops[next_op-1].args.emplace_back(move(val));
+}
+
+void Trace::append_arg(const List<optional<Tensor>> &arg) {
+  vector<optional<InputIdx>> val;
+  for (const auto &it : arg) {
+    const optional<Tensor> &in = it;
+    optional<InputIdx> elem;
+    if (in)
+      elem = get_tensor_idx(*in);
+    val.emplace_back(move(elem));
   }
+  ops[next_op-1].args.emplace_back(move(val));
+}
+
+void Trace::append_arg(Storage &&arg) {
+  ops[next_op-1].args.emplace_back(InputIdx(inputs.size(), true));
+  inputs.emplace_back(move(arg));
+}
+
+void Trace::append_arg(optional<Generator> &&arg) {
+  optional<InputIdx> val;
+  if (arg) {
+    val = InputIdx(inputs.size(), true);
+    inputs.emplace_back(move(*arg));
+  }
+  ops[next_op-1].args.emplace_back(move(val));
+}
+
+void Trace::append_arg(string_view arg) {
+  ops[next_op-1].args.emplace_back(string(arg.data(), arg.size()));
+}
+
+void Trace::append_arg(optional<string_view> arg) {
+  optional<string> copy;
+  if (arg)
+    copy = string(arg->data(), arg->size());
+  ops[next_op-1].args.emplace_back(move(copy));
 }
 
 unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
@@ -237,27 +284,29 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
     flush(STATS(FlushReason::TRACE_MAX_LENGTH));
 
   auto &op = ops[next_op];
-  op.tensors[0] = tensor;
-  for (unsigned i = 1; i < op.tensors.size(); ++i) {
-    op.tensors[i] = 0;
-  }
   op.id = op_id;
   assert(op.args.empty());
-  op.refs = 1;
   op.observable = true;
-  op.tls = ThreadLocalState();
-  op.dispatch_key = ks;
+  op.dead = false;
+
+  auto &rdata = data[next_op];
+  rdata.tensors[0] = tensor;
+  for (unsigned i = 1; i < rdata.tensors.size(); ++i) {
+    rdata.tensors[i] = 0;
+  }
+  rdata.refs = 1;
+  rdata.tls = ThreadLocalState();
+  rdata.dispatch_key = ks;
+  rdata.inplace = op.inplace();
   return next_op++;
 }
 
 void Trace::add_shared(unsigned idx, uintptr_t ptr) {
   assert(idx < next_op);
-  auto &op = ops[idx];
-
-  for (auto &tensor : op.tensors) {
+  for (auto &tensor : data[idx].tensors) {
     if (tensor == 0) {
       tensor = ptr;
-      op.incref();
+      incref(idx);
       return;
     }
   }
@@ -273,10 +322,11 @@ void Trace::set_unobservable(unsigned idx, uintptr_t ptr) {
     return;
 
   assert(idx < next_op);
-  auto &op = ops[idx];
+  auto &op    = ops[idx];
+  auto &rdata = data[idx];
 
   bool found = false;
-  for (auto &tensor : op.tensors) {
+  for (auto &tensor : rdata.tensors) {
     if (tensor == ptr) {
       tensor = 0;
       found = true;
@@ -285,61 +335,33 @@ void Trace::set_unobservable(unsigned idx, uintptr_t ptr) {
   }
   assert(found); (void)found;
 
-  op.observable = op.hasTensors();
-  op.decref(ops);
+  op.observable = rdata.hasTensors();
+  decref(idx);
 
   // reclaim slot if this was the last created tensor
-  if (op.refs == 0 && idx+1 == next_op) {
+  if (rdata.refs == 0 && idx+1 == next_op) {
+    op.destroy();
+    rdata.destroy();
     --next_op;
   }
+}
+
+TraceCacheKey Trace::mk_trace_key() {
+  TraceOpDef *new_ops = new TraceOpDef[next_op];
+  // we can't move the args for the interpreter as it traverses the args
+  // in run() rather than compile() -- a NOP
+  std::uninitialized_copy_n(ops, next_op, new_ops);
+  // FIXME: C++17 only
+  //std::uninitialized_move_n(ops, next_op, new_ops);
+  //for (unsigned i = 0; i < next_op; ++i) {
+  //  new (new_ops + i) TraceOpDef(move(ops[i]));
+  //}
+  return TraceCacheKey(new_ops, next_op);
 }
 
 void Trace::flush(STATS(FlushReason reason)) {
   assert(!flushing);
   flushing = true;
-
-  // trim set of observable tensors as the references in arguments keep the
-  // tensors alive and therefore we aren't notified the user's program
-  // can't observe these tensors anymore
-  // TODO: benchmark: should we skip this when running the interpreter that
-  // doesn't really benefit from this information?
-  {
-    // tensor impl -> (refs, trace idx)
-    unordered_map<uintptr_t, pair<uint16_t, uint16_t>> refs;
-    refs.reserve(next_op);
-
-    TensorVisitor visitor([&](const Tensor &t) {
-      auto I = refs.find((uintptr_t)t.getIntrusivePtr().get());
-      // all refs are inputs -> not observable
-      if (I != refs.end() && --I->second.first == 0) {
-        refs.erase(I);
-        auto &argop = ops[I->second.second];
-        argop.observable = false;
-        argop.decref(ops);
-      }
-    });
-
-    for (unsigned i = 0; i < next_op; ++i) {
-      auto &op = ops[i];
-
-      if (i > 0) {
-        for (auto &arg : op.args) {
-          visit(visitor, arg);
-        }
-      }
-
-      if (op.observable) {
-        for (auto tensor : op.tensors) {
-          if (tensor == 0 || tensor == DUMMY_TORCHY)
-            continue;
-          refs.emplace(tensor,
-            // -1 as reclaim adds +1 ref
-            make_pair(intrusive_ptr<TensorImpl>::unsafe_reclaim_from_nonowning(
-                        (TensorImpl*)tensor).use_count()-1, i));
-        }
-      }
-    }
-  }
 
   stats_register_trace(*this, reason);
 
@@ -347,19 +369,38 @@ void Trace::flush(STATS(FlushReason reason)) {
   cerr << "Flush trace\n" << *this << endl;
 #endif
 
+  TraceCacheKey key = { ops, next_op };
+  auto I = cache.find(key);
+  key.ops.release(); // so the destructor doesn't kick in
+
+  if (I == cache.end()) {
+    STATS(StopWatch time);
+    auto *program      = backend->compile(*this);
+    auto *used_backend = backend;
+
+    // fallback to the interpreter if the default backend can't handle this
+    if (!program) {
+      program      = interpreter.compile(*this);
+      used_backend = &interpreter;
+    }
+    STATS(time.stop());
+    stats_register_compile_time(time);
+
+    I = cache.emplace(piecewise_construct, forward_as_tuple(mk_trace_key()),
+                      forward_as_tuple(program, used_backend)).first;
+  }
+
   STATS(StopWatch run_time);
-  // try torchscript first; fallback to the interpreter if it can't handle this
-  if (force_interpreter || !torchscript::run(*this))
-    interpreter::run(*this);
-
+  I->second.backend->run(I->second.program, *this);
   STATS(run_time.stop());
-
   stats_register_trace_time(run_time);
 
   // reduce reference count on tensors s.t. they are deleted if possible
   for (unsigned i = 0; i < next_op; ++i) {
     ops[i].destroy();
+    data[i].destroy();
   }
+  inputs.clear();
 
   next_op = 0;
   flushing = false;
@@ -369,22 +410,30 @@ ostream& operator<<(ostream &os, const Trace &t) {
   if (t.next_op == 0)
     return os << "(empty)\n";
 
-  map<const TensorImpl*, unsigned> inputs_map;
   for (unsigned i = 0; i < t.next_op; ++i) {
     os << '%' << i << " = ";
-    t.ops[i].print(os, inputs_map, i);
+    t.print(os, i);
     os << '\n';
   }
 
-  if (inputs_map.empty())
+  if (t.inputs.empty())
     return os;
 
-  os << "\nInputs' shapes:\n";
-  for (unsigned i = 0, e = inputs_map.size(); i != e; ++i) {
-    auto I = find_if(inputs_map.begin(), inputs_map.end(),
-                     [=](auto &p) { return p.second == i; });
-    assert(I != inputs_map.end());
-    os << "in<" << i << ">: " << I->first->sizes() << '\n';
+  os << "\nInputs:\n";
+  unsigned i = 0;
+  for (auto &in : t.inputs) {
+    os << "in<" << i++ << ">: ";
+    if (in.isTensor()) {
+      os << "tensor(" << in.toTensor().sizes() << ')';
+    } else if (in.isGenerator()) {
+      const auto &g = in.toGenerator();
+      os << "generator(" << g.current_seed() << ", " << g.device() << ')';
+    } else if (in.isStorage()) {
+      os << "storage(" << in.toStorage().nbytes() << ')';
+    } else {
+      assert(0);
+    }
+    os << '\n';
   }
   return os;
 }
