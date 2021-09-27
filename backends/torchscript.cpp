@@ -32,8 +32,18 @@ class ValGen {
 public:
   ValGen(Graph &g, Value **results, const Stack &in_stack)
     : g(g), results(results) {
-    for (unsigned i = 0, e = in_stack.size(); i < e; ++i) {
-      inputs.push_back(g.addInput());
+    for (auto &in : in_stack) {
+      auto *v = g.addInput();
+
+      if (in.isTensor()) {
+        v->setType(TensorType::create(in.toTensor()));
+      } else if (in.isGenerator()) {
+        v->setType(GeneratorType::get());
+      } else {
+        assert(in.isStorage());
+        v->setType(StorageType::get());
+      }
+      inputs.push_back(v);
     }
   }
 
