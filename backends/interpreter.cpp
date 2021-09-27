@@ -19,13 +19,6 @@ namespace {
 struct LoadState {
   InputData &inputs;
   Tensor *results;
-  std::vector<std::unique_ptr<std::vector<Tensor>>> tmp_vectors;
-  std::vector<std::unique_ptr<c10::List<c10::optional<Tensor>>>> tmp_lists;
-
-  void reset() {
-    tmp_vectors.clear();
-    tmp_lists.clear();
-  }
 };
 
 #define LOAD_ARGS UnionInputTy &arg, LoadState &load_state
@@ -102,28 +95,24 @@ struct load<optional<Tensor>&> {
 
 template <>
 struct load<TensorList> {
-  TensorList operator()(LOAD_ARGS) {
-    auto vect = std::make_unique<std::vector<Tensor>>();
+  std::vector<Tensor> operator()(LOAD_ARGS) {
+    std::vector<Tensor> vect;
     for (auto idx : get<std::vector<InputIdx>>(arg)) {
-      vect->emplace_back(get_tensor(idx, load_state));
+      vect.emplace_back(get_tensor(idx, load_state));
     }
-    auto ret = vect.get();
-    load_state.tmp_vectors.emplace_back(std::move(vect));
-    return *ret;
+    return vect;
   }
 };
 
 template <>
 struct load<c10::List<c10::optional<Tensor>>&> {
-  c10::List<c10::optional<Tensor>>& operator()(LOAD_ARGS) {
-    auto lst = std::make_unique<c10::List<c10::optional<Tensor>>>();
+  c10::List<c10::optional<Tensor>> operator()(LOAD_ARGS) {
+    c10::List<c10::optional<Tensor>> lst;
     for (auto idx : get<std::vector<c10::optional<InputIdx>>>(arg)) {
-      lst->push_back(
+      lst.push_back(
         idx ? make_optional(get_tensor(*idx, load_state)) : c10::nullopt);
     }
-    auto ret = lst.get();
-    load_state.tmp_lists.emplace_back(std::move(lst));
-    return *ret;
+    return lst;
   }
 };
 
@@ -201,7 +190,6 @@ void Interpreter::run(const void *prog, Trace &t) {
     } else {
       set(rdata, results[i]);
     }
-    load_state.reset();
   }
 
   for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
