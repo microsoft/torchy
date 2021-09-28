@@ -153,6 +153,44 @@ struct load<c10::optional<Generator>> {
 
 #include "autogen/interpreter_redispatch_tables.h"
 
+struct DispatchKeyComputer {
+  c10::DispatchKeySet ks;
+  LoadState &load_state;
+
+  template <typename T>
+  void operator()(const T&) {}
+
+  void operator()(InputIdx idx) {
+    if (idx.is_input()) {
+      auto &arg = load_state.inputs[idx.input_idx()];
+      if (arg.isTensor()) {
+        ks = ks | arg.toTensor().key_set();
+      } else if (arg.isGenerator()) {
+        const auto &gen = arg.toGenerator();
+        if (gen.defined())
+          ks = ks | gen.key_set();
+      } else {
+        assert(arg.isStorage());
+      }
+    } else {
+      ks = ks | get_tensor(idx, load_state).key_set();
+    }
+  }
+
+  template<typename T>
+  void operator()(const c10::optional<T> &a) {
+    if (a)
+      (*this)(*a);
+  }
+
+  template<typename T>
+  void operator()(const std::vector<T> &l) {
+    for (const auto &elem : l) {
+      (*this)(elem);
+    }
+  }
+};
+
 }
 
 
@@ -174,19 +212,13 @@ void Interpreter::run(const void *prog, Trace &t) {
     std::cerr << "Dispatch " << op.id << std::endl;
 #endif
 
-    auto ks = rdata.dispatch_key;
-    for (auto &arg : t.getInputs()) {
-      if (arg.isTensor()) {
-        ks = ks | arg.toTensor().key_set();
-      } else if (arg.isGenerator()) {
-        const auto &gen = arg.toGenerator();
-        if (gen.defined())
-          ks = ks | gen.key_set();
-      } else {
-        assert(arg.isStorage());
-      }
+    DispatchKeyComputer visitor{rdata.dispatch_key, load_state};
+    for (auto &arg : op.args) {
+      visit(visitor, arg);
     }
-    ks = ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    auto ks
+      = visitor.ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
+    load_state.reset();
 
     ThreadLocalState::setThreadLocalState(rdata.tls);
 
