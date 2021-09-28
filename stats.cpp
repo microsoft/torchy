@@ -126,14 +126,6 @@ struct PrintStats {
     print_table("Frequency per Trace", trace_freq_stats.data(),
                 trace_freq_stats.size());
 
-    int cutoff = trace_freq_stats.size()-1;
-    unsigned num_traces = 0;
-    for (; cutoff >= 0; --cutoff) {
-      if (num_traces >= 20)
-        break;
-      num_traces += trace_freq_stats[cutoff];
-    }
-
     vector<unsigned> trace_times;
     for (auto &p : trace_run_time) {
       inc(trace_times, unsigned(median(p.second) * 1000000.0), p.second.size());
@@ -142,18 +134,27 @@ struct PrintStats {
                 trace_times.size());
 
     print_header("Most Frequent Traces");
-    for (auto &p : trace_run_time) {
-      if (p.second.size() >= (unsigned)cutoff)
-        cerr << "Trace executed " << p.second.size() << " times ("
-             << unsigned(median(p.second) * 1000000.0) << " us)\n"
-             << p.first << "\n\n";
+    {
+      vector<pair<unsigned,string>> traces;
+      for (auto &p : trace_run_time) {
+        traces.emplace_back(p.second.size(), p.first);
+      }
+      sort(traces.begin(), traces.end());
+
+      auto I = traces.rbegin(), E = traces.rend();
+      for (unsigned i = 0; i < 20 && I != E; ++i, ++I) {
+        auto med = median(trace_run_time.at(I->second));
+        cerr << "Trace executed " << I->first << " times ("
+             << unsigned(med * 1000000.0) << " us)\n"
+             << I->second << "\n\n";
+      }
     }
 
     print_header("Slowest Trace Compilation");
     sort(trace_compile_time.begin(), trace_compile_time.end());
     {
       auto I = trace_compile_time.rbegin(), E = trace_compile_time.rend();
-      for (unsigned i = 0; i < 10 && I != E; ++i, ++I) {
+      for (unsigned i = 0; i < 20 && I != E; ++i, ++I) {
         cerr << "Trace compiled in "
              << unsigned(I->first * 1000000.0) << " us\n"
              << I->second << "\n\n";
@@ -163,7 +164,7 @@ struct PrintStats {
     cerr << "Number of Torchscript failures:\t" << torchscript_failures
          << "\nNumber of unsupported ops:\t" << unsupported_wrappers
          << "\nNumber of traces:\t" << total
-         << "\nDistinct traces:\t" << trace_run_time.size() << '\n';
+         << "\nDistinct traces:\t" << trace_compile_time.size() << '\n';
 
     cerr << endl;
 
