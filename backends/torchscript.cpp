@@ -74,7 +74,25 @@ public:
     for (const auto &elem : l) {
       vals.emplace_back((*this)(elem));
     }
-    auto *n = g.createList(vals[0]->type(), vals);
+    if (vals.empty())
+      return mk_none();
+
+    auto ty = vals[0]->type()->cast<TensorType>() ? TensorType::get()
+                                                  : vals[0]->type();
+    auto *n = g.createList(ty, vals);
+    g.appendNode(n);
+    return n->output();
+  }
+
+  template<typename T>
+  Value* operator()(const std::vector<optional<InputIdx>> &l) {
+    std::vector<Value*> vals;
+    for (const auto &elem : l) {
+      vals.emplace_back((*this)(elem));
+      assert(vals.back()->type()->cast<NoneType>() ||
+             vals.back()->type()->cast<TensorType>());
+    }
+    auto *n = g.createList(OptionalType::ofTensor(), vals);
     g.appendNode(n);
     return n->output();
   }
