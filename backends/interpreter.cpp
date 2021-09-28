@@ -19,6 +19,13 @@ namespace {
 struct LoadState {
   InputData &inputs;
   Tensor *results;
+  const TraceOpRunTimeData *data;
+  Tensor tmp_tensors[MAX_NUM_INPUTS];
+  unsigned next_tensor = 0;
+
+  void reset() {
+    next_tensor = 0;
+  }
 };
 
 #define LOAD_ARGS UnionInputTy &arg, LoadState &load_state
@@ -72,8 +79,17 @@ struct load<c10::optional<c10::string_view>> {
 };
 
 Tensor& get_tensor(InputIdx idx, LoadState &load_state) {
-  return idx.is_input() ? load_state.inputs[idx.input_idx()].toTensor()
-                        : load_state.results[idx.trace_idx()];
+  if (idx.is_input())
+    return load_state.inputs[idx.input_idx()].toTensor();
+
+  auto ptr = (TensorImpl*)load_state.data[idx.trace_idx()].someTensor();
+  // tensor not observable; so use intermediate value
+  if (ptr == nullptr)
+    return load_state.results[idx.trace_idx()];
+
+  assert(load_state.next_tensor < MAX_NUM_INPUTS);
+  return load_state.tmp_tensors[load_state.next_tensor++] =
+          Tensor(intrusive_ptr<TensorImpl>::unsafe_reclaim_from_nonowning(ptr));
 }
 
 template <>
@@ -142,7 +158,7 @@ struct load<c10::optional<Generator>> {
 
 void Interpreter::run(const void *prog, Trace &t) {
   Tensor results[MAX_TRACE_LENGTH];
-  LoadState load_state{t.getInputs(), results};
+  LoadState load_state{t.getInputs(), results, t.getRuntimeData()};
 
   ThreadLocalState tls;
   auto *ops = t.getOps();
@@ -190,6 +206,7 @@ void Interpreter::run(const void *prog, Trace &t) {
     } else {
       set(rdata, results[i]);
     }
+    load_state.reset();
   }
 
   for (unsigned i = 0, e = t.numOps(); i < e; ++i) {

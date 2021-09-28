@@ -104,11 +104,12 @@ struct TraceOpRunTimeData {
     return refs > 0;
   }
 
+  uintptr_t someTensor() const;
+
 private:
   void destroy();
   bool hasTensors() const;
   unsigned numTensors() const;
-  uintptr_t someTensor() const;
 
   friend class Trace;
 };

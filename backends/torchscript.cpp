@@ -14,8 +14,6 @@ using namespace torch::jit;
 # include <iostream>
 #endif
 
-#define MAX_NUM_INPUTS 12
-
 namespace {
 
 std::string cut_overload(const char *fn) {
@@ -139,6 +137,8 @@ void* TorchScript::compile(const Trace &t) {
       output_ops[num_outputs] = i;
       outputs[num_outputs++] = v;
     }
+
+    // TODO: set type of output if available?
   }
 
   if (num_outputs == 0) {
@@ -160,6 +160,8 @@ void* TorchScript::compile(const Trace &t) {
   prog->fn
     = std::make_unique<GraphFunction>("torchy", move(graph),
                                       std::function<void(GraphFunction&)>());
+  // force optimization now
+  prog->fn->optimized_graph();
 
 #ifdef DEBUG_GRAPH
   prog->fn->optimized_graph()->print(std::cerr << "\nOptimized graph:\n");

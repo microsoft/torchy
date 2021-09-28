@@ -351,11 +351,6 @@ TraceCacheKey Trace::mk_trace_key() {
   // we can't move the args for the interpreter as it traverses the args
   // in run() rather than compile() -- a NOP
   std::uninitialized_copy_n(ops, next_op, new_ops);
-  // FIXME: C++17 only
-  //std::uninitialized_move_n(ops, next_op, new_ops);
-  //for (unsigned i = 0; i < next_op; ++i) {
-  //  new (new_ops + i) TraceOpDef(move(ops[i]));
-  //}
   return TraceCacheKey(new_ops, next_op);
 }
 

@@ -5,6 +5,8 @@
 #include "tensor.h"
 #include "trace.h"
 
+#define MAX_NUM_INPUTS 12
+
 static void init_update_in_place(const TraceOpRunTimeData &data) {
   for (auto tensor : data.tensors) {
     if (tensor != 0)
