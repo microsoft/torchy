@@ -16,7 +16,7 @@ static void init_update_in_place(const TraceOpRunTimeData &data) {
 
 static void end_update_in_place(const TraceOpRunTimeData &data) {
   bool first = true;
-  unsigned first_idx;
+  unsigned first_idx = 0;
 
   for (unsigned i = 0; i < data.tensors.size(); ++i) {
     if (data.tensors[i] == 0)

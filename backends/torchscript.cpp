@@ -211,17 +211,14 @@ void TorchScript::run(const void *ptr, Trace &t) {
 
   // patch tensors with the output
   if (num_outputs == 1) {
-    assert(stack[0].isTensor());
     set(data[output_ops[0]], std::move(stack[0]).toTensor());
   }
   else if (num_outputs > 1) {
-    assert(stack[0].isTuple());
     auto t = std::move(stack[0]).toTuple();
     auto &elems = t->elements();
     assert(elems.size() == num_outputs);
 
     for (unsigned i = 0; i < num_outputs; ++i) {
-      assert(elems[i].isTensor());
       set(data[output_ops[i]], std::move(elems[i]).toTensor());
     }
   }

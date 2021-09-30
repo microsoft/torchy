@@ -771,7 +771,8 @@ bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks,
     assert(tt);
   }
 
-  auto idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, op, ks);
+  auto idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, op, ks,
+                                   tt ? tt->getTraceIdx() : -1u);
   if (tt) {
     tt->set_materialized(false);
     tt->update_idx(idx);

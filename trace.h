@@ -206,7 +206,7 @@ public:
   void append_arg(c10::optional<c10::string_view> arg);
 
   unsigned register_tensor(uintptr_t tensor, TorchOp op_id,
-                           c10::DispatchKeySet ks);
+                           c10::DispatchKeySet ks, unsigned idx_inplace = -1u);
 
   void add_shared(unsigned idx, uintptr_t ptr);
   void set_unobservable(unsigned idx, uintptr_t ptr);
