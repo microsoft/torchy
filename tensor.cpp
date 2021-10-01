@@ -107,7 +107,7 @@ public:
     set(t);
 
     // steal pyobj & friends
-    auto *other = t.getIntrusivePtr().get();
+    auto *other = t.unsafeGetTensorImpl();
     auto *interp = other->pyobj_interpreter();
     init_pyobj(interp, other->check_pyobj(interp).value_or(nullptr),
                c10::impl::PyInterpreterStatus::DEFINITELY_UNINITIALIZED);
@@ -163,7 +163,7 @@ public:
 
     trace_idx = -1u;
 
-    auto *other = t.getIntrusivePtr().get();
+    auto *other = t.unsafeGetTensorImpl();
     copy_tensor_metadata(other, this, other->version_counter(),
                          other->allow_tensor_metadata_change());
     // overriden by copy_tensor_metadata
@@ -374,7 +374,7 @@ public:
 
 
 static TorchyTensor* is_torchy(const Tensor &t) {
-  return dynamic_cast<TorchyTensor*>(t.getIntrusivePtr().get());
+  return dynamic_cast<TorchyTensor*>(t.unsafeGetTensorImpl());
 }
 
 unsigned trace_idx(const Tensor &t) {
@@ -709,7 +709,7 @@ bool eq_shapes(const Tensor &t1, optional<IntArrayRef> s2) {
 Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
                            caffe2::TypeMeta dtype, c10::Device device) {
   auto tt = at::detail::make_tensor<TorchyTensor>(ks, dtype, device);
-  auto tt_ptr = tt.getIntrusivePtr().get();
+  auto tt_ptr = tt.unsafeGetTensorImpl();
   unsigned trace_idx = trace.register_tensor((uintptr_t)tt_ptr, op, ks);
   static_cast<TorchyTensor*>(tt_ptr)->set_idx(trace_idx);
   return tt;

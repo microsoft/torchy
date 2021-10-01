@@ -206,6 +206,16 @@ InputIdx Trace::get_tensor_idx(const Tensor &t) {
       return { idx, false };
     }
   }
+
+  // check if tensor is already an input
+  unsigned i = 0;
+  for (auto &in : inputs) {
+    if (in.isTensor() && in.toTensor().unsafeGetTensorImpl()
+          == t.unsafeGetTensorImpl())
+      return { i, true };
+    ++i;
+  }
+
   inputs.emplace_back(t);
   return { (unsigned)inputs.size()-1, true };
 }
