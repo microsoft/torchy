@@ -8,7 +8,7 @@
 using namespace at;
 using namespace torch::jit;
 
-#define DEBUG_GRAPH
+//#define DEBUG_GRAPH
 
 #ifdef DEBUG_GRAPH
 # include <iostream>
