@@ -79,7 +79,7 @@ def maybe_tensor(type):
 def to_scalar_type(v):
   ty = v.type.remove_const_ref().cpp_type()
   if ty == 'at::Tensor':
-    return f'{v.expr}.dtype().toScalarType()'
+    return f'{v.expr}.scalar_type()'
   if ty == 'c10::optional<at::ScalarType>':
     return f'{v.expr}.value_or(ScalarType::Undefined)'
   print('to_scalar_type', ty)
@@ -107,7 +107,7 @@ def mk_dtype_infer(type, all_args):
   if type[0:3] == 'ALL':
     return f'k{type[4:]}'
   if type == 'BOOL2INT':
-    return f'bool_to_int({args[0].expr}.dtype().toScalarType())'
+    return f'bool_to_int({args[0].expr}.scalar_type())'
   if type == 'EQ_PROMOTED':
     return f'promote_tys({", ".join(t.expr for t in args)})'
   if type == 'EQ_PROMOTED_BUGGY':
@@ -121,23 +121,23 @@ def mk_dtype_infer(type, all_args):
   if type == 'EQ_FOURTH':
     return to_dtype(args[3])
   if type == 'BOOLBYTE':
-    return f'bool_byte({args[0].expr}.dtype().toScalarType())'
+    return f'bool_byte({args[0].expr}.scalar_type())'
   if type == 'BOOL2INT':
-    return f'bool_to_int({args[0].expr}.dtype().toScalarType())'
+    return f'bool_to_int({args[0].expr}.scalar_type())'
   if type == 'BOOL2INT2':
     return f'bool_to_int2({args[0].expr}, {args[1].expr})'
   if type == 'INTEGRAL2INT':
-    return f'integrals_to_int({args[0].expr}.dtype().toScalarType())'
+    return f'integrals_to_int({args[0].expr}.scalar_type())'
   if type == 'TO_COMPLEX':
-    return f'to_complex({args[0].expr}.dtype().toScalarType())'
+    return f'to_complex({args[0].expr}.scalar_type())'
   if type == 'TO_DOUBLE':
-    return f'to_double({args[0].expr}.dtype().toScalarType())'
+    return f'to_double({args[0].expr}.scalar_type())'
   if type == 'TO_DOUBLE2':
-    return f'to_double2({args[0].expr}.dtype().toScalarType(), {args[1].expr}.dtype().toScalarType())'
+    return f'to_double2({args[0].expr}.scalar_type(), {args[1].expr}.scalar_type())'
   if type == 'TO_FLOAT':
-    return f'to_float({args[0].expr}.dtype().toScalarType())'
+    return f'to_float({args[0].expr}.scalar_type())'
   if type == 'TO_FLOAT_DOUBLE':
-    return f'to_float_double({args[0].expr}.dtype().toScalarType())'
+    return f'to_float_double({args[0].expr}.scalar_type())'
   if type == 'TO_FLOAT2':
     return f'to_float2({args[0].expr}, {args[1].expr})'
   if type == 'TO_FLOAT3':
@@ -145,17 +145,17 @@ def mk_dtype_infer(type, all_args):
   if type == 'TO_FLOAT4':
     return f'to_float4({args[0].expr}, {args[1].expr}, {args[2].expr}, {args[3].expr})'
   if type == 'TO_QINT':
-    return f'toQIntType({args[0].expr}.dtype().toScalarType())'
+    return f'toQIntType({args[0].expr}.scalar_type())'
   if type == 'TO_REAL2':
     return f'to_real2({args[0].expr}, {args[1].expr})'
   if type == 'TO_REAL_FLOAT':
     return f'to_real_float({to_scalar_type(args[0])})'
   if type == 'TO_VALUE_TYPE':
-    return f'toValueType({args[0].expr}.dtype().toScalarType())'
+    return f'toValueType({args[0].expr}.scalar_type())'
   if type == 'OPTIONAL_OR21':
-    return f'optional_or_else({args[1].expr}, {args[0].expr}.dtype().toScalarType())'
+    return f'optional_or_else({args[1].expr}, {args[0].expr}.scalar_type())'
   if type == 'OPTIONAL_O21LONG':
-    return f'optional_or_longelse({args[1].expr}, {args[0].expr}.dtype().toScalarType())'
+    return f'optional_or_longelse({args[1].expr}, {args[0].expr}.scalar_type())'
   if type == 'FIRST_OR_DEFAULT':
     return args[0].expr
   if type == 'FIRST_OR_LONG':

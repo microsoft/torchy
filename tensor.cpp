@@ -195,6 +195,14 @@ public:
     store_shape();
   }
 
+  void check_torchy_data_from(const TorchyTensor &src) {
+    assert(dtype() == src.dtype());
+#ifndef NDEBUG
+    if (has_shape_data)
+      assert(sizes() == src.sizes());
+#endif
+  }
+
   template <typename T>
   void copy_metadata(const TorchyTensor &other, T &&version_counter,
                      bool allow_tensor_metadata_change) {
@@ -402,12 +410,14 @@ void end_update_in_place_first(uintptr_t tt) {
     ((TorchyTensor*)tt)->endInPlaceUpdate();
 }
 
-void end_update_in_place_copy(uintptr_t dst, uintptr_t src) {
-  assert(dst != DUMMY_TORCHY);
-  if (src != DUMMY_TORCHY) {
-    auto tt = (TorchyTensor*)src;
-    ((TorchyTensor*)dst)->copy_metadata(*tt, tt->version_counter(),
-                                        tt->allow_tensor_metadata_change());
+void end_update_in_place_copy(uintptr_t dst0, uintptr_t src0) {
+  assert(dst0 != DUMMY_TORCHY);
+  if (src0 != DUMMY_TORCHY) {
+    auto src = (TorchyTensor*)src0;
+    auto dst = (TorchyTensor*)dst0;
+    dst->check_torchy_data_from(*src);
+    dst->copy_metadata(*src, src->version_counter(),
+                       src->allow_tensor_metadata_change());
   }
 }
 
@@ -444,11 +454,11 @@ namespace {
 #include "type_inference.h"
 
 ScalarType optional_type(const c10::optional<Tensor> &t) {
-  return t ? t->dtype().toScalarType() : ScalarType::Undefined;
+  return t ? t->scalar_type() : ScalarType::Undefined;
 }
 
 #define PASS(t) \
-  t.dtype().toScalarType(), [&]() { return t.dim() == 0; }
+  t.scalar_type(), [&]() { return t.dim() == 0; }
 
 #define PASS_OPT(t) \
   optional_type(t), [&]() { return t && t->dim() == 0; }

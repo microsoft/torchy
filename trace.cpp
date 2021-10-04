@@ -471,8 +471,7 @@ ostream& operator<<(ostream &os, const Trace &t) {
     os << "in<" << i++ << ">: ";
     if (in.isTensor()) {
       const auto &t = in.toTensor();
-      os << "tensor(" << t.dtype().toScalarType() << " : "
-         << t.sizes() << ")\n";
+      os << "tensor(" << t.scalar_type() << " : " << t.sizes() << ")\n";
     } else if (in.isGenerator()) {
       const auto &g = in.toGenerator();
       os << "generator(" << g.current_seed() << ", " << g.device() << ")\n";
