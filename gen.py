@@ -22,6 +22,7 @@ shape_exceptions = {
   'flatten.using_ints': 'FLATTEN',
   'max_pool2d'        : 'CONV2D',
   'mean.dim'          : 'REDUCE',
+  'permute'           : 'PERMUTE',
   'select.int'        : 'SELECT',
   'slice.Tensor'      : 'SLICE',
   'stack'             : 'STACK',
@@ -318,6 +319,8 @@ def mk_shape_infer(shape, all_args):
     return f'shape_transpose2d({args[0].expr})'
   if shape == 'REDUCE':
     return f'shape_reduce({args[0].expr}, {args[1].expr}, {all_args[2].expr})'
+  if shape == 'PERMUTE':
+    return f'shape_permute({args[0].expr}, {all_args[1].expr})'
 
   print('mk_shape_infer', shape)
   return 'nullopt'

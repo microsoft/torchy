@@ -282,3 +282,14 @@ shape_reduce(IntArrayRef s, IntArrayRef dims0, bool keepdim) {
   }
   return res;
 }
+
+std::vector<int64_t> shape_permute(IntArrayRef s, IntArrayRef dims) {
+  std::vector<int64_t> res;
+  for (auto dim : dims) {
+    auto d = s[dim];
+    if (d < 0)
+      d += s.size();
+    res.emplace_back(d);
+  }
+  return res;
+}

@@ -7105,7 +7105,7 @@ at::Tensor wrap_permute(c10::DispatchKeySet dispatchKeySet, const at::Tensor & s
     return at::redispatch::permute(dispatchKeySet, self, dims);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_PERMUTE, self.dtype(), self.device());
-  set_shape(tt, self);
+  set_shape(tt, shape_permute(self, dims));
   trace.append_arg(self);trace.append_arg(dims);
   return tt;
 }

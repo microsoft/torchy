@@ -692,6 +692,11 @@ shape_reduce(const Tensor &t, IntArrayRef dims, bool keepdim) {
   return tmp_shape = shape_reduce(*shape_t, dims, keepdim);
 }
 
+optional<IntArrayRef> shape_permute(const Tensor &t, IntArrayRef dims) {
+  GET_SHAPE(t);
+  return tmp_shape = shape_permute(*shape_t, dims);
+}
+
 bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
   if (!s1 || !s2)
     return false;
