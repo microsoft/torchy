@@ -310,7 +310,7 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
 
   // This is an in-place op refering to another main op.
   // We inherit all references & outputs. NB: These must be kept in sync!
-  if (idx_inplace != -1u) {
+  if (next_op != 0 && idx_inplace != -1u) {
     assert(idx_inplace < next_op);
     auto &all_tensors = data[idx_inplace].tensors;
     assert(find(all_tensors.begin(), all_tensors.end(), tensor)
@@ -470,16 +470,15 @@ ostream& operator<<(ostream &os, const Trace &t) {
   for (auto &in : t.inputs) {
     os << "in<" << i++ << ">: ";
     if (in.isTensor()) {
-      os << "tensor(" << in.toTensor().sizes() << ')';
+      os << "tensor(" << in.toTensor().sizes() << ")\n";
     } else if (in.isGenerator()) {
       const auto &g = in.toGenerator();
-      os << "generator(" << g.current_seed() << ", " << g.device() << ')';
+      os << "generator(" << g.current_seed() << ", " << g.device() << ")\n";
     } else if (in.isStorage()) {
-      os << "storage(" << in.toStorage().nbytes() << ')';
+      os << "storage(" << in.toStorage().nbytes() << ")\n";
     } else {
       assert(0);
     }
-    os << '\n';
   }
   return os;
 }
