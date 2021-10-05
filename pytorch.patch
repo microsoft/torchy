@@ -83,3 +83,16 @@ index de829c4937..d859fe1613 100644
    dest_impl->data_type_ = src_impl->data_type_;
    dest_impl->device_opt_ = src_impl->device_opt_;
    dest_impl->key_set_ = src_impl->key_set_.remove(DispatchKey::Python);
+diff --git a/torch/csrc/tensor/python_tensor.cpp b/torch/csrc/tensor/python_tensor.cpp
+index 32ff8d72d8..dd170c0f80 100644
+--- a/torch/csrc/tensor/python_tensor.cpp
++++ b/torch/csrc/tensor/python_tensor.cpp
+@@ -91,7 +91,7 @@ static PyObject* Tensor_instancecheck(PyObject* _self, PyObject* arg) {
+     //
+     // TODO: Stop using legacyExtractDispatchKey here (probably need to build
+     // in instanceof checking to Tensor class itself)
+-    if (legacyExtractDispatchKey(var.key_set()) == self->get_dispatch_key() &&
++    if (legacyExtractDispatchKey(var.key_set().remove(DispatchKey::PrivateUse1)) == self->get_dispatch_key() &&
+         var.scalar_type() == static_cast<ScalarType>(self->scalar_type)) {
+       Py_RETURN_TRUE;
+     }
