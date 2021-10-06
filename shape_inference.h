@@ -292,3 +292,13 @@ std::vector<int64_t> shape_permute(IntArrayRef s, IntArrayRef dims) {
   }
   return res;
 }
+
+std::vector<int64_t> shape_unfold(IntArrayRef s, int64_t dim, int64_t size,
+                                  int64_t step) {
+  auto res = s.vec();
+  res.emplace_back(size);
+  if (dim < 0)
+    dim += s.size();
+  res[dim] = (res[dim] - size) / step + 1;
+  return res;
+}

@@ -15364,7 +15364,7 @@ at::Tensor wrap_unfold(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     return at::redispatch::unfold(dispatchKeySet, self, dimension, size, step);
   }
   auto tt = register_new_tensor(dispatchKeySet, H_UNFOLD, self.dtype(), self.device());
-  set_shape(tt, shape_pad1(self));
+  set_shape(tt, shape_unfold(self, dimension, size, step));
   trace.append_arg(self);trace.append_arg(dimension);trace.append_arg(size);trace.append_arg(step);
   return tt;
 }

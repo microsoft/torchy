@@ -29,6 +29,7 @@ shape_exceptions = {
   'stack.out'         : 'STACK',
   'transpose.int'     : 'TRANSPOSE',
   'transpose_'        : '',
+  'unfold'            : 'UNFOLD',
   'unsqueeze'         : 'UNSQUEEZE',
   'unsqueeze_'        : 'UNSQUEEZE',
 }
@@ -320,7 +321,9 @@ def mk_shape_infer(shape, all_args):
   if shape == 'REDUCE':
     return f'shape_reduce({args[0].expr}, {args[1].expr}, {all_args[2].expr})'
   if shape == 'PERMUTE':
-    return f'shape_permute({args[0].expr}, {all_args[1].expr})'
+    return f'shape_permute({args[0].expr}, {args[1].expr})'
+  if shape == 'UNFOLD':
+    return f'shape_unfold({args[0].expr}, {all_args[1].expr}, {all_args[2].expr}, {all_args[3].expr})'
 
   print('mk_shape_infer', shape)
   return 'nullopt'

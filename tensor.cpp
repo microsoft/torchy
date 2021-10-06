@@ -707,6 +707,12 @@ optional<IntArrayRef> shape_permute(const Tensor &t, IntArrayRef dims) {
   return tmp_shape = shape_permute(*shape_t, dims);
 }
 
+optional<IntArrayRef> shape_unfold(const Tensor &t, int64_t dim, int64_t size,
+                                   int64_t step) {
+  GET_SHAPE(t);
+  return tmp_shape = shape_unfold(*shape_t, dim, size, step);
+}
+
 bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
   if (!s1 || !s2)
     return false;
