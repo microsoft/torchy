@@ -232,7 +232,7 @@ void Trace::append_arg(ArrayRef<Tensor> arg) {
   ops[next_op-1].args.emplace_back(move(val));
 }
 
-void Trace::append_arg(optional<Tensor> arg) {
+void Trace::append_arg(const optional<Tensor> &arg) {
   optional<InputIdx> val;
   if (arg)
     val = get_tensor_idx(*arg);

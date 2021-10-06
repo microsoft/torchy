@@ -198,7 +198,7 @@ public:
     append_arg(const_cast<const at::Tensor&>(arg));
   }
   void append_arg(at::ArrayRef<at::Tensor> arg);
-  void append_arg(c10::optional<at::Tensor> arg);
+  void append_arg(const c10::optional<at::Tensor> &arg);
   void append_arg(const c10::List<c10::optional<at::Tensor>> &arg);
   void append_arg(at::Storage &&arg);
   void append_arg(c10::optional<at::Generator> &&arg);
