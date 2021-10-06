@@ -218,8 +218,8 @@ public:
 
   void ensure_materialized(STATS(FlushReason reason)) const {
     if (!trace.is_flushing() && !materialized()) {
-      assert(trace_idx != -1u);
       trace.flush(STATS(reason));
+      assert(trace_idx == -1u);
       assert(!storage_ || materialized());
     }
   }
@@ -415,6 +415,7 @@ void end_update_in_place_copy(uintptr_t dst0, uintptr_t src0) {
   if (src0 != DUMMY_TORCHY) {
     auto src = (TorchyTensor*)src0;
     auto dst = (TorchyTensor*)dst0;
+    assert(src->getTraceIdx() == -1u);
     dst->check_torchy_data_from(*src);
     dst->copy_metadata(*src, src->version_counter(),
                        src->allow_tensor_metadata_change());
@@ -423,8 +424,11 @@ void end_update_in_place_copy(uintptr_t dst0, uintptr_t src0) {
 
 #ifndef NDEBUG
 void finish_trace(uintptr_t tt) {
-  if (tt != DUMMY_TORCHY)
-    ((TorchyTensor*)tt)->resetMultipleShapes();
+  if (tt != DUMMY_TORCHY) {
+    auto &t = *(TorchyTensor*)tt;
+    assert(t.getTraceIdx() == -1u);
+    t.resetMultipleShapes();
+  }
 }
 #endif
 
