@@ -31,7 +31,7 @@ class TorchyTensor final : public TensorImpl {
   // of prev ops (for debugging purposes).
   bool has_multiple_shapes = false;
   uint8_t inferred_shape_dims;
-  array<unsigned, 5> inferred_shape;
+  array<unsigned, 6> inferred_shape;
 #endif
 
   bool& materialized_var() const {
