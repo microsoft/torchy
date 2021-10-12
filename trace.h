@@ -175,6 +175,11 @@ public:
   InputData& getInputs() { return inputs; }
   const InputData& getInputs() const { return inputs; }
 
+  unsigned get_idx() const {
+    assert(next_op > 0);
+    return next_op - 1;
+  }
+
   template<typename A>
   void append_arg(A &&arg) {
     ops[next_op-1].args.emplace_back(std::forward<A>(arg));
@@ -206,7 +211,7 @@ public:
   void append_arg(c10::optional<c10::string_view> arg);
 
   unsigned register_tensor(uintptr_t tensor, TorchOp op_id,
-                           c10::DispatchKeySet ks, unsigned idx_inplace = -1u);
+                           c10::DispatchKeySet ks);
 
   void add_shared(unsigned idx, uintptr_t ptr);
   void set_unobservable(unsigned idx, uintptr_t ptr);

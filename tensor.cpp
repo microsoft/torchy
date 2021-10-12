@@ -129,8 +129,9 @@ public:
   }
 
   void update_idx(unsigned idx) {
-    if (trace_idx == -1u)
-      trace_idx = idx;
+    if (trace_idx != -1u)
+      trace.set_unobservable(trace_idx, (uintptr_t)this);
+    trace_idx = idx;
   }
 
   void set_shape(IntArrayRef shape) {
@@ -178,13 +179,6 @@ public:
     // overriden methods below
     refresh_numel();
     refresh_contiguous();
-  }
-
-  void initInPlaceUpdate() {
-    // The tensor is materialized; it just has an old value
-    // which is needed to compute the in-place op. Let's pretend it's up-to-date
-    // so the getters below work.
-    set_materialized(true);
   }
 
   void endInPlaceUpdate() {
@@ -396,30 +390,8 @@ TensorImpl* is_impl(uintptr_t tt) {
 }
 
 void set(uintptr_t tt, const Tensor &t) {
-  assert(tt != DUMMY_TORCHY);
-  ((TorchyTensor*)tt)->set(t);
-}
-
-void init_update_in_place(uintptr_t tt) {
   if (tt != DUMMY_TORCHY)
-    ((TorchyTensor*)tt)->initInPlaceUpdate();
-}
-
-void end_update_in_place_first(uintptr_t tt) {
-  if (tt != DUMMY_TORCHY)
-    ((TorchyTensor*)tt)->endInPlaceUpdate();
-}
-
-void end_update_in_place_copy(uintptr_t dst0, uintptr_t src0) {
-  assert(dst0 != DUMMY_TORCHY);
-  if (src0 != DUMMY_TORCHY) {
-    auto src = (TorchyTensor*)src0;
-    auto dst = (TorchyTensor*)dst0;
-    assert(src->getTraceIdx() == -1u);
-    dst->check_torchy_data_from(*src);
-    dst->copy_metadata(*src, src->version_counter(),
-                       src->allow_tensor_metadata_change());
-  }
+    ((TorchyTensor*)tt)->set(t);
 }
 
 #ifndef NDEBUG
@@ -796,11 +768,9 @@ bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks,
     assert(tt);
   }
 
-  auto idx = trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, op, ks,
-                                   tt ? tt->getTraceIdx() : -1u);
+  trace.register_tensor(tt ? (uintptr_t)tt : DUMMY_TORCHY, op, ks);
   if (tt) {
     tt->set_materialized(false);
-    tt->update_idx(idx);
     if (!preserves_shape)
       tt->set_no_shape_info();
     return false;
@@ -808,6 +778,10 @@ bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks,
 
   // shared; needs flushing
   return true;
+}
+
+void update_trace_idx(const Tensor &t) {
+  is_torchy(t)->update_idx(trace.get_idx());
 }
 
 #include "autogen/dispatch_wrappers.h"

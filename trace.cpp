@@ -195,14 +195,6 @@ InputIdx Trace::get_tensor_idx(const Tensor &t) {
     // e.g. for inplace ops we have %0 = op %0 <-- but we want in<0> there
     if (idx != next_op-1) {
       incref(idx);
-
-      // in-place ops may use the same tensor but since we only store the first
-      // idx, here we need to traverse all ops and search for other references
-      auto parent_t = data[idx].someTensor();
-      for (unsigned i = idx+1; i < (next_op-1); ++i) {
-        if (parent_t == data[i].someTensor())
-          incref(i);
-      }
       return { idx, false };
     }
   }
@@ -277,7 +269,7 @@ void Trace::append_arg(optional<string_view> arg) {
 }
 
 unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
-                                c10::DispatchKeySet ks, unsigned idx_inplace) {
+                                c10::DispatchKeySet ks) {
   assert(!flushing);
 #ifndef TORCHY_RELEASE
   // FOR DEBUGGING ONLY. Can be used to binary search a trace that goes wrong
@@ -307,24 +299,11 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
   op.dead = false;
 
   auto &rdata = data[next_op];
-
-  // This is an in-place op refering to another main op.
-  // We inherit all references & outputs. NB: These must be kept in sync!
-  if (next_op != 0 && idx_inplace != -1u) {
-    assert(idx_inplace < next_op);
-    auto &all_tensors = data[idx_inplace].tensors;
-    assert(find(all_tensors.begin(), all_tensors.end(), tensor)
-             != all_tensors.end());
-    rdata.tensors = all_tensors;
-    rdata.refs    = data[idx_inplace].refs;
-  } else {
-    rdata.tensors[0] = tensor;
-    for (unsigned i = 1; i < rdata.tensors.size(); ++i) {
-      rdata.tensors[i] = 0;
-    }
-    rdata.refs = 1;
+  rdata.tensors[0] = tensor;
+  for (unsigned i = 1; i < rdata.tensors.size(); ++i) {
+    rdata.tensors[i] = 0;
   }
-
+  rdata.refs = 1;
   rdata.tls = ThreadLocalState();
   rdata.dispatch_key = ks;
   rdata.inplace = op.inplace();
@@ -333,31 +312,16 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
 
 void Trace::add_shared(unsigned idx, uintptr_t ptr) {
   assert(idx < next_op);
-  auto parent_t = data[idx].someTensor();
-
-  auto add = [&](unsigned idx) {
-    if (parent_t != data[idx].someTensor())
-      return false;
-
-    for (auto &tensor : data[idx].tensors) {
-      if (tensor == 0) {
-        tensor = ptr;
-        incref(idx);
-        return true;
-      }
-    }
-    return false;
-  };
-
-  // in-place ops may use the same tensor but since we only store the first idx
-  // here we need to traverse all ops and search for other references
-  for (; idx < next_op; ++idx) {
-    if (!add(idx)) {
-      // no more space for additional observers; just flush
-      flush(STATS(FlushReason::OVERFLOW_SHARED_LIST));
+  for (auto &tensor : data[idx].tensors) {
+    if (tensor == 0) {
+      tensor = ptr;
+      incref(idx);
       return;
     }
   }
+
+  // no more space for additional observers; just flush
+  flush(STATS(FlushReason::OVERFLOW_SHARED_LIST));
 }
 
 void Trace::set_unobservable(unsigned idx, uintptr_t ptr) {
@@ -366,32 +330,26 @@ void Trace::set_unobservable(unsigned idx, uintptr_t ptr) {
   if (destroyed)
     return;
 
-  auto gc = [&](unsigned idx) {
-    auto &rdata = data[idx];
-    for (auto &tensor : rdata.tensors) {
-      if (tensor == ptr) {
-        tensor = 0;
-        ops[idx].observable = rdata.hasTensors();
-        decref(idx);
-        return true;
-      }
-    }
-    return false;
-  };
-
   assert(idx < next_op);
+  auto &op    = ops[idx];
   auto &rdata = data[idx];
 
-  // in-place ops may use the same tensor but since we only store the first idx
-  // here we need to traverse all ops and search for other references
-  for (unsigned i = idx; rdata.refs > 0 && i < next_op; ++i) {
-    bool found = gc(i);
-    assert(i > idx || found); (void)found;
+  bool found = false;
+  for (auto &tensor : rdata.tensors) {
+    if (tensor == ptr) {
+      tensor = 0;
+      found = true;
+      break;
+    }
   }
+  assert(found); (void)found;
+
+  op.observable = rdata.hasTensors();
+  decref(idx);
 
   // reclaim slot if this was the last created tensor
   if (rdata.refs == 0 && idx+1 == next_op) {
-    ops[idx].destroy();
+    op.destroy();
     rdata.destroy();
     --next_op;
   }

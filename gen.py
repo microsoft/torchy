@@ -404,6 +404,8 @@ def gen_dispatch_wrapper(fn):
   {register_args}
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx({ret});
   return {ret};
 }}'''
 

@@ -137,6 +137,8 @@ at::Tensor & wrap_requires_grad_(c10::DispatchKeySet dispatchKeySet, at::Tensor 
   trace.append_arg(self);trace.append_arg(requires_grad);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -187,6 +189,8 @@ at::Tensor & wrap_rename_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self,
   trace.append_arg(self);trace.append_arg(names);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -342,6 +346,8 @@ at::Tensor & wrap__sobol_engine_ff_(c10::DispatchKeySet dispatchKeySet, at::Tens
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(sobolstate);trace.append_arg(dimension);trace.append_arg(num_generated);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -354,6 +360,8 @@ at::Tensor & wrap__sobol_engine_scramble_(c10::DispatchKeySet dispatchKeySet, at
   trace.append_arg(self);trace.append_arg(ltm);trace.append_arg(dimension);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -366,6 +374,8 @@ at::Tensor & wrap__sobol_engine_initialize_state_(c10::DispatchKeySet dispatchKe
   trace.append_arg(self);trace.append_arg(dimension);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -409,6 +419,8 @@ at::Tensor & wrap_dropout_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(train);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -432,6 +444,8 @@ at::Tensor & wrap_feature_dropout_(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(train);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -455,6 +469,8 @@ at::Tensor & wrap_alpha_dropout_(c10::DispatchKeySet dispatchKeySet, at::Tensor 
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(train);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -478,6 +494,8 @@ at::Tensor & wrap_feature_alpha_dropout_(c10::DispatchKeySet dispatchKeySet, at:
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(train);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -501,6 +519,8 @@ at::Tensor & wrap_abs_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -513,6 +533,8 @@ at::Tensor & wrap_abs_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -536,6 +558,8 @@ at::Tensor & wrap_absolute_(c10::DispatchKeySet dispatchKeySet, at::Tensor & sel
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -548,6 +572,8 @@ at::Tensor & wrap_absolute_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -571,6 +597,8 @@ at::Tensor & wrap_angle_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -616,6 +644,8 @@ at::Tensor & wrap_sgn_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -691,6 +721,8 @@ at::Tensor & wrap_conj_physical_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -703,6 +735,8 @@ at::Tensor & wrap_conj_physical_(c10::DispatchKeySet dispatchKeySet, at::Tensor 
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -760,6 +794,8 @@ at::Tensor & wrap_acos_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -783,6 +819,8 @@ at::Tensor & wrap_arccos_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self)
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -795,6 +833,8 @@ at::Tensor & wrap_arccos_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -845,6 +885,8 @@ at::Tensor & wrap_add__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -857,6 +899,8 @@ at::Tensor & wrap_add_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -880,6 +924,8 @@ at::Tensor & wrap__add_relu__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tens
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -892,6 +938,8 @@ at::Tensor & wrap__add_relu_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -915,6 +963,8 @@ at::Tensor & wrap__add_relu__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tens
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -938,6 +988,8 @@ at::Tensor & wrap_add__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -962,6 +1014,8 @@ at::Tensor & wrap_addmv_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(mat);trace.append_arg(vec);trace.append_arg(beta);trace.append_arg(alpha);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -985,6 +1039,8 @@ at::Tensor & wrap_addr_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, c
   trace.append_arg(self);trace.append_arg(vec1);trace.append_arg(vec2);trace.append_arg(beta);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -997,6 +1053,8 @@ at::Tensor & wrap_addr_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(vec1);trace.append_arg(vec2);trace.append_arg(beta);trace.append_arg(alpha);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1035,6 +1093,8 @@ at::Tensor & wrap_all_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1057,6 +1117,8 @@ at::Tensor & wrap_all_dimname_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1081,6 +1143,8 @@ at::Tensor & wrap_any_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1103,6 +1167,8 @@ at::Tensor & wrap_any_dimname_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1146,6 +1212,8 @@ at::Tensor & wrap_arange_out(c10::DispatchKeySet dispatchKeySet, const at::Scala
   trace.append_arg(end);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1158,6 +1226,8 @@ at::Tensor & wrap_arange_start_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(start);trace.append_arg(end);trace.append_arg(step);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1186,6 +1256,8 @@ at::Tensor & wrap_argmax_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1204,6 +1276,8 @@ at::Tensor & wrap_argmin_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1228,6 +1302,8 @@ at::Tensor & wrap_acosh_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1251,6 +1327,8 @@ at::Tensor & wrap_arccosh_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1263,6 +1341,8 @@ at::Tensor & wrap_arccosh_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1287,6 +1367,8 @@ at::Tensor & wrap_asinh_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1310,6 +1392,8 @@ at::Tensor & wrap_arcsinh_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1322,6 +1406,8 @@ at::Tensor & wrap_arcsinh_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1346,6 +1432,8 @@ at::Tensor & wrap_atanh_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1369,6 +1457,8 @@ at::Tensor & wrap_arctanh_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1381,6 +1471,8 @@ at::Tensor & wrap_arctanh_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1404,6 +1496,8 @@ const at::Tensor & wrap_as_strided_(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(stride);trace.append_arg(storage_offset);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1427,6 +1521,8 @@ at::Tensor & wrap_asin_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1439,6 +1535,8 @@ at::Tensor & wrap_asin_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1462,6 +1560,8 @@ at::Tensor & wrap_arcsin_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self)
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1474,6 +1574,8 @@ at::Tensor & wrap_arcsin_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1498,6 +1600,8 @@ at::Tensor & wrap_atan_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1521,6 +1625,8 @@ at::Tensor & wrap_arctan_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self)
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1533,6 +1639,8 @@ at::Tensor & wrap_arctan_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1604,6 +1712,8 @@ at::Tensor & wrap_baddbmm_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self
   trace.append_arg(self);trace.append_arg(batch1);trace.append_arg(batch2);trace.append_arg(beta);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1616,6 +1726,8 @@ at::Tensor & wrap__baddbmm_mkl_(c10::DispatchKeySet dispatchKeySet, at::Tensor &
   trace.append_arg(self);trace.append_arg(batch1);trace.append_arg(batch2);trace.append_arg(beta);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1628,6 +1740,8 @@ at::Tensor & wrap_baddbmm_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(batch1);trace.append_arg(batch2);trace.append_arg(beta);trace.append_arg(alpha);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1704,6 +1818,8 @@ at::Tensor & wrap_bernoulli_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1716,6 +1832,8 @@ at::Tensor & wrap_bernoulli__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tens
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1728,6 +1846,8 @@ at::Tensor & wrap_bernoulli__float(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1772,6 +1892,8 @@ at::Tensor & wrap_binary_cross_entropy_out(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(weight);trace.append_arg(reduction);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1795,6 +1917,8 @@ at::Tensor & wrap_binary_cross_entropy_backward_grad_input(c10::DispatchKeySet d
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(weight);trace.append_arg(reduction);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -1852,6 +1976,8 @@ at::Tensor & wrap_bitwise_not_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1864,6 +1990,8 @@ at::Tensor & wrap_copysign_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1899,6 +2027,8 @@ at::Tensor & wrap_copysign__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1911,6 +2041,8 @@ at::Tensor & wrap_copysign_Scalar_out(c10::DispatchKeySet dispatchKeySet, const 
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1934,6 +2066,8 @@ at::Tensor & wrap_logical_not_(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1946,6 +2080,8 @@ at::Tensor & wrap_logical_not_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -1969,6 +2105,8 @@ at::Tensor & wrap_logical_xor_(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -1981,6 +2119,8 @@ at::Tensor & wrap_logical_xor_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2004,6 +2144,8 @@ at::Tensor & wrap_logical_and_(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2016,6 +2158,8 @@ at::Tensor & wrap_logical_and_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2039,6 +2183,8 @@ at::Tensor & wrap_logical_or_(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2051,6 +2197,8 @@ at::Tensor & wrap_logical_or_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2094,6 +2242,8 @@ at::Tensor & wrap_bmm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(mat2);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2133,6 +2283,8 @@ at::Tensor & wrap_cat_out(c10::DispatchKeySet dispatchKeySet, at::TensorList ten
   trace.append_arg(tensors);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2155,6 +2307,8 @@ at::Tensor & wrap_cat_names_out(c10::DispatchKeySet dispatchKeySet, at::TensorLi
   trace.append_arg(tensors);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2188,6 +2342,8 @@ at::Tensor & wrap_ceil_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2200,6 +2356,8 @@ at::Tensor & wrap_ceil_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2223,6 +2381,8 @@ at::Tensor & wrap_chain_matmul_out(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(matrices);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2287,6 +2447,8 @@ at::Tensor & wrap_clamp_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, 
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(max);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2299,6 +2461,8 @@ at::Tensor & wrap_clamp__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor &
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(max);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2311,6 +2475,8 @@ at::Tensor & wrap_clamp_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(max);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2323,6 +2489,8 @@ at::Tensor & wrap_clamp_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(max);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2357,6 +2525,8 @@ at::Tensor & wrap_clamp_max_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(max);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2369,6 +2539,8 @@ at::Tensor & wrap_clamp_max__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tens
   trace.append_arg(self);trace.append_arg(max);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2381,6 +2553,8 @@ at::Tensor & wrap_clamp_max_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(max);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2393,6 +2567,8 @@ at::Tensor & wrap_clamp_max_Tensor_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(max);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2427,6 +2603,8 @@ at::Tensor & wrap_clamp_min_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(min);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2439,6 +2617,8 @@ at::Tensor & wrap_clamp_min__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tens
   trace.append_arg(self);trace.append_arg(min);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2451,6 +2631,8 @@ at::Tensor & wrap_clamp_min_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2463,6 +2645,8 @@ at::Tensor & wrap_clamp_min_Tensor_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2497,6 +2681,8 @@ at::Tensor & wrap_clip_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, c
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(max);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2509,6 +2695,8 @@ at::Tensor & wrap_clip__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(max);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2521,6 +2709,8 @@ at::Tensor & wrap_clip_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(max);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2533,6 +2723,8 @@ at::Tensor & wrap_clip_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(min);trace.append_arg(max);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2562,6 +2754,8 @@ at::Tensor & wrap_complex_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(real);trace.append_arg(imag);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2585,6 +2779,8 @@ at::Tensor & wrap_polar_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(abs);trace.append_arg(angle);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2797,6 +2993,8 @@ at::Tensor & wrap_copy_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, c
   trace.append_arg(self);trace.append_arg(src);trace.append_arg(non_blocking);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -2833,6 +3031,8 @@ at::Tensor & wrap_cos_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -2857,6 +3057,8 @@ at::Tensor & wrap_cosh_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3183,6 +3385,8 @@ at::Tensor & wrap_cumprod_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3205,6 +3409,8 @@ at::Tensor & wrap_cumprod__dimname(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(dtype);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3217,6 +3423,8 @@ at::Tensor & wrap_cumprod_dimname_out(c10::DispatchKeySet dispatchKeySet, const 
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3251,6 +3459,8 @@ at::Tensor & wrap_cumsum_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3273,6 +3483,8 @@ at::Tensor & wrap_cumsum__dimname(c10::DispatchKeySet dispatchKeySet, at::Tensor
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(dtype);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3285,6 +3497,8 @@ at::Tensor & wrap_cumsum_dimname_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3405,6 +3619,8 @@ at::Tensor & wrap_fill_diagonal_(c10::DispatchKeySet dispatchKeySet, at::Tensor 
   trace.append_arg(self);trace.append_arg(fill_value);trace.append_arg(wrap);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3427,6 +3643,8 @@ at::Tensor & wrap_diff_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(dim);trace.append_arg(prepend);trace.append_arg(append);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3492,6 +3710,8 @@ at::Tensor & wrap_div__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3504,6 +3724,8 @@ at::Tensor & wrap_div_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3527,6 +3749,8 @@ at::Tensor & wrap_div__Tensor_mode(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(rounding_mode);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3539,6 +3763,8 @@ at::Tensor & wrap_div_out_mode(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(rounding_mode);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3562,6 +3788,8 @@ at::Tensor & wrap_div__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3585,6 +3813,8 @@ at::Tensor & wrap_div__Scalar_mode(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(rounding_mode);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3608,6 +3838,8 @@ at::Tensor & wrap_divide__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor 
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3620,6 +3852,8 @@ at::Tensor & wrap_divide_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3643,6 +3877,8 @@ at::Tensor & wrap_divide__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor 
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3666,6 +3902,8 @@ at::Tensor & wrap_divide__Tensor_mode(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(rounding_mode);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3678,6 +3916,8 @@ at::Tensor & wrap_divide_out_mode(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(rounding_mode);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3701,6 +3941,8 @@ at::Tensor & wrap_divide__Scalar_mode(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(rounding_mode);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3724,6 +3966,8 @@ at::Tensor & wrap_true_divide__Tensor(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3736,6 +3980,8 @@ at::Tensor & wrap_true_divide_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3759,6 +4005,8 @@ at::Tensor & wrap_true_divide__Scalar(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3782,6 +4030,8 @@ at::Tensor & wrap_dot_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(tensor);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3805,6 +4055,8 @@ at::Tensor & wrap_vdot_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -3858,6 +4110,8 @@ at::Tensor & wrap_embedding_renorm_(c10::DispatchKeySet dispatchKeySet, at::Tens
   trace.append_arg(self);trace.append_arg(indices);trace.append_arg(max_norm);trace.append_arg(norm_type);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -3902,6 +4156,8 @@ at::Tensor & wrap_row_stack_out(c10::DispatchKeySet dispatchKeySet, at::TensorLi
   trace.append_arg(tensors);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4069,6 +4325,8 @@ const at::Tensor & wrap_resize_(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(memory_format);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -4091,6 +4349,8 @@ at::Tensor & wrap_empty_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef 
   trace.append_arg(size);trace.append_arg(memory_format);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4137,6 +4397,8 @@ at::Tensor & wrap_erf_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4161,6 +4423,8 @@ at::Tensor & wrap_erfc_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4185,6 +4449,8 @@ at::Tensor & wrap_exp_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4209,6 +4475,8 @@ at::Tensor & wrap_exp2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4233,6 +4501,8 @@ at::Tensor & wrap_expm1_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4287,6 +4557,8 @@ at::Tensor & wrap_eye_out(c10::DispatchKeySet dispatchKeySet, int64_t n, at::Ten
   trace.append_arg(n);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4299,6 +4571,8 @@ at::Tensor & wrap_eye_m_out(c10::DispatchKeySet dispatchKeySet, int64_t n, int64
   trace.append_arg(n);trace.append_arg(m);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4372,6 +4646,8 @@ at::Tensor & wrap_fill__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(value);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -4384,6 +4660,8 @@ at::Tensor & wrap_fill__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(value);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -4407,6 +4685,8 @@ at::Tensor & wrap_floor_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) 
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -4419,6 +4699,8 @@ at::Tensor & wrap_floor_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4442,6 +4724,8 @@ at::Tensor & wrap_floor_divide__Tensor(c10::DispatchKeySet dispatchKeySet, at::T
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -4454,6 +4738,8 @@ at::Tensor & wrap_floor_divide_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4477,6 +4763,8 @@ at::Tensor & wrap_floor_divide__Scalar(c10::DispatchKeySet dispatchKeySet, at::T
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -4501,6 +4789,8 @@ at::Tensor & wrap_frac_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4535,6 +4825,8 @@ at::Tensor & wrap_full_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef s
   trace.append_arg(size);trace.append_arg(fill_value);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4568,6 +4860,8 @@ at::Tensor & wrap_gcd_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4592,6 +4886,8 @@ at::Tensor & wrap_lcm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4808,6 +5104,8 @@ at::Tensor & wrap__fft_r2c_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(normalization);trace.append_arg(onesided);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4830,6 +5128,8 @@ at::Tensor & wrap__fft_c2r_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(normalization);trace.append_arg(last_dim_size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4852,6 +5152,8 @@ at::Tensor & wrap__fft_c2c_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(normalization);trace.append_arg(forward);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -4898,6 +5200,8 @@ at::Tensor & wrap_index_copy_(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(source);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -4920,6 +5224,8 @@ at::Tensor & wrap_index_copy__dimname(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(source);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -4942,6 +5248,8 @@ at::Tensor & wrap_index_put_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(indices);trace.append_arg(values);trace.append_arg(accumulate);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -4964,6 +5272,8 @@ at::Tensor & wrap__index_put_impl_(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(indices);trace.append_arg(values);trace.append_arg(accumulate);trace.append_arg(unsafe);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -4998,6 +5308,8 @@ at::Tensor & wrap_inverse_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5031,6 +5343,8 @@ at::Tensor & wrap_isin_Tensor_Tensor_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(elements);trace.append_arg(test_elements);trace.append_arg(assume_unique);trace.append_arg(invert);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5049,6 +5363,8 @@ at::Tensor & wrap_isin_Tensor_Scalar_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(elements);trace.append_arg(test_element);trace.append_arg(assume_unique);trace.append_arg(invert);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5067,6 +5383,8 @@ at::Tensor & wrap_isin_Scalar_Tensor_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(element);trace.append_arg(test_elements);trace.append_arg(assume_unique);trace.append_arg(invert);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5194,6 +5512,8 @@ at::Tensor & wrap_kron_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5264,6 +5584,8 @@ at::Tensor & wrap_nan_to_num_(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(nan);trace.append_arg(posinf);trace.append_arg(neginf);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -5276,6 +5598,8 @@ at::Tensor & wrap_nan_to_num_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(nan);trace.append_arg(posinf);trace.append_arg(neginf);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5419,6 +5743,8 @@ at::Tensor & wrap_ldexp_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, 
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -5431,6 +5757,8 @@ at::Tensor & wrap_ldexp_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5453,6 +5781,8 @@ at::Tensor & wrap_linspace_out(c10::DispatchKeySet dispatchKeySet, const at::Sca
   trace.append_arg(start);trace.append_arg(end);trace.append_arg(steps);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5477,6 +5807,8 @@ at::Tensor & wrap_log_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5501,6 +5833,8 @@ at::Tensor & wrap_log10_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5524,6 +5858,8 @@ at::Tensor & wrap_log1p_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) 
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -5536,6 +5872,8 @@ at::Tensor & wrap_log1p_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5560,6 +5898,8 @@ at::Tensor & wrap_log2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5572,6 +5912,8 @@ at::Tensor & wrap_logaddexp_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5595,6 +5937,8 @@ at::Tensor & wrap_logaddexp2_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5652,6 +5996,8 @@ at::Tensor & wrap_xlogy__Scalar_Other(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -5664,6 +6010,8 @@ at::Tensor & wrap_xlogy_OutTensor(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5676,6 +6024,8 @@ at::Tensor & wrap_xlogy_OutScalar_Self(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5688,6 +6038,8 @@ at::Tensor & wrap_xlogy_OutScalar_Other(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5721,6 +6073,8 @@ at::Tensor & wrap_logspace_out(c10::DispatchKeySet dispatchKeySet, const at::Sca
   trace.append_arg(start);trace.append_arg(end);trace.append_arg(steps);trace.append_arg(base);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5760,6 +6114,8 @@ at::Tensor & wrap__log_softmax_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(half_to_float);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5778,6 +6134,8 @@ at::Tensor & wrap__log_softmax_backward_data_out(c10::DispatchKeySet dispatchKey
   trace.append_arg(grad_output);trace.append_arg(output);trace.append_arg(dim);trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5801,6 +6159,8 @@ at::Tensor & wrap__logcumsumexp_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5824,6 +6184,8 @@ at::Tensor & wrap_logcumsumexp_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5846,6 +6208,8 @@ at::Tensor & wrap_logcumsumexp_dimname_out(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5868,6 +6232,8 @@ at::Tensor & wrap_logsumexp_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5890,6 +6256,8 @@ at::Tensor & wrap_logsumexp_names_out(c10::DispatchKeySet dispatchKeySet, const 
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5924,6 +6292,8 @@ at::Tensor & wrap_matmul_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -5969,6 +6339,8 @@ at::Tensor & wrap_matrix_power_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6037,6 +6409,8 @@ at::Tensor & wrap__compute_linear_combination_out(c10::DispatchKeySet dispatchKe
   trace.append_arg(input);trace.append_arg(coefficients);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6093,6 +6467,8 @@ at::Tensor & wrap_amax_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6224,6 +6600,8 @@ at::Tensor & wrap_mean_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6246,6 +6624,8 @@ at::Tensor & wrap_mean_names_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6362,6 +6742,8 @@ at::Tensor & wrap_amin_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6559,6 +6941,8 @@ at::Tensor & wrap_mm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
   trace.append_arg(self);trace.append_arg(mat2);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6637,6 +7021,8 @@ at::Tensor & wrap_mul__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -6649,6 +7035,8 @@ at::Tensor & wrap_mul_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6672,6 +7060,8 @@ at::Tensor & wrap_mul__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -6695,6 +7085,8 @@ at::Tensor & wrap_multiply__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -6707,6 +7099,8 @@ at::Tensor & wrap_multiply_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6730,6 +7124,8 @@ at::Tensor & wrap_multiply__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -6753,6 +7149,8 @@ at::Tensor & wrap_mv_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
   trace.append_arg(self);trace.append_arg(vec);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6765,6 +7163,8 @@ at::Tensor & wrap_mvlgamma_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6788,6 +7188,8 @@ at::Tensor & wrap_mvlgamma_(c10::DispatchKeySet dispatchKeySet, at::Tensor & sel
   trace.append_arg(self);trace.append_arg(p);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -6810,6 +7212,8 @@ at::Tensor & wrap_narrow_copy_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(start);trace.append_arg(length);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6870,6 +7274,8 @@ at::Tensor & wrap_batch_norm_elemt_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(input);trace.append_arg(weight);trace.append_arg(bias);trace.append_arg(mean);trace.append_arg(invstd);trace.append_arg(eps);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -6992,6 +7398,8 @@ at::Tensor & wrap_ones_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef s
   trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7262,6 +7670,8 @@ at::Tensor & wrap_rad2deg_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -7274,6 +7684,8 @@ at::Tensor & wrap_rad2deg_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7297,6 +7709,8 @@ at::Tensor & wrap_deg2rad_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -7309,6 +7723,8 @@ at::Tensor & wrap_deg2rad_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7375,6 +7791,8 @@ at::Tensor & wrap_rand_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef s
   trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7387,6 +7805,8 @@ at::Tensor & wrap_rand_generator_out(c10::DispatchKeySet dispatchKeySet, at::Int
   trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7452,6 +7872,8 @@ at::Tensor & wrap_randint_out(c10::DispatchKeySet dispatchKeySet, int64_t high, 
   trace.append_arg(high);trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7464,6 +7886,8 @@ at::Tensor & wrap_randint_generator_out(c10::DispatchKeySet dispatchKeySet, int6
   trace.append_arg(high);trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7476,6 +7900,8 @@ at::Tensor & wrap_randint_low_out(c10::DispatchKeySet dispatchKeySet, int64_t lo
   trace.append_arg(low);trace.append_arg(high);trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7488,6 +7914,8 @@ at::Tensor & wrap_randint_low_generator_out(c10::DispatchKeySet dispatchKeySet, 
   trace.append_arg(low);trace.append_arg(high);trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7565,6 +7993,8 @@ at::Tensor & wrap_randn_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef 
   trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7577,6 +8007,8 @@ at::Tensor & wrap_randn_generator_out(c10::DispatchKeySet dispatchKeySet, at::In
   trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7620,6 +8052,8 @@ at::Tensor & wrap_randperm_out(c10::DispatchKeySet dispatchKeySet, int64_t n, at
   trace.append_arg(n);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7632,6 +8066,8 @@ at::Tensor & wrap_randperm_generator_out(c10::DispatchKeySet dispatchKeySet, int
   trace.append_arg(n);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7664,6 +8100,8 @@ at::Tensor & wrap_range_out(c10::DispatchKeySet dispatchKeySet, const at::Scalar
   trace.append_arg(start);trace.append_arg(end);trace.append_arg(step);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7698,6 +8136,8 @@ at::Tensor & wrap_reciprocal_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7721,6 +8161,8 @@ at::Tensor & wrap_neg_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -7733,6 +8175,8 @@ at::Tensor & wrap_neg_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7756,6 +8200,8 @@ at::Tensor & wrap_negative_(c10::DispatchKeySet dispatchKeySet, at::Tensor & sel
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -7768,6 +8214,8 @@ at::Tensor & wrap_negative_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7876,6 +8324,8 @@ at::Tensor & wrap_round_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7899,6 +8349,8 @@ at::Tensor & wrap_rrelu_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, 
   trace.append_arg(self);trace.append_arg(lower);trace.append_arg(upper);trace.append_arg(training);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -7922,6 +8374,8 @@ at::Tensor & wrap_relu_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -7945,6 +8399,8 @@ at::Tensor & wrap_relu6_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) 
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -7974,6 +8430,8 @@ at::Tensor & wrap_gelu_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -7997,6 +8455,8 @@ at::Tensor & wrap_gelu_backward_grad_input(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(grad);trace.append_arg(self);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -8031,6 +8491,8 @@ at::Tensor & wrap_hardshrink_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(lambd);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8049,6 +8511,8 @@ at::Tensor & wrap_hardshrink_backward_grad_input(c10::DispatchKeySet dispatchKey
   trace.append_arg(grad_out);trace.append_arg(self);trace.append_arg(lambd);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -8079,6 +8543,8 @@ at::Tensor & wrap_rsqrt_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8134,6 +8600,8 @@ at::Tensor & wrap_selu_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -8156,6 +8624,8 @@ at::Tensor & wrap_celu_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, c
   trace.append_arg(self);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -8179,6 +8649,8 @@ at::Tensor & wrap_silu_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -8191,6 +8663,8 @@ at::Tensor & wrap_silu_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8203,6 +8677,8 @@ at::Tensor & wrap_silu_backward_grad_input(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -8237,6 +8713,8 @@ at::Tensor & wrap_mish_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -8249,6 +8727,8 @@ at::Tensor & wrap_mish_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8283,6 +8763,8 @@ at::Tensor & wrap_sigmoid_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -8295,6 +8777,8 @@ at::Tensor & wrap_sigmoid_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8318,6 +8802,8 @@ at::Tensor & wrap_logit_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, 
   trace.append_arg(self);trace.append_arg(eps);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -8330,6 +8816,8 @@ at::Tensor & wrap_logit_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(eps);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8354,6 +8842,8 @@ at::Tensor & wrap_sin_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8378,6 +8868,8 @@ at::Tensor & wrap_sinc_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8402,6 +8894,8 @@ at::Tensor & wrap_sinh_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8425,6 +8919,8 @@ at::Tensor & wrap_detach_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self)
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -8519,6 +9015,8 @@ at::Tensor & wrap__softmax_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(half_to_float);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8537,6 +9035,8 @@ at::Tensor & wrap__softmax_backward_data_out(c10::DispatchKeySet dispatchKeySet,
   trace.append_arg(grad_output);trace.append_arg(output);trace.append_arg(dim);trace.append_arg(self);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -8639,6 +9139,8 @@ at::Tensor & wrap_squeeze_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -8651,6 +9153,8 @@ at::Tensor & wrap_squeeze__dim(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(dim);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -8663,6 +9167,8 @@ at::Tensor & wrap_squeeze__dimname(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(dim);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -8685,6 +9191,8 @@ at::Tensor & wrap_sspaddmm_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(mat1);trace.append_arg(mat2);trace.append_arg(beta);trace.append_arg(alpha);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8708,6 +9216,8 @@ at::Tensor & wrap_stack_out(c10::DispatchKeySet dispatchKeySet, at::TensorList t
   trace.append_arg(tensors);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8730,6 +9240,8 @@ at::Tensor & wrap__stack_out(c10::DispatchKeySet dispatchKeySet, at::TensorList 
   trace.append_arg(tensors);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8752,6 +9264,8 @@ at::Tensor & wrap_hstack_out(c10::DispatchKeySet dispatchKeySet, at::TensorList 
   trace.append_arg(tensors);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8774,6 +9288,8 @@ at::Tensor & wrap_vstack_out(c10::DispatchKeySet dispatchKeySet, at::TensorList 
   trace.append_arg(tensors);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8796,6 +9312,8 @@ at::Tensor & wrap_dstack_out(c10::DispatchKeySet dispatchKeySet, at::TensorList 
   trace.append_arg(tensors);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8867,6 +9385,8 @@ at::Tensor & wrap_sum_IntList_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8879,6 +9399,8 @@ at::Tensor & wrap_sum_DimnameList_out(c10::DispatchKeySet dispatchKeySet, const 
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8912,6 +9434,8 @@ at::Tensor & wrap_nansum_IntList_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8952,6 +9476,8 @@ at::Tensor & wrap_sqrt_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -8975,6 +9501,8 @@ at::Tensor & wrap_square_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self)
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -8987,6 +9515,8 @@ at::Tensor & wrap_square_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9061,6 +9591,8 @@ at::Tensor & wrap_std_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(unbiased);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9073,6 +9605,8 @@ at::Tensor & wrap_std_correction_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(correction);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9095,6 +9629,8 @@ at::Tensor & wrap_std_names_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(unbiased);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9117,6 +9653,8 @@ at::Tensor & wrap_std_correction_names_out(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(correction);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9146,6 +9684,8 @@ at::Tensor & wrap_prod_int_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9168,6 +9708,8 @@ at::Tensor & wrap_prod_Dimname_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9191,6 +9733,8 @@ at::Tensor & wrap_t_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -9215,6 +9759,8 @@ at::Tensor & wrap_tan_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9238,6 +9784,8 @@ at::Tensor & wrap_tanh_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -9250,6 +9798,8 @@ at::Tensor & wrap_tanh_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9272,6 +9822,8 @@ at::Tensor & wrap_tensordot_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(dims_self);trace.append_arg(dims_other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9301,6 +9853,8 @@ at::Tensor & wrap_threshold_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(threshold);trace.append_arg(value);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9313,6 +9867,8 @@ at::Tensor & wrap_threshold_backward_grad_input(c10::DispatchKeySet dispatchKeyS
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(threshold);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -9378,6 +9934,8 @@ at::Tensor & wrap_transpose_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(dim0);trace.append_arg(dim1);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -9390,6 +9948,8 @@ at::Tensor & wrap__mkldnn_transpose_(c10::DispatchKeySet dispatchKeySet, at::Ten
   trace.append_arg(self);trace.append_arg(dim0);trace.append_arg(dim1);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -9538,6 +10098,8 @@ at::Tensor & wrap_trunc_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) 
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -9550,6 +10112,8 @@ at::Tensor & wrap_trunc_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9573,6 +10137,8 @@ at::Tensor & wrap_fix_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -9585,6 +10151,8 @@ at::Tensor & wrap_fix_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9666,6 +10234,8 @@ at::Tensor & wrap_unsqueeze_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(dim);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -9720,6 +10290,8 @@ at::Tensor & wrap_var_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(unbiased);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9732,6 +10304,8 @@ at::Tensor & wrap_var_correction_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(correction);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9754,6 +10328,8 @@ at::Tensor & wrap_var_names_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(unbiased);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9776,6 +10352,8 @@ at::Tensor & wrap_var_correction_names_out(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(correction);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -9946,6 +10524,8 @@ at::Tensor & wrap_zeros_out(c10::DispatchKeySet dispatchKeySet, at::IntArrayRef 
   trace.append_arg(size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10227,6 +10807,8 @@ at::Tensor & wrap_norm_dtype_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10239,6 +10821,8 @@ at::Tensor & wrap_norm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10271,6 +10855,8 @@ at::Tensor & wrap_norm_names_dtype_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10283,6 +10869,8 @@ at::Tensor & wrap_norm_names_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10328,6 +10916,8 @@ at::Tensor & wrap_frobenius_norm_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10351,6 +10941,8 @@ at::Tensor & wrap_nuclear_norm_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10374,6 +10966,8 @@ at::Tensor & wrap_nuclear_norm_dim_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10408,6 +11002,8 @@ const at::Tensor & wrap_resize_as_(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(the_template);trace.append_arg(memory_format);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -10420,6 +11016,8 @@ const at::Tensor & wrap_resize_as_sparse_(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(self);trace.append_arg(the_template);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -10432,6 +11030,8 @@ at::Tensor & wrap_zero_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -10444,6 +11044,8 @@ at::Tensor & wrap_sub_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10467,6 +11069,8 @@ at::Tensor & wrap_sub__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -10490,6 +11094,8 @@ at::Tensor & wrap_sub__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -10502,6 +11108,8 @@ at::Tensor & wrap_subtract_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10525,6 +11133,8 @@ at::Tensor & wrap_subtract__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -10548,6 +11158,8 @@ at::Tensor & wrap_subtract__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -10571,6 +11183,8 @@ at::Tensor & wrap_heaviside_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(values);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10617,6 +11231,8 @@ at::Tensor & wrap_addmm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(mat1);trace.append_arg(mat2);trace.append_arg(beta);trace.append_arg(alpha);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10640,6 +11256,8 @@ at::Tensor & wrap_addmm_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, 
   trace.append_arg(self);trace.append_arg(mat1);trace.append_arg(mat2);trace.append_arg(beta);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -10755,6 +11373,8 @@ const at::Tensor & wrap_sparse_resize_(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(sparse_dim);trace.append_arg(dense_dim);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -10767,6 +11387,8 @@ const at::Tensor & wrap_sparse_resize_and_clear_(c10::DispatchKeySet dispatchKey
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(sparse_dim);trace.append_arg(dense_dim);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -10891,6 +11513,8 @@ at::Tensor & wrap__coalesced_(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(coalesced);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -10943,6 +11567,8 @@ at::Tensor & wrap_hspmm_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(mat1);trace.append_arg(mat2);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -10965,6 +11591,8 @@ at::Tensor & wrap_copy_sparse_to_sparse_(c10::DispatchKeySet dispatchKeySet, at:
   trace.append_arg(self);trace.append_arg(src);trace.append_arg(non_blocking);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11630,6 +12258,8 @@ at::Tensor & wrap_set__source_Storage(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(std::move(source));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11642,6 +12272,8 @@ at::Tensor & wrap_set__source_Storage_storage_offset(c10::DispatchKeySet dispatc
   trace.append_arg(self);trace.append_arg(std::move(source));trace.append_arg(storage_offset);trace.append_arg(size);trace.append_arg(stride);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11654,6 +12286,8 @@ at::Tensor & wrap_set__source_Tensor(c10::DispatchKeySet dispatchKeySet, at::Ten
   trace.append_arg(self);trace.append_arg(source);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11666,6 +12300,8 @@ at::Tensor & wrap_set_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11684,6 +12320,8 @@ at::Tensor & wrap_masked_fill__Scalar(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(mask);trace.append_arg(value);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11707,6 +12345,8 @@ at::Tensor & wrap_masked_fill__Tensor(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(mask);trace.append_arg(value);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11730,6 +12370,8 @@ at::Tensor & wrap_masked_scatter_(c10::DispatchKeySet dispatchKeySet, at::Tensor
   trace.append_arg(self);trace.append_arg(mask);trace.append_arg(source);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11775,6 +12417,8 @@ at::Tensor & wrap_put_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, co
   trace.append_arg(self);trace.append_arg(index);trace.append_arg(source);trace.append_arg(accumulate);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11797,6 +12441,8 @@ at::Tensor & wrap_index_add_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(source);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11809,6 +12455,8 @@ at::Tensor & wrap_index_add__alpha(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(source);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11851,6 +12499,8 @@ at::Tensor & wrap_index_fill__int_Scalar(c10::DispatchKeySet dispatchKeySet, at:
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(value);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11873,6 +12523,8 @@ at::Tensor & wrap_index_fill__int_Tensor(c10::DispatchKeySet dispatchKeySet, at:
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(value);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11895,6 +12547,8 @@ at::Tensor & wrap_index_fill__Dimname_Scalar(c10::DispatchKeySet dispatchKeySet,
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(value);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11907,6 +12561,8 @@ at::Tensor & wrap_index_fill__Dimname_Tensor(c10::DispatchKeySet dispatchKeySet,
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(value);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -11951,6 +12607,8 @@ at::Tensor & wrap_scatter_src_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(src);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -11975,6 +12633,8 @@ at::Tensor & wrap_scatter_value_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(value);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -11999,6 +12659,8 @@ at::Tensor & wrap_scatter_reduce_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(src);trace.append_arg(reduce);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12023,6 +12685,8 @@ at::Tensor & wrap_scatter_value_reduce_out(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(value);trace.append_arg(reduce);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12067,6 +12731,8 @@ at::Tensor & wrap_scatter_add_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(src);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12089,6 +12755,8 @@ at::Tensor & wrap_eq__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12101,6 +12769,8 @@ at::Tensor & wrap_eq__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12113,6 +12783,8 @@ at::Tensor & wrap_bitwise_and_Tensor_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12125,6 +12797,8 @@ at::Tensor & wrap_bitwise_and_Scalar_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12154,6 +12828,8 @@ at::Tensor & wrap_bitwise_and__Scalar(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12194,6 +12870,8 @@ at::Tensor & wrap___iand___Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12206,6 +12884,8 @@ at::Tensor & wrap___iand___Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12218,6 +12898,8 @@ at::Tensor & wrap_bitwise_or_Tensor_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12230,6 +12912,8 @@ at::Tensor & wrap_bitwise_or_Scalar_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12259,6 +12943,8 @@ at::Tensor & wrap_bitwise_or__Scalar(c10::DispatchKeySet dispatchKeySet, at::Ten
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12299,6 +12985,8 @@ at::Tensor & wrap___ior___Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor 
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12311,6 +12999,8 @@ at::Tensor & wrap___ior___Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor 
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12323,6 +13013,8 @@ at::Tensor & wrap_bitwise_xor_Tensor_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12335,6 +13027,8 @@ at::Tensor & wrap_bitwise_xor_Scalar_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12364,6 +13058,8 @@ at::Tensor & wrap_bitwise_xor__Scalar(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12404,6 +13100,8 @@ at::Tensor & wrap___ixor___Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12416,6 +13114,8 @@ at::Tensor & wrap___ixor___Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12450,6 +13150,8 @@ at::Tensor & wrap___ilshift___Scalar(c10::DispatchKeySet dispatchKeySet, at::Ten
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12462,6 +13164,8 @@ at::Tensor & wrap___ilshift___Tensor(c10::DispatchKeySet dispatchKeySet, at::Ten
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12486,6 +13190,8 @@ at::Tensor & wrap_bitwise_left_shift_Tensor_out(c10::DispatchKeySet dispatchKeyS
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12509,6 +13215,8 @@ at::Tensor & wrap_bitwise_left_shift__Tensor_Scalar(c10::DispatchKeySet dispatch
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12521,6 +13229,8 @@ at::Tensor & wrap_bitwise_left_shift_Tensor_Scalar_out(c10::DispatchKeySet dispa
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12566,6 +13276,8 @@ at::Tensor & wrap___irshift___Scalar(c10::DispatchKeySet dispatchKeySet, at::Ten
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12578,6 +13290,8 @@ at::Tensor & wrap___irshift___Tensor(c10::DispatchKeySet dispatchKeySet, at::Ten
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12602,6 +13316,8 @@ at::Tensor & wrap_bitwise_right_shift_Tensor_out(c10::DispatchKeySet dispatchKey
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12625,6 +13341,8 @@ at::Tensor & wrap_bitwise_right_shift__Tensor_Scalar(c10::DispatchKeySet dispatc
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12637,6 +13355,8 @@ at::Tensor & wrap_bitwise_right_shift_Tensor_Scalar_out(c10::DispatchKeySet disp
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12660,6 +13380,8 @@ at::Tensor & wrap_tril_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, i
   trace.append_arg(self);trace.append_arg(diagonal);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12672,6 +13394,8 @@ at::Tensor & wrap_triu_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, i
   trace.append_arg(self);trace.append_arg(diagonal);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12690,6 +13414,8 @@ at::Tensor & wrap_lerp__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(end);trace.append_arg(weight);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12702,6 +13428,8 @@ at::Tensor & wrap_lerp__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(end);trace.append_arg(weight);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12714,6 +13442,8 @@ at::Tensor & wrap_addbmm_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self,
   trace.append_arg(self);trace.append_arg(batch1);trace.append_arg(batch2);trace.append_arg(beta);trace.append_arg(alpha);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12726,6 +13456,8 @@ at::Tensor & wrap_addbmm_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(batch1);trace.append_arg(batch2);trace.append_arg(beta);trace.append_arg(alpha);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12748,6 +13480,8 @@ at::Tensor & wrap_random__from(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(from);trace.append_arg(to);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12760,6 +13494,8 @@ at::Tensor & wrap_random__to(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(to);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12772,6 +13508,8 @@ at::Tensor & wrap_random_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self,
   trace.append_arg(self);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12784,6 +13522,8 @@ at::Tensor & wrap_uniform_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self
   trace.append_arg(self);trace.append_arg(from);trace.append_arg(to);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12796,6 +13536,8 @@ at::Tensor & wrap_cauchy_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self,
   trace.append_arg(self);trace.append_arg(median);trace.append_arg(sigma);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12808,6 +13550,8 @@ at::Tensor & wrap_log_normal_(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(mean);trace.append_arg(std);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12820,6 +13564,8 @@ at::Tensor & wrap_exponential_(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(lambd);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12832,6 +13578,8 @@ at::Tensor & wrap_geometric_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -12844,6 +13592,8 @@ at::Tensor & wrap_diag_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(diagonal);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12876,6 +13626,8 @@ at::Tensor & wrap_cross_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12898,6 +13650,8 @@ at::Tensor & wrap_triu_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(diagonal);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12921,6 +13675,8 @@ at::Tensor & wrap_tril_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(diagonal);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -12986,6 +13742,8 @@ at::Tensor & wrap_ne_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13009,6 +13767,8 @@ at::Tensor & wrap_ne_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13032,6 +13792,8 @@ at::Tensor & wrap_ne__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13044,6 +13806,8 @@ at::Tensor & wrap_ne__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13056,6 +13820,8 @@ at::Tensor & wrap_not_equal_Scalar_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13079,6 +13845,8 @@ at::Tensor & wrap_not_equal_Tensor_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13102,6 +13870,8 @@ at::Tensor & wrap_not_equal__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tens
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13114,6 +13884,8 @@ at::Tensor & wrap_not_equal__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tens
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13126,6 +13898,8 @@ at::Tensor & wrap_eq_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13149,6 +13923,8 @@ at::Tensor & wrap_eq_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13172,6 +13948,8 @@ at::Tensor & wrap_ge_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13195,6 +13973,8 @@ at::Tensor & wrap_ge_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13218,6 +13998,8 @@ at::Tensor & wrap_ge__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13230,6 +14012,8 @@ at::Tensor & wrap_ge__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13242,6 +14026,8 @@ at::Tensor & wrap_greater_equal_Scalar_out(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13265,6 +14051,8 @@ at::Tensor & wrap_greater_equal_Tensor_out(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13288,6 +14076,8 @@ at::Tensor & wrap_greater_equal__Scalar(c10::DispatchKeySet dispatchKeySet, at::
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13300,6 +14090,8 @@ at::Tensor & wrap_greater_equal__Tensor(c10::DispatchKeySet dispatchKeySet, at::
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13312,6 +14104,8 @@ at::Tensor & wrap_le_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13335,6 +14129,8 @@ at::Tensor & wrap_le_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13358,6 +14154,8 @@ at::Tensor & wrap_le__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13370,6 +14168,8 @@ at::Tensor & wrap_le__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13382,6 +14182,8 @@ at::Tensor & wrap_less_equal_Scalar_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13405,6 +14207,8 @@ at::Tensor & wrap_less_equal_Tensor_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13428,6 +14232,8 @@ at::Tensor & wrap_less_equal__Scalar(c10::DispatchKeySet dispatchKeySet, at::Ten
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13440,6 +14246,8 @@ at::Tensor & wrap_less_equal__Tensor(c10::DispatchKeySet dispatchKeySet, at::Ten
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13452,6 +14260,8 @@ at::Tensor & wrap_gt_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13475,6 +14285,8 @@ at::Tensor & wrap_gt_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13498,6 +14310,8 @@ at::Tensor & wrap_gt__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13510,6 +14324,8 @@ at::Tensor & wrap_gt__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13522,6 +14338,8 @@ at::Tensor & wrap_greater_Scalar_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13545,6 +14363,8 @@ at::Tensor & wrap_greater_Tensor_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13568,6 +14388,8 @@ at::Tensor & wrap_greater__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13580,6 +14402,8 @@ at::Tensor & wrap_greater__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13592,6 +14416,8 @@ at::Tensor & wrap_lt_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13615,6 +14441,8 @@ at::Tensor & wrap_lt_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13638,6 +14466,8 @@ at::Tensor & wrap_lt__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13650,6 +14480,8 @@ at::Tensor & wrap_lt__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13662,6 +14494,8 @@ at::Tensor & wrap_less_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13685,6 +14519,8 @@ at::Tensor & wrap_less_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13708,6 +14544,8 @@ at::Tensor & wrap_less__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13720,6 +14558,8 @@ at::Tensor & wrap_less__Tensor(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -13732,6 +14572,8 @@ at::Tensor & wrap_take_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(index);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13754,6 +14596,8 @@ at::Tensor & wrap_take_along_dim_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(indices);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13776,6 +14620,8 @@ at::Tensor & wrap_index_select_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13798,6 +14644,8 @@ at::Tensor & wrap_index_select_dimname_out(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13830,6 +14678,8 @@ at::Tensor & wrap_masked_select_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(mask);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13862,6 +14712,8 @@ at::Tensor & wrap_nonzero_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13890,6 +14742,8 @@ at::Tensor & wrap_gather_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(sparse_grad);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13922,6 +14776,8 @@ at::Tensor & wrap_gather_dimname_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(sparse_grad);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13955,6 +14811,8 @@ at::Tensor & wrap_addcmul_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(tensor1);trace.append_arg(tensor2);trace.append_arg(value);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -13979,6 +14837,8 @@ at::Tensor & wrap_addcdiv_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(tensor1);trace.append_arg(tensor2);trace.append_arg(value);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14096,6 +14956,8 @@ at::Tensor & wrap_swapaxes_(c10::DispatchKeySet dispatchKeySet, at::Tensor & sel
   trace.append_arg(self);trace.append_arg(axis0);trace.append_arg(axis1);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -14119,6 +14981,8 @@ at::Tensor & wrap_swapdims_(c10::DispatchKeySet dispatchKeySet, at::Tensor & sel
   trace.append_arg(self);trace.append_arg(dim0);trace.append_arg(dim1);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -14131,6 +14995,8 @@ at::Tensor & wrap_cholesky_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(upper);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14154,6 +15020,8 @@ at::Tensor & wrap_cholesky_solve_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(input2);trace.append_arg(upper);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14215,6 +15083,8 @@ at::Tensor & wrap_cholesky_inverse_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(upper);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14262,6 +15132,8 @@ at::Tensor & wrap_orgqr_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(input2);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14274,6 +15146,8 @@ at::Tensor & wrap_ormqr_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(input2);trace.append_arg(input3);trace.append_arg(left);trace.append_arg(transpose);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14303,6 +15177,8 @@ at::Tensor & wrap_lu_solve_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(LU_data);trace.append_arg(LU_pivots);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14337,6 +15213,8 @@ at::Tensor & wrap_multinomial_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(num_samples);trace.append_arg(replacement);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14359,6 +15237,8 @@ at::Tensor & wrap_lgamma_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14383,6 +15263,8 @@ at::Tensor & wrap_digamma_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14401,6 +15283,8 @@ at::Tensor & wrap_polygamma_out(c10::DispatchKeySet dispatchKeySet, int64_t n, c
   trace.append_arg(n);trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14419,6 +15303,8 @@ at::Tensor & wrap_polygamma_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(n);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -14443,6 +15329,8 @@ at::Tensor & wrap_erfinv_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14467,6 +15355,8 @@ at::Tensor & wrap_i0_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor & 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14490,6 +15380,8 @@ at::Tensor & wrap_sign_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self) {
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -14502,6 +15394,8 @@ at::Tensor & wrap_sign_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14520,6 +15414,8 @@ at::Tensor & wrap_signbit_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14543,6 +15439,8 @@ at::Tensor & wrap_atan2_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14567,6 +15465,8 @@ at::Tensor & wrap_lerp_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(end);trace.append_arg(weight);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14579,6 +15479,8 @@ at::Tensor & wrap_lerp_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(end);trace.append_arg(weight);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14613,6 +15515,8 @@ at::Tensor & wrap_histc_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(bins);trace.append_arg(min);trace.append_arg(max);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14660,6 +15564,8 @@ at::Tensor & wrap_fmod_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14683,6 +15589,8 @@ at::Tensor & wrap_fmod__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -14695,6 +15603,8 @@ at::Tensor & wrap_fmod_Tensor_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14719,6 +15629,8 @@ at::Tensor & wrap_hypot_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14737,6 +15649,8 @@ at::Tensor & wrap_hypot_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, 
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -14749,6 +15663,8 @@ at::Tensor & wrap_igamma_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14773,6 +15689,8 @@ at::Tensor & wrap_igammac_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14797,6 +15715,8 @@ at::Tensor & wrap_nextafter_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14815,6 +15735,8 @@ at::Tensor & wrap_nextafter_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -14827,6 +15749,8 @@ at::Tensor & wrap_remainder_Scalar_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14850,6 +15774,8 @@ at::Tensor & wrap_remainder__Scalar(c10::DispatchKeySet dispatchKeySet, at::Tens
   trace.append_arg(self);trace.append_arg(other);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -14862,6 +15788,8 @@ at::Tensor & wrap_remainder_Tensor_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14914,6 +15842,8 @@ at::Tensor & wrap_fmin_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14943,6 +15873,8 @@ at::Tensor & wrap_fmax_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor 
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14961,6 +15893,8 @@ at::Tensor & wrap_maximum_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -14984,6 +15918,8 @@ at::Tensor & wrap_max_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15002,6 +15938,8 @@ at::Tensor & wrap_minimum_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15014,6 +15952,8 @@ at::Tensor & wrap_min_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15037,6 +15977,8 @@ at::Tensor & wrap_quantile_scalar_out(c10::DispatchKeySet dispatchKeySet, const 
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15060,6 +16002,8 @@ at::Tensor & wrap_quantile_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15083,6 +16027,8 @@ at::Tensor & wrap_nanquantile_scalar_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15106,6 +16052,8 @@ at::Tensor & wrap_nanquantile_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15129,6 +16077,8 @@ at::Tensor & wrap_quantile_new_scalar_out(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(interpolation);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15151,6 +16101,8 @@ at::Tensor & wrap_quantile_new_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(interpolation);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15173,6 +16125,8 @@ at::Tensor & wrap_nanquantile_new_scalar_out(c10::DispatchKeySet dispatchKeySet,
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(interpolation);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15195,6 +16149,8 @@ at::Tensor & wrap_nanquantile_new_out(c10::DispatchKeySet dispatchKeySet, const 
   trace.append_arg(self);trace.append_arg(q);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(interpolation);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15265,6 +16221,8 @@ at::Tensor & wrap_msort_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15343,6 +16301,8 @@ at::Tensor & wrap_renorm_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(dim);trace.append_arg(maxnorm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15394,6 +16354,8 @@ at::Tensor & wrap_pow_Tensor_Tensor_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(exponent);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15412,6 +16374,8 @@ at::Tensor & wrap_pow_Scalar_out(c10::DispatchKeySet dispatchKeySet, const at::S
   trace.append_arg(self);trace.append_arg(exponent);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15430,6 +16394,8 @@ at::Tensor & wrap_pow_Tensor_Scalar_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(exponent);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15465,6 +16431,8 @@ at::Tensor & wrap_float_power_Tensor_Tensor_out(c10::DispatchKeySet dispatchKeyS
   trace.append_arg(self);trace.append_arg(exponent);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15488,6 +16456,8 @@ at::Tensor & wrap_float_power_Scalar_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(exponent);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15511,6 +16481,8 @@ at::Tensor & wrap_float_power_Tensor_Scalar_out(c10::DispatchKeySet dispatchKeyS
   trace.append_arg(self);trace.append_arg(exponent);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15534,6 +16506,8 @@ at::Tensor & wrap_float_power__Scalar(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(exponent);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -15546,6 +16520,8 @@ at::Tensor & wrap_float_power__Tensor(c10::DispatchKeySet dispatchKeySet, at::Te
   trace.append_arg(self);trace.append_arg(exponent);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -15558,6 +16534,8 @@ at::Tensor & wrap_normal_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self,
   trace.append_arg(self);trace.append_arg(mean);trace.append_arg(std);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -15570,6 +16548,8 @@ at::Tensor & wrap_normal_Tensor_float_out(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(mean);trace.append_arg(std);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15593,6 +16573,8 @@ at::Tensor & wrap_normal_float_Tensor_out(c10::DispatchKeySet dispatchKeySet, do
   trace.append_arg(mean);trace.append_arg(std);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15616,6 +16598,8 @@ at::Tensor & wrap_normal_Tensor_Tensor_out(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(mean);trace.append_arg(std);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15649,6 +16633,8 @@ at::Tensor & wrap_normal_float_float_out(c10::DispatchKeySet dispatchKeySet, dou
   trace.append_arg(mean);trace.append_arg(std);trace.append_arg(size);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -15672,6 +16658,8 @@ at::Tensor & wrap__index_copy_(c10::DispatchKeySet dispatchKeySet, at::Tensor & 
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(index);trace.append_arg(source);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -15690,6 +16678,8 @@ at::Tensor & wrap__amp_update_scale_(c10::DispatchKeySet dispatchKeySet, at::Ten
   trace.append_arg(self);trace.append_arg(growth_tracker);trace.append_arg(found_inf);trace.append_arg(scale_growth_factor);trace.append_arg(scale_backoff_factor);trace.append_arg(growth_interval);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -15712,6 +16702,8 @@ at::Tensor & wrap__cat_out(c10::DispatchKeySet dispatchKeySet, at::TensorList te
   trace.append_arg(tensors);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16281,6 +17273,8 @@ at::Tensor & wrap_bucketize_Tensor_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(boundaries);trace.append_arg(out_int32);trace.append_arg(right);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16315,6 +17309,8 @@ at::Tensor & wrap_searchsorted_Tensor_out(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(sorted_sequence);trace.append_arg(self);trace.append_arg(out_int32);trace.append_arg(right);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16344,6 +17340,8 @@ at::Tensor & wrap__convert_indices_from_coo_to_csr_out(c10::DispatchKeySet dispa
   trace.append_arg(self);trace.append_arg(size);trace.append_arg(out_int32);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16356,6 +17354,8 @@ at::Tensor & wrap_mse_loss_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16379,6 +17379,8 @@ at::Tensor & wrap_mse_loss_backward_grad_input(c10::DispatchKeySet dispatchKeySe
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16402,6 +17404,8 @@ at::Tensor & wrap_l1_loss_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16425,6 +17429,8 @@ at::Tensor & wrap_l1_loss_backward_grad_input(c10::DispatchKeySet dispatchKeySet
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16448,6 +17454,8 @@ at::Tensor & wrap_multi_margin_loss_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(p);trace.append_arg(margin);trace.append_arg(weight);trace.append_arg(reduction);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16470,6 +17478,8 @@ at::Tensor & wrap_multi_margin_loss_backward_grad_input(c10::DispatchKeySet disp
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(p);trace.append_arg(margin);trace.append_arg(weight);trace.append_arg(reduction);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16492,6 +17502,8 @@ at::Tensor & wrap_multilabel_margin_loss_out(c10::DispatchKeySet dispatchKeySet,
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16526,6 +17538,8 @@ at::Tensor & wrap_multilabel_margin_loss_backward_grad_input(c10::DispatchKeySet
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(is_target);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16548,6 +17562,8 @@ at::Tensor & wrap_nll_loss_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(weight);trace.append_arg(reduction);trace.append_arg(ignore_index);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16592,6 +17608,8 @@ at::Tensor & wrap_nll_loss_backward_grad_input(c10::DispatchKeySet dispatchKeySe
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(weight);trace.append_arg(reduction);trace.append_arg(ignore_index);trace.append_arg(total_weight);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16610,6 +17628,8 @@ at::Tensor & wrap_nll_loss2d_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(weight);trace.append_arg(reduction);trace.append_arg(ignore_index);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16644,6 +17664,8 @@ at::Tensor & wrap_nll_loss2d_backward_grad_input(c10::DispatchKeySet dispatchKey
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(weight);trace.append_arg(reduction);trace.append_arg(ignore_index);trace.append_arg(total_weight);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16666,6 +17688,8 @@ at::Tensor & wrap_smooth_l1_loss_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(beta);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16689,6 +17713,8 @@ at::Tensor & wrap_smooth_l1_loss_backward_grad_input(c10::DispatchKeySet dispatc
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(beta);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16712,6 +17738,8 @@ at::Tensor & wrap_huber_loss_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(delta);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16735,6 +17763,8 @@ at::Tensor & wrap_huber_loss_backward_out(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(delta);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16758,6 +17788,8 @@ at::Tensor & wrap_soft_margin_loss_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16781,6 +17813,8 @@ at::Tensor & wrap_soft_margin_loss_backward_grad_input(c10::DispatchKeySet dispa
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(target);trace.append_arg(reduction);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16804,6 +17838,8 @@ at::Tensor & wrap_elu_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(alpha);trace.append_arg(scale);trace.append_arg(input_scale);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16822,6 +17858,8 @@ at::Tensor & wrap_elu_backward_grad_input(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(grad_output);trace.append_arg(alpha);trace.append_arg(scale);trace.append_arg(input_scale);trace.append_arg(is_result);trace.append_arg(self_or_result);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16840,6 +17878,8 @@ at::Tensor & wrap_elu_(c10::DispatchKeySet dispatchKeySet, at::Tensor & self, co
   trace.append_arg(self);trace.append_arg(alpha);trace.append_arg(scale);trace.append_arg(input_scale);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -16852,6 +17892,8 @@ at::Tensor & wrap_glu_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16874,6 +17916,8 @@ at::Tensor & wrap_glu_backward_grad_input(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(dim);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16897,6 +17941,8 @@ at::Tensor & wrap_hardsigmoid_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16926,6 +17972,8 @@ at::Tensor & wrap_hardsigmoid_backward_grad_input(c10::DispatchKeySet dispatchKe
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16944,6 +17992,8 @@ at::Tensor & wrap_hardtanh_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(min_val);trace.append_arg(max_val);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -16967,6 +18017,8 @@ at::Tensor & wrap_hardtanh_backward_grad_input(c10::DispatchKeySet dispatchKeySe
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(min_val);trace.append_arg(max_val);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -16990,6 +18042,8 @@ at::Tensor & wrap_hardtanh_(c10::DispatchKeySet dispatchKeySet, at::Tensor & sel
   trace.append_arg(self);trace.append_arg(min_val);trace.append_arg(max_val);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -17002,6 +18056,8 @@ at::Tensor & wrap_hardswish_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17025,6 +18081,8 @@ at::Tensor & wrap_hardswish_(c10::DispatchKeySet dispatchKeySet, at::Tensor & se
   trace.append_arg(self);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -17048,6 +18106,8 @@ at::Tensor & wrap_leaky_relu_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(negative_slope);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17071,6 +18131,8 @@ at::Tensor & wrap_leaky_relu_backward_grad_input(c10::DispatchKeySet dispatchKey
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(negative_slope);trace.append_arg(self_is_result);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17089,6 +18151,8 @@ at::Tensor & wrap_leaky_relu_(c10::DispatchKeySet dispatchKeySet, at::Tensor & s
   trace.append_arg(self);trace.append_arg(negative_slope);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -17101,6 +18165,8 @@ at::Tensor & wrap_log_sigmoid_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17136,6 +18202,8 @@ at::Tensor & wrap_log_sigmoid_backward_grad_input(c10::DispatchKeySet dispatchKe
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(buffer);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17159,6 +18227,8 @@ at::Tensor & wrap_rrelu_with_noise_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(noise);trace.append_arg(lower);trace.append_arg(upper);trace.append_arg(training);trace.append_arg(std::move(generator));trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17193,6 +18263,8 @@ at::Tensor & wrap_rrelu_with_noise_(c10::DispatchKeySet dispatchKeySet, at::Tens
   trace.append_arg(self);trace.append_arg(noise);trace.append_arg(lower);trace.append_arg(upper);trace.append_arg(training);trace.append_arg(std::move(generator));
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -17205,6 +18277,8 @@ at::Tensor & wrap_softplus_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(beta);trace.append_arg(threshold);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17223,6 +18297,8 @@ at::Tensor & wrap_softplus_backward_grad_input(c10::DispatchKeySet dispatchKeySe
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(beta);trace.append_arg(threshold);trace.append_arg(output);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17241,6 +18317,8 @@ at::Tensor & wrap_softshrink_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(lambd);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17259,6 +18337,8 @@ at::Tensor & wrap_softshrink_backward_grad_input(c10::DispatchKeySet dispatchKey
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(lambd);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17277,6 +18357,8 @@ at::Tensor & wrap_adaptive_avg_pool2d_out(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17340,6 +18422,8 @@ at::Tensor & wrap_adaptive_avg_pool3d_out(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17373,6 +18457,8 @@ at::Tensor & wrap_adaptive_avg_pool3d_backward_grad_input(c10::DispatchKeySet di
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17407,6 +18493,8 @@ at::Tensor & wrap_adaptive_max_pool2d_backward_grad_input(c10::DispatchKeySet di
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17437,6 +18525,8 @@ at::Tensor & wrap_adaptive_max_pool3d_backward_grad_input(c10::DispatchKeySet di
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17455,6 +18545,8 @@ at::Tensor & wrap_avg_pool2d_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17477,6 +18569,8 @@ at::Tensor & wrap_avg_pool2d_backward_grad_input(c10::DispatchKeySet dispatchKey
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17499,6 +18593,8 @@ at::Tensor & wrap_avg_pool3d_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17521,6 +18617,8 @@ at::Tensor & wrap_avg_pool3d_backward_grad_input(c10::DispatchKeySet dispatchKey
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(ceil_mode);trace.append_arg(count_include_pad);trace.append_arg(divisor_override);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17555,6 +18653,8 @@ at::Tensor & wrap_fractional_max_pool2d_backward_grad_input(c10::DispatchKeySet 
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(output_size);trace.append_arg(indices);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17589,6 +18689,8 @@ at::Tensor & wrap_fractional_max_pool3d_backward_grad_input(c10::DispatchKeySet 
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(output_size);trace.append_arg(indices);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17623,6 +18725,8 @@ at::Tensor & wrap_max_pool2d_with_indices_backward_grad_input(c10::DispatchKeySe
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);trace.append_arg(indices);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17653,6 +18757,8 @@ at::Tensor & wrap_max_pool3d_with_indices_backward_grad_input(c10::DispatchKeySe
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(ceil_mode);trace.append_arg(indices);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17675,6 +18781,8 @@ at::Tensor & wrap_max_unpool2d_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17697,6 +18805,8 @@ at::Tensor & wrap_max_unpool2d_backward_grad_input(c10::DispatchKeySet dispatchK
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17719,6 +18829,8 @@ at::Tensor & wrap_max_unpool3d_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17741,6 +18853,8 @@ at::Tensor & wrap_max_unpool3d_backward_grad_input(c10::DispatchKeySet dispatchK
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(indices);trace.append_arg(output_size);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17763,6 +18877,8 @@ at::Tensor & wrap_reflection_pad1d_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17785,6 +18901,8 @@ at::Tensor & wrap_reflection_pad1d_backward_grad_input(c10::DispatchKeySet dispa
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17803,6 +18921,8 @@ at::Tensor & wrap_reflection_pad2d_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17825,6 +18945,8 @@ at::Tensor & wrap_reflection_pad2d_backward_grad_input(c10::DispatchKeySet dispa
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17847,6 +18969,8 @@ at::Tensor & wrap_reflection_pad3d_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17865,6 +18989,8 @@ at::Tensor & wrap_reflection_pad3d_backward_grad_input(c10::DispatchKeySet dispa
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17883,6 +19009,8 @@ at::Tensor & wrap_replication_pad1d_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17901,6 +19029,8 @@ at::Tensor & wrap_replication_pad1d_backward_grad_input(c10::DispatchKeySet disp
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17919,6 +19049,8 @@ at::Tensor & wrap_replication_pad2d_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17937,6 +19069,8 @@ at::Tensor & wrap_replication_pad2d_backward_grad_input(c10::DispatchKeySet disp
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -17959,6 +19093,8 @@ at::Tensor & wrap_replication_pad3d_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -17977,6 +19113,8 @@ at::Tensor & wrap_replication_pad3d_backward_grad_input(c10::DispatchKeySet disp
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(padding);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18139,6 +19277,8 @@ at::Tensor & wrap_upsample_linear1d_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scales);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18157,6 +19297,8 @@ at::Tensor & wrap_upsample_linear1d_backward_grad_input(c10::DispatchKeySet disp
   trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scales);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18175,6 +19317,8 @@ at::Tensor & wrap_upsample_bilinear2d_out(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18197,6 +19341,8 @@ at::Tensor & wrap_upsample_bilinear2d_backward_grad_input(c10::DispatchKeySet di
   trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18215,6 +19361,8 @@ at::Tensor & wrap_upsample_bicubic2d_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18233,6 +19381,8 @@ at::Tensor & wrap_upsample_bicubic2d_backward_grad_input(c10::DispatchKeySet dis
   trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18251,6 +19401,8 @@ at::Tensor & wrap_upsample_trilinear3d_out(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(align_corners);trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18269,6 +19421,8 @@ at::Tensor & wrap_upsample_trilinear3d_backward_grad_input(c10::DispatchKeySet d
   trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(align_corners);trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18287,6 +19441,8 @@ at::Tensor & wrap_upsample_nearest1d_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(scales);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18305,6 +19461,8 @@ at::Tensor & wrap_upsample_nearest1d_backward_grad_input(c10::DispatchKeySet dis
   trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(scales);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18323,6 +19481,8 @@ at::Tensor & wrap_upsample_nearest2d_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18345,6 +19505,8 @@ at::Tensor & wrap_upsample_nearest2d_backward_grad_input(c10::DispatchKeySet dis
   trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18363,6 +19525,8 @@ at::Tensor & wrap_upsample_nearest3d_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18385,6 +19549,8 @@ at::Tensor & wrap_upsample_nearest3d_backward_grad_input(c10::DispatchKeySet dis
   trace.append_arg(grad_output);trace.append_arg(output_size);trace.append_arg(input_size);trace.append_arg(scales_d);trace.append_arg(scales_h);trace.append_arg(scales_w);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18403,6 +19569,8 @@ at::Tensor & wrap_sigmoid_backward_grad_input(c10::DispatchKeySet dispatchKeySet
   trace.append_arg(grad_output);trace.append_arg(output);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18421,6 +19589,8 @@ at::Tensor & wrap_logit_backward_grad_input(c10::DispatchKeySet dispatchKeySet, 
   trace.append_arg(grad_output);trace.append_arg(self);trace.append_arg(eps);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18439,6 +19609,8 @@ at::Tensor & wrap_tanh_backward_grad_input(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(grad_output);trace.append_arg(output);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18457,6 +19629,8 @@ at::Tensor & wrap_slow_conv_transpose2d_out(c10::DispatchKeySet dispatchKeySet, 
   trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(dilation);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18487,6 +19661,8 @@ at::Tensor & wrap_slow_conv_transpose3d_out(c10::DispatchKeySet dispatchKeySet, 
   trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(output_padding);trace.append_arg(dilation);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18521,6 +19697,8 @@ at::Tensor & wrap_thnn_conv2d_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18567,6 +19745,8 @@ const at::Tensor & wrap__conv_depthwise2d_out(c10::DispatchKeySet dispatchKeySet
   trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(dilation);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18623,6 +19803,8 @@ at::Tensor & wrap_slow_conv3d_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(weight);trace.append_arg(kernel_size);trace.append_arg(bias);trace.append_arg(stride);trace.append_arg(padding);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18701,6 +19883,8 @@ at::Tensor & wrap_col2im_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(output_size);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18723,6 +19907,8 @@ at::Tensor & wrap_col2im_backward_grad_input(c10::DispatchKeySet dispatchKeySet,
   trace.append_arg(grad_output);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18755,6 +19941,8 @@ at::Tensor & wrap_column_stack_out(c10::DispatchKeySet dispatchKeySet, at::Tenso
   trace.append_arg(tensors);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18767,6 +19955,8 @@ at::Tensor & wrap_im2col_out(c10::DispatchKeySet dispatchKeySet, const at::Tenso
   trace.append_arg(self);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18789,6 +19979,8 @@ at::Tensor & wrap_im2col_backward_grad_input(c10::DispatchKeySet dispatchKeySet,
   trace.append_arg(grad_output);trace.append_arg(input_size);trace.append_arg(kernel_size);trace.append_arg(dilation);trace.append_arg(padding);trace.append_arg(stride);trace.append_arg(grad_input);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(grad_input);
   return grad_input;
 }
 
@@ -18845,6 +20037,8 @@ at::Tensor & wrap_isposinf_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18863,6 +20057,8 @@ at::Tensor & wrap_isneginf_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18901,6 +20097,8 @@ at::Tensor & wrap_special_entr_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18919,6 +20117,8 @@ at::Tensor & wrap_special_ndtri_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18942,6 +20142,8 @@ at::Tensor & wrap_special_expm1_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18965,6 +20167,8 @@ at::Tensor & wrap_special_exp2_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -18988,6 +20192,8 @@ at::Tensor & wrap_special_psi_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19011,6 +20217,8 @@ at::Tensor & wrap_special_digamma_out(c10::DispatchKeySet dispatchKeySet, const 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19034,6 +20242,8 @@ at::Tensor & wrap_special_gammaln_out(c10::DispatchKeySet dispatchKeySet, const 
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19057,6 +20267,8 @@ at::Tensor & wrap_special_erf_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19080,6 +20292,8 @@ at::Tensor & wrap_special_erfc_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19098,6 +20312,8 @@ at::Tensor & wrap_special_erfcx_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19121,6 +20337,8 @@ at::Tensor & wrap_special_erfinv_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19144,6 +20362,8 @@ at::Tensor & wrap_special_ndtr_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19184,6 +20404,8 @@ at::Tensor & wrap_special_xlog1py_out(c10::DispatchKeySet dispatchKeySet, const 
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19196,6 +20418,8 @@ at::Tensor & wrap_special_xlog1py_self_scalar_out(c10::DispatchKeySet dispatchKe
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19208,6 +20432,8 @@ at::Tensor & wrap_special_xlog1py_other_scalar_out(c10::DispatchKeySet dispatchK
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19253,6 +20479,8 @@ at::Tensor & wrap_special_xlogy_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19265,6 +20493,8 @@ at::Tensor & wrap_special_xlogy_self_scalar_out(c10::DispatchKeySet dispatchKeyS
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19277,6 +20507,8 @@ at::Tensor & wrap_special_xlogy_other_scalar_out(c10::DispatchKeySet dispatchKey
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19322,6 +20554,8 @@ at::Tensor & wrap_special_zeta_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19334,6 +20568,8 @@ at::Tensor & wrap_special_zeta_self_scalar_out(c10::DispatchKeySet dispatchKeySe
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19346,6 +20582,8 @@ at::Tensor & wrap_special_zeta_other_scalar_out(c10::DispatchKeySet dispatchKeyS
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19369,6 +20607,8 @@ at::Tensor & wrap_special_i0_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19387,6 +20627,8 @@ at::Tensor & wrap_special_i0e_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19405,6 +20647,8 @@ at::Tensor & wrap_special_i1_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19423,6 +20667,8 @@ at::Tensor & wrap_special_i1e_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19446,6 +20692,8 @@ at::Tensor & wrap_special_logit_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(eps);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19469,6 +20717,8 @@ at::Tensor & wrap_special_polygamma_out(c10::DispatchKeySet dispatchKeySet, int6
   trace.append_arg(n);trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19491,6 +20741,8 @@ at::Tensor & wrap_special_logsumexp_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19514,6 +20766,8 @@ at::Tensor & wrap_special_expit_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19537,6 +20791,8 @@ at::Tensor & wrap_special_sinc_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19560,6 +20816,8 @@ at::Tensor & wrap_special_round_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19583,6 +20841,8 @@ at::Tensor & wrap_special_log1p_out(c10::DispatchKeySet dispatchKeySet, const at
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19617,6 +20877,8 @@ at::Tensor & wrap_special_multigammaln_out(c10::DispatchKeySet dispatchKeySet, c
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19640,6 +20902,8 @@ at::Tensor & wrap_fft_fft_out(c10::DispatchKeySet dispatchKeySet, const at::Tens
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19663,6 +20927,8 @@ at::Tensor & wrap_fft_ifft_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19685,6 +20951,8 @@ at::Tensor & wrap_fft_rfft_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19707,6 +20975,8 @@ at::Tensor & wrap_fft_irfft_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19729,6 +20999,8 @@ at::Tensor & wrap_fft_hfft_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19751,6 +21023,8 @@ at::Tensor & wrap_fft_ihfft_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19774,6 +21048,8 @@ at::Tensor & wrap_fft_fft2_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19797,6 +21073,8 @@ at::Tensor & wrap_fft_ifft2_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19819,6 +21097,8 @@ at::Tensor & wrap_fft_rfft2_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19841,6 +21121,8 @@ at::Tensor & wrap_fft_irfft2_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19864,6 +21146,8 @@ at::Tensor & wrap_fft_fftn_out(c10::DispatchKeySet dispatchKeySet, const at::Ten
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19887,6 +21171,8 @@ at::Tensor & wrap_fft_ifftn_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19909,6 +21195,8 @@ at::Tensor & wrap_fft_rfftn_out(c10::DispatchKeySet dispatchKeySet, const at::Te
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19931,6 +21219,8 @@ at::Tensor & wrap_fft_irfftn_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(s);trace.append_arg(dim);trace.append_arg(norm);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19953,6 +21243,8 @@ at::Tensor & wrap_fft_fftfreq_out(c10::DispatchKeySet dispatchKeySet, int64_t n,
   trace.append_arg(n);trace.append_arg(d);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -19975,6 +21267,8 @@ at::Tensor & wrap_fft_rfftfreq_out(c10::DispatchKeySet dispatchKeySet, int64_t n
   trace.append_arg(n);trace.append_arg(d);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20032,6 +21326,8 @@ at::Tensor & wrap_linalg_cholesky_out(c10::DispatchKeySet dispatchKeySet, const 
   trace.append_arg(self);trace.append_arg(upper);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20055,6 +21351,8 @@ at::Tensor & wrap_linalg_det_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20141,6 +21439,8 @@ at::Tensor & wrap_linalg_eigvals_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20175,6 +21475,8 @@ at::Tensor & wrap_linalg_eigvalsh_out(c10::DispatchKeySet dispatchKeySet, const 
   trace.append_arg(self);trace.append_arg(UPLO);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20198,6 +21500,8 @@ at::Tensor & wrap_linalg_householder_product_out(c10::DispatchKeySet dispatchKey
   trace.append_arg(input);trace.append_arg(tau);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20210,6 +21514,8 @@ at::Tensor & wrap__linalg_inv_out_helper_(c10::DispatchKeySet dispatchKeySet, at
   trace.append_arg(self);trace.append_arg(infos_lu);trace.append_arg(infos_getri);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(self);
   return self;
 }
 
@@ -20245,6 +21551,8 @@ at::Tensor & wrap_linalg_inv_out(c10::DispatchKeySet dispatchKeySet, const at::T
   trace.append_arg(self);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20267,6 +21575,8 @@ at::Tensor & wrap_inner_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20289,6 +21599,8 @@ at::Tensor & wrap_outer_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor
   trace.append_arg(self);trace.append_arg(vec2);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20311,6 +21623,8 @@ at::Tensor & wrap_ger_out(c10::DispatchKeySet dispatchKeySet, const at::Tensor &
   trace.append_arg(self);trace.append_arg(vec2);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20344,6 +21658,8 @@ at::Tensor & wrap_linalg_norm_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20356,6 +21672,8 @@ at::Tensor & wrap_linalg_norm_ord_str_out(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20379,6 +21697,8 @@ at::Tensor & wrap_linalg_vector_norm_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20401,6 +21721,8 @@ at::Tensor & wrap_linalg_matrix_norm_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20423,6 +21745,8 @@ at::Tensor & wrap_linalg_matrix_norm_str_ord_out(c10::DispatchKeySet dispatchKey
   trace.append_arg(self);trace.append_arg(ord);trace.append_arg(dim);trace.append_arg(keepdim);trace.append_arg(dtype);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20457,6 +21781,8 @@ at::Tensor & wrap_linalg_svdvals_out(c10::DispatchKeySet dispatchKeySet, const a
   trace.append_arg(input);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20480,6 +21806,8 @@ at::Tensor & wrap_linalg_cond_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20502,6 +21830,8 @@ at::Tensor & wrap_linalg_cond_p_str_out(c10::DispatchKeySet dispatchKeySet, cons
   trace.append_arg(self);trace.append_arg(p);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20534,6 +21864,8 @@ at::Tensor & wrap_linalg_pinv_out(c10::DispatchKeySet dispatchKeySet, const at::
   trace.append_arg(self);trace.append_arg(rcond);trace.append_arg(hermitian);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20546,6 +21878,8 @@ at::Tensor & wrap_linalg_pinv_out_rcond_tensor(c10::DispatchKeySet dispatchKeySe
   trace.append_arg(self);trace.append_arg(rcond);trace.append_arg(hermitian);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20568,6 +21902,8 @@ at::Tensor & wrap_linalg_solve_out(c10::DispatchKeySet dispatchKeySet, const at:
   trace.append_arg(input);trace.append_arg(other);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20591,6 +21927,8 @@ at::Tensor & wrap_linalg_tensorinv_out(c10::DispatchKeySet dispatchKeySet, const
   trace.append_arg(self);trace.append_arg(ind);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20613,6 +21951,8 @@ at::Tensor & wrap_linalg_tensorsolve_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(other);trace.append_arg(dims);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20654,6 +21994,8 @@ at::Tensor & wrap_linalg_matrix_power_out(c10::DispatchKeySet dispatchKeySet, co
   trace.append_arg(self);trace.append_arg(n);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20677,6 +22019,8 @@ at::Tensor & wrap_linalg_matrix_rank_out(c10::DispatchKeySet dispatchKeySet, con
   trace.append_arg(self);trace.append_arg(tol);trace.append_arg(hermitian);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20699,6 +22043,8 @@ at::Tensor & wrap_linalg_matrix_rank_out_tol_tensor(c10::DispatchKeySet dispatch
   trace.append_arg(input);trace.append_arg(tol);trace.append_arg(hermitian);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 
@@ -20722,6 +22068,8 @@ at::Tensor & wrap_linalg_multi_dot_out(c10::DispatchKeySet dispatchKeySet, at::T
   trace.append_arg(tensors);trace.append_arg(out);
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));
+  else
+    update_trace_idx(out);
   return out;
 }
 

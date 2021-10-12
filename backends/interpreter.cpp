@@ -222,9 +222,6 @@ void Interpreter::run(const void *prog, Trace &t) {
 
     ThreadLocalState::setThreadLocalState(rdata.tls);
 
-    if (rdata.inplace)
-      init_update_in_place(rdata);
-
     switch (op.id) {
 
 #include "autogen/interpreter_redispatch.h"
@@ -233,11 +230,7 @@ void Interpreter::run(const void *prog, Trace &t) {
         assert(0 && "Unhandled op");
     }
 
-    if (rdata.inplace) {
-      end_update_in_place(rdata);
-    } else {
-      set(rdata, results[i]);
-    }
+    set(rdata, results[i]);
     load_state.reset();
   }
 

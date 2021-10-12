@@ -151,7 +151,7 @@ void* TorchScript::compile(const Trace &t) {
 
     Value *v = n->output();
     results[i] = v;
-    if (op.observable && !op.inplace()) {
+    if (op.observable) {
       output_ops[num_outputs] = i;
       outputs[num_outputs++] = v;
     }
@@ -198,12 +198,6 @@ void TorchScript::run(const void *ptr, Trace &t) {
   // FIXME: we don't take TLS or dispatch keys into account here
   // may break more complicated programs..
 
-  for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
-    auto &op = data[i];
-    if (op.needsComputing() && op.inplace)
-      init_update_in_place(op);
-  }
-
   auto &stack = t.getInputs();
   prog->fn->run(stack);
   // inputs are consumed, and the output is passed back on the stack
@@ -224,10 +218,7 @@ void TorchScript::run(const void *ptr, Trace &t) {
   }
 
   for (unsigned i = 0, e = t.numOps(); i < e; ++i) {
-    auto &op = data[i];
-    if (op.needsComputing() && op.inplace)
-      end_update_in_place(op);
-    finish_trace(op);
+    finish_trace(data[i]);
   }
 }
 

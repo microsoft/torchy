@@ -7,30 +7,6 @@
 
 #define MAX_NUM_INPUTS 12
 
-static void init_update_in_place(const TraceOpRunTimeData &data) {
-  for (auto tensor : data.tensors) {
-    if (tensor != 0)
-      init_update_in_place(tensor);
-  }
-}
-
-static void end_update_in_place(const TraceOpRunTimeData &data) {
-  bool first = true;
-  unsigned first_idx = 0;
-
-  for (unsigned i = 0; i < data.tensors.size(); ++i) {
-    if (data.tensors[i] == 0)
-      continue;
-    if (first) {
-      end_update_in_place_first(data.tensors[i]);
-      first_idx = i;
-    } else {
-      end_update_in_place_copy(data.tensors[i], data.tensors[first_idx]);
-    }
-    first = false;
-  }
-}
-
 #ifndef NDEBUG
 static void finish_trace(const TraceOpRunTimeData &data) {
   for (auto tensor : data.tensors) {
