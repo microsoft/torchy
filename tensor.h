@@ -15,8 +15,6 @@ unsigned trace_idx(const at::Tensor &t);
 c10::TensorImpl* is_impl(uintptr_t torchy);
 
 void set(uintptr_t torchy, const at::Tensor &t);
-void end_update_in_place_first(uintptr_t torchy);
-void end_update_in_place_copy(uintptr_t dst, uintptr_t src);
 #ifndef NDEBUG
 void finish_trace(uintptr_t torchy);
 #endif

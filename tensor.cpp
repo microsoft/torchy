@@ -325,6 +325,14 @@ public:
       // the interpreter is dead no one can call us out on it
     }
 
+    // we may end not updating the shape data in some copies
+    // it doesn't matter for correctness as these are unused copies
+    // but they trigger assertion failures, so we just disable assertions
+    // more info in issue #10
+#ifndef NDEBUG
+    const_cast<TorchyTensor*>(this)->has_multiple_shapes = true;
+#endif
+
     auto copy
       = c10::make_intrusive<TorchyTensor>(key_set_, data_type_, device_opt_);
 
@@ -356,6 +364,11 @@ public:
     trace_idx = -1u;
 
     if (auto tt = dynamic_cast<TorchyTensor*>(impl.get())) {
+#ifndef NDEBUG
+      // see explanation in shallow_copy_and_detach
+      tt->has_multiple_shapes = true;
+#endif
+
       if (tt->trace_idx != -1u)
         trace.add_shared(tt->trace_idx, (uintptr_t)this);
       copy_torchy_data(tt);
