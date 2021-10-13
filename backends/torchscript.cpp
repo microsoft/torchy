@@ -34,7 +34,9 @@ public:
       auto *v = g.addInput();
 
       if (in.isTensor()) {
-        v->setType(TensorType::create(in.toTensor()));
+        const auto &t = in.toTensor();
+        if (t.scalar_type() != ScalarType::Undefined)
+          v->setType(TensorType::create(t));
       } else if (in.isGenerator()) {
         v->setType(GeneratorType::get());
       } else {
@@ -183,7 +185,7 @@ void* TorchScript::compile(const Trace &t) {
 
 #ifdef DEBUG_GRAPH
   prog->fn->optimized_graph()->print(std::cerr << "\nOptimized graph:\n");
-  std::cerr << '\n';
+  std::cerr << std::endl;
 #endif
 
   return prog.release();
