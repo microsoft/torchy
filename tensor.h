@@ -12,7 +12,6 @@ namespace at { class Tensor; }
 namespace c10 { class TensorImpl; }
 
 unsigned trace_idx(const at::Tensor &t);
-c10::TensorImpl* is_impl(uintptr_t torchy);
 
 void set(uintptr_t torchy, const at::Tensor &t);
 #ifndef NDEBUG

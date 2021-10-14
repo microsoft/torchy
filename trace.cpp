@@ -276,11 +276,11 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
   static unsigned call_count = 0;
   ++call_count;
   if (auto *limit = getenv("TORCHY_FLUSH_BEFORE")) {
-    if (call_count <= (unsigned)atoi(limit))
+    if (next_op != 0 && call_count <= (unsigned)atoi(limit))
       flush(STATS(FlushReason::DEBUG));
   }
   if (auto *limit = getenv("TORCHY_FLUSH_AFTER")) {
-    if (call_count > (unsigned)atoi(limit))
+    if (next_op != 0 && call_count > (unsigned)atoi(limit))
       flush(STATS(FlushReason::DEBUG));
   }
   if (auto *limit = getenv("TORCHY_MAX_TRACE_LENGTH")) {
@@ -365,6 +365,7 @@ TraceCacheKey Trace::mk_trace_key() {
 
 void Trace::flush(STATS(FlushReason reason)) {
   assert(!flushing);
+  assert(next_op > 0);
   flushing = true;
 
   stats_register_trace(*this, reason);

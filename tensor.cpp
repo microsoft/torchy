@@ -398,10 +398,6 @@ unsigned trace_idx(const Tensor &t) {
   return -1u;
 }
 
-TensorImpl* is_impl(uintptr_t tt) {
-  return tt && tt != DUMMY_TORCHY ? (TorchyTensor*)tt : nullptr;
-}
-
 void set(uintptr_t tt, const Tensor &t) {
   if (tt != DUMMY_TORCHY)
     ((TorchyTensor*)tt)->set(t);

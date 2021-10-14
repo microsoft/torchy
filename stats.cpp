@@ -8,7 +8,6 @@
 #include "trace.h"
 #include <algorithm>
 #include <array>
-#include <cassert>
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
@@ -284,7 +283,6 @@ void stats_register_trace(const Trace &t, FlushReason reason) {
     num_outputs += op.observable;
     num_deads   += op.dead;
   }
-  assert(num_outputs > 0);
   ++num_trace_outputs[num_outputs];
   ++num_trace_deads[num_deads];
 
