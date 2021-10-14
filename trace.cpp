@@ -49,7 +49,14 @@ void Trace::decref(unsigned idx) {
   auto &op    = ops[idx];
   auto &rdata = data[idx];
   assert(!op.dead && rdata.refs > 0);
-  --rdata.refs;
+
+  // We can't declare ops dead for sure because of aliasing. A non-inplace op
+  // may return a new tensor, but sharing storage with another tensor
+  // (e.g., view, reshape).
+  // Just because the result of these ops is dead it doesn't mean there isn't
+  // another tensor out there with the same storage.
+  // See tests/unit/inplace_dead_alias.py
+  //--rdata.refs;
 
   if (rdata.refs == 0) {
     TensorVisitor visitor([&](InputIdx idx) {
