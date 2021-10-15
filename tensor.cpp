@@ -140,6 +140,7 @@ public:
 
     // must be run after setting has_shape_data as it calls sizes()
     refresh_numel();
+    refresh_contiguous();
   }
 
   void set_no_shape_info() {
@@ -178,7 +179,6 @@ public:
     // must be run after materialized is set to true, as these call the
     // overriden methods below
     refresh_numel();
-    refresh_contiguous();
   }
 
   void endInPlaceUpdate() {
