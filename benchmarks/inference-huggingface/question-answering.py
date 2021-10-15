@@ -1,5 +1,5 @@
 from testdriver import *
-from transformers import pipeline
+from transformers import pipeline, QuestionAnsweringPipeline, BertTokenizer, BertForQuestionAnswering
 
 # https://en.wikipedia.org/wiki/PyTorch
 context = """
@@ -32,7 +32,12 @@ questions = [
 ]
 questions = questions * int(1000 / len(questions))
 
-nlp = pipeline("question-answering")
+#nlp = pipeline("question-answering")
+nlp = QuestionAnsweringPipeline(
+  model=BertForQuestionAnswering.from_pretrained('bert-base-uncased'),
+  tokenizer=BertTokenizer.from_pretrained('bert-base-uncased'),
+  device=0 if cuda else -1
+)
 
 for q in questions:
   result = nlp(question=q, context=context)

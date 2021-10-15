@@ -1,5 +1,5 @@
 from testdriver import *
-from transformers import pipeline
+from transformers import pipeline, TextClassificationPipeline, BertTokenizer, BertForSequenceClassification
 
 txt = [
   'I hate you',
@@ -12,7 +12,12 @@ txt = [
 ]
 txt = txt * int(1000 / len(txt))
 
-nlp = pipeline('sentiment-analysis')
+#nlp = pipeline('sentiment-analysis')
+nlp = TextClassificationPipeline(
+  model=BertForSequenceClassification.from_pretrained('bert-base-uncased'),
+  tokenizer=BertTokenizer.from_pretrained('bert-base-uncased'),
+  device=0 if cuda else -1
+)
 
 for s in txt:
   result = nlp(s)[0]
