@@ -15,6 +15,7 @@ enum class FlushReason {
   SET_SIZE,
   SET_STORAGE_OFFSET,
   SET_STRIDE,
+  SHALLOW_COPY_FROM,
   SIZE,
   SIZES,
   STORAGE,

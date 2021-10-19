@@ -194,6 +194,14 @@ Trace::~Trace() {
   destroyed = true;
 }
 
+bool Trace::is_input(const c10::TensorImpl &t) const {
+  for (auto &in : inputs) {
+    if (in.isTensor() && in.toTensor().unsafeGetTensorImpl() == &t)
+      return true;
+  }
+  return false;
+}
+
 InputIdx Trace::get_tensor_idx(const Tensor &t) {
   auto idx = trace_idx(t);
   if (idx != -1u) {

@@ -175,6 +175,8 @@ public:
   InputData& getInputs() { return inputs; }
   const InputData& getInputs() const { return inputs; }
 
+  bool is_input(const c10::TensorImpl &t) const;
+
   unsigned get_idx() const {
     assert(next_op > 0);
     return next_op - 1;

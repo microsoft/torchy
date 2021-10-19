@@ -281,17 +281,20 @@ public:
   }
 
   void set_size(int64_t dim, int64_t new_size) override {
+    assert(trace.is_flushing() || !trace.is_input(*this));
     ensure_materialized(STATS(FlushReason::SET_SIZE));
     TensorImpl::set_size(dim, new_size);
     store_shape();
   }
 
   void set_stride(int64_t dim, int64_t new_stride) override {
+    assert(trace.is_flushing() || !trace.is_input(*this));
     ensure_materialized(STATS(FlushReason::SET_STRIDE));
     TensorImpl::set_stride(dim, new_stride);
   }
 
   void set_storage_offset(int64_t storage_offset) override {
+    assert(trace.is_flushing() || !trace.is_input(*this));
     ensure_materialized(STATS(FlushReason::SET_STORAGE_OFFSET));
     TensorImpl::set_storage_offset(storage_offset);
   }
@@ -359,9 +362,14 @@ public:
   }
 
   void shallow_copy_from(const c10::intrusive_ptr<TensorImpl> &impl) override {
-    if (trace_idx != -1u)
-      trace.set_unobservable(trace_idx, (uintptr_t)this);
-    trace_idx = -1u;
+    // We don't store shallow copy events in the trace, so we need to flush
+    // here if this is an op in the trace.
+    // Similarly, if we are a trace input, we need to flush as we don't freeze
+    // the inputs.
+    if (!trace.is_flushing() && (trace_idx != -1u || trace.is_input(*this))) {
+      trace.flush(STATS(FlushReason::SHALLOW_COPY_FROM));
+      assert(trace_idx == -1u);
+    }
 
     if (auto tt = dynamic_cast<TorchyTensor*>(impl.get())) {
 #ifndef NDEBUG

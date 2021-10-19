@@ -34,6 +34,7 @@ const char* flush_reasons[] = {
   "set_size",
   "set_storage_offset",
   "set_stride",
+  "shallow_copy_from",
   "size",
   "sizes",
   "storage",
