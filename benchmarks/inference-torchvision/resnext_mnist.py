@@ -2,6 +2,8 @@ from testdriver import *
 import torchvision
 
 model = torchvision.models.resnext50_32x4d(pretrained=True)
+if cuda:
+  model.cuda()
 
 def transform(img):
   t = torchvision.transforms.ToTensor()(img)
@@ -22,5 +24,7 @@ for i, (data, label) in enumerate(loader):
     break
 
   with torch.no_grad():
+    if cuda:
+      data = data.to('cuda')
     out = model(data)
-    print(torch.argmax(out, dim=1))
+    print(int(torch.argmax(out, dim=1)))
