@@ -4,7 +4,6 @@ define('NUM_RUNS', 9);
 
 $files = glob('benchmarks/*/*.py');
 
-$outputs = [];
 $results = [];
 
 $tests = [
@@ -20,18 +19,9 @@ foreach ($files as $file) {
   if (strstr($file, 'testdriver.py'))
     continue;
 
-  $name = substr(basename($file), 0, -3);
-  echo "Running $name\n";
-
-  $outputs = [];
+  $output = null;
   foreach ($tests as $test) {
     run($file, $test[0], $test[1], $test[2]);
-  }
-
-  foreach ($outputs as $out) {
-    if ($out !== $outputs[0]) {
-      die("BUG: Output doesn't match!");
-    }
   }
 }
 
@@ -40,16 +30,22 @@ function test_name($file) {
 }
 
 function run($file, $test, $args, $env) {
-  global $outputs, $results;
+  global $output, $results;
 
   $name = test_name($file);
   echo "Running $name on $test\n";
 
   $times = [];
   for ($i = 0; $i < NUM_RUNS; ++$i) {
-    $outputs[] = `$env /usr/bin/time -o time python $file $args 2> /dev/null`;
+    $out = `$env /usr/bin/time -o time python $file $args 2> /dev/null`;
+    if (!$output)  {
+      $output = $out;
+    } elseif ($out !== $output) {
+      die("BUG: Output doesn't match!");
+    }
 
-    preg_match('/(\d+):([0-9.]+)elapsed/S', file_get_contents('time'), $m);
+    if (!preg_match('/(\d+):([0-9.]+)elapsed/S', file_get_contents('time'), $m))
+      die("No time information!");
     $times[] = $m[1] * 60 + $m[2];
     unlink('time');
   }
@@ -59,7 +55,8 @@ function run($file, $test, $args, $env) {
 }
 
 // table header
-foreach ($test as $test) {
+echo 'Benchmark';
+foreach ($tests as $test) {
   echo ",$test[0]";
 }
 echo "\n";
