@@ -2,7 +2,12 @@
 
 define('NUM_RUNS', 9);
 
-$files = glob('benchmarks/*/*.py');
+$files = [];
+foreach (glob('benchmarks/*/*.py') as $file) {
+  if (strstr($file, 'testdriver.py'))
+    continue;
+  $files[] = $file;
+}
 
 $results = [];
 
@@ -16,9 +21,6 @@ $tests = [
 ];
 
 foreach ($files as $file) {
-  if (strstr($file, 'testdriver.py'))
-    continue;
-
   $output = null;
   foreach ($tests as $test) {
     run($file, $test[0], $test[1], $test[2]);
