@@ -14,6 +14,7 @@ extra_compile_args = [
   '-mtune=native',
   '-fvisibility=hidden',
   '-fvisibility-inlines-hidden',
+#  '-fno-omit-frame-pointer',
 ] + sanitizers
 
 extra_link_args = [] + sanitizers

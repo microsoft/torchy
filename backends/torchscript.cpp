@@ -25,6 +25,8 @@ class ValGen {
   Graph &g;
   Value **results;
   std::vector<Value*> inputs;
+  TypePtr tensor_ty;
+  TypePtr tensor_opt_ty;
   Value *none_val = nullptr;
 
 public:
@@ -45,6 +47,17 @@ public:
       }
       inputs.push_back(v);
     }
+  }
+
+  const TypePtr& get_tensor_ty(bool optional) {
+    TypePtr &slot = optional ? tensor_opt_ty : tensor_ty;
+    if (!slot) {
+      if (optional)
+        slot = OptionalType::create(get_tensor_ty(false));
+      else
+        slot = TensorType::get();
+    }
+    return slot;
   }
 
   Value* mk_none() {
@@ -72,31 +85,31 @@ public:
 
   template<typename T>
   Value* operator()(const std::vector<T> &l) {
+    return l.empty() ? mk_none() : g.insertConstant(l);
+  }
+
+  template<typename T>
+  Value* handle_tensor_vectors(const std::vector<T> &l, bool optional) {
+    if (l.empty())
+      return mk_none();
+
     std::vector<Value*> vals;
     for (const auto &elem : l) {
       vals.emplace_back((*this)(elem));
+      assert((optional && vals.back()->type()->cast<NoneType>()) ||
+             vals.back()->type()->cast<TensorType>());
     }
-    if (vals.empty())
-      return mk_none();
-
-    auto ty = vals[0]->type()->cast<TensorType>() ? TensorType::get()
-                                                  : vals[0]->type();
-    auto *n = g.createList(ty, vals);
+    auto *n = g.createList(get_tensor_ty(optional), vals);
     g.appendNode(n);
     return n->output();
   }
 
-  template<typename T>
+  Value* operator()(const std::vector<InputIdx> &l) {
+    return handle_tensor_vectors(l, false);
+  }
+
   Value* operator()(const std::vector<optional<InputIdx>> &l) {
-    std::vector<Value*> vals;
-    for (const auto &elem : l) {
-      vals.emplace_back((*this)(elem));
-      assert(vals.back()->type()->cast<NoneType>() ||
-             vals.back()->type()->cast<TensorType>());
-    }
-    auto *n = g.createList(OptionalType::ofTensor(), vals);
-    g.appendNode(n);
-    return n->output();
+    return handle_tensor_vectors(l, true);
   }
 };
 

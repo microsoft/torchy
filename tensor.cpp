@@ -707,9 +707,7 @@ optional<IntArrayRef> shape_unfold(const Tensor &t, int64_t dim, int64_t size,
 }
 
 bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
-  if (!s1 || !s2)
-    return false;
-  return *s1 == *s2;
+  return s1 && s2 && *s1 == *s2;
 }
 
 bool eq_shapes(const Tensor &t1, const Tensor &t2) {
@@ -757,12 +755,8 @@ Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
 }
 
 void set_shape(Tensor &t, optional<IntArrayRef> shape) {
-  if (!shape)
-    return;
-
-  TorchyTensor *tt = is_torchy(t);
-  assert(tt);
-  tt->set_shape(*shape);
+  if (shape)
+    is_torchy(t)->set_shape(*shape);
 }
 
 void set_shape(Tensor &t, const Tensor &shape_t) {
