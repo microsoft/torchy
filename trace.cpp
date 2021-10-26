@@ -39,6 +39,7 @@ void Trace::incref(unsigned idx) {
   assert(idx < next_op);
   auto &op    = ops[idx];
   auto &rdata = data[idx];
+  (void)op;
   assert(op.observable && !op.dead && rdata.refs > 0);
   ++rdata.refs;
   assert(rdata.refs != 0);
@@ -89,9 +90,8 @@ uintptr_t TraceOpRunTimeData::someTensor() const {
 }
 
 bool TraceCacheKey::operator==(const TraceCacheKey &rhs) const {
-  if (num_ops != rhs.num_ops)
-    return false;
-  return equal(ops.get(), &ops[num_ops], rhs.ops.get());
+  return num_ops == rhs.num_ops &&
+         equal(ops.get(), &ops[num_ops], rhs.ops.get());
 }
 
 size_t TraceCacheKeyHash::operator()(const TraceCacheKey &key) const {
@@ -153,18 +153,16 @@ public:
 };
 }
 
-void Trace::print(ostream &os, unsigned idx) const {
-  assert(idx < next_op);
-  auto &op    = ops[idx];
-  auto &rdata = data[idx];
-
-  auto t = rdata.someTensor();
+static void print_op(ostream &os, unsigned idx, const TraceOpDef &op,
+                     const TraceOpRunTimeData *rdata) {
+  os << '%' << idx << " = ";
+  auto t = rdata ? rdata->someTensor() : 0;
   if (t && tensor_has_dtype(t))
     os << '<' << tensor_get_dtype(t) << "> ";
   os << op.id;
 
   if (op.dead) {
-    os << " [dead]";
+    os << " [dead]\n";
     return;
   }
 
@@ -172,26 +170,57 @@ void Trace::print(ostream &os, unsigned idx) const {
   for (auto &arg : op.args) {
     os << (first ? " " : ", ");
     first = false;
-
     visit(printer(os), arg);
   }
 
-  auto n_tensors = rdata.numTensors();
-  assert(n_tensors >= op.observable);
-  assert(rdata.refs >= n_tensors);
+  if (rdata) {
+    auto n_tensors = rdata->numTensors();
+    assert(n_tensors >= op.observable);
+    assert(rdata->refs >= n_tensors);
 
-  if (rdata.refs > 0)
-    os << " #refs E/I=" << n_tensors << '/' << (rdata.refs - n_tensors);
+    if (rdata->refs > 0)
+      os << " #refs E/I=" << n_tensors << '/' << (rdata->refs - n_tensors);
+  }
 
   if (op.observable)
     os << " #output";
 
   if (t && tensor_has_shape(t))
     os << " shape=" << tensor_get_shape(t);
+
+  os << '\n';
+}
+
+void Trace::print(ostream &os, unsigned idx) const {
+  assert(idx < next_op);
+  print_op(os, idx, ops[idx], &data[idx]);
 }
 
 Trace::~Trace() {
   destroyed = true;
+#if 0
+  cerr << "NUM BUCKETS: " << cache.bucket_count() << '\n';
+  unsigned collisions = 0;
+  for (unsigned i = 0; i < cache.bucket_count(); ++i) {
+    auto sz = cache.bucket_size(i);
+    if (sz <= 1)
+      continue;
+
+    cerr << i << ": " << sz << '\n';
+    collisions += sz;
+
+    for (auto &p : cache) {
+      auto &k = p.first;
+      if (cache.bucket(k) == i) {
+        cerr << "HASH: " << TraceCacheKeyHash()(k) << '\n';
+        for (unsigned i = 0; i < k.num_ops; ++i) {
+          print_op(cerr, i, k.ops[i], nullptr);
+        }
+      }
+    }
+  }
+  cerr << "TOTAL COLLISIONS = " << collisions << endl;
+#endif
 }
 
 bool Trace::is_input(const c10::TensorImpl &t) const {
@@ -431,9 +460,7 @@ ostream& operator<<(ostream &os, const Trace &t) {
     return os << "(empty)\n";
 
   for (unsigned i = 0; i < t.next_op; ++i) {
-    os << '%' << i << " = ";
     t.print(os, i);
-    os << '\n';
   }
 
   if (t.inputs.empty())

@@ -16,6 +16,10 @@ $tests = [
   ['Torchy Int Cuda', '--torchy --cuda', 'TORCHY_FORCE_INTERPRETER=1'],
   ['Torchy TS CPU', '--torchy', ''],
   ['Torchy TS Cuda', '--torchy --cuda', ''],
+  ['Torchy TS CPU NNC', '--torchy --fuser-nnc', ''],
+  ['Torchy TS CPU NNC LLVM', '--torchy --fuser-nnc-llvm', ''],
+  ['Torchy TS Cuda NNC', '--torchy --cuda --fuser-nnc', ''],
+  ['Torchy TS Cuda NvFuser', '--torchy --cuda --nvfuser', ''],
 ];
 
 // shuffle test runs to try to give a fair chance to all tests around vm load
@@ -34,8 +38,11 @@ echo "Running ", sizeof($torun), " tests\n";
 $results = [];
 $outputs = [];
 
+$done = 0;
 foreach ($torun as $test) {
   run($test[0], $test[1], $test[2], $test[3]);
+  if (++$done % 50 == 0)
+    echo "Done $done\n";
 }
 
 
@@ -51,7 +58,7 @@ function run($file, $test, $args, $env) {
   if (empty($outputs[$name]))  {
     $outputs[$name] = $out;
   } elseif ($out !== $outputs[$name]) {
-    echo "BUG: Output doesn't match for $name\n";
+    echo "BUG: Output doesn't match for $name ($test)\n";
   }
 
   if (!preg_match('/(\d+):([0-9.]+)elapsed/S', file_get_contents('time'), $m))
