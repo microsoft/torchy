@@ -95,7 +95,9 @@ private:
 
 struct TraceOpRunTimeData {
   std::array<uintptr_t, 3> tensors;
-  at::ThreadLocalState tls;
+  typename std::aligned_storage<
+    sizeof(at::ThreadLocalState),
+    std::alignment_of<at::ThreadLocalState>::value>::type tls;
   c10::DispatchKeySet dispatch_key;
   uint16_t refs;
   bool inplace;

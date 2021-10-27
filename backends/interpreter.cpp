@@ -220,7 +220,7 @@ void Interpreter::run(const void *prog, Trace &t) {
       = visitor.ks & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     load_state.reset();
 
-    ThreadLocalState::setThreadLocalState(rdata.tls);
+    ThreadLocalState::setThreadLocalState(*(ThreadLocalState*)&rdata.tls);
 
     switch (op.id) {
 

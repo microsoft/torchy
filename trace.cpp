@@ -32,7 +32,7 @@ void TraceOpDef::destroy() {
 }
 
 void TraceOpRunTimeData::destroy() {
-  tls.~ThreadLocalState();
+  ((ThreadLocalState*)&tls)->~ThreadLocalState();
 }
 
 void Trace::incref(unsigned idx) {
@@ -348,7 +348,7 @@ unsigned Trace::register_tensor(uintptr_t tensor, TorchOp op_id,
     rdata.tensors[i] = 0;
   }
   rdata.refs = 1;
-  rdata.tls = ThreadLocalState();
+  new (&rdata.tls) ThreadLocalState();
   rdata.dispatch_key = ks;
   rdata.inplace = op.inplace();
   return next_op++;
