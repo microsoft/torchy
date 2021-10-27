@@ -23,6 +23,7 @@ namespace {
 class TorchyTensor final : public TensorImpl {
   unsigned trace_idx = -1u;
   bool has_shape_data = false;
+  bool has_strides_data = false;
 #ifndef NDEBUG
   // True if an inplace operation may not preserve the shape.
   // A trace may have multiple ops over a same tensor. If one of those ops is
@@ -30,8 +31,11 @@ class TorchyTensor final : public TensorImpl {
   // the last op, we cannot use the information for checking the shapes
   // of prev ops (for debugging purposes).
   bool has_multiple_shapes = false;
-  uint8_t inferred_shape_dims;
   array<unsigned, 6> inferred_shape;
+  array<unsigned, 6> inferred_strides;
+  uint8_t inferred_shape_dims;
+  uint8_t inferred_strides_dims;
+
 #endif
 
   bool& materialized_var() const {
@@ -49,25 +53,33 @@ class TorchyTensor final : public TensorImpl {
 
   void check_inferred_shape() {
 #ifndef NDEBUG
-    if (!has_shape_data || has_multiple_shapes)
+    if (has_multiple_shapes)
       return;
 
-    auto real_shape = TensorImpl::sizes();
+    auto check = [](const char *name, IntArrayRef real_data,
+                     const array<unsigned, 6> &inferred, uint8_t dims) {
+      auto error = [&]() {
+        cerr << "Bad " << name << ". Real: " << real_data << " / Inferred: "
+             << ArrayRef<unsigned>(inferred.data(), dims)
+             << endl;
+        assert(0);
+      };
 
-    auto error = [&]() {
-      cerr << "Bad shape. Real: " << real_shape << " / Inferred: "
-           << ArrayRef<unsigned>(inferred_shape.data(), inferred_shape_dims)
-           << endl;
-      assert(0);
+      if (real_data.size() != dims)
+        error();
+
+      for (unsigned i = 0; i < dims; ++i) {
+        if (real_data[i] != inferred[i])
+          error();
+      }
     };
 
-    if (real_shape.size() != inferred_shape_dims)
-      error();
+    if (has_shape_data)
+      check("shape", TensorImpl::sizes(), inferred_shape, inferred_shape_dims);
 
-    for (unsigned i = 0; i < inferred_shape_dims; ++i) {
-      if (real_shape[i] != inferred_shape[i])
-        error();
-    }
+    if (has_strides_data)
+      check("strides", TensorImpl::strides(), inferred_strides,
+            inferred_strides_dims);
 #endif
   }
 
@@ -84,6 +96,23 @@ class TorchyTensor final : public TensorImpl {
     inferred_shape_dims = real_shape.size();
     for (unsigned i = 0; i < inferred_shape_dims; ++i) {
       inferred_shape[i] = real_shape[i];
+    }
+#endif
+  }
+
+  void store_strides() {
+    has_strides_data = true;
+#ifndef NDEBUG
+    auto real_strides = TensorImpl::strides();
+    if (real_strides.size() > inferred_strides.size()) {
+      has_strides_data = false;
+      cerr << "WARN: Can't keep track of tensor with so many dimensions: "
+           << real_strides.size() << endl;
+      return;
+    }
+    inferred_strides_dims = real_strides.size();
+    for (unsigned i = 0; i < inferred_strides_dims; ++i) {
+      inferred_strides[i] = real_strides[i];
     }
 #endif
   }
@@ -150,6 +179,13 @@ public:
 #endif
   }
 
+  void set_no_strides_info() {
+    has_strides_data = false;
+#ifndef NDEBUG
+    has_multiple_shapes = true;
+#endif
+  }
+
 #ifndef NDEBUG
   void resetMultipleShapes() {
     has_multiple_shapes = false;
@@ -175,6 +211,7 @@ public:
 
     check_inferred_shape();
     store_shape();
+    store_strides();
 
     // must be run after materialized is set to true, as these call the
     // overriden methods below
@@ -187,6 +224,7 @@ public:
 
     check_inferred_shape();
     store_shape();
+    store_strides();
   }
 
   void check_torchy_data_from(const TorchyTensor &src) {
@@ -236,8 +274,7 @@ public:
   }
 
   IntArrayRef strides() const override {
-    // TODO
-    if (!has_shape_data || true)
+    if (!has_strides_data)
       ensure_materialized(STATS(FlushReason::STRIDES));
     return TensorImpl::strides();
   }
@@ -265,9 +302,12 @@ public:
   }
 
   bool is_contiguous(at::MemoryFormat memory_format) const override {
-    // TODO
-    if (!has_shape_data || true)
+    if (!has_strides_data) {
+      if (trace_idx != -1u) {
+        cerr << "ISCONTIGUOUS FOR OP: " << trace.getOps()[trace_idx].id << endl;
+      }
       ensure_materialized(STATS(FlushReason::IS_CONTIGUOUS));
+    }
     return TensorImpl::is_contiguous(memory_format);
   }
 
@@ -284,7 +324,6 @@ public:
     assert(trace.is_flushing() || !trace.is_input(*this));
     ensure_materialized(STATS(FlushReason::SET_SIZE));
     TensorImpl::set_size(dim, new_size);
-    store_shape();
   }
 
   void set_stride(int64_t dim, int64_t new_stride) override {
@@ -306,8 +345,7 @@ public:
   }
 
   int64_t stride(int64_t d) const override {
-    // TODO
-    if (!has_shape_data || true)
+    if (!has_strides_data)
       ensure_materialized(STATS(FlushReason::STRIDE));
     return TensorImpl::stride(d);
   }
@@ -784,6 +822,8 @@ bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks,
     tt->set_materialized(false);
     if (!preserves_shape)
       tt->set_no_shape_info();
+    // TODO: propagate strides data
+    tt->set_no_strides_info();
     return false;
   }
 
