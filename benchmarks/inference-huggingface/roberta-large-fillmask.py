@@ -9,7 +9,7 @@ txt = [
   "The best NLP model is <mask>.",
   "PyTorch is an <mask> machine learning library.",
 ]
-txt = txt * int(1000 / len(txt))
+txt = txt * int(100 / len(txt))
 
 #unmasker =  pipeline('fill-mask', model='roberta-large')
 unmasker = FillMaskPipeline(

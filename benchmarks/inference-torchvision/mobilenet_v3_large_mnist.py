@@ -20,7 +20,7 @@ loader = torch.utils.data.DataLoader(data, batch_size=1)
 model.eval()
 
 for i, (data, label) in enumerate(loader):
-  if i == 1000:
+  if i == 2000:
     break
 
   with torch.no_grad():

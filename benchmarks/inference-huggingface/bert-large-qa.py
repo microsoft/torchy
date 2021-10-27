@@ -30,7 +30,7 @@ questions = [
   'Which interfaces does PyTorch provide?',
   'What are the main applications PyTorch is used for?',
 ]
-questions = questions * int(1000 / len(questions))
+questions = questions * int(200 / len(questions))
 
 #nlp = pipeline("question-answering")
 nlp = QuestionAnsweringPipeline(
