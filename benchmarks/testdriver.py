@@ -17,13 +17,11 @@ for arg in sys.argv[1:]:
   elif arg == '--fuser-nnc':
     torch._C._jit_override_can_fuse_on_cpu(True)
     torch._C._jit_override_can_fuse_on_gpu(True)
-    torch._C._jit_set_texpr_parallel_cpu_enabled(True)
     torch._C._jit_set_te_must_use_llvm_cpu(False)
     os.environ['PYTORCH_TENSOREXPR_DONT_USE_LLVM'] = '1'
   elif arg == '--fuser-nnc-llvm':
     torch._C._jit_override_can_fuse_on_cpu(True)
     torch._C._jit_override_can_fuse_on_gpu(True)
-    torch._C._jit_set_texpr_parallel_cpu_enabled(True)
   elif arg == '--nvfuser':
     #os.environ['PYTORCH_CUDA_FUSER_DISABLE_FALLBACK'] = '1'
     #os.environ['PYTORCH_CUDA_FUSER_DISABLE_FMA'] = '1'
