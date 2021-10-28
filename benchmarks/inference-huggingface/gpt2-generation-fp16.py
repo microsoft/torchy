@@ -10,7 +10,7 @@ txt = [
   "A compiler is a program that",
   "The weather today looks",
 ]
-txt = txt * int(100 / len(txt))
+txt = txt * int(200 / len(txt))
 
 #generator = pipeline('text-generation', model='gpt2')
 generator = TextGenerationPipeline(

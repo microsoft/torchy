@@ -24,6 +24,7 @@ using namespace std;
 namespace {
 
 const char* flush_reasons[] = {
+  "autograd",
   "debug",
   "dim",
   "has_storage",

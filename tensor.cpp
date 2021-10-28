@@ -479,6 +479,15 @@ IntArrayRef tensor_get_shape(uintptr_t tt) {
   return ((TorchyTensor*)tt)->sizes();
 }
 
+void ensure_materialized(const c10::TensorImpl *t
+                         STATS_ARG(FlushReason reason)) {
+  if (auto tt = dynamic_cast<const TorchyTensor*>(t)) {
+    tt->ensure_materialized(STATS(reason));
+  } else if (!trace.is_flushing() && trace.numOps() > 0) {
+    trace.flush(STATS(reason));
+  }
+}
+
 
 namespace {
 
