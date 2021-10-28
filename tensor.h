@@ -23,6 +23,8 @@ bool tensor_has_dtype(uintptr_t tt);
 at::ScalarType tensor_get_dtype(uintptr_t tt);
 bool tensor_has_shape(uintptr_t tt);
 at::IntArrayRef tensor_get_shape(uintptr_t tt);
+bool tensor_has_strides(uintptr_t tt);
+at::IntArrayRef tensor_get_strides(uintptr_t tt);
 
 void ensure_materialized(const c10::TensorImpl *t
                          STATS_ARG(FlushReason reason));

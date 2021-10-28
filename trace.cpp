@@ -188,6 +188,9 @@ static void print_op(ostream &os, unsigned idx, const TraceOpDef &op,
   if (t && tensor_has_shape(t))
     os << " shape=" << tensor_get_shape(t);
 
+  if (t && tensor_has_strides(t))
+    os << " strides=" << tensor_get_strides(t);
+
   os << '\n';
 }
 

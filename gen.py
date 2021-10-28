@@ -38,6 +38,10 @@ def get_shape_infer_fn(fn):
   name = str(fn.func.name)
   return shape_exceptions.get(name, shape_inference.get(name))
 
+def get_strides_infer_fn(fn):
+  name = str(fn.func.name)
+  return strides_inference.get(name)
+
 
 @with_native_function
 def skip_fn(fn):
@@ -330,6 +334,26 @@ def mk_shape_infer(shape, all_args):
   #exit()
 
 
+def mk_strides_infer(fn, all_args, ret):
+  args = [arg for arg in all_args if is_shape_arg(arg)]
+
+  if fn == 'EQ_FIRST':
+    return args[0].expr
+  if fn == 'CONTIGUOUS':
+    return f'strides_contiguous({ret})'
+  if fn == 'STD_PROMOTE':
+    return f'strides_std_promote({", ".join([arg.expr for arg in args])})'
+  if fn == 'TRANSPOSE':
+    return f'strides_transpose({args[0].expr})'
+  if fn == 'CLONE':
+    return f'strides_clone({args[0].expr}, {all_args[1].expr})'
+  if fn == 'PERMUTE':
+    return f'strides_permute({args[0].expr}, {args[1].expr})'
+
+  print('mk_strides_infer', fn)
+  return 'nullopt'
+
+
 @with_native_function
 def gen_dispatch_wrapper(fn):
   sig_group = CppSignatureGroup.from_native_function(fn, method=False, fallback_binding=fn.manual_cpp_binding)
@@ -349,6 +373,9 @@ def gen_dispatch_wrapper(fn):
 
   dispatchkey = "dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);"
 
+  shape_fn = get_shape_infer_fn(fn)
+  strides_fn = get_strides_infer_fn(fn)
+
   # emit pass-through wrapper for unsupported functions
   if skip_fn(fn):
     return f'''
@@ -364,9 +391,12 @@ def gen_dispatch_wrapper(fn):
     dtype_device = get_dtype_arg(tensor_args, args, fn.func.name)
 
     set_shape = ''
-    shape_fn = get_shape_infer_fn(fn)
     if shape_fn:
       set_shape = f'set_shape(tt, {mk_shape_infer(shape_fn, args)});\n  '
+
+    set_strides = ''
+    if strides_fn:
+      set_strides = f'set_strides(tt, {mk_strides_infer(strides_fn, args, "tt")});\n  '
 
     return f'''
 {fndecl} {{
@@ -375,7 +405,7 @@ def gen_dispatch_wrapper(fn):
     return {redispatch};
   }}
   auto tt = register_new_tensor(dispatchKeySet, {fn_enum(fn)}, {dtype_device});
-  {set_shape}{register_args}
+  {set_shape}{set_strides}{register_args}
   return tt;
 }}'''
 
@@ -386,7 +416,6 @@ def gen_dispatch_wrapper(fn):
   ret = fn_output(fn)
 
   keeps_shape = 'false'
-  shape_fn = get_shape_infer_fn(fn)
   if (shape_fn == 'EQ_FIRST' and len(tensor_args) >= 1 and tensor_args[0].expr == ret) or\
      (shape_fn == 'EQ_SECOND' and len(tensor_args) >= 2 and tensor_args[1].expr == ret) or\
      (shape_fn == 'EQ_THIRD' and len(tensor_args) >= 3 and tensor_args[2].expr == ret):
@@ -394,13 +423,21 @@ def gen_dispatch_wrapper(fn):
   elif shape_fn:
     keeps_shape = f'eq_shapes({ret}, {mk_shape_infer(shape_fn, args)})'
 
+  keeps_strides = 'false'
+  if (strides_fn == 'EQ_FIRST' and len(tensor_args) >= 1 and tensor_args[0].expr == ret) or\
+     (strides_fn == 'EQ_SECOND' and len(tensor_args) >= 2 and tensor_args[1].expr == ret) or\
+     (strides_fn == 'EQ_THIRD' and len(tensor_args) >= 3 and tensor_args[2].expr == ret):
+    keeps_strides = 'true'
+  elif strides_fn:
+    keeps_shape = f'eq_shapes({ret}, {mk_strides_infer(strides_fn, args, ret)})'
+
   return f'''
 {fndecl} {{
   if (trace.is_flushing()) {{
     {dispatchkey}
     return {redispatch};
   }}
-  bool flush = register_in_place({ret}, {fn_enum(fn)}, dispatchKeySet, {keeps_shape});
+  bool flush = register_in_place({ret}, {fn_enum(fn)}, dispatchKeySet, {keeps_shape}, {keeps_strides});
   {register_args}
   if (flush)
     trace.flush(STATS(FlushReason::INPLACE_SHARED));

@@ -1613,3 +1613,24 @@ shape_inference = {
   'zeros.out': 'EQ_FIRST',
   'zeros_like': 'EQ_FIRST',
 }
+
+strides_inference = {
+  'add.Tensor': 'STD_PROMOTE',
+  'add_.Tensor': 'EQ_FIRST',
+  'clone': 'CLONE',
+  'div.Tensor': 'STD_PROMOTE',
+  'dropout': 'EQ_FIRST',
+  'embedding': 'CONTIGUOUS',
+  'fill_.Scalar': 'EQ_FIRST',
+  'gelu': 'CONTIGUOUS',
+  'matmul': 'CONTIGUOUS',
+  'ne.Scalar': 'EQ_FIRST',
+  'normal_': 'EQ_FIRST',
+  'permute': 'PERMUTE',
+  'softmax.int': 'CONTIGUOUS',
+  't': 'TRANSPOSE',
+  'to.dtype': 'EQ_FIRST',
+  'uniform_': 'EQ_FIRST',
+  'view': 'CONTIGUOUS',
+  'zero_': 'EQ_FIRST',
+}

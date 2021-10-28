@@ -35,7 +35,6 @@ class TorchyTensor final : public TensorImpl {
   array<unsigned, 6> inferred_strides;
   uint8_t inferred_shape_dims;
   uint8_t inferred_strides_dims;
-
 #endif
 
   bool& materialized_var() const {
@@ -120,6 +119,7 @@ class TorchyTensor final : public TensorImpl {
   void copy_torchy_data(const TorchyTensor *tt) {
     trace_idx           = tt->trace_idx;
     has_shape_data      = tt->has_shape_data;
+    has_strides_data    = tt->has_strides_data;
 #ifndef NDEBUG
     has_multiple_shapes = tt->has_multiple_shapes;
     inferred_shape_dims = tt->inferred_shape_dims;
@@ -167,9 +167,19 @@ public:
     sizes_and_strides_.set_sizes(shape);
     store_shape();
 
-    // must be run after setting has_shape_data as it calls sizes()
     refresh_numel();
     refresh_contiguous();
+  }
+
+  void set_strides(IntArrayRef strides) {
+    assert(strides.size() == sizes_and_strides_.size());
+    for (unsigned i = 0, e = strides.size(); i != e; ++i) {
+      sizes_and_strides_.stride_at_unchecked(i) = strides[i];
+    }
+    store_strides();
+
+    if (has_shape_data)
+      refresh_contiguous();
   }
 
   void set_no_shape_info() {
@@ -194,6 +204,7 @@ public:
 
   unsigned getTraceIdx() const { return trace_idx; }
   bool hasShapeData() const { return has_shape_data; }
+  bool hasStridesData() const { return has_strides_data; }
 
   void set(const Tensor &t) {
     assert(dtype() == t.dtype());
@@ -232,6 +243,8 @@ public:
 #ifndef NDEBUG
     if (has_shape_data)
       assert(sizes() == src.sizes());
+    if (has_strides_data)
+      assert(strides() == src.strides());
 #endif
   }
 
@@ -274,8 +287,11 @@ public:
   }
 
   IntArrayRef strides() const override {
-    if (!has_strides_data)
+    if (!has_strides_data) {
+      if (false && trace_idx != -1u && !trace.is_flushing())
+        cerr << "BAD STRIDES FOR " << trace.getOps()[trace_idx].id << endl;
       ensure_materialized(STATS(FlushReason::STRIDES));
+    }
     return TensorImpl::strides();
   }
 
@@ -302,10 +318,9 @@ public:
   }
 
   bool is_contiguous(at::MemoryFormat memory_format) const override {
-    if (!has_strides_data) {
-      if (trace_idx != -1u) {
-        cerr << "ISCONTIGUOUS FOR OP: " << trace.getOps()[trace_idx].id << endl;
-      }
+    if (!has_strides_data || !has_shape_data) {
+      if (false && trace_idx != -1u && !trace.is_flushing())
+        cerr << "BAD ISCONTIGUOUS FOR " << trace.getOps()[trace_idx].id << endl;
       ensure_materialized(STATS(FlushReason::IS_CONTIGUOUS));
     }
     return TensorImpl::is_contiguous(memory_format);
@@ -479,6 +494,15 @@ IntArrayRef tensor_get_shape(uintptr_t tt) {
   return ((TorchyTensor*)tt)->sizes();
 }
 
+bool tensor_has_strides(uintptr_t tt) {
+  return tt != DUMMY_TORCHY && ((TorchyTensor*)tt)->hasStridesData();
+}
+
+IntArrayRef tensor_get_strides(uintptr_t tt) {
+  assert(tt != DUMMY_TORCHY);
+  return ((TorchyTensor*)tt)->strides();
+}
+
 void ensure_materialized(const c10::TensorImpl *t
                          STATS_ARG(FlushReason reason)) {
   if (auto tt = dynamic_cast<const TorchyTensor*>(t)) {
@@ -539,6 +563,15 @@ optional<IntArrayRef> shape_of(const optional<Tensor> &t) {
 
 optional<IntArrayRef> shape_of(IntArrayRef shape) {
   return shape;
+}
+
+optional<IntArrayRef> strides_of(const Tensor &t) {
+  // best effort; don't trigger rematerialization
+  if (auto *tt = is_torchy(t)) {
+    if (!tt->hasStridesData())
+      return {};
+  }
+  return t.strides();
 }
 
 bool empty_opt_tensor(const optional<Tensor> &t) {
@@ -765,6 +798,60 @@ bool eq_shapes(const Tensor &t1, optional<IntArrayRef> s2) {
   return eq_shapes(shape_of(t1), s2);
 }
 
+#define GET_STRIDES(v) \
+  auto strides_##v = strides_of(v); \
+  if (!strides_##v) return {}
+
+optional<IntArrayRef> strides_contiguous(const Tensor &t) {
+  GET_SHAPE(t);
+  tmp_shape.clear();
+  tmp_shape.resize(shape_t->size());
+
+  unsigned acc = 1;
+  for (int i = shape_t->size()-1; i >= 0; --i) {
+    tmp_shape[i] = acc;
+    acc *= shape_t->operator[](i);
+  }
+  return tmp_shape;
+}
+
+optional<IntArrayRef> strides_std_promote(const Tensor &a, const Tensor &b) {
+  GET_SHAPE(a);
+  GET_SHAPE(b);
+  GET_STRIDES(a);
+  GET_STRIDES(b);
+
+  // TODO: other cases
+  if (shape_a == shape_b && strides_a == strides_b)
+    return strides_a;
+  return {};
+}
+
+optional<IntArrayRef> strides_transpose(const Tensor &t) {
+  GET_SHAPE(t);
+  tmp_shape = shape_t->vec();
+  reverse(tmp_shape.begin(), tmp_shape.end());
+  return tmp_shape;
+}
+
+optional<IntArrayRef> strides_clone(const Tensor &t,
+                                    optional<at::MemoryFormat> format0) {
+  auto format = format0.value_or(at::MemoryFormat::Preserve);
+  switch (format) {
+  case at::MemoryFormat::Preserve:
+    return strides_of(t);
+  case at::MemoryFormat::Contiguous:
+    return strides_contiguous(t);
+  default: // TODO
+    return {};
+  }
+}
+
+optional<IntArrayRef> strides_permute(const Tensor &t, IntArrayRef dims) {
+  GET_STRIDES(t);
+  return tmp_shape = shape_permute(*strides_t, dims);
+}
+
 Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,
                            caffe2::TypeMeta dtype, c10::Device device) {
   auto tt = at::detail::make_tensor<TorchyTensor>(ks, dtype, device);
@@ -810,8 +897,17 @@ void set_shape(Tensor &t, const Tensor &shape_t) {
   set_shape(t, shape_of(shape_t));
 }
 
+void set_strides(Tensor &t, optional<IntArrayRef> strides) {
+  if (strides)
+    is_torchy(t)->set_strides(*strides);
+}
+
+void set_strides(Tensor &t, const Tensor &strides_t) {
+  set_strides(t, strides_of(strides_t));
+}
+
 bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks,
-                       bool preserves_shape) {
+                       bool preserves_shape, bool preserves_strides) {
   auto &t = const_cast<Tensor&>(t0);
   TorchyTensor *tt = is_torchy(t);
 
@@ -831,8 +927,8 @@ bool register_in_place(const Tensor &t0, TorchOp op, DispatchKeySet ks,
     tt->set_materialized(false);
     if (!preserves_shape)
       tt->set_no_shape_info();
-    // TODO: propagate strides data
-    tt->set_no_strides_info();
+    if (!preserves_strides)
+      tt->set_no_strides_info();
     return false;
   }
 
