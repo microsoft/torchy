@@ -17,7 +17,6 @@ $tests = [
   ['Torchy TS CPU', '--torchy', ''],
   ['Torchy TS Cuda', '--torchy --cuda', ''],
   ['Torchy TS CPU NNC', '--torchy --fuser-nnc', ''],
-  ['Torchy TS CPU NNC LLVM', '--torchy --fuser-nnc-llvm', ''],
   ['Torchy TS Cuda NNC', '--torchy --cuda --fuser-nnc', ''],
   ['Torchy TS Cuda NvFuser', '--torchy --cuda --nvfuser', ''],
 ];

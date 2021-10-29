@@ -429,7 +429,7 @@ def gen_dispatch_wrapper(fn):
      (strides_fn == 'EQ_THIRD' and len(tensor_args) >= 3 and tensor_args[2].expr == ret):
     keeps_strides = 'true'
   elif strides_fn:
-    keeps_shape = f'eq_shapes({ret}, {mk_strides_infer(strides_fn, args, ret)})'
+    keeps_strides = f'eq_shapes({ret}, {mk_strides_infer(strides_fn, args, ret)})'
 
   return f'''
 {fndecl} {{
