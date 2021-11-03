@@ -54,11 +54,7 @@ def skip_fn(fn):
   rettype = dispatcher_sig.returns_type().cpp_type()
   if rettype not in allowed_ret_types:
     return True
-
-  # TODO: benchmark if we really want to skip these
-  # plus check if we want to skip is_generic_dispatch_key(key) as well
-  # as those don't have real kernels, just autograd
-  return not any(d.has_kernel(fn) for d in native_functions.backend_indices.values())
+  return False
 
 def wrapper_name(fn):
   return 'wrap_' + str(fn.func.name).replace('.', '_')
