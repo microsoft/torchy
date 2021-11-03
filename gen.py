@@ -12,6 +12,10 @@ from tools.codegen.api import types
 yaml_path = PYTORCH + '/aten/src/ATen/native/native_functions.yaml'
 native_functions = parse_native_yaml(yaml_path)
 
+dtype_exceptions = {
+  'cumsum'            : 'OPTIONAL_OR21',
+}
+
 shape_exceptions = {
   'arange.start_out'  : 'ARANGE',
   'arange.start_step' : 'ARANGE',
@@ -33,6 +37,10 @@ shape_exceptions = {
   'unsqueeze'         : 'UNSQUEEZE',
   'unsqueeze_'        : 'UNSQUEEZE',
 }
+
+def get_dtype_infer_fn(fn):
+  name = str(fn.func.name)
+  return dtype_exceptions.get(name, type_inference.get(name))
 
 def get_shape_infer_fn(fn):
   name = str(fn.func.name)
@@ -184,9 +192,9 @@ def get_dtype_arg(all_tensors, args, name):
   if device_arg:
     device = device_arg.expr
 
-  name = str(name)
-  if name in type_inference:
-    dtype = mk_dtype_infer(type_inference[name], args)
+  dtype_fn = get_dtype_infer_fn(fn)
+  if dtype_fn:
+    dtype = mk_dtype_infer(dtype_fn, args)
   else:
     dtype_arg = get_arg_of_type(args, 'at::ScalarType')
     if dtype_arg:
@@ -339,6 +347,8 @@ def mk_strides_infer(fn, all_args, ret):
     return f'strides_contiguous({ret})'
   if fn == 'STD_PROMOTE':
     return f'strides_std_promote({", ".join([arg.expr for arg in args])})'
+  if fn == 'VIEW':
+    return f'strides_view({args[0].expr}, {ret}, {args[1].expr})'
   if fn == 'TRANSPOSE':
     return f'strides_transpose({args[0].expr})'
   if fn == 'CLONE':

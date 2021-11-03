@@ -1631,6 +1631,6 @@ strides_inference = {
   't': 'TRANSPOSE',
   'to.dtype': 'EQ_FIRST',
   'uniform_': 'EQ_FIRST',
-  'view': 'CONTIGUOUS',
+  'view': 'VIEW',
   'zero_': 'EQ_FIRST',
 }

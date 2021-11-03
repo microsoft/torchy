@@ -5,6 +5,7 @@
 #include "dispatch.h"
 #include "trace.h"
 #include <ATen/RedispatchFunctions.h>
+#include <ATen/TensorUtils.h>
 #include <torch/library.h>
 #include <cassert>
 
@@ -824,6 +825,17 @@ optional<IntArrayRef> strides_std_promote(const Tensor &a, const Tensor &b) {
   // TODO: other cases
   if (shape_a == shape_b && strides_a == strides_b)
     return strides_a;
+  return {};
+}
+
+optional<IntArrayRef> strides_view(const Tensor &oldt, const Tensor &newt,
+                                   IntArrayRef size) {
+  GET_SHAPE(oldt);
+  GET_STRIDES(oldt);
+  GET_SHAPE(newt);
+  auto opt = at::detail::computeStride(*shape_oldt, *strides_oldt, *shape_newt);
+  if (opt)
+    return tmp_shape = *move(opt);
   return {};
 }
 

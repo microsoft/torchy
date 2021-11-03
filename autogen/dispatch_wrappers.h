@@ -3661,7 +3661,7 @@ at::Tensor wrap_cumsum(c10::DispatchKeySet dispatchKeySet, const at::Tensor & se
     dispatchKeySet = dispatchKeySet & DispatchKeySet(DispatchKeySet::FULL_AFTER, DISPATCHKEY);
     return at::redispatch::cumsum(dispatchKeySet, self, dim, dtype);
   }
-  auto tt = register_new_tensor(dispatchKeySet, H_CUMSUM, dtype, self.device());
+  auto tt = register_new_tensor(dispatchKeySet, H_CUMSUM, optional_or_else(dtype, self.scalar_type()), self.device());
   set_shape(tt, self);
   trace.append_arg(self);trace.append_arg(dim);trace.append_arg(dtype);
   return tt;
@@ -13041,7 +13041,7 @@ at::Tensor wrap_view(c10::DispatchKeySet dispatchKeySet, const at::Tensor & self
   }
   auto tt = register_new_tensor(dispatchKeySet, H_VIEW, self.dtype(), self.device());
   set_shape(tt, shape_reshape(self, size));
-  set_strides(tt, strides_contiguous(tt));
+  set_strides(tt, strides_view(self, tt, size));
   trace.append_arg(self);trace.append_arg(size);
   return tt;
 }
