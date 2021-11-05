@@ -1,6 +1,10 @@
 from testdriver import *
 import torchvision
 
+if torchscript:
+  print('TorchScript not supported!')
+  exit(-1)
+
 model = torchvision.models.resnext50_32x4d(pretrained=True)
 if cuda:
   model.cuda()

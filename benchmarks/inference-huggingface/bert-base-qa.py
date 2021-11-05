@@ -1,6 +1,10 @@
 from testdriver import *
 from transformers import pipeline, QuestionAnsweringPipeline, BertTokenizer, BertForQuestionAnswering
 
+if torchscript:
+  print('TorchScript not supported!')
+  exit(-1)
+
 # https://en.wikipedia.org/wiki/PyTorch
 context = """
 PyTorch is an open source machine learning library based on the Torch library,

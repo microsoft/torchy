@@ -1,6 +1,10 @@
 from testdriver import *
 from transformers import pipeline, FillMaskPipeline, RobertaForMaskedLM, RobertaTokenizer
 
+if torchscript:
+  print('TorchScript not supported!')
+  exit(-1)
+
 txt = [
   "Hello I'm a <mask> model.",
   "Writing dummy sentences for completion is a lot of <mask>.",

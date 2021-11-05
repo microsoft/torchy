@@ -1,6 +1,10 @@
 from testdriver import *
 from transformers import pipeline, TextGenerationPipeline, GPT2LMHeadModel, GPT2Tokenizer
 
+if torchscript:
+  print('TorchScript not supported!')
+  exit(-1)
+
 txt = [
   "Hello, I'm a language model,",
   "I'm Portuguese, therefore I love",

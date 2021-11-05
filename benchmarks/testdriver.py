@@ -4,6 +4,7 @@ import sys
 torch.manual_seed(0)
 
 cuda = False
+torchscript = False
 
 torch._C._jit_set_texpr_fuser_enabled(False)
 
@@ -16,6 +17,8 @@ for arg in sys.argv[1:]:
     if not torch.cuda.is_available():
       print('UNSUPPORTED: CUDA is not available')
       exit(0x42)
+  elif arg == '--torchscript':
+    torchscript = True
   elif arg == '--fuser-nnc':
     torch._C._jit_set_texpr_fuser_enabled(True)
   elif arg == '--nnc-enable-reductions':

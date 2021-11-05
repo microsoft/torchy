@@ -1,6 +1,10 @@
 from testdriver import *
 from transformers import pipeline, TextClassificationPipeline, BertTokenizer, BertForSequenceClassification
 
+if torchscript:
+  print('TorchScript not supported!')
+  exit(-1)
+
 txt = [
   'I hate you',
   'I love you',

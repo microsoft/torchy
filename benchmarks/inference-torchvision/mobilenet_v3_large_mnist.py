@@ -1,6 +1,10 @@
 from testdriver import *
 import torchvision
 
+if torchscript:
+  print('TorchScript not supported!')
+  exit(-1)
+
 model = torchvision.models.mobilenet_v3_large(pretrained=True)
 if cuda:
   model.cuda()

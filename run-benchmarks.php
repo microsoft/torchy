@@ -21,6 +21,8 @@ $tests = [
   ['Torchy TS Cuda NNC', '--torchy --cuda --fuser-nnc', ''],
   ['Torchy TS Cuda NNC Reduce', '--torchy --cuda --fuser-nnc --nnc-enable-reductions', ''],
   ['Torchy TS Cuda NvFuser', '--torchy --cuda --nvfuser', ''],
+  ['TorchScript CPU NNC', '--torchscript --fuser-nnc', ''],
+  ['TorchScript Cuda NNC', '--torchscript --cuda --fuser-nnc', ''],
 ];
 
 // shuffle test runs to try to give a fair chance to all tests around vm load

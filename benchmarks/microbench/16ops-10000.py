@@ -14,7 +14,14 @@ h = torch.rand(size, device=device)
 i = torch.rand(size, device=device)
 i.storage()
 
-for _ in range(500):
+def fn(a, b, c, d, e, f, g, h, i):
   r = a.add(b).mul(c).div(d).add(e).sub(f).mul(g).div(h).add(i)
   r = r.sub(b).mul(c).div(d).add(e).sub(f).mul(g).div(h).add(i)
+  return r
+
+if torchscript:
+  fn = torch.jit.trace(fn, (a, b, c, d, e, f, g, h, i))
+
+for _ in range(500):
+  r = fn(a, b, c, d, e, f, g, h, i)
   r.storage()
