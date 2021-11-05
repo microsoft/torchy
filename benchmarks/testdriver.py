@@ -18,6 +18,8 @@ for arg in sys.argv[1:]:
       exit(0x42)
   elif arg == '--fuser-nnc':
     torch._C._jit_set_texpr_fuser_enabled(True)
+  elif arg == '--nnc-enable-reductions':
+    torch._C._jit_set_texpr_reductions_enabled(True)
   elif arg == '--nvfuser':
     #os.environ['PYTORCH_CUDA_FUSER_DISABLE_FALLBACK'] = '1'
     #os.environ['PYTORCH_CUDA_FUSER_DISABLE_FMA'] = '1'

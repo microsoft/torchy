@@ -17,7 +17,9 @@ $tests = [
   ['Torchy TS CPU', '--torchy', ''],
   ['Torchy TS Cuda', '--torchy --cuda', ''],
   ['Torchy TS CPU NNC', '--torchy --fuser-nnc', ''],
+  ['Torchy TS CPU NNC Reduce', '--torchy --fuser-nnc --nnc-enable-reductions', ''],
   ['Torchy TS Cuda NNC', '--torchy --cuda --fuser-nnc', ''],
+  ['Torchy TS Cuda NNC Reduce', '--torchy --cuda --fuser-nnc --nnc-enable-reductions', ''],
   ['Torchy TS Cuda NvFuser', '--torchy --cuda --nvfuser', ''],
 ];
 
@@ -40,8 +42,10 @@ $outputs = [];
 $done = 0;
 foreach ($torun as $test) {
   run($test[0], $test[1], $test[2], $test[3]);
-  if (++$done % 50 == 0)
+  if (++$done % 50 == 0) {
     echo "Done $done\n";
+    show_results();
+  }
 }
 
 
@@ -66,19 +70,30 @@ function run($file, $test, $args, $env) {
   unlink('time');
 }
 
-// table header
-echo 'Benchmark';
-foreach ($tests as $test) {
-  echo ",$test[0]";
-}
-echo "\n";
+function show_results() {
+  global $files, $tests, $results;
 
-// data
-foreach ($files as $file) {
-  $name = test_name($file);
-  echo $name;
+  // table header
+  echo 'Benchmark';
   foreach ($tests as $test) {
-    echo ",", min($results[$name][$test[0]]);
+    echo ",$test[0]";
+  }
+  echo "\n";
+
+  // data
+  foreach ($files as $file) {
+    $name = test_name($file);
+    echo $name;
+    foreach ($tests as $test) {
+      if (isset($results[$name][$test[0]]))
+        echo ",", min($results[$name][$test[0]]);
+      else
+        echo ",0";
+    }
+    echo "\n";
   }
   echo "\n";
 }
+
+echo "Final results:\n";
+show_results();
