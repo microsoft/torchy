@@ -19,7 +19,9 @@ dtype_exceptions = {
 shape_exceptions = {
   'arange.start_out'  : 'ARANGE',
   'arange.start_step' : 'ARANGE',
+  'argmax'            : 'ARGMAX',
   'argmax.out'        : 'ARGMAX',
+  'argmin'            : 'ARGMAX',
   'argmin.out'        : 'ARGMAX',
   'conv2d'            : 'CONV2D',
   'embedding'         : 'EMBEDDING',
