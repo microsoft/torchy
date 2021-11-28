@@ -24,21 +24,24 @@ def get(tensors, type):
   return t
 
 def mk_arg(arg, tensors):
-  type = arg.type.cpp_type()
-  dispatch_types = [
-    'at::ScalarType',
-    'at::IntArrayRef',
-    'const c10::optional<at::Scalar> &',
-    'c10::optional<at::ScalarType>',
-  ]
-  if 'Tensor' in type or type in dispatch_types:
-    type = type.replace('const ', '')
-    if '&' not in type:
+  type = arg.type.remove_const_ref().cpp_type()
+  dispatch_types = {
+    'int64_t' : False,
+    'at::Scalar' : True,
+    'at::ScalarType' : False,
+    'at::IntArrayRef' : False,
+    'c10::optional<at::Scalar>' : True,
+    'c10::optional<at::ScalarType>' : False,
+  }
+  if 'Tensor' in type:
+    return get(tensors, type + ' &')
+  if type in dispatch_types:
+    if dispatch_types[type]:
       type += ' &'
     return get(tensors, type)
   if type == 'c10::string_view':
     return '"foo"'
-  if type == 'int64_t' or type == 'double':
+  if type == 'double':
     return '1'
   if type == 'at::Dimname':
     return 'Dimname::wildcard()'

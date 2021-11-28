@@ -13,7 +13,6 @@ yaml_path = PYTORCH + '/aten/src/ATen/native/native_functions.yaml'
 native_functions = parse_native_yaml(yaml_path)
 
 dtype_exceptions = {
-  'cumsum'            : 'OPTIONAL_OR21',
 }
 
 shape_exceptions = {

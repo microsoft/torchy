@@ -805,15 +805,7 @@ bool eq_shapes(const Tensor &t1, optional<IntArrayRef> s2) {
 
 optional<IntArrayRef> strides_contiguous(const Tensor &t) {
   GET_SHAPE(t);
-  tmp_shape.clear();
-  tmp_shape.resize(shape_t->size());
-
-  unsigned acc = 1;
-  for (int i = shape_t->size()-1; i >= 0; --i) {
-    tmp_shape[i] = acc;
-    acc *= shape_t->operator[](i);
-  }
-  return tmp_shape;
+  return tmp_shape = at::detail::defaultStrides(*shape_t);
 }
 
 optional<IntArrayRef> strides_std_promote(const Tensor &a, const Tensor &b) {

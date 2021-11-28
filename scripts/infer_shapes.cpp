@@ -236,7 +236,7 @@ struct C {
     for (auto ty : { kFloat, kShort }) {
       for (unsigned shape = 0; shape < num_test_shapes; ++shape) {
         type_trail.push_back(shape);
-        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+        call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
           auto t = new_tensor(shape, ty);
           return fn(t, args...);
         }});
@@ -250,17 +250,33 @@ struct C {
   template <typename T, typename... Tail>
   void call(function<Tensor(c10::optional<T>&, Tail...)> fn) {
     // call with a value
-    call(function<Tensor(T&, Tail&&...)>{
-      [=](T &val, Tail&&... args) -> Tensor {
+    call(function<Tensor(T&, Tail...)>{
+      [=](T &val, Tail... args) -> Tensor {
         c10::optional<T> opt(val);
         return fn(opt, args...);
       }});
 
     // and call without a value
     type_trail.push_back(-1u);
-    call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
       c10::optional<T> opt;
       return fn(opt, forward<Tail>(args)...);
+    }});
+    type_trail.pop_back();
+  }
+
+  template <typename T, typename... Tail>
+  void call(function<Tensor(c10::optional<T>, Tail...)> fn) {
+    // call with a value
+    call(function<Tensor(T, Tail...)>{
+      [=](T val, Tail... args) -> Tensor {
+        return fn(val, args...);
+      }});
+
+    // and call without a value
+    type_trail.push_back(-1u);
+    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+      return fn(c10::nullopt, forward<Tail>(args)...);
     }});
     type_trail.pop_back();
   }
@@ -273,7 +289,7 @@ struct C {
         type_trail.push_back(shape);
         for (unsigned shape2 = 0; shape2 < num_test_shapes; ++shape2) {
           type_trail.push_back(shape2);
-          call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+          call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
             Tensor ts[2] = { new_tensor(shape, ty),
                              new_tensor(shape2, ty) };
             ArrayRef<Tensor> aref(ts);
@@ -296,7 +312,7 @@ struct C {
         type_trail.push_back(shape);
         for (unsigned shape2 = 0; shape2 < num_test_shapes; ++shape2) {
           type_trail.push_back(shape2);
-          call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+          call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
             List<c10::optional<Tensor>> list({ new_tensor(shape, ty),
                                                new_tensor(shape2, ty) });
             return fn(list, args...);
@@ -312,30 +328,42 @@ struct C {
 
   template <typename... Tail>
   void call(function<Tensor(at::Scalar&, Tail...)> fn) {
-    call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
       Scalar s(1);
       return fn(s, args...);
     }});
   }
 
   template <typename... Tail>
-  void call(function<Tensor(IntArrayRef&, Tail...)> fn) {
+  void call(function<Tensor(int64_t, Tail...)> fn) {
+    //auto n = num_samples;
+    for (int64_t v : {0, 1}) {
+      call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+        return fn(v, args...);
+      }});
+      /* FIXME
+      if (num_samples > n)
+        break;
+      */
+    }
+  }
+
+  template <typename... Tail>
+  void call(function<Tensor(IntArrayRef, Tail...)> fn) {
     // Note here we want <= to test one extra shape
     for (unsigned shape = 0; shape <= num_test_shapes; ++shape) {
       type_trail.push_back(shape);
-      call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-        IntArrayRef s(all_shapes[shape]);
-        return fn(s, args...);
+      call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+        return fn(all_shapes[shape], args...);
       }});
       type_trail.pop_back();
     }
   }
 
   template <typename... Tail>
-  void call(function<Tensor(ScalarType&, Tail...)> fn) {
-    call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-      auto ty_cpy = kFloat;
-      return fn(ty_cpy, args...);
+  void call(function<Tensor(ScalarType, Tail...)> fn) {
+    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+      return fn(kFloat, args...);
     }});
   }
 

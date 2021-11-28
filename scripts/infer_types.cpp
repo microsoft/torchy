@@ -9,7 +9,6 @@
 #include <cstring>
 #include <functional>
 #include <iostream>
-#include <unistd.h>
 
 using namespace at;
 using namespace c10;
@@ -25,17 +24,12 @@ array<ScalarType, NumScalarTypes-1> types = {
 struct InputEntry {
   ScalarType ty;
   bool zerodim;
+  bool is_scalar = false;
 };
 
-struct Result {
-  vector<InputEntry> inputs;
-  ScalarType default_dtype;
-  ScalarType output;
-};
-
+bool print_all = false;
 char *call_only = nullptr;
 vector<InputEntry> type_trail;
-vector<Result> results;
 
 Tensor new_tensor(IntArrayRef shape, ScalarType ty) {
   auto t = native::empty_cpu(shape, ty);
@@ -43,43 +37,46 @@ Tensor new_tensor(IntArrayRef shape, ScalarType ty) {
   return t;
 }
 
-void print(const Result &result) {
+void print(ScalarType default_dtype, ScalarType output) {
   bool first = true;
-  for (auto input : result.inputs) {
+  for (auto input : type_trail) {
     if (!first)
       cout << ", ";
     cout << input.ty;
     if (input.zerodim)
       cout << " [z]";
+    if (input.is_scalar)
+      cout << " [s]";
     first = false;
   }
-  cout << ", default=" << result.default_dtype << " -> " << result.output;
+  cout << ", default=" << default_dtype << " -> " << output << endl;
 }
 
-#define ARG(n) args[n].ty, [&]() { return args[n].zerodim; }
+#define ARG(n) args[n].ty, args[n].is_scalar, [&]() { return args[n].zerodim; }
 
-#define callVA(f) \
-  switch (args.size()) { \
+#define callVA(f, max_elems) \
+  switch (min(args.size(), max_elems)) { \
   case 1:  return f(ARG(0));\
   case 2:  return f(ARG(0), ARG(1));\
   case 3:  return f(ARG(0), ARG(1), ARG(2));\
   case 4:  return f(ARG(0), ARG(1), ARG(2), ARG(3));\
   case 5:  return f(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4));\
-  default: cout << "ERROR: Too many args!" << endl; _Exit(-1); \
+  default: cout << "ERROR: Too many args!" << endl; exit(-1); \
   }
 
 #include "../type_inference.h"
 
 ScalarType promoted_type_trail(const vector<InputEntry> &args) {
-  callVA(promote_tys)
+  callVA(promote_tys, (size_t)-1ull)
 }
 
 ScalarType promoted_type_trail_const(const vector<InputEntry> &args) {
-  callVA(promote_const)
+  callVA(promote_const, (size_t)-1ull)
 }
 
-ScalarType promoted_type_trail_buggy(const vector<InputEntry> &args) {
-  callVA(promote_buggy)
+ScalarType promoted_type_trail_buggy(const vector<InputEntry> &args,
+                                     size_t max_elems = -1ull) {
+  callVA(promote_buggy, max_elems)
 }
 
 optional<ScalarType> to_optional(ScalarType ty) {
@@ -94,6 +91,67 @@ ScalarType optional_or_default(ScalarType ty) {
   return ty;
 }
 
+#define PASS(arg) arg.ty, [&]() { return arg.zerodim; }
+
+optional<ScalarType> all_type;
+
+array<tuple<const char*, unsigned, function<ScalarType()>>, 29> is_type_fn = {
+  make_tuple("ALL", 1, [&]() { return *all_type; }),
+  make_tuple("EQ_FIRST", 1, [&]() { return type_trail[0].ty; }),
+  make_tuple("EQ_SECOND", 2, [&]() { return type_trail[1].ty; }),
+  make_tuple("EQ_THIRD", 3, [&]() { return type_trail[2].ty; }),
+  make_tuple("EQ_FOURTH", 4, [&]() { return type_trail[3].ty; }),
+  make_tuple("EQ_PROMOTED", 1, [&]() { return promoted_type_trail(type_trail); }),
+  make_tuple("EQ_PROMOTED_CONST", 1, [&]() { return promoted_type_trail_const(type_trail); }),
+  make_tuple("EQ_PROMOTED_BUGGY", 1, [&]() { return promoted_type_trail_buggy(type_trail); }),
+  make_tuple("EQ_PROMOTED_BUGGY2", 2, [&]() { return promoted_type_trail_buggy(type_trail, 2); }),
+  make_tuple("TO_VALUE_TYPE", 1, [&]() { return toValueType(type_trail[0].ty); }),
+  make_tuple("TO_FLOAT", 1, [&]() { return to_float(type_trail[0].ty); }),
+  make_tuple("TO_DOUBLE", 1, [&]() { return to_double(type_trail[0].ty); }),
+  make_tuple("TO_DOUBLE2", 2, [&]() { return to_double2(type_trail[0].ty, type_trail[1].ty); }),
+  make_tuple("TO_FLOAT2", 2, [&]() { return to_float2(PASS(type_trail[0]), PASS(type_trail[1])); }),
+  make_tuple("TO_FLOAT3", 3, [&]() { return to_float3(PASS(type_trail[0]), PASS(type_trail[1]), PASS(type_trail[2])); }),
+  make_tuple("TO_FLOAT4", 4, [&]() { return to_float4(PASS(type_trail[0]), PASS(type_trail[1]), PASS(type_trail[2]), PASS(type_trail[3])); }),
+  make_tuple("TO_FLOAT_DOUBLE", 2, [&]() { return to_float_double(type_trail[1].ty); }),
+  make_tuple("TO_REAL_FLOAT", 1, [&]() { return to_real_float(type_trail[0].ty); }),
+  make_tuple("TO_REAL2", 2, [&]() { return to_real2(PASS(type_trail[0]), PASS(type_trail[1])); }),
+  make_tuple("TO_COMPLEX", 1, [&]() { return to_complex(type_trail[0].ty); }),
+  make_tuple("BOOL2INT", 1, [&]() { return bool_to_int(type_trail[0].ty); }),
+  make_tuple("BOOL2INT2", 2, [&]() { return bool_to_int2(PASS(type_trail[0]), PASS(type_trail[1])); }),
+  make_tuple("BOOLBYTE", 1, [&]() { return bool_byte(type_trail[0].ty); }),
+  make_tuple("INTEGRAL2INT", 1, [&]() { return integrals_to_int(type_trail[0].ty); }),
+  make_tuple("TO_QINT", 1, [&]() { return toQIntType(type_trail[0].ty); }),
+  make_tuple("OPTIONAL_OR21", 2, [&]() { return optional_or_else(to_optional(type_trail[1].ty), type_trail[0].ty); }),
+  make_tuple("OPTIONAL_O21LONG", 2, [&]() { return optional_or_longelse(to_optional(type_trail[1].ty), type_trail[0].ty); }),
+  make_tuple("FIRST_OR_DEFAULT", 1, [&]() { return optional_or_default(type_trail[0].ty); }),
+  make_tuple("FIRST_OR_LONG", 1, [&]() { return optional_or_else(to_optional(type_trail[0].ty), kLong); }),
+};
+
+array<bool, is_type_fn.size()> is_type_flags{ true };
+unsigned num_samples = 0;
+
+void infer(ScalarType output) {
+  ++num_samples;
+
+  if (!all_type)
+    all_type = output;
+
+  auto num_args = type_trail.size();
+
+  for (unsigned i = 0; i < is_type_fn.size(); ++i) {
+    auto &f = is_type_flags[i];
+    if (!f)
+      continue;
+    f = num_args >= get<1>(is_type_fn[i]) && get<2>(is_type_fn[i])() == output;
+    if (print_all && !f) {
+      cout << "FAILED: " << get<0>(is_type_fn[i]);
+      if (num_args >= get<1>(is_type_fn[i]))
+        cout << " / EXPECTING: " << get<2>(is_type_fn[i])();
+      cout << '\n';
+    }
+  }
+}
+
 struct C {
   const char *name;
 
@@ -102,7 +160,10 @@ struct C {
       for (auto def : { kFloat, kDouble }) {
         at::set_default_dtype(scalarTypeToTypeMeta(def));
         auto output = typeMetaToScalarType(fn().dtype());
-        results.push_back({type_trail, def, output});
+
+        if (print_all)
+          print(def, output);
+        infer(output);
       }
 #if 0
     } catch (const c10::Error &) {
@@ -124,7 +185,7 @@ struct C {
         continue;
       for (bool zerodim : { false, true }) {
         type_trail.push_back({ty, zerodim});
-        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+        call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
           auto t = new_tensor(zerodim ? zero_sz : nonzero_sz, ty);
           return fn(t, args...);
         }});
@@ -134,14 +195,13 @@ struct C {
   }
 
   template <typename... Tail>
-  void call(function<Tensor(ScalarType&, Tail...)> fn) {
+  void call(function<Tensor(ScalarType, Tail...)> fn) {
     for (auto ty : types) {
       if (isQIntType(ty))
         continue;
       type_trail.push_back({ty, false});
-      call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-        auto ty_cpy = ty;
-        return fn(ty_cpy, args...);
+      call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+        return fn(ty, args...);
       }});
       type_trail.pop_back();
     }
@@ -150,17 +210,33 @@ struct C {
   template <typename T, typename... Tail>
   void call(function<Tensor(c10::optional<T>&, Tail...)> fn) {
     // call with a value
-    call(function<Tensor(T&, Tail&&...)>{
-      [=](T &val, Tail&&... args) -> Tensor {
+    call(function<Tensor(T&, Tail...)>{
+      [=](T &val, Tail... args) -> Tensor {
         c10::optional<T> opt(val);
         return fn(opt, args...);
       }});
 
     // and call without a value
     type_trail.push_back({ScalarType::Undefined, false});
-    call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
       c10::optional<T> opt;
       return fn(opt, forward<Tail>(args)...);
+    }});
+    type_trail.pop_back();
+  }
+
+  template <typename T, typename... Tail>
+  void call(function<Tensor(c10::optional<T>, Tail...)> fn) {
+    // call with a value
+    call(function<Tensor(T, Tail...)>{
+      [=](T val, Tail... args) -> Tensor {
+        return fn(val, args...);
+      }});
+
+    // and call without a value
+    type_trail.push_back({ScalarType::Undefined, false});
+    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+      return fn(c10::nullopt, forward<Tail>(args)...);
     }});
     type_trail.pop_back();
   }
@@ -176,7 +252,7 @@ struct C {
         if (isQIntType(ty2))
           continue;
         type_trail.push_back({ty2, false});
-        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+        call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
           Tensor ts[2] = { new_tensor({1}, ty1),
                            new_tensor({1}, ty2) };
           ArrayRef<Tensor> aref(ts);
@@ -199,7 +275,7 @@ struct C {
         if (isQIntType(ty2))
           continue;
         type_trail.push_back({ty2, false});
-        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+        call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
           List<c10::optional<Tensor>> list({ new_tensor({1}, ty1),
                                              new_tensor({1}, ty2) });
           return fn(list, args...);
@@ -213,29 +289,43 @@ struct C {
   template <typename... Tail>
   void call(function<Tensor(at::Scalar&, Tail...)> fn) {
     auto test = [&](ScalarType ty, initializer_list<at::Scalar> tries) {
-      type_trail.push_back({ty, false});
-      auto n = results.size();
+      type_trail.push_back({ty, false, true});
+      auto n = num_samples;
       for (auto v : tries) {
-        call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
+        call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
           return fn(const_cast<Scalar&>(v), args...);
         }});
-        if (results.size() > n)
+        if (num_samples > n)
           break;
       }
       type_trail.pop_back();
     };
 
     test(kBool, {false, true});
+    test(kShort, {0, 1});
     test(kLong, {0, 1});
+    test(kFloat, {0.0, 1.0});
     test(kDouble, {0.0, 1.0});
+    test(kComplexFloat, {c10::complex<float>(0.0), c10::complex<float>(1.0)});
     test(kComplexDouble, {c10::complex<double>(0.0),c10::complex<double>(1.0)});
   }
 
   template <typename... Tail>
-  void call(function<Tensor(IntArrayRef&, Tail...)> fn) {
-    call(function<Tensor(Tail&&...)>{[=](Tail&&... args) -> Tensor {
-      IntArrayRef s;
-      return fn(s, args...);
+  void call(function<Tensor(int64_t, Tail...)> fn) {
+    auto n = num_samples;
+    for (int64_t v : {0, 1}) {
+      call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+        return fn(v, args...);
+      }});
+      if (num_samples > n)
+        break;
+    }
+  }
+
+  template <typename... Tail>
+  void call(function<Tensor(IntArrayRef, Tail...)> fn) {
+    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+      return fn({}, args...);
     }});
   }
 
@@ -244,160 +334,30 @@ struct C {
     if (call_only && strcmp(name, call_only))
       return;
 
-    results.clear();
-    call(move(fn));
-
-    bool all_equal = true;
-    bool eq_promoted = true;
-    bool eq_promoted_const = true;
-    bool eq_promoted_buggy = true;
-    bool eq_first = true;
-    bool eq_second = true;
-    bool eq_third = true;
-    bool eq_fourth = true;
-    bool is_value = true;
-    bool is_to_float = true;
-    bool is_to_double = true;
-    bool is_to_double2 = true;
-    bool is_to_float2 = true;
-    bool is_to_float3 = true;
-    bool is_to_float4 = true;
-    bool is_to_fdouble = true;
-    bool is_to_real_float = true;
-    bool is_to_real2 = true;
-    bool is_to_complex = true;
-    bool is_bool2int = true;
-    bool is_bool2int2 = true;
-    bool is_boolbyte = true;
-    bool is_integral2int = true;
-    bool is_to_qint = true;
-    bool is_optional_or21 = true;
-    bool is_optional_or21long = true;
-    bool is_1_or_default = true;
-    bool is_1_or_long = true;
-
-    for (auto &result : results) {
-      auto &type_trail = result.inputs;
-      auto &type = result.output;
-      at::set_default_dtype(scalarTypeToTypeMeta(result.default_dtype));
-
-#define PASS(arg) \
-  arg.ty, [&]() { return arg.zerodim; }
-
-#define DEBUG(what)                 \
-  if (what != type) {               \
-    cout << "WRONG: ";              \
-    print(result);                  \
-    cout << " vs " << what << endl; \
-  }
-
-      all_equal        &= type == results[0].output;
-      eq_promoted      &= type == promoted_type_trail(type_trail);
-      eq_promoted_const&= type == promoted_type_trail_const(type_trail);
-      eq_promoted_buggy&= type == promoted_type_trail_buggy(type_trail);
-      eq_first         &= type == type_trail[0].ty;
-      eq_second        &= type_trail.size() >= 2 && type == type_trail[1].ty;
-      eq_third         &= type_trail.size() >= 3 && type == type_trail[2].ty;
-      eq_fourth        &= type_trail.size() >= 4 && type == type_trail[3].ty;
-      is_value         &= toValueType(type_trail[0].ty) == type;
-      is_to_float      &= to_float(type_trail[0].ty) == type;
-      is_to_double     &= to_double(type_trail[0].ty) == type;
-      is_to_double2    &= type_trail.size() >= 2 &&
-                          to_double2(type_trail[0].ty,
-                                     type_trail[1].ty) == type;
-      is_to_float2     &= type_trail.size() >= 2 &&
-                          to_float2(PASS(type_trail[0]),
-                                    PASS(type_trail[1])) == type;
-      is_to_float3     &= type_trail.size() >= 3 &&
-                          to_float3(PASS(type_trail[0]), PASS(type_trail[1]),
-                                    PASS(type_trail[2])) == type;
-      is_to_float4     &= type_trail.size() >= 4 &&
-                          to_float4(PASS(type_trail[0]),
-                                    PASS(type_trail[1]),
-                                    PASS(type_trail[2]),
-                                    PASS(type_trail[3])) == type;
-      is_to_fdouble    &= type_trail.size() >= 2 &&
-                          to_float_double(type_trail[1].ty) == type;
-      is_to_real_float &= to_real_float(type_trail[0].ty) == type;
-      is_to_real2      &= type_trail.size() >= 2 &&
-                          to_real2(PASS(type_trail[0]),
-                                   PASS(type_trail[1])) == type;
-      is_to_complex    &= to_complex(type_trail[0].ty) == type;
-      is_bool2int      &= bool_to_int(type_trail[0].ty) == type;
-      is_bool2int2     &= type_trail.size() >= 2 &&
-                          bool_to_int2(PASS(type_trail[0]),
-                                       PASS(type_trail[1])) == type;
-      is_boolbyte      &= bool_byte(type_trail[0].ty) == type;
-      is_integral2int  &= integrals_to_int(type_trail[0].ty) == type;
-      is_to_qint       &= toQIntType(type_trail[0].ty) == type;
-      is_optional_or21 &= type_trail.size() >= 2 &&
-                          optional_or_else(to_optional(type_trail[1].ty),
-                                           type_trail[0].ty) == type;
-      is_optional_or21long &= type_trail.size() >= 2 &&
-                             optional_or_longelse(to_optional(type_trail[1].ty),
-                                                  type_trail[0].ty) == type;
-      is_1_or_default  &= optional_or_default(type_trail[0].ty) == type;
-      is_1_or_long     &= optional_or_else(to_optional(type_trail[0].ty), kLong)
-                            == type;
+    for (auto &f : is_type_flags) {
+      f = true;
     }
+    all_type.reset();
+
+    call(move(fn));
 
     cout << name;
 
-    if (results.empty()) {
-      cout << ": NO_SAMPLES" << endl;
+    if (num_samples == 0) {
+      cout << ": NO_SAMPLES\n";
       return;
     }
-    if (all_equal) {
-      cout << ": ALL " << results[0].output << endl;
+    if (is_type_flags[0]) {
+      cout << ": ALL " << *all_type << '\n';
       return;
     }
-
-#define PRINT(var, msg)         \
-    if (var) {                  \
-      cout << ": " msg << endl; \
-      return;                   \
-    }
-
-    PRINT(eq_first, "EQ_FIRST")
-    PRINT(eq_second, "EQ_SECOND")
-    PRINT(eq_third, "EQ_THIRD")
-    PRINT(eq_fourth, "EQ_FOURTH")
-    PRINT(eq_promoted, "EQ_PROMOTED")
-    PRINT(eq_promoted_const, "EQ_PROMOTED_CONST")
-    PRINT(eq_promoted_buggy, "EQ_PROMOTED_BUGGY")
-    PRINT(is_value, "TO_VALUE_TYPE")
-    PRINT(is_to_float, "TO_FLOAT")
-    PRINT(is_to_double, "TO_DOUBLE")
-    PRINT(is_to_double2, "TO_DOUBLE2")
-    PRINT(is_to_float2, "TO_FLOAT2")
-    PRINT(is_to_float3, "TO_FLOAT3")
-    PRINT(is_to_float4, "TO_FLOAT4")
-    PRINT(is_to_fdouble, "TO_FLOAT_DOUBLE")
-    PRINT(is_to_real_float, "TO_REAL_FLOAT")
-    PRINT(is_to_real2, "TO_REAL2")
-    PRINT(is_to_complex, "TO_COMPLEX")
-    PRINT(is_bool2int, "BOOL2INT")
-    PRINT(is_bool2int2, "BOOL2INT2")
-    PRINT(is_boolbyte, "BOOLBYTE")
-    PRINT(is_integral2int, "INTEGRAL2INT")
-    PRINT(is_to_qint, "TO_QINT")
-    PRINT(is_optional_or21, "OPTIONAL_OR21")
-    PRINT(is_optional_or21long, "OPTIONAL_O21LONG")
-    PRINT(is_1_or_default, "FIRST_OR_DEFAULT")
-    PRINT(is_1_or_long, "FIRST_OR_LONG")
-
-    cout << ": NON_STANDARD:\n";
-
-    for (auto &result : results) {
-      print(result);
-
-      if (promoted_type_trail(result.inputs) != result.output) {
-        cout << " [non-standard promotion]\n";
-      } else {
-        cout << '\n';
+    for (unsigned i = 1; i < is_type_flags.size(); ++i) {
+      if (is_type_flags[i]) {
+        cout << ": " << get<0>(is_type_fn[i]) << '\n';
+        return;
       }
     }
-    cout << endl;
+    cout << ": NON_STANDARD\n";
   }
 
 };
@@ -405,13 +365,16 @@ struct C {
 }
 
 int main(int argc, char **argv) {
-  if (argc > 1) {
-    call_only = argv[1];
+  if (argc > 3) {
+    cerr << "Usage: " << argv[0] << " <fn name> <verbose>\n";
+    return -1;
   }
-  results.reserve(1024 * 1024);
+  if (argc >= 2)
+    call_only = argv[1];
+  if (argc == 3)
+    print_all = true;
 
 #include "call_pytorch_fns.h"
 
-  _Exit(0);
   return 0;
 }
