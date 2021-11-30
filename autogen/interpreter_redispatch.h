@@ -242,6 +242,7 @@ case H_INT_REPR:
 case H__SATURATE_WEIGHT_TO_FP16:
 case H_TRACE:
 case H_NONZERO:
+case H_ARGWHERE:
 case H_LGAMMA:
 case H_DIGAMMA:
 case H_ERFINV:
@@ -490,11 +491,10 @@ case H_UPSAMPLE_LINEAR1D_BACKWARD:
   break;
 
 case H_UPSAMPLE_BILINEAR2D_BACKWARD:
+case H__UPSAMPLE_BILINEAR2D_AA_BACKWARD:
 case H_UPSAMPLE_BICUBIC2D_BACKWARD:
-  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, bool, c10::optional<double>, c10::optional<double>) = at::redispatch::upsample_bilinear2d_backward;
-  if (op.id == H_UPSAMPLE_BICUBIC2D_BACKWARD) ptr = at::redispatch::upsample_bicubic2d_backward;
-  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state));
-  break;}
+  results[i] = redispatch_ptrs_12[op.id - H_UPSAMPLE_BILINEAR2D_BACKWARD](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state));
+  break;
 
 case H_UPSAMPLE_TRILINEAR3D_BACKWARD:
   results[i] = at::redispatch::upsample_trilinear3d_backward(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state), load<c10::optional<double>>()(op.args[6], load_state));
@@ -505,16 +505,25 @@ case H_NEW_EMPTY_STRIDED:
   break;
 
 case H_UPSAMPLE_NEAREST1D_BACKWARD:
-  results[i] = at::redispatch::upsample_nearest1d_backward(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT1D_BACKWARD:
+  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, c10::optional<double>) = at::redispatch::upsample_nearest1d_backward;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT1D_BACKWARD) ptr = at::redispatch::_upsample_nearest_exact1d_backward;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state));
+  break;}
 
 case H_UPSAMPLE_NEAREST2D_BACKWARD:
-  results[i] = at::redispatch::upsample_nearest2d_backward(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT2D_BACKWARD:
+  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, c10::optional<double>, c10::optional<double>) = at::redispatch::upsample_nearest2d_backward;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT2D_BACKWARD) ptr = at::redispatch::_upsample_nearest_exact2d_backward;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state));
+  break;}
 
 case H_UPSAMPLE_NEAREST3D_BACKWARD:
-  results[i] = at::redispatch::upsample_nearest3d_backward(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT3D_BACKWARD:
+  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, c10::optional<double>, c10::optional<double>, c10::optional<double>) = at::redispatch::upsample_nearest3d_backward;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT3D_BACKWARD) ptr = at::redispatch::_upsample_nearest_exact3d_backward;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state));
+  break;}
 
 case H_AS_STRIDED:
   results[i] = at::redispatch::as_strided(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<int64_t>>()(op.args[3], load_state));
@@ -549,7 +558,7 @@ case H_AMIN:
 case H_FROBENIUS_NORM_DIM:
 case H_NUCLEAR_NORM_DIM:
 case H_SPECIAL_LOGSUMEXP:
-  results[i] = redispatch_ptrs_12[op.id - H_AFFINE_GRID_GENERATOR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_13[op.id - H_AFFINE_GRID_GENERATOR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
   break;
 
 case H_STD_DIM:
@@ -563,7 +572,7 @@ case H_MEAN_DIM:
 case H_NANMEAN:
 case H_SUM_DIM_INTLIST:
 case H_NANSUM_DIM_INTLIST:
-  results[i] = redispatch_ptrs_13[op.id - H_MEAN_DIM](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<at::ScalarType>>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_14[op.id - H_MEAN_DIM](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<at::ScalarType>>()(op.args[3], load_state));
   break;
 
 case H_UPSAMPLE_LINEAR1D:
@@ -571,11 +580,10 @@ case H_UPSAMPLE_LINEAR1D:
   break;
 
 case H_UPSAMPLE_BILINEAR2D:
+case H__UPSAMPLE_BILINEAR2D_AA:
 case H_UPSAMPLE_BICUBIC2D:
-  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, bool, c10::optional<double>, c10::optional<double>) = at::redispatch::upsample_bilinear2d;
-  if (op.id == H_UPSAMPLE_BICUBIC2D) ptr = at::redispatch::upsample_bicubic2d;
-  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state));
-  break;}
+  results[i] = redispatch_ptrs_15[op.id - H_UPSAMPLE_BILINEAR2D](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state));
+  break;
 
 case H_UPSAMPLE_TRILINEAR3D:
   results[i] = at::redispatch::upsample_trilinear3d(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state));
@@ -588,7 +596,7 @@ case H__HISTOGRAMDD_FROM_BIN_CTS:
 case H_NEW_EMPTY:
 case H_NEW_ZEROS:
 case H_NEW_ONES:
-  results[i] = redispatch_ptrs_14[op.id - H_NEW_EMPTY](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<at::ScalarType>>()(op.args[2], load_state), load<c10::optional<at::Layout>>()(op.args[3], load_state), load<c10::optional<at::Device>>()(op.args[4], load_state), load<c10::optional<bool>>()(op.args[5], load_state));
+  results[i] = redispatch_ptrs_16[op.id - H_NEW_EMPTY](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<at::ScalarType>>()(op.args[2], load_state), load<c10::optional<at::Layout>>()(op.args[3], load_state), load<c10::optional<at::Device>>()(op.args[4], load_state), load<c10::optional<bool>>()(op.args[5], load_state));
   break;
 
 case H_LAYER_NORM:
@@ -596,16 +604,25 @@ case H_LAYER_NORM:
   break;
 
 case H_UPSAMPLE_NEAREST1D:
-  results[i] = at::redispatch::upsample_nearest1d(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT1D:
+  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, c10::optional<double>) = at::redispatch::upsample_nearest1d;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT1D) ptr = at::redispatch::_upsample_nearest_exact1d;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state));
+  break;}
 
 case H_UPSAMPLE_NEAREST2D:
-  results[i] = at::redispatch::upsample_nearest2d(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT2D:
+  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, c10::optional<double>, c10::optional<double>) = at::redispatch::upsample_nearest2d;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT2D) ptr = at::redispatch::_upsample_nearest_exact2d;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state));
+  break;}
 
 case H_UPSAMPLE_NEAREST3D:
-  results[i] = at::redispatch::upsample_nearest3d(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT3D:
+  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, c10::optional<double>, c10::optional<double>, c10::optional<double>) = at::redispatch::upsample_nearest3d;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT3D) ptr = at::redispatch::_upsample_nearest_exact3d;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state));
+  break;}
 
 case H_DIAG_BACKWARD:
   results[i] = at::redispatch::diag_backward(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state));
@@ -688,7 +705,7 @@ case H_SOFTSHRINK:
 case H_SPECIAL_XLOG1PY_OTHER_SCALAR:
 case H_SPECIAL_XLOGY_OTHER_SCALAR:
 case H_SPECIAL_ZETA_OTHER_SCALAR:
-  results[i] = redispatch_ptrs_15[op.id - H_COPYSIGN_SCALAR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_17[op.id - H_COPYSIGN_SCALAR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state));
   break;
 
 case H_LINALG_MATRIX_NORM:
@@ -704,7 +721,7 @@ case H_SUBTRACT_SCALAR:
 case H_RSUB_SCALAR:
 case H_HARDTANH:
 case H_SOFTPLUS:
-  results[i] = redispatch_ptrs_16[op.id - H__ADD_RELU_SCALAR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_18[op.id - H__ADD_RELU_SCALAR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state));
   break;
 
 case H_ELU:
@@ -724,11 +741,12 @@ case H_WHERE_SCALARSELF:
   break;
 
 case H_ISIN_TENSOR_SCALAR:
+  results[i] = at::redispatch::isin(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state));
+  break;
+
 case H_SEARCHSORTED_SCALAR:
-  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, const at::Scalar &, bool, bool) = at::redispatch::isin;
-  if (op.id == H_SEARCHSORTED_SCALAR) ptr = at::redispatch::searchsorted;
-  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state));
-  break;}
+  results[i] = at::redispatch::searchsorted(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<c10::string_view>>()(op.args[4], load_state), load<c10::optional<at::Tensor> &>()(op.args[5], load_state));
+  break;
 
 case H_LINALG_VECTOR_NORM:
   results[i] = at::redispatch::linalg_vector_norm(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<at::ScalarType>>()(op.args[4], load_state));
@@ -762,6 +780,10 @@ case H_VIEW_DTYPE:
   if (op.id == H_VIEW_DTYPE) ptr = at::redispatch::view;
   results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::ScalarType>()(op.args[1], load_state));
   break;}
+
+case H_QUANTIZE_PER_TENSOR_DYNAMIC:
+  results[i] = at::redispatch::quantize_per_tensor_dynamic(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::ScalarType>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
+  break;
 
 case H_TO_DTYPE:
   results[i] = at::redispatch::to(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::ScalarType>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<at::MemoryFormat>>()(op.args[4], load_state));
@@ -847,6 +869,7 @@ case H_TAKE:
 case H_MASKED_SELECT:
 case H_ORGQR:
 case H_ATAN2:
+case H_ARCTAN2:
 case H_FMOD_TENSOR:
 case H_HYPOT:
 case H_IGAMMA:
@@ -879,7 +902,7 @@ case H_INNER:
 case H_OUTER:
 case H_GER:
 case H_LINALG_SOLVE:
-  results[i] = redispatch_ptrs_17[op.id - H_ALIGN_AS](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_19[op.id - H_ALIGN_AS](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state));
   break;
 
 case H__SPARSE_SUM_BACKWARD:
@@ -890,7 +913,7 @@ case H_REFLECTION_PAD3D_BACKWARD:
 case H_REPLICATION_PAD1D_BACKWARD:
 case H_REPLICATION_PAD2D_BACKWARD:
 case H_REPLICATION_PAD3D_BACKWARD:
-  results[i] = redispatch_ptrs_18[op.id - H__SPARSE_SUM_BACKWARD](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_20[op.id - H__SPARSE_SUM_BACKWARD](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state));
   break;
 
 case H_TENSORDOT:
@@ -966,7 +989,7 @@ case H__CONV_DEPTHWISE2D:
 case H_CONV_DEPTHWISE3D:
 case H_SLOW_CONV_DILATED2D:
 case H_SLOW_CONV_DILATED3D:
-  results[i] = redispatch_ptrs_19[op.id - H__CONV_DEPTHWISE2D](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<at::Tensor> &>()(op.args[3], load_state), load<at::IntArrayRef>()(op.args[4], load_state), load<at::IntArrayRef>()(op.args[5], load_state), load<at::IntArrayRef>()(op.args[6], load_state));
+  results[i] = redispatch_ptrs_21[op.id - H__CONV_DEPTHWISE2D](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<at::Tensor> &>()(op.args[3], load_state), load<at::IntArrayRef>()(op.args[4], load_state), load<at::IntArrayRef>()(op.args[5], load_state), load<at::IntArrayRef>()(op.args[6], load_state));
   break;
 
 case H_SLOW_CONV_TRANSPOSE2D:
@@ -989,7 +1012,7 @@ case H_DIST:
 case H_LERP_SCALAR:
 case H_SOFTSHRINK_BACKWARD:
 case H__TEST_SERIALIZATION_SUBCMUL:
-  results[i] = redispatch_ptrs_20[op.id - H_ADD_TENSOR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_22[op.id - H_ADD_TENSOR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state));
   break;
 
 case H_HARDTANH_BACKWARD:
@@ -1025,7 +1048,7 @@ case H_LERP_TENSOR:
 case H_LOG_SIGMOID_BACKWARD:
 case H_ADAPTIVE_MAX_POOL2D_BACKWARD:
 case H_ADAPTIVE_MAX_POOL3D_BACKWARD:
-  results[i] = redispatch_ptrs_21[op.id - H_FBGEMM_LINEAR_FP16_WEIGHT_FP32_ACTIVATION](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_23[op.id - H_FBGEMM_LINEAR_FP16_WEIGHT_FP32_ACTIVATION](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
   break;
 
 case H__NNPACK_SPATIAL_CONVOLUTION_BACKWARD_INPUT:
@@ -1075,7 +1098,7 @@ case H_SSPADDMM:
 case H__SPARSE_ADDMM:
 case H_ADDMM:
 case H_ADDBMM:
-  results[i] = redispatch_ptrs_22[op.id - H_ADDMV](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Scalar &>()(op.args[3], load_state), load<at::Scalar &>()(op.args[4], load_state));
+  results[i] = redispatch_ptrs_24[op.id - H_ADDMV](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Scalar &>()(op.args[3], load_state), load<at::Scalar &>()(op.args[4], load_state));
   break;
 
 case H_RRELU_WITH_NOISE_BACKWARD:
@@ -1104,7 +1127,7 @@ case H__DET_LU_BASED_HELPER_BACKWARD_HELPER:
 case H_QUANTIZED_GRU_CELL:
 case H_QUANTIZED_RNN_RELU_CELL:
 case H_QUANTIZED_RNN_TANH_CELL:
-  results[i] = redispatch_ptrs_23[op.id - H_QUANTIZED_GRU_CELL](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state), load<at::Tensor &>()(op.args[6], load_state), load<at::Tensor &>()(op.args[7], load_state), load<at::Tensor &>()(op.args[8], load_state), load<at::Tensor &>()(op.args[9], load_state), load<at::Scalar &>()(op.args[10], load_state), load<at::Scalar &>()(op.args[11], load_state), load<at::Scalar &>()(op.args[12], load_state), load<at::Scalar &>()(op.args[13], load_state));
+  results[i] = redispatch_ptrs_25[op.id - H_QUANTIZED_GRU_CELL](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state), load<at::Tensor &>()(op.args[6], load_state), load<at::Tensor &>()(op.args[7], load_state), load<at::Tensor &>()(op.args[8], load_state), load<at::Tensor &>()(op.args[9], load_state), load<at::Scalar &>()(op.args[10], load_state), load<at::Scalar &>()(op.args[11], load_state), load<at::Scalar &>()(op.args[12], load_state), load<at::Scalar &>()(op.args[13], load_state));
   break;
 
 case H_FUSED_MOVING_AVG_OBS_FAKE_QUANT:
@@ -1133,7 +1156,7 @@ case H_BATCH_NORM_BACKWARD_ELEMT:
 case H_GRU_CELL:
 case H_RNN_TANH_CELL:
 case H_RNN_RELU_CELL:
-  results[i] = redispatch_ptrs_24[op.id - H_GRU_CELL](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state), load<c10::optional<at::Tensor> &>()(op.args[4], load_state), load<c10::optional<at::Tensor> &>()(op.args[5], load_state));
+  results[i] = redispatch_ptrs_26[op.id - H_GRU_CELL](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state), load<c10::optional<at::Tensor> &>()(op.args[4], load_state), load<c10::optional<at::Tensor> &>()(op.args[5], load_state));
   break;
 
 case H_CTC_LOSS_TENSOR:
@@ -1200,7 +1223,7 @@ case H__MAKE_PER_CHANNEL_QUANTIZED_TENSOR:
 case H_MSE_LOSS_BACKWARD:
 case H_L1_LOSS_BACKWARD:
 case H_SOFT_MARGIN_LOSS_BACKWARD:
-  results[i] = redispatch_ptrs_25[op.id - H_CONV_TBC](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_27[op.id - H_CONV_TBC](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state));
   break;
 
 case H_QUANTIZE_PER_CHANNEL:
@@ -1241,19 +1264,29 @@ case H__FAKE_QUANTIZE_LEARNABLE_PER_CHANNEL_AFFINE:
 case H__COPY_FROM:
 case H_CHOLESKY_SOLVE:
 case H__CHOLESKY_SOLVE_HELPER:
+case H__CONVERT_INDICES_FROM_CSR_TO_COO:
 case H_LINALG_PINV_RCOND_TENSOR:
 case H_LINALG_MATRIX_RANK_TOL_TENSOR:
-  results[i] = redispatch_ptrs_26[op.id - H__COPY_FROM](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_28[op.id - H__COPY_FROM](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
   break;
 
 case H_ISIN_TENSOR_TENSOR:
 case H_BUCKETIZE_TENSOR:
-case H_SEARCHSORTED_TENSOR:
-  results[i] = redispatch_ptrs_27[op.id - H_ISIN_TENSOR_TENSOR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state));
+  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, const at::Tensor &, bool, bool) = at::redispatch::isin;
+  if (op.id == H_BUCKETIZE_TENSOR) ptr = at::redispatch::bucketize;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state));
+  break;}
+
+case H_LINALG_SOLVE_TRIANGULAR:
+  results[i] = at::redispatch::linalg_solve_triangular(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<bool>()(op.args[4], load_state));
   break;
 
 case H_TO_OTHER:
   results[i] = at::redispatch::to(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<at::MemoryFormat>>()(op.args[4], load_state));
+  break;
+
+case H_SEARCHSORTED_TENSOR:
+  results[i] = at::redispatch::searchsorted(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<c10::string_view>>()(op.args[4], load_state), load<c10::optional<at::Tensor> &>()(op.args[5], load_state));
   break;
 
 case H_POISSON_NLL_LOSS:
@@ -1317,26 +1350,26 @@ case H_CONV2D:
 case H_CONV3D:
 case H_CUDNN_CONVOLUTION_RELU:
 case H_MKLDNN_CONVOLUTION:
-  results[i] = redispatch_ptrs_28[op.id - H_CONV1D](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<c10::optional<at::Tensor> &>()(op.args[2], load_state), load<at::IntArrayRef>()(op.args[3], load_state), load<at::IntArrayRef>()(op.args[4], load_state), load<at::IntArrayRef>()(op.args[5], load_state), load<int64_t>()(op.args[6], load_state));
+  results[i] = redispatch_ptrs_29[op.id - H_CONV1D](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<c10::optional<at::Tensor> &>()(op.args[2], load_state), load<at::IntArrayRef>()(op.args[3], load_state), load<at::IntArrayRef>()(op.args[4], load_state), load<at::IntArrayRef>()(op.args[5], load_state), load<int64_t>()(op.args[6], load_state));
   break;
 
 case H_CONV_TRANSPOSE1D:
 case H_CONV_TRANSPOSE2D_INPUT:
 case H_CONV_TRANSPOSE3D_INPUT:
-  results[i] = redispatch_ptrs_29[op.id - H_CONV_TRANSPOSE1D](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<c10::optional<at::Tensor> &>()(op.args[2], load_state), load<at::IntArrayRef>()(op.args[3], load_state), load<at::IntArrayRef>()(op.args[4], load_state), load<at::IntArrayRef>()(op.args[5], load_state), load<int64_t>()(op.args[6], load_state), load<at::IntArrayRef>()(op.args[7], load_state));
+  results[i] = redispatch_ptrs_30[op.id - H_CONV_TRANSPOSE1D](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<c10::optional<at::Tensor> &>()(op.args[2], load_state), load<at::IntArrayRef>()(op.args[3], load_state), load<at::IntArrayRef>()(op.args[4], load_state), load<at::IntArrayRef>()(op.args[5], load_state), load<int64_t>()(op.args[6], load_state), load<at::IntArrayRef>()(op.args[7], load_state));
   break;
 
 case H_CUDNN_CONVOLUTION_DEPRECATED:
 case H_MIOPEN_CONVOLUTION:
 case H_MIOPEN_DEPTHWISE_CONVOLUTION:
-  results[i] = redispatch_ptrs_30[op.id - H_CUDNN_CONVOLUTION_DEPRECATED](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<c10::optional<at::Tensor> &>()(op.args[2], load_state), load<at::IntArrayRef>()(op.args[3], load_state), load<at::IntArrayRef>()(op.args[4], load_state), load<at::IntArrayRef>()(op.args[5], load_state), load<int64_t>()(op.args[6], load_state), load<bool>()(op.args[7], load_state), load<bool>()(op.args[8], load_state));
+  results[i] = redispatch_ptrs_31[op.id - H_CUDNN_CONVOLUTION_DEPRECATED](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<c10::optional<at::Tensor> &>()(op.args[2], load_state), load<at::IntArrayRef>()(op.args[3], load_state), load<at::IntArrayRef>()(op.args[4], load_state), load<at::IntArrayRef>()(op.args[5], load_state), load<int64_t>()(op.args[6], load_state), load<bool>()(op.args[7], load_state), load<bool>()(op.args[8], load_state));
   break;
 
 case H__CONVOLUTION_MODE:
 case H_CONV1D_PADDING:
 case H_CONV2D_PADDING:
 case H_CONV3D_PADDING:
-  results[i] = redispatch_ptrs_31[op.id - H__CONVOLUTION_MODE](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<c10::optional<at::Tensor> &>()(op.args[2], load_state), load<at::IntArrayRef>()(op.args[3], load_state), load<c10::string_view>()(op.args[4], load_state), load<at::IntArrayRef>()(op.args[5], load_state), load<int64_t>()(op.args[6], load_state));
+  results[i] = redispatch_ptrs_32[op.id - H__CONVOLUTION_MODE](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<c10::optional<at::Tensor> &>()(op.args[2], load_state), load<at::IntArrayRef>()(op.args[3], load_state), load<c10::string_view>()(op.args[4], load_state), load<at::IntArrayRef>()(op.args[5], load_state), load<int64_t>()(op.args[6], load_state));
   break;
 
 case H_BINARY_CROSS_ENTROPY_WITH_LOGITS:
@@ -1350,7 +1383,7 @@ case H_BINARY_CROSS_ENTROPY:
 case H_NLL_LOSS_ND:
 case H_NLL_LOSS:
 case H_NLL_LOSS2D:
-  results[i] = redispatch_ptrs_32[op.id - H_NLL_LOSS_ND](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<c10::optional<at::Tensor> &>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state), load<int64_t>()(op.args[4], load_state));
+  results[i] = redispatch_ptrs_33[op.id - H_NLL_LOSS_ND](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<c10::optional<at::Tensor> &>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state), load<int64_t>()(op.args[4], load_state));
   break;
 
 case H_CROSS_ENTROPY_LOSS:
@@ -1394,8 +1427,11 @@ case H_REPEAT_INTERLEAVE_SELF_TENSOR:
   break;
 
 case H__MASKED_SCALE:
-  results[i] = at::redispatch::_masked_scale(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<double>()(op.args[2], load_state));
-  break;
+case H_NATIVE_DROPOUT_BACKWARD:
+  {at::Tensor(*ptr)(DispatchKeySet, const at::Tensor &, const at::Tensor &, double) = at::redispatch::_masked_scale;
+  if (op.id == H_NATIVE_DROPOUT_BACKWARD) ptr = at::redispatch::native_dropout_backward;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<double>()(op.args[2], load_state));
+  break;}
 
 case H__PDIST_BACKWARD:
   results[i] = at::redispatch::_pdist_backward(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<double>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
@@ -1420,6 +1456,7 @@ case H_HINGE_EMBEDDING_LOSS:
   break;
 
 case H__MAKE_DUAL:
+case H__NEW_ZEROS_WITH_SAME_FEATURE_META:
 case H_CUMULATIVE_TRAPEZOID_X:
 case H_TRAPEZOID_X:
 case H_TRAPZ_X:
@@ -1429,7 +1466,8 @@ case H_L1_LOSS:
 case H_MULTILABEL_MARGIN_LOSS:
 case H_SOFT_MARGIN_LOSS:
 case H_GLU_BACKWARD:
-  results[i] = redispatch_ptrs_33[op.id - H__MAKE_DUAL](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state));
+case H_LINALG_CROSS:
+  results[i] = redispatch_ptrs_34[op.id - H__MAKE_DUAL](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state));
   break;
 
 case H__LOG_SOFTMAX_BACKWARD_DATA:
@@ -1442,7 +1480,7 @@ case H__SOFTMAX_BACKWARD_DATA:
 case H_CUMPROD_BACKWARD:
 case H__SPARSE_SOFTMAX_BACKWARD_DATA:
 case H__SPARSE_LOG_SOFTMAX_BACKWARD_DATA:
-  results[i] = redispatch_ptrs_34[op.id - H_CUMPROD_BACKWARD](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_35[op.id - H_CUMPROD_BACKWARD](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
   break;
 
 case H_GATHER_BACKWARD:
@@ -1457,10 +1495,18 @@ case H_EMBEDDING:
   results[i] = at::redispatch::embedding(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<bool>()(op.args[4], load_state));
   break;
 
+case H_SLICE_SCATTER:
+  results[i] = at::redispatch::slice_scatter(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<c10::optional<int64_t>>()(op.args[3], load_state), load<c10::optional<int64_t>>()(op.args[4], load_state), load<int64_t>()(op.args[5], load_state));
+  break;
+
 case H_COSINE_SIMILARITY:
 case H_SMOOTH_L1_LOSS:
 case H_HUBER_LOSS:
-  results[i] = redispatch_ptrs_35[op.id - H_COSINE_SIMILARITY](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<double>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_36[op.id - H_COSINE_SIMILARITY](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<double>()(op.args[3], load_state));
+  break;
+
+case H_SELECT_SCATTER:
+  results[i] = at::redispatch::select_scatter(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state));
   break;
 
 case H_EMBEDDING_DENSE_BACKWARD:
@@ -1469,11 +1515,15 @@ case H_GRID_SAMPLER:
 case H_GRID_SAMPLER_2D:
 case H__GRID_SAMPLER_2D_CPU_FALLBACK:
 case H_GRID_SAMPLER_3D:
-  results[i] = redispatch_ptrs_36[op.id - H_EMBEDDING_DENSE_BACKWARD](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state), load<bool>()(op.args[4], load_state));
+  results[i] = redispatch_ptrs_37[op.id - H_EMBEDDING_DENSE_BACKWARD](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state), load<bool>()(op.args[4], load_state));
   break;
 
 case H_EMBEDDING_BACKWARD:
   results[i] = at::redispatch::embedding_backward(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state), load<bool>()(op.args[4], load_state), load<bool>()(op.args[5], load_state));
+  break;
+
+case H_DIAGONAL_SCATTER:
+  results[i] = at::redispatch::diagonal_scatter(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state), load<int64_t>()(op.args[4], load_state));
   break;
 
 case H__HISTOGRAMDD_FROM_BIN_TENSORS:
@@ -1495,7 +1545,15 @@ case H_NUCLEAR_NORM:
 case H_CHOLESKY:
 case H_CHOLESKY_INVERSE:
 case H_LINALG_CHOLESKY:
-  results[i] = redispatch_ptrs_37[op.id - H__CAST_BYTE](ks, load<at::Tensor &>()(op.args[0], load_state), load<bool>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_38[op.id - H__CAST_BYTE](ks, load<at::Tensor &>()(op.args[0], load_state), load<bool>()(op.args[1], load_state));
+  break;
+
+case H__AUTOCAST_TO_FULL_PRECISION:
+  results[i] = at::redispatch::_autocast_to_full_precision(ks, load<at::Tensor &>()(op.args[0], load_state), load<bool>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
+  break;
+
+case H__AUTOCAST_TO_REDUCED_PRECISION:
+  results[i] = at::redispatch::_autocast_to_reduced_precision(ks, load<at::Tensor &>()(op.args[0], load_state), load<bool>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<at::ScalarType>()(op.args[3], load_state), load<at::ScalarType>()(op.args[4], load_state));
   break;
 
 case H_INDEX_TENSOR:
@@ -1525,27 +1583,31 @@ case H_BERNOULLI:
 case H__STANDARD_GAMMA:
 case H__SAMPLE_DIRICHLET:
 case H_POISSON:
-  results[i] = redispatch_ptrs_38[op.id - H_BERNOULLI](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::Generator>>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_39[op.id - H_BERNOULLI](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::Generator>>()(op.args[1], load_state));
   break;
 
 case H_FFT_FFTSHIFT:
 case H_FFT_IFFTSHIFT:
 case H__TEST_OPTIONAL_INTLIST:
 case H__TEST_OPTIONAL_FILLED_INTLIST:
-  results[i] = redispatch_ptrs_39[op.id - H_FFT_FFTSHIFT](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_40[op.id - H_FFT_FFTSHIFT](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state));
   break;
 
 case H_UPSAMPLE_LINEAR1D_BACKWARD_VEC:
 case H_UPSAMPLE_BILINEAR2D_BACKWARD_VEC:
+case H__UPSAMPLE_BILINEAR2D_AA_BACKWARD_VEC:
 case H_UPSAMPLE_TRILINEAR3D_BACKWARD_VEC:
 case H_UPSAMPLE_BICUBIC2D_BACKWARD_VEC:
-  results[i] = redispatch_ptrs_40[op.id - H_UPSAMPLE_LINEAR1D_BACKWARD_VEC](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<at::ArrayRef<double>>>()(op.args[4], load_state));
+  results[i] = redispatch_ptrs_41[op.id - H_UPSAMPLE_LINEAR1D_BACKWARD_VEC](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<at::ArrayRef<double>>>()(op.args[4], load_state));
   break;
 
 case H_UPSAMPLE_NEAREST1D_BACKWARD_VEC:
+case H__UPSAMPLE_NEAREST_EXACT1D_BACKWARD_VEC:
 case H_UPSAMPLE_NEAREST2D_BACKWARD_VEC:
+case H__UPSAMPLE_NEAREST_EXACT2D_BACKWARD_VEC:
 case H_UPSAMPLE_NEAREST3D_BACKWARD_VEC:
-  results[i] = redispatch_ptrs_41[op.id - H_UPSAMPLE_NEAREST1D_BACKWARD_VEC](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<at::ArrayRef<double>>>()(op.args[3], load_state));
+case H__UPSAMPLE_NEAREST_EXACT3D_BACKWARD_VEC:
+  results[i] = redispatch_ptrs_42[op.id - H_UPSAMPLE_NEAREST1D_BACKWARD_VEC](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<at::ArrayRef<double>>>()(op.args[3], load_state));
   break;
 
 case H_FFT_FFT2:
@@ -1554,20 +1616,24 @@ case H_FFT_RFFT2:
 case H_FFT_IRFFT2:
 case H_FFT_HFFT2:
 case H_FFT_IHFFT2:
-  results[i] = redispatch_ptrs_42[op.id - H_FFT_FFT2](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_43[op.id - H_FFT_FFT2](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state));
   break;
 
 case H_UPSAMPLE_LINEAR1D_VEC:
 case H_UPSAMPLE_BILINEAR2D_VEC:
+case H__UPSAMPLE_BILINEAR2D_AA_VEC:
 case H_UPSAMPLE_TRILINEAR3D_VEC:
 case H_UPSAMPLE_BICUBIC2D_VEC:
-  results[i] = redispatch_ptrs_43[op.id - H_UPSAMPLE_LINEAR1D_VEC](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<at::ArrayRef<double>>>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_44[op.id - H_UPSAMPLE_LINEAR1D_VEC](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<at::ArrayRef<double>>>()(op.args[3], load_state));
   break;
 
 case H_UPSAMPLE_NEAREST1D_VEC:
+case H__UPSAMPLE_NEAREST_EXACT1D_VEC:
 case H_UPSAMPLE_NEAREST2D_VEC:
+case H__UPSAMPLE_NEAREST_EXACT2D_VEC:
 case H_UPSAMPLE_NEAREST3D_VEC:
-  results[i] = redispatch_ptrs_44[op.id - H_UPSAMPLE_NEAREST1D_VEC](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<c10::optional<at::ArrayRef<double>>>()(op.args[2], load_state));
+case H__UPSAMPLE_NEAREST_EXACT3D_VEC:
+  results[i] = redispatch_ptrs_45[op.id - H_UPSAMPLE_NEAREST1D_VEC](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<c10::optional<at::ArrayRef<double>>>()(op.args[2], load_state));
   break;
 
 case H_FFT_FFTN:
@@ -1576,7 +1642,7 @@ case H_FFT_RFFTN:
 case H_FFT_IRFFTN:
 case H_FFT_HFFTN:
 case H_FFT_IHFFTN:
-  results[i] = redispatch_ptrs_45[op.id - H_FFT_FFTN](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_46[op.id - H_FFT_FFTN](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state));
   break;
 
 case H_STD_CORRECTION:
@@ -1635,7 +1701,7 @@ case H_NANSUM:
 case H_PROD:
 case H_TO_DENSE:
 case H_TO_MKLDNN:
-  results[i] = redispatch_ptrs_46[op.id - H_MEAN](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::ScalarType>>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_47[op.id - H_MEAN](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::ScalarType>>()(op.args[1], load_state));
   break;
 
 case H_TO_DTYPE_LAYOUT:
@@ -1651,7 +1717,7 @@ case H_ONES_LIKE:
 case H_RAND_LIKE:
 case H_RANDN_LIKE:
 case H_ZEROS_LIKE:
-  results[i] = redispatch_ptrs_47[op.id - H_EMPTY_LIKE](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::ScalarType>>()(op.args[1], load_state), load<c10::optional<at::Layout>>()(op.args[2], load_state), load<c10::optional<at::Device>>()(op.args[3], load_state), load<c10::optional<bool>>()(op.args[4], load_state), load<c10::optional<at::MemoryFormat>>()(op.args[5], load_state));
+  results[i] = redispatch_ptrs_48[op.id - H_EMPTY_LIKE](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::ScalarType>>()(op.args[1], load_state), load<c10::optional<at::Layout>>()(op.args[2], load_state), load<c10::optional<at::Device>>()(op.args[3], load_state), load<c10::optional<bool>>()(op.args[4], load_state), load<c10::optional<at::MemoryFormat>>()(op.args[5], load_state));
   break;
 
 case H_CLAMP_TENSOR:
@@ -1715,7 +1781,7 @@ case H_REPEAT_INTERLEAVE_TENSOR:
 case H_ARGMAX:
 case H_ARGMIN:
 case H_VANDER:
-  results[i] = redispatch_ptrs_48[op.id - H_ARGMAX](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<int64_t>>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_49[op.id - H_ARGMAX](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<int64_t>>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
   break;
 
 case H_FFT_FFT:
@@ -1724,7 +1790,7 @@ case H_FFT_RFFT:
 case H_FFT_IRFFT:
 case H_FFT_HFFT:
 case H_FFT_IHFFT:
-  results[i] = redispatch_ptrs_49[op.id - H_FFT_FFT](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<int64_t>>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_50[op.id - H_FFT_FFT](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<int64_t>>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state));
   break;
 
 case H_LINALG_EIGVALSH:
@@ -1753,7 +1819,7 @@ case H__TEST_STRING_DEFAULT:
 case H_PDIST:
 case H__PDIST_FORWARD:
 case H_PINVERSE:
-  results[i] = redispatch_ptrs_50[op.id - H_PDIST](ks, load<at::Tensor &>()(op.args[0], load_state), load<double>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_51[op.id - H_PDIST](ks, load<at::Tensor &>()(op.args[0], load_state), load<double>()(op.args[1], load_state));
   break;
 
 case H_DROPOUT:
@@ -1763,7 +1829,7 @@ case H_FEATURE_ALPHA_DROPOUT:
 case H_MATRIX_RANK_TOL:
 case H_LINALG_PINV:
 case H_LINALG_MATRIX_RANK:
-  results[i] = redispatch_ptrs_51[op.id - H_DROPOUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<double>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_52[op.id - H_DROPOUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<double>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
   break;
 
 case H_BERNOULLI_P:
@@ -1823,7 +1889,7 @@ case H_GLU:
 case H_SPECIAL_MULTIGAMMALN:
 case H_LINALG_TENSORINV:
 case H_LINALG_MATRIX_POWER:
-  results[i] = redispatch_ptrs_52[op.id - H__FW_PRIMAL](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_53[op.id - H__FW_PRIMAL](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state));
   break;
 
 case H_ROT90:
@@ -1863,7 +1929,7 @@ case H_INDEX_FILL_INT_TENSOR:
 case H_SCATTER_SRC:
 case H_SCATTER_ADD:
 case H__GATHER_SPARSE_BACKWARD:
-  results[i] = redispatch_ptrs_53[op.id - H_INDEX_COPY](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_54[op.id - H_INDEX_COPY](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
   break;
 
 case H_INDEX_ADD_ALPHA:
@@ -1876,6 +1942,10 @@ case H_SCATTER_REDUCE:
 
 case H_GATHER:
   results[i] = at::redispatch::gather(ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<bool>()(op.args[3], load_state));
+  break;
+
+case H__SCATTER_REDUCE:
+  results[i] = at::redispatch::_scatter_reduce(ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<c10::string_view>()(op.args[3], load_state), load<c10::optional<int64_t>>()(op.args[4], load_state));
   break;
 
 case H_NARROW_TENSOR:
@@ -1891,7 +1961,7 @@ case H__SPARSE_LOG_SOFTMAX:
 case H_COMBINATIONS:
 case H_ARGSORT:
 case H__CONVERT_INDICES_FROM_COO_TO_CSR:
-  results[i] = redispatch_ptrs_54[op.id - H_ALL_DIM](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_55[op.id - H_ALL_DIM](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
   break;
 
 case H_MULTINOMIAL:
@@ -1910,7 +1980,7 @@ case H__SPARSE_SOFTMAX_INT:
 case H__SPARSE_LOG_SOFTMAX_INT:
 case H_SPECIAL_LOG_SOFTMAX:
 case H_SPECIAL_SOFTMAX:
-  results[i] = redispatch_ptrs_55[op.id - H_CUMPROD](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<c10::optional<at::ScalarType>>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_56[op.id - H_CUMPROD](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<c10::optional<at::ScalarType>>()(op.args[2], load_state));
   break;
 
 case H_RANDINT_LIKE:
@@ -1957,7 +2027,7 @@ case H_SWAPAXES:
 case H_SWAPDIMS:
 case H__ADD_BATCH_DIM:
 case H__TEST_AMBIGUOUS_DEFAULTS_A:
-  results[i] = redispatch_ptrs_56[op.id - H_FLATTEN_USING_INTS](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_57[op.id - H_FLATTEN_USING_INTS](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state));
   break;
 
 case H_FLATTEN_NAMED_OUT_DIM:
@@ -1978,7 +2048,7 @@ case H_NARROW_COPY:
 case H_NARROW:
 case H_UNFOLD:
 case H__REMOVE_BATCH_DIM:
-  results[i] = redispatch_ptrs_57[op.id - H_DIAG_EMBED](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_58[op.id - H_DIAG_EMBED](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state));
   break;
 
 case H_CUDNN_AFFINE_GRID_GENERATOR:
@@ -1998,7 +2068,7 @@ case H_CARTESIAN_PROD:
 case H_COLUMN_STACK:
 case H_LINALG_MULTI_DOT:
 case H_FLATTEN_DENSE_TENSORS:
-  results[i] = redispatch_ptrs_58[op.id - H_BLOCK_DIAG](ks, load<at::TensorList>()(op.args[0], load_state));
+  results[i] = redispatch_ptrs_59[op.id - H_BLOCK_DIAG](ks, load<at::TensorList>()(op.args[0], load_state));
   break;
 
 case H_CAT_NAMES:
@@ -2017,7 +2087,7 @@ case H_CONCAT:
 case H_STACK:
 case H__STACK:
 case H__CAT:
-  results[i] = redispatch_ptrs_59[op.id - H_CAT](ks, load<at::TensorList>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_60[op.id - H_CAT](ks, load<at::TensorList>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state));
   break;
 
 case H__CUDNN_RNN_FLATTEN_WEIGHT:
@@ -2064,7 +2134,7 @@ case H_BLACKMAN_WINDOW_PERIODIC:
 case H_HANN_WINDOW_PERIODIC:
 case H_HAMMING_WINDOW_PERIODIC:
 case H_KAISER_WINDOW_PERIODIC:
-  results[i] = redispatch_ptrs_60[op.id - H_BARTLETT_WINDOW_PERIODIC](ks, load<int64_t>()(op.args[0], load_state), load<bool>()(op.args[1], load_state), load<c10::optional<at::ScalarType>>()(op.args[2], load_state), load<c10::optional<at::Layout>>()(op.args[3], load_state), load<c10::optional<at::Device>>()(op.args[4], load_state), load<c10::optional<bool>>()(op.args[5], load_state));
+  results[i] = redispatch_ptrs_61[op.id - H_BARTLETT_WINDOW_PERIODIC](ks, load<int64_t>()(op.args[0], load_state), load<bool>()(op.args[1], load_state), load<c10::optional<at::ScalarType>>()(op.args[2], load_state), load<c10::optional<at::Layout>>()(op.args[3], load_state), load<c10::optional<at::Device>>()(op.args[4], load_state), load<c10::optional<bool>>()(op.args[5], load_state));
   break;
 
 case H_HAMMING_WINDOW_PERIODIC_ALPHA:
@@ -2089,7 +2159,7 @@ case H_HANN_WINDOW:
 case H_HAMMING_WINDOW:
 case H_KAISER_WINDOW:
 case H_RANDPERM:
-  results[i] = redispatch_ptrs_61[op.id - H_BARTLETT_WINDOW](ks, load<int64_t>()(op.args[0], load_state), load<c10::optional<at::ScalarType>>()(op.args[1], load_state), load<c10::optional<at::Layout>>()(op.args[2], load_state), load<c10::optional<at::Device>>()(op.args[3], load_state), load<c10::optional<bool>>()(op.args[4], load_state));
+  results[i] = redispatch_ptrs_62[op.id - H_BARTLETT_WINDOW](ks, load<int64_t>()(op.args[0], load_state), load<c10::optional<at::ScalarType>>()(op.args[1], load_state), load<c10::optional<at::Layout>>()(op.args[2], load_state), load<c10::optional<at::Device>>()(op.args[3], load_state), load<c10::optional<bool>>()(op.args[4], load_state));
   break;
 
 case H_FFT_FFTFREQ:
@@ -2133,7 +2203,7 @@ case H_ONES_OUT:
 case H_RAND_OUT:
 case H_RANDN_OUT:
 case H_ZEROS_OUT:
-  results[i] = redispatch_ptrs_62[op.id - H_ONES_OUT](ks, load<at::IntArrayRef>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_63[op.id - H_ONES_OUT](ks, load<at::IntArrayRef>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state));
   break;
 
 case H_RAND_GENERATOR_OUT:
@@ -2172,7 +2242,7 @@ case H_FLOAT_POWER_SCALAR_OUT:
 case H_SPECIAL_XLOG1PY_SELF_SCALAR_OUT:
 case H_SPECIAL_XLOGY_SELF_SCALAR_OUT:
 case H_SPECIAL_ZETA_SELF_SCALAR_OUT:
-  results[i] = redispatch_ptrs_63[op.id - H_XLOGY_OUTSCALAR_SELF](ks, load<at::Scalar &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_64[op.id - H_XLOGY_OUTSCALAR_SELF](ks, load<at::Scalar &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
   break;
 
 case H_ISIN_SCALAR_TENSOR_OUT:
@@ -2245,7 +2315,7 @@ case H_I0_:
 case H_SIGN_:
 case H_HARDSIGMOID_:
 case H_HARDSWISH_:
-  results[i] = redispatch_ptrs_64[op.id - H_ABS_](ks, load<at::Tensor &>()(op.args[0], load_state));
+  results[i] = redispatch_ptrs_65[op.id - H_ABS_](ks, load<at::Tensor &>()(op.args[0], load_state));
   break;
 
 case H_SQUEEZE__DIMNAME:
@@ -2351,27 +2421,35 @@ case H_UPSAMPLE_LINEAR1D_BACKWARD_GRAD_INPUT:
   break;
 
 case H_UPSAMPLE_BILINEAR2D_BACKWARD_GRAD_INPUT:
+case H__UPSAMPLE_BILINEAR2D_AA_BACKWARD_GRAD_INPUT:
 case H_UPSAMPLE_BICUBIC2D_BACKWARD_GRAD_INPUT:
-  {at::Tensor &(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, bool, c10::optional<double>, c10::optional<double>, at::Tensor &) = at::redispatch::upsample_bilinear2d_backward_outf;
-  if (op.id == H_UPSAMPLE_BICUBIC2D_BACKWARD_GRAD_INPUT) ptr = at::redispatch::upsample_bicubic2d_backward_outf;
-  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state), load<at::Tensor &>()(op.args[6], load_state));
-  break;}
+  results[i] = redispatch_ptrs_66[op.id - H_UPSAMPLE_BILINEAR2D_BACKWARD_GRAD_INPUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state), load<at::Tensor &>()(op.args[6], load_state));
+  break;
 
 case H_UPSAMPLE_TRILINEAR3D_BACKWARD_GRAD_INPUT:
   results[i] = at::redispatch::upsample_trilinear3d_backward_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state), load<c10::optional<double>>()(op.args[6], load_state), load<at::Tensor &>()(op.args[7], load_state));
   break;
 
 case H_UPSAMPLE_NEAREST1D_BACKWARD_GRAD_INPUT:
-  results[i] = at::redispatch::upsample_nearest1d_backward_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT1D_BACKWARD_GRAD_INPUT:
+  {at::Tensor &(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, c10::optional<double>, at::Tensor &) = at::redispatch::upsample_nearest1d_backward_outf;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT1D_BACKWARD_GRAD_INPUT) ptr = at::redispatch::_upsample_nearest_exact1d_backward_outf;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
+  break;}
 
 case H_UPSAMPLE_NEAREST2D_BACKWARD_GRAD_INPUT:
-  results[i] = at::redispatch::upsample_nearest2d_backward_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT2D_BACKWARD_GRAD_INPUT:
+  {at::Tensor &(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, c10::optional<double>, c10::optional<double>, at::Tensor &) = at::redispatch::upsample_nearest2d_backward_outf;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT2D_BACKWARD_GRAD_INPUT) ptr = at::redispatch::_upsample_nearest_exact2d_backward_outf;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state));
+  break;}
 
 case H_UPSAMPLE_NEAREST3D_BACKWARD_GRAD_INPUT:
-  results[i] = at::redispatch::upsample_nearest3d_backward_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state), load<at::Tensor &>()(op.args[6], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT3D_BACKWARD_GRAD_INPUT:
+  {at::Tensor &(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, at::IntArrayRef, c10::optional<double>, c10::optional<double>, c10::optional<double>, at::Tensor &) = at::redispatch::upsample_nearest3d_backward_outf;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT3D_BACKWARD_GRAD_INPUT) ptr = at::redispatch::_upsample_nearest_exact3d_backward_outf;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state), load<at::Tensor &>()(op.args[6], load_state));
+  break;}
 
 case H_AS_STRIDED_:
   results[i] = at::redispatch::as_strided_(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<int64_t>>()(op.args[3], load_state));
@@ -2385,7 +2463,7 @@ case H_REFLECTION_PAD3D_OUT:
 case H_REPLICATION_PAD1D_OUT:
 case H_REPLICATION_PAD2D_OUT:
 case H_REPLICATION_PAD3D_OUT:
-  results[i] = redispatch_ptrs_65[op.id - H_ADAPTIVE_AVG_POOL2D_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_67[op.id - H_ADAPTIVE_AVG_POOL2D_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
   break;
 
 case H_LOGSUMEXP_OUT:
@@ -2394,7 +2472,7 @@ case H_AMIN_OUT:
 case H_FROBENIUS_NORM_OUT:
 case H_NUCLEAR_NORM_DIM_OUT:
 case H_SPECIAL_LOGSUMEXP_OUT:
-  results[i] = redispatch_ptrs_66[op.id - H_LOGSUMEXP_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_68[op.id - H_LOGSUMEXP_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
   break;
 
 case H_STD_OUT:
@@ -2408,7 +2486,7 @@ case H_MEAN_OUT:
 case H_NANMEAN_OUT:
 case H_SUM_INTLIST_OUT:
 case H_NANSUM_INTLIST_OUT:
-  results[i] = redispatch_ptrs_67[op.id - H_MEAN_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<at::ScalarType>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
+  results[i] = redispatch_ptrs_69[op.id - H_MEAN_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<at::ScalarType>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
   break;
 
 case H_UPSAMPLE_LINEAR1D_OUT:
@@ -2416,11 +2494,10 @@ case H_UPSAMPLE_LINEAR1D_OUT:
   break;
 
 case H_UPSAMPLE_BILINEAR2D_OUT:
+case H__UPSAMPLE_BILINEAR2D_AA_OUT:
 case H_UPSAMPLE_BICUBIC2D_OUT:
-  {at::Tensor &(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, bool, c10::optional<double>, c10::optional<double>, at::Tensor &) = at::redispatch::upsample_bilinear2d_outf;
-  if (op.id == H_UPSAMPLE_BICUBIC2D_OUT) ptr = at::redispatch::upsample_bicubic2d_outf;
-  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state));
-  break;}
+  results[i] = redispatch_ptrs_70[op.id - H_UPSAMPLE_BILINEAR2D_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state));
+  break;
 
 case H_UPSAMPLE_TRILINEAR3D_OUT:
   results[i] = at::redispatch::upsample_trilinear3d_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<c10::optional<double>>()(op.args[5], load_state), load<at::Tensor &>()(op.args[6], load_state));
@@ -2431,16 +2508,25 @@ case H_RESIZE_:
   break;
 
 case H_UPSAMPLE_NEAREST1D_OUT:
-  results[i] = at::redispatch::upsample_nearest1d_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT1D_OUT:
+  {at::Tensor &(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, c10::optional<double>, at::Tensor &) = at::redispatch::upsample_nearest1d_outf;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT1D_OUT) ptr = at::redispatch::_upsample_nearest_exact1d_outf;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+  break;}
 
 case H_UPSAMPLE_NEAREST2D_OUT:
-  results[i] = at::redispatch::upsample_nearest2d_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT2D_OUT:
+  {at::Tensor &(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, c10::optional<double>, c10::optional<double>, at::Tensor &) = at::redispatch::upsample_nearest2d_outf;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT2D_OUT) ptr = at::redispatch::_upsample_nearest_exact2d_outf;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
+  break;}
 
 case H_UPSAMPLE_NEAREST3D_OUT:
-  results[i] = at::redispatch::upsample_nearest3d_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state));
-  break;
+case H__UPSAMPLE_NEAREST_EXACT3D_OUT:
+  {at::Tensor &(*ptr)(DispatchKeySet, const at::Tensor &, at::IntArrayRef, c10::optional<double>, c10::optional<double>, c10::optional<double>, at::Tensor &) = at::redispatch::upsample_nearest3d_outf;
+  if (op.id == H__UPSAMPLE_NEAREST_EXACT3D_OUT) ptr = at::redispatch::_upsample_nearest_exact3d_outf;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::IntArrayRef>()(op.args[1], load_state), load<c10::optional<double>>()(op.args[2], load_state), load<c10::optional<double>>()(op.args[3], load_state), load<c10::optional<double>>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state));
+  break;}
 
 case H__FFT_R2C_OUT:
 case H__FFT_C2C_OUT:
@@ -2498,7 +2584,7 @@ case H_REMAINDER__SCALAR:
 case H_POW__SCALAR:
 case H_FLOAT_POWER__SCALAR:
 case H_LEAKY_RELU_:
-  results[i] = redispatch_ptrs_68[op.id - H_COPYSIGN__SCALAR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_71[op.id - H_COPYSIGN__SCALAR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state));
   break;
 
 case H_LINALG_MATRIX_NORM_OUT:
@@ -2511,7 +2597,7 @@ case H_THRESHOLD_:
 case H_SUB__SCALAR:
 case H_SUBTRACT__SCALAR:
 case H_HARDTANH_:
-  results[i] = redispatch_ptrs_69[op.id - H__ADD_RELU__SCALAR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_72[op.id - H__ADD_RELU__SCALAR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state));
   break;
 
 case H_ELU_:
@@ -2529,7 +2615,7 @@ case H_ELU_BACKWARD_GRAD_INPUT:
 case H_THRESHOLD_OUT:
 case H_HARDTANH_OUT:
 case H_SOFTPLUS_OUT:
-  results[i] = redispatch_ptrs_70[op.id - H_THRESHOLD_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_73[op.id - H_THRESHOLD_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
   break;
 
 case H_RRELU_:
@@ -2566,7 +2652,7 @@ case H_SOFTSHRINK_OUT:
 case H_SPECIAL_XLOG1PY_OTHER_SCALAR_OUT:
 case H_SPECIAL_XLOGY_OTHER_SCALAR_OUT:
 case H_SPECIAL_ZETA_OTHER_SCALAR_OUT:
-  results[i] = redispatch_ptrs_71[op.id - H_COPYSIGN_SCALAR_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_74[op.id - H_COPYSIGN_SCALAR_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Scalar &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
   break;
 
 case H_FILL_DIAGONAL_:
@@ -2645,6 +2731,7 @@ case H_GREATER__TENSOR:
 case H_LT__TENSOR:
 case H_LESS__TENSOR:
 case H_ATAN2_:
+case H_ARCTAN2_:
 case H_FMOD__TENSOR:
 case H_HYPOT_:
 case H_IGAMMA_:
@@ -2653,7 +2740,7 @@ case H_NEXTAFTER_:
 case H_REMAINDER__TENSOR:
 case H_POW__TENSOR:
 case H_FLOAT_POWER__TENSOR:
-  results[i] = redispatch_ptrs_72[op.id - H_COPYSIGN__TENSOR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_75[op.id - H_COPYSIGN__TENSOR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state));
   break;
 
 case H_ABS_OUT:
@@ -2749,7 +2836,7 @@ case H_LINALG_DET_OUT:
 case H_LINALG_EIGVALS_OUT:
 case H_LINALG_INV_OUT:
 case H_LINALG_SVDVALS_OUT:
-  results[i] = redispatch_ptrs_73[op.id - H_ABS_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_76[op.id - H_ABS_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state));
   break;
 
 case H_RESIZE_AS_SPARSE_:
@@ -2792,7 +2879,7 @@ case H_REFLECTION_PAD3D_BACKWARD_GRAD_INPUT:
 case H_REPLICATION_PAD1D_BACKWARD_GRAD_INPUT:
 case H_REPLICATION_PAD2D_BACKWARD_GRAD_INPUT:
 case H_REPLICATION_PAD3D_BACKWARD_GRAD_INPUT:
-  results[i] = redispatch_ptrs_74[op.id - H_MAX_UNPOOL2D_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_77[op.id - H_MAX_UNPOOL2D_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
   break;
 
 case H_SLOW_CONV_TRANSPOSE2D_OUT:
@@ -2819,7 +2906,7 @@ case H_SUB__TENSOR:
 case H_SUBTRACT__TENSOR:
 case H_MASKED_FILL__SCALAR:
 case H_LERP__SCALAR:
-  results[i] = redispatch_ptrs_75[op.id - H_ADD__TENSOR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_78[op.id - H_ADD__TENSOR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state));
   break;
 
 case H_HARDTANH_BACKWARD_GRAD_INPUT:
@@ -2850,7 +2937,7 @@ case H_SUB_OUT:
 case H_SUBTRACT_OUT:
 case H_LERP_SCALAR_OUT:
 case H_SOFTSHRINK_BACKWARD_GRAD_INPUT:
-  results[i] = redispatch_ptrs_76[op.id - H_ADD_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_79[op.id - H_ADD_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Scalar &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
   break;
 
 case H_LEAKY_RELU_BACKWARD_GRAD_INPUT:
@@ -2864,7 +2951,7 @@ case H__LINALG_INV_OUT_HELPER_:
 case H_MASKED_FILL__TENSOR:
 case H_MASKED_SCATTER_:
 case H_LERP__TENSOR:
-  results[i] = redispatch_ptrs_77[op.id - H_MASKED_FILL__TENSOR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_80[op.id - H_MASKED_FILL__TENSOR](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
   break;
 
 case H_COPYSIGN_OUT:
@@ -2919,6 +3006,7 @@ case H_TAKE_OUT:
 case H_MASKED_SELECT_OUT:
 case H_ORGQR_OUT:
 case H_ATAN2_OUT:
+case H_ARCTAN2_OUT:
 case H_FMOD_TENSOR_OUT:
 case H_HYPOT_OUT:
 case H_IGAMMA_OUT:
@@ -2948,7 +3036,7 @@ case H_INNER_OUT:
 case H_OUTER_OUT:
 case H_GER_OUT:
 case H_LINALG_SOLVE_OUT:
-  results[i] = redispatch_ptrs_78[op.id - H_COPYSIGN_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_81[op.id - H_COPYSIGN_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
   break;
 
 case H_MAX_UNPOOL3D_BACKWARD_GRAD_INPUT:
@@ -2971,7 +3059,7 @@ case H_ADDR_:
 case H_BADDBMM_:
 case H_ADDMM_:
 case H_ADDBMM_:
-  results[i] = redispatch_ptrs_79[op.id - H_ADDMV_](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Scalar &>()(op.args[3], load_state), load<at::Scalar &>()(op.args[4], load_state));
+  results[i] = redispatch_ptrs_82[op.id - H_ADDMV_](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Scalar &>()(op.args[3], load_state), load<at::Scalar &>()(op.args[4], load_state));
   break;
 
 case H_ADDMV_OUT:
@@ -2980,7 +3068,7 @@ case H_BADDBMM_OUT:
 case H_SSPADDMM_OUT:
 case H_ADDMM_OUT:
 case H_ADDBMM_OUT:
-  results[i] = redispatch_ptrs_80[op.id - H_ADDMV_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Scalar &>()(op.args[3], load_state), load<at::Scalar &>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state));
+  results[i] = redispatch_ptrs_83[op.id - H_ADDMV_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Scalar &>()(op.args[3], load_state), load<at::Scalar &>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state));
   break;
 
 case H_MULTI_MARGIN_LOSS_BACKWARD_GRAD_INPUT:
@@ -2999,7 +3087,7 @@ case H_LERP_TENSOR_OUT:
 case H_LOG_SIGMOID_BACKWARD_GRAD_INPUT:
 case H_ADAPTIVE_MAX_POOL2D_BACKWARD_GRAD_INPUT:
 case H_ADAPTIVE_MAX_POOL3D_BACKWARD_GRAD_INPUT:
-  results[i] = redispatch_ptrs_81[op.id - H_LU_SOLVE_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_84[op.id - H_LU_SOLVE_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
   break;
 
 case H_PUT_:
@@ -3028,7 +3116,7 @@ case H__AMP_UPDATE_SCALE_:
 case H_MSE_LOSS_BACKWARD_GRAD_INPUT:
 case H_L1_LOSS_BACKWARD_GRAD_INPUT:
 case H_SOFT_MARGIN_LOSS_BACKWARD_GRAD_INPUT:
-  results[i] = redispatch_ptrs_82[op.id - H_MSE_LOSS_BACKWARD_GRAD_INPUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
+  results[i] = redispatch_ptrs_85[op.id - H_MSE_LOSS_BACKWARD_GRAD_INPUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
   break;
 
 case H_MULTILABEL_MARGIN_LOSS_BACKWARD_GRAD_INPUT:
@@ -3050,15 +3138,25 @@ case H_COPY_SPARSE_TO_SPARSE_:
   break;}
 
 case H_CHOLESKY_SOLVE_OUT:
+case H__CONVERT_INDICES_FROM_CSR_TO_COO_OUT:
 case H_LINALG_PINV_OUT_RCOND_TENSOR:
 case H_LINALG_MATRIX_RANK_OUT_TOL_TENSOR:
-  results[i] = redispatch_ptrs_83[op.id - H_CHOLESKY_SOLVE_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_86[op.id - H_CHOLESKY_SOLVE_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
   break;
 
 case H_ISIN_TENSOR_TENSOR_OUT:
 case H_BUCKETIZE_TENSOR_OUT:
+  {at::Tensor &(*ptr)(DispatchKeySet, const at::Tensor &, const at::Tensor &, bool, bool, at::Tensor &) = at::redispatch::isin_outf;
+  if (op.id == H_BUCKETIZE_TENSOR_OUT) ptr = at::redispatch::bucketize_outf;
+  results[i] = ptr(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
+  break;}
+
+case H_LINALG_SOLVE_TRIANGULAR_OUT:
+  results[i] = at::redispatch::linalg_solve_triangular_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<bool>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state));
+  break;
+
 case H_SEARCHSORTED_TENSOR_OUT:
-  results[i] = redispatch_ptrs_84[op.id - H_ISIN_TENSOR_TENSOR_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
+  results[i] = at::redispatch::searchsorted_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<c10::optional<c10::string_view>>()(op.args[4], load_state), load<c10::optional<at::Tensor> &>()(op.args[5], load_state), load<at::Tensor &>()(op.args[6], load_state));
   break;
 
 case H_BERNOULLI__TENSOR:
@@ -3151,7 +3249,8 @@ case H_L1_LOSS_OUT:
 case H_MULTILABEL_MARGIN_LOSS_OUT:
 case H_SOFT_MARGIN_LOSS_OUT:
 case H_GLU_BACKWARD_GRAD_INPUT:
-  results[i] = redispatch_ptrs_85[op.id - H_MSE_LOSS_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+case H_LINALG_CROSS_OUT:
+  results[i] = redispatch_ptrs_87[op.id - H_MSE_LOSS_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
   break;
 
 case H_SMOOTH_L1_LOSS_OUT:
@@ -3172,7 +3271,7 @@ case H_NUCLEAR_NORM_OUT:
 case H_CHOLESKY_OUT:
 case H_CHOLESKY_INVERSE_OUT:
 case H_LINALG_CHOLESKY_OUT:
-  results[i] = redispatch_ptrs_86[op.id - H_NUCLEAR_NORM_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<bool>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_88[op.id - H_NUCLEAR_NORM_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<bool>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
   break;
 
 case H_INDEX_PUT_:
@@ -3199,7 +3298,7 @@ case H_FFT_FFT2_OUT:
 case H_FFT_IFFT2_OUT:
 case H_FFT_RFFT2_OUT:
 case H_FFT_IRFFT2_OUT:
-  results[i] = redispatch_ptrs_87[op.id - H_FFT_FFT2_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
+  results[i] = redispatch_ptrs_89[op.id - H_FFT_FFT2_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<at::IntArrayRef>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
   break;
 
 case H_FFT_HFFT2_OUT:
@@ -3213,7 +3312,7 @@ case H_FFT_FFTN_OUT:
 case H_FFT_IFFTN_OUT:
 case H_FFT_RFFTN_OUT:
 case H_FFT_IRFFTN_OUT:
-  results[i] = redispatch_ptrs_88[op.id - H_FFT_FFTN_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
+  results[i] = redispatch_ptrs_90[op.id - H_FFT_FFTN_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[1], load_state), load<c10::optional<at::IntArrayRef>>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
   break;
 
 case H_FFT_HFFTN_OUT:
@@ -3332,7 +3431,7 @@ case H_FFT_RFFT_OUT:
 case H_FFT_IRFFT_OUT:
 case H_FFT_HFFT_OUT:
 case H_FFT_IHFFT_OUT:
-  results[i] = redispatch_ptrs_89[op.id - H_FFT_FFT_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<int64_t>>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
+  results[i] = redispatch_ptrs_91[op.id - H_FFT_FFT_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<c10::optional<int64_t>>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state), load<c10::optional<c10::string_view>>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
   break;
 
 case H_LINALG_MATRIX_NORM_STR_ORD_OUT:
@@ -3354,7 +3453,7 @@ case H_DROPOUT_:
 case H_FEATURE_DROPOUT_:
 case H_ALPHA_DROPOUT_:
 case H_FEATURE_ALPHA_DROPOUT_:
-  results[i] = redispatch_ptrs_90[op.id - H_DROPOUT_](ks, load<at::Tensor &>()(op.args[0], load_state), load<double>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_92[op.id - H_DROPOUT_](ks, load<at::Tensor &>()(op.args[0], load_state), load<double>()(op.args[1], load_state), load<bool>()(op.args[2], load_state));
   break;
 
 case H_LINALG_PINV_OUT:
@@ -3367,7 +3466,7 @@ case H_LINALG_MATRIX_RANK_OUT:
 case H_BERNOULLI__FLOAT:
 case H_EXPONENTIAL_:
 case H_GEOMETRIC_:
-  results[i] = redispatch_ptrs_91[op.id - H_BERNOULLI__FLOAT](ks, load<at::Tensor &>()(op.args[0], load_state), load<double>()(op.args[1], load_state), load<c10::optional<at::Generator>>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_93[op.id - H_BERNOULLI__FLOAT](ks, load<at::Tensor &>()(op.args[0], load_state), load<double>()(op.args[1], load_state), load<c10::optional<at::Generator>>()(op.args[2], load_state));
   break;
 
 case H_NORMAL_TENSOR_FLOAT_OUT:
@@ -3392,7 +3491,7 @@ case H_UNIFORM_:
 case H_CAUCHY_:
 case H_LOG_NORMAL_:
 case H_NORMAL_:
-  results[i] = redispatch_ptrs_92[op.id - H_UNIFORM_](ks, load<at::Tensor &>()(op.args[0], load_state), load<double>()(op.args[1], load_state), load<double>()(op.args[2], load_state), load<c10::optional<at::Generator>>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_94[op.id - H_UNIFORM_](ks, load<at::Tensor &>()(op.args[0], load_state), load<double>()(op.args[1], load_state), load<double>()(op.args[2], load_state), load<c10::optional<at::Generator>>()(op.args[3], load_state));
   break;
 
 case H__SOBOL_ENGINE_INITIALIZE_STATE_:
@@ -3402,7 +3501,7 @@ case H_UNSQUEEZE_:
 case H_TRIL_:
 case H_TRIU_:
 case H_POLYGAMMA_:
-  results[i] = redispatch_ptrs_93[op.id - H__SOBOL_ENGINE_INITIALIZE_STATE_](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_95[op.id - H__SOBOL_ENGINE_INITIALIZE_STATE_](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state));
   break;
 
 case H_HISTC_OUT:
@@ -3420,7 +3519,7 @@ case H_GLU_OUT:
 case H_SPECIAL_MULTIGAMMALN_OUT:
 case H_LINALG_TENSORINV_OUT:
 case H_LINALG_MATRIX_POWER_OUT:
-  results[i] = redispatch_ptrs_94[op.id - H__LOGCUMSUMEXP_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_96[op.id - H__LOGCUMSUMEXP_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
   break;
 
 case H_INDEX_FILL__INT_SCALAR:
@@ -3448,7 +3547,7 @@ case H_INDEX_FILL__INT_TENSOR:
 case H_SCATTER__SRC:
 case H_SCATTER_ADD_:
 case H__INDEX_COPY_:
-  results[i] = redispatch_ptrs_95[op.id - H_INDEX_COPY_](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_97[op.id - H_INDEX_COPY_](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
   break;
 
 case H_INDEX_SELECT_OUT:
@@ -3478,6 +3577,10 @@ case H_GATHER_OUT:
   results[i] = at::redispatch::gather_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<bool>()(op.args[3], load_state), load<at::Tensor &>()(op.args[4], load_state));
   break;
 
+case H__SCATTER_REDUCE_OUT:
+  results[i] = at::redispatch::_scatter_reduce_outf(ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<c10::string_view>()(op.args[3], load_state), load<c10::optional<int64_t>>()(op.args[4], load_state), load<at::Tensor &>()(op.args[5], load_state));
+  break;
+
 case H__SOBOL_ENGINE_FF_:
   results[i] = at::redispatch::_sobol_engine_ff_(ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state), load<int64_t>()(op.args[3], load_state), load<int64_t>()(op.args[4], load_state));
   break;
@@ -3487,7 +3590,7 @@ case H_ANY_OUT:
 case H__LOG_SOFTMAX_OUT:
 case H__SOFTMAX_OUT:
 case H__CONVERT_INDICES_FROM_COO_TO_CSR_OUT:
-  results[i] = redispatch_ptrs_96[op.id - H_ALL_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
+  results[i] = redispatch_ptrs_98[op.id - H_ALL_OUT](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<bool>()(op.args[2], load_state), load<at::Tensor &>()(op.args[3], load_state));
   break;
 
 case H_MULTINOMIAL_OUT:
@@ -3524,7 +3627,7 @@ case H_TRANSPOSE_:
 case H__MKLDNN_TRANSPOSE_:
 case H_SWAPAXES_:
 case H_SWAPDIMS_:
-  results[i] = redispatch_ptrs_97[op.id - H_TRANSPOSE_](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_99[op.id - H_TRANSPOSE_](ks, load<at::Tensor &>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<int64_t>()(op.args[2], load_state));
   break;
 
 case H_DIFF_OUT:
@@ -3549,7 +3652,7 @@ case H_VSTACK_OUT:
 case H_DSTACK_OUT:
 case H_COLUMN_STACK_OUT:
 case H_LINALG_MULTI_DOT_OUT:
-  results[i] = redispatch_ptrs_98[op.id - H_CHAIN_MATMUL_OUT](ks, load<at::TensorList>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state));
+  results[i] = redispatch_ptrs_100[op.id - H_CHAIN_MATMUL_OUT](ks, load<at::TensorList>()(op.args[0], load_state), load<at::Tensor &>()(op.args[1], load_state));
   break;
 
 case H_CAT_OUT:
@@ -3557,7 +3660,7 @@ case H_CONCAT_OUT:
 case H_STACK_OUT:
 case H__STACK_OUT:
 case H__CAT_OUT:
-  results[i] = redispatch_ptrs_99[op.id - H_CAT_OUT](ks, load<at::TensorList>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
+  results[i] = redispatch_ptrs_101[op.id - H_CAT_OUT](ks, load<at::TensorList>()(op.args[0], load_state), load<int64_t>()(op.args[1], load_state), load<at::Tensor &>()(op.args[2], load_state));
   break;
 
 case H_NORMAL_FLOAT_TENSOR_OUT:

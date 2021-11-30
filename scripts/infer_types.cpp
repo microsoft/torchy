@@ -4,6 +4,7 @@
 #include <ATen/core/List.h>
 #include <ATen/NativeFunctions.h>
 #include <ATen/RedispatchFunctions.h>
+#include <c10/util/Logging.h>
 #include <array>
 #include <cassert>
 #include <cstring>
@@ -52,7 +53,8 @@ void print(ScalarType default_dtype, ScalarType output) {
   cout << ", default=" << default_dtype << " -> " << output << endl;
 }
 
-#define ARG(n) args[n].ty, args[n].is_scalar, [&]() { return args[n].zerodim; }
+#define ARG(n) args[n].ty, args[n].is_scalar,\
+  function<bool()>([&]() { return args[n].zerodim; })
 
 #define callVA(f, max_elems) \
   switch (min(args.size(), max_elems)) { \
@@ -92,10 +94,11 @@ ScalarType optional_or_default(ScalarType ty) {
 }
 
 #define PASS(arg) arg.ty, [&]() { return arg.zerodim; }
+#define PASSF(arg) arg.ty, arg.is_scalar, [&]() { return arg.zerodim; }
 
 optional<ScalarType> all_type;
 
-array<tuple<const char*, unsigned, function<ScalarType()>>, 29> is_type_fn = {
+array<tuple<const char*, unsigned, function<ScalarType()>>, 30> is_type_fn = {
   make_tuple("ALL", 1, [&]() { return *all_type; }),
   make_tuple("EQ_FIRST", 1, [&]() { return type_trail[0].ty; }),
   make_tuple("EQ_SECOND", 2, [&]() { return type_trail[1].ty; }),
@@ -107,24 +110,25 @@ array<tuple<const char*, unsigned, function<ScalarType()>>, 29> is_type_fn = {
   make_tuple("EQ_PROMOTED_BUGGY2", 2, [&]() { return promoted_type_trail_buggy(type_trail, 2); }),
   make_tuple("TO_VALUE_TYPE", 1, [&]() { return toValueType(type_trail[0].ty); }),
   make_tuple("TO_FLOAT", 1, [&]() { return to_float(type_trail[0].ty); }),
-  make_tuple("TO_DOUBLE", 1, [&]() { return to_double(type_trail[0].ty); }),
-  make_tuple("TO_DOUBLE2", 2, [&]() { return to_double2(type_trail[0].ty, type_trail[1].ty); }),
-  make_tuple("TO_FLOAT2", 2, [&]() { return to_float2(PASS(type_trail[0]), PASS(type_trail[1])); }),
+  make_tuple("TO_FLOAT2", 2, [&]() { return to_float2(PASSF(type_trail[0]), PASSF(type_trail[1])); }),
   make_tuple("TO_FLOAT3", 3, [&]() { return to_float3(PASS(type_trail[0]), PASS(type_trail[1]), PASS(type_trail[2])); }),
   make_tuple("TO_FLOAT4", 4, [&]() { return to_float4(PASS(type_trail[0]), PASS(type_trail[1]), PASS(type_trail[2]), PASS(type_trail[3])); }),
+  make_tuple("TO_DOUBLE2", 2, [&]() { return to_double2(type_trail[0].ty, type_trail[1].ty); }),
   make_tuple("TO_FLOAT_DOUBLE", 2, [&]() { return to_float_double(type_trail[1].ty); }),
   make_tuple("TO_REAL_FLOAT", 1, [&]() { return to_real_float(type_trail[0].ty); }),
   make_tuple("TO_REAL2", 2, [&]() { return to_real2(PASS(type_trail[0]), PASS(type_trail[1])); }),
   make_tuple("TO_COMPLEX", 1, [&]() { return to_complex(type_trail[0].ty); }),
   make_tuple("BOOL2INT", 1, [&]() { return bool_to_int(type_trail[0].ty); }),
-  make_tuple("BOOL2INT2", 2, [&]() { return bool_to_int2(PASS(type_trail[0]), PASS(type_trail[1])); }),
   make_tuple("BOOLBYTE", 1, [&]() { return bool_byte(type_trail[0].ty); }),
   make_tuple("INTEGRAL2INT", 1, [&]() { return integrals_to_int(type_trail[0].ty); }),
   make_tuple("TO_QINT", 1, [&]() { return toQIntType(type_trail[0].ty); }),
   make_tuple("OPTIONAL_OR21", 2, [&]() { return optional_or_else(to_optional(type_trail[1].ty), type_trail[0].ty); }),
+  make_tuple("OPTIONAL_OR31", 3, [&]() { return optional_or_else(to_optional(type_trail[2].ty), type_trail[0].ty); }),
   make_tuple("OPTIONAL_O21LONG", 2, [&]() { return optional_or_longelse(to_optional(type_trail[1].ty), type_trail[0].ty); }),
   make_tuple("FIRST_OR_DEFAULT", 1, [&]() { return optional_or_default(type_trail[0].ty); }),
+  make_tuple("SECOND_OR_DEFAULT", 2, [&]() { return optional_or_default(type_trail[1].ty); }),
   make_tuple("FIRST_OR_LONG", 1, [&]() { return optional_or_else(to_optional(type_trail[0].ty), kLong); }),
+  make_tuple("SECOND_OR_LONG_DEFAULT", 2, [&]() { return optional_or_longdefault(to_optional(type_trail[1].ty), type_trail[0].ty); }),
 };
 
 array<bool, is_type_fn.size()> is_type_flags{ true };
@@ -373,6 +377,8 @@ int main(int argc, char **argv) {
     call_only = argv[1];
   if (argc == 3)
     print_all = true;
+
+  SetStackTraceFetcher([]() { return string(); });
 
 #include "call_pytorch_fns.h"
 

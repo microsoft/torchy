@@ -4,6 +4,7 @@
 #include <ATen/core/List.h>
 #include <ATen/NativeFunctions.h>
 #include <ATen/RedispatchFunctions.h>
+#include <c10/util/Logging.h>
 #include <array>
 #include <cassert>
 #include <cstring>
@@ -503,6 +504,8 @@ int main(int argc, char **argv) {
   }
   results.reserve(1024 * 1024);
   init_shapes();
+
+  SetStackTraceFetcher([]() { return string(); });
 
 #include "call_pytorch_fns.h"
 

@@ -4,11 +4,6 @@ UPGRADE PYTORCH
 To upgrade to a new PyTorch version, we need to add support for new operations.
 Most of the times it's a matter of running a few scripts:
 
-0) Patch PyTorch
-Use `pytorch_disable_backtrace.patch` to disable backtrace generation when
-an exception is generated. This gives a > 100x speedup when running the
-infer_* programs.
-
 1) Generate type inference rules
 ```
 $ python scripts/infer_types.py

@@ -525,11 +525,25 @@ ScalarType optional_type(const c10::optional<Tensor> &t) {
 #define PASS(t) \
   t.scalar_type(), [&]() { return t.dim() == 0; }
 
+#define PASSS(t) \
+  t.type(), true, []() { return false; }
+
+#define PASST(t) \
+  t.scalar_type(), false, [&]() { return t.dim() == 0; }
+
 #define PASS_OPT(t) \
   optional_type(t), [&]() { return t && t->dim() == 0; }
 
 ScalarType to_float2(const Tensor &t1, const Tensor &t2) {
-  return to_float2(PASS(t1), PASS(t2));
+  return to_float2(PASST(t1), PASST(t2));
+}
+
+ScalarType to_float2(const Scalar &s, const Tensor &t) {
+  return to_float2(PASSS(s), PASST(t));
+}
+
+ScalarType to_float2(const Tensor &t, const Scalar &s) {
+  return to_float2(PASSS(s), PASST(t));
 }
 
 ScalarType to_float3(const Tensor &t1, const Tensor &t2, const Tensor &t3) {
@@ -543,10 +557,6 @@ ScalarType to_float4(const Tensor &t1, const Tensor &t2, const Tensor &t3,
 
 ScalarType to_real2(const Tensor &t1, const Tensor &t2) {
   return to_real2(PASS(t1), PASS(t2));
-}
-
-ScalarType bool_to_int2(const Tensor &t1, const Tensor &t2) {
-  return bool_to_int2(PASS(t1), PASS(t2));
 }
 
 optional<IntArrayRef> shape_of(const Tensor &t) {

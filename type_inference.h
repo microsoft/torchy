@@ -23,45 +23,57 @@ ScalarType promote_tys_undef(ScalarType a, ScalarType b) {
   return promoteTypes(a, b);
 }
 
-void promote_(ScalarType &ty_scalar, ScalarType &ty_zero,
-              ScalarType &ty_nonzero) {}
-
-void promote_(ScalarType &ty_scalar, ScalarType &ty_zero,
-              ScalarType &ty_nonzero, ScalarType ty,
-              bool is_scalar, const function<bool()> &z) {
+void promote_arg(ScalarType &ty_scalar, ScalarType &ty_zero,
+                 ScalarType &ty_nonzero, ScalarType ty,
+                 bool is_scalar, const function<bool()> &z) {
   auto &target = is_scalar ? ty_scalar : (z() ? ty_zero : ty_nonzero);
   target = promote_tys_undef(target, ty);
 }
 
 template <typename... Args>
-void promote_(ScalarType &ty_scalar, ScalarType &ty_zero,
-              ScalarType &ty_nonzero, ScalarType ty,
-              bool is_scalar, const function<bool()> &z, Args&&... args) {
-  promote_(ty_scalar, ty_zero, ty_nonzero, ty, is_scalar, z);
-  promote_(ty_scalar, ty_zero, ty_nonzero, args...);
+void promote_arg(ScalarType &ty_scalar, ScalarType &ty_zero,
+              ScalarType &ty_nonzero, const Scalar &t) {
+  promote_arg(ty_scalar, ty_zero, ty_nonzero, t.type(), true,
+              []() { return false; });
 }
 
-void promote_(ScalarType &ty_scalar, ScalarType &ty_zero,
+void promote_arg(ScalarType &ty_scalar, ScalarType &ty_zero,
               ScalarType &ty_nonzero, const Tensor &t) {
-  promote_(ty_scalar, ty_zero, ty_nonzero, t.scalar_type(), false,
-           [&]() { return t.dim() == 0; });
+  promote_arg(ty_scalar, ty_zero, ty_nonzero, t.scalar_type(), false,
+              [&]() { return t.dim() == 0; });
 }
 
 template <typename... Args>
+void promote_arg(ScalarType &ty_scalar, ScalarType &ty_zero,
+                 ScalarType &ty_nonzero, const TensorList &list) {
+  for (auto &elem : list) {
+    promote_arg(ty_scalar, ty_zero, ty_nonzero, elem);
+  }
+}
+
 void promote_(ScalarType &ty_scalar, ScalarType &ty_zero,
-              ScalarType &ty_nonzero, const Tensor &t,
-              Args&&... args) {
-  promote_(ty_scalar, ty_zero, ty_nonzero, t);
+              ScalarType &ty_nonzero) {}
+
+template <typename Arg, typename... Args>
+void promote_(ScalarType &ty_scalar, ScalarType &ty_zero,
+              ScalarType &ty_nonzero, const Arg &a, bool is_scalar,
+              const function<bool()> &z, Args&&... args) {
+  promote_arg(ty_scalar, ty_zero, ty_nonzero, a, is_scalar, z);
   promote_(ty_scalar, ty_zero, ty_nonzero, args...);
 }
 
-template <typename... Args>
+template <typename Arg, typename... Args>
 void promote_(ScalarType &ty_scalar, ScalarType &ty_zero,
-              ScalarType &ty_nonzero,
-              const TensorList &list, Args&&... args) {
-  for (auto &elem : list) {
-    promote_(ty_scalar, ty_zero, ty_nonzero, elem);
-  }
+              ScalarType &ty_nonzero, const Arg &a, bool is_scalar,
+              function<bool()> &z, Args&&... args) {
+  promote_arg(ty_scalar, ty_zero, ty_nonzero, a, is_scalar, z);
+  promote_(ty_scalar, ty_zero, ty_nonzero, args...);
+}
+
+template <typename Arg, typename... Args>
+void promote_(ScalarType &ty_scalar, ScalarType &ty_zero,
+              ScalarType &ty_nonzero, const Arg &a, Args&&... args) {
+  promote_arg(ty_scalar, ty_zero, ty_nonzero, a);
   promote_(ty_scalar, ty_zero, ty_nonzero, args...);
 }
 
@@ -74,58 +86,100 @@ tuple<ScalarType,ScalarType,ScalarType> promote(Args&&... args) {
   return { ty_scalar, ty_zero, ty_nonzero };
 }
 
-bool all_ty_eq(ScalarType ty) { return true; }
-
-template <typename... Args>
-bool all_ty_eq(ScalarType ty0, ScalarType ty, bool is_scalar,
-               const function<bool()> &z, Args&&... args) {
-  return ty0 == ty && all_ty_eq(ty0, args...);
-}
-
-template <typename... Args>
-bool all_ty_eq(ScalarType ty0, const Tensor &t, Args&&... args) {
-  return ty0 == t.scalar_type() && all_ty_eq(ty0, args...);
-}
-
-template <typename... Args>
-bool all_ty_eq(ScalarType ty, bool is_scalar, const function<bool()> &z,
-               Args&&... args) {
-  return all_ty_eq(ty, args...);
-}
-
-template <typename... Args>
-bool all_ty_eq(const TensorList &list, Args&&... args) {
-  if (list.empty())
+bool eq_types(optional<ScalarType> a, optional<ScalarType> b) {
+  if (!a || !b)
     return true;
+  return *a == *b && a != ScalarType::Undefined;
+}
 
-  auto ty = list.front().dtype();
-  for (auto &elem : list) {
-    if (elem.dtype() != ty)
-      return false;
+struct GetType {
+  static optional<ScalarType> get(const ScalarType &ty) {
+    return ty;
   }
-  return all_ty_eq(ty.toScalarType(), args...);
+
+  static optional<ScalarType> get(const TensorList &list) {
+    if (list.empty())
+      return {};
+
+    auto ty = list.front().dtype();
+    for (auto &elem : list) {
+      if (elem.dtype() != ty)
+        return ScalarType::Undefined;
+    }
+    return ty.toScalarType();
+  }
+
+  static optional<ScalarType> get(const Tensor &t) {
+    return t.scalar_type();
+  }
+
+  static optional<ScalarType> get(const Scalar &s) {
+    return s.type();
+  }
+
+  static optional<ScalarType> get() {
+    return {};
+  }
+
+  template <typename Arg, typename... Args>
+  static optional<ScalarType> get(const Arg &a, Args&&... args) {
+    auto ty1 = get(a);
+    auto ty2 = get(args...);
+    return eq_types(ty1, ty2) ? (ty1 ? ty1 : ty2) : ScalarType::Undefined;
+  }
+
+  template <typename Arg, typename... Args>
+  static optional<ScalarType> get(const Arg &a, bool is_scalar,
+                                  const function<bool()> &z, Args&&... args) {
+    return get(a, args...);
+  }
+
+  template <typename Arg, typename... Args>
+  static optional<ScalarType> get(const Arg &a, bool is_scalar,
+                                  function<bool()> &z, Args&&... args) {
+    return get(a, args...);
+  }
+};
+
+template <typename Arg, typename... Args>
+bool all_ty_eq(const Arg &a, bool is_scalar, const function<bool()> &z,
+               Args&&... args) {
+  return eq_types(GetType::get(a), GetType::get(args...));
+}
+
+template <typename Arg, typename... Args>
+bool all_ty_eq(const Arg &a, bool is_scalar, function<bool()> &z,
+               Args&&... args) {
+  return eq_types(GetType::get(a), GetType::get(args...));
+}
+
+template <typename Arg, typename... Args>
+bool all_ty_eq(const Arg &a, Args&&... args) {
+  return eq_types(GetType::get(a), GetType::get(args...));
+}
+
+ScalarType pick_first_ty() {
+  return typeMetaToScalarType(at::get_default_dtype());
 }
 
 template <typename... Args>
-bool all_ty_eq(const Tensor &t, Args&&... args) {
-  return all_ty_eq(t.scalar_type(), args...);
-}
-
-template <typename... Args>
-ScalarType pick_first_ty(ScalarType ty, bool is_scalar,
-                         const function<bool()> &z, Args&&... args) {
+ScalarType pick_first_ty(ScalarType ty, Args&&... args) {
   return ty;
 }
 
 template <typename... Args>
 ScalarType pick_first_ty(const TensorList &list, Args&&... args) {
-  return list.empty() ? typeMetaToScalarType(at::get_default_dtype())
-                      : list.front().scalar_type();
+  return list.empty() ? pick_first_ty(args...) : list.front().scalar_type();
 }
 
 template <typename... Args>
 ScalarType pick_first_ty(const Tensor &t, Args&&... args) {
   return t.scalar_type();
+}
+
+template <typename... Args>
+ScalarType pick_first_ty(const Scalar &s, Args&&... args) {
+  return s.type();
 }
 
 template <typename... Args>
@@ -222,24 +276,19 @@ ScalarType to_float_double(ScalarType ty) {
   }
 }
 
-ScalarType to_double(ScalarType ty) {
-  if (isComplexType(ty))
-    return ScalarType::ComplexDouble;
-  return ScalarType::Double;
-}
-
 ScalarType to_double2(ScalarType ty, ScalarType ty2) {
   if (isComplexType(ty) || isComplexType(ty2))
     return ScalarType::ComplexDouble;
   return ScalarType::Double;
 }
 
-ScalarType to_float2(ScalarType ty1, const function<bool()> &zerodim1,
-                     ScalarType ty2, const function<bool()> &zerodim2) {
+ScalarType to_float2(ScalarType ty1, bool is_scalar1,
+                     const function<bool()> &zerodim1, ScalarType ty2,
+                     bool is_scalar2, const function<bool()> &zerodim2) {
   if (isIntegralType(ty1, true) && isIntegralType(ty2, true))
     return typeMetaToScalarType(at::get_default_dtype());
 
-  return promote_buggy(ty1, false, zerodim1, ty2, false, zerodim2);
+  return promote_buggy(ty1, is_scalar1, zerodim1, ty2, is_scalar2, zerodim2);
 }
 
 ScalarType to_float3(ScalarType ty1, const function<bool()> &zerodim1,
@@ -254,7 +303,8 @@ ScalarType to_float3(ScalarType ty1, const function<bool()> &zerodim1,
     return promote_buggy(ty1, false, zerodim1, ty2, false, zerodim2, ty3, false,
                          zerodim3);
   return promote_buggy(promote_buggy(ty1, false, zerodim1, ty2, false,
-                                     zerodim2), false, [](){ return false; },
+                                     zerodim2),
+                       false, function<bool()>([](){ return false; }),
                        ty3, false, zerodim3);
 }
 
@@ -303,15 +353,6 @@ ScalarType bool_to_int(ScalarType ty) {
   return ty;
 }
 
-ScalarType bool_to_int2(ScalarType ty1, const function<bool()> &zerodim1,
-                        ScalarType ty2, const function<bool()> &zerodim2) {
-  if (isIntegralType(ty1, true) &&
-      ty2 == ScalarType::Bool &&
-      (zerodim1() || !zerodim2()))
-    return ScalarType::Long;
-  return promote_buggy(ty1, false, zerodim1, ty2, false, zerodim2);
-}
-
 ScalarType bool_byte(ScalarType ty) {
   if (ty == ScalarType::Byte)
     return ty;
@@ -330,4 +371,12 @@ ScalarType optional_or_else(optional<ScalarType> opt, ScalarType ty) {
 
 ScalarType optional_or_longelse(optional<ScalarType> opt, ScalarType ty) {
   return optional_or_else(opt, integrals_to_int(ty));
+}
+
+ScalarType optional_or_longdefault(optional<ScalarType> opt, ScalarType ty) {
+  if (opt)
+    return *opt;
+  if (isFloatingType(ty) || isComplexType(ty))
+    return typeMetaToScalarType(at::get_default_dtype());
+  return kLong;
 }
