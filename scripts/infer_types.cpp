@@ -81,7 +81,7 @@ ScalarType promoted_type_trail_buggy(const vector<InputEntry> &args,
   callVA(promote_buggy, max_elems)
 }
 
-optional<ScalarType> to_optional(ScalarType ty) {
+c10::optional<ScalarType> to_optional(ScalarType ty) {
   if (ty == ScalarType::Undefined)
     return {};
   return ty;
@@ -96,7 +96,7 @@ ScalarType optional_or_default(ScalarType ty) {
 #define PASS(arg) arg.ty, [&]() { return arg.zerodim; }
 #define PASSF(arg) arg.ty, arg.is_scalar, [&]() { return arg.zerodim; }
 
-optional<ScalarType> all_type;
+std::optional<ScalarType> all_type;
 
 array<tuple<const char*, unsigned, function<ScalarType()>>, 30> is_type_fn = {
   make_tuple("ALL", 1, [&]() { return *all_type; }),
@@ -131,7 +131,7 @@ array<tuple<const char*, unsigned, function<ScalarType()>>, 30> is_type_fn = {
   make_tuple("SECOND_OR_LONG_DEFAULT", 2, [&]() { return optional_or_longdefault(to_optional(type_trail[1].ty), type_trail[0].ty); }),
 };
 
-array<bool, is_type_fn.size()> is_type_flags{ true };
+array<bool, is_type_fn.size()> is_type_flags;
 unsigned num_samples = 0;
 
 void infer(ScalarType output) {

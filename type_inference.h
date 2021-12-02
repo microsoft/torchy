@@ -86,18 +86,18 @@ tuple<ScalarType,ScalarType,ScalarType> promote(Args&&... args) {
   return { ty_scalar, ty_zero, ty_nonzero };
 }
 
-bool eq_types(optional<ScalarType> a, optional<ScalarType> b) {
+bool eq_types(c10::optional<ScalarType> a, c10::optional<ScalarType> b) {
   if (!a || !b)
     return true;
   return *a == *b && a != ScalarType::Undefined;
 }
 
 struct GetType {
-  static optional<ScalarType> get(const ScalarType &ty) {
+  static c10::optional<ScalarType> get(const ScalarType &ty) {
     return ty;
   }
 
-  static optional<ScalarType> get(const TensorList &list) {
+  static c10::optional<ScalarType> get(const TensorList &list) {
     if (list.empty())
       return {};
 
@@ -109,34 +109,35 @@ struct GetType {
     return ty.toScalarType();
   }
 
-  static optional<ScalarType> get(const Tensor &t) {
+  static c10::optional<ScalarType> get(const Tensor &t) {
     return t.scalar_type();
   }
 
-  static optional<ScalarType> get(const Scalar &s) {
+  static c10::optional<ScalarType> get(const Scalar &s) {
     return s.type();
   }
 
-  static optional<ScalarType> get() {
+  static c10::optional<ScalarType> get() {
     return {};
   }
 
   template <typename Arg, typename... Args>
-  static optional<ScalarType> get(const Arg &a, Args&&... args) {
+  static c10::optional<ScalarType> get(const Arg &a, Args&&... args) {
     auto ty1 = get(a);
     auto ty2 = get(args...);
     return eq_types(ty1, ty2) ? (ty1 ? ty1 : ty2) : ScalarType::Undefined;
   }
 
   template <typename Arg, typename... Args>
-  static optional<ScalarType> get(const Arg &a, bool is_scalar,
-                                  const function<bool()> &z, Args&&... args) {
+  static c10::optional<ScalarType> get(const Arg &a, bool is_scalar,
+                                       const function<bool()> &z,
+                                       Args&&... args) {
     return get(a, args...);
   }
 
   template <typename Arg, typename... Args>
-  static optional<ScalarType> get(const Arg &a, bool is_scalar,
-                                  function<bool()> &z, Args&&... args) {
+  static c10::optional<ScalarType> get(const Arg &a, bool is_scalar,
+                                       function<bool()> &z, Args&&... args) {
     return get(a, args...);
   }
 };
@@ -365,15 +366,16 @@ ScalarType integrals_to_int(ScalarType ty) {
   return ty;
 }
 
-ScalarType optional_or_else(optional<ScalarType> opt, ScalarType ty) {
+ScalarType optional_or_else(c10::optional<ScalarType> opt, ScalarType ty) {
   return opt.value_or(ty);
 }
 
-ScalarType optional_or_longelse(optional<ScalarType> opt, ScalarType ty) {
+ScalarType optional_or_longelse(c10::optional<ScalarType> opt, ScalarType ty) {
   return optional_or_else(opt, integrals_to_int(ty));
 }
 
-ScalarType optional_or_longdefault(optional<ScalarType> opt, ScalarType ty) {
+ScalarType optional_or_longdefault(c10::optional<ScalarType> opt,
+                                   ScalarType ty) {
   if (opt)
     return *opt;
   if (isFloatingType(ty) || isComplexType(ty))
