@@ -26,10 +26,12 @@ def get(tensors, type):
 def mk_arg(arg, tensors):
   type = arg.type.remove_const_ref().cpp_type()
   dispatch_types = {
+    'bool' : False,
     'int64_t' : False,
     'at::Scalar' : True,
     'at::ScalarType' : False,
     'at::IntArrayRef' : False,
+    'c10::optional<int64_t>' : False,
     'c10::optional<at::Scalar>' : True,
     'c10::optional<at::ScalarType>' : False,
   }
@@ -97,7 +99,7 @@ rule shape
   description = shape $in
 
 rule merge
-  command = bash -c "cat $in > $out"
+  command = bash -c "cat $in | sort > $out"
   description = Assemble final $out file
 
 build types.txt: merge {" ".join(f'types/{fn}.txt' for fn,sz in all_functions)}

@@ -30,20 +30,24 @@ void promote_arg(ScalarType &ty_scalar, ScalarType &ty_zero,
   target = promote_tys_undef(target, ty);
 }
 
-template <typename... Args>
 void promote_arg(ScalarType &ty_scalar, ScalarType &ty_zero,
-              ScalarType &ty_nonzero, const Scalar &t) {
+                 ScalarType &ty_nonzero, const Scalar &t) {
   promote_arg(ty_scalar, ty_zero, ty_nonzero, t.type(), true,
               []() { return false; });
 }
 
 void promote_arg(ScalarType &ty_scalar, ScalarType &ty_zero,
-              ScalarType &ty_nonzero, const Tensor &t) {
+                 ScalarType &ty_nonzero, const Tensor &t) {
   promote_arg(ty_scalar, ty_zero, ty_nonzero, t.scalar_type(), false,
               [&]() { return t.dim() == 0; });
 }
 
-template <typename... Args>
+void promote_arg(ScalarType &ty_scalar, ScalarType &ty_zero,
+                 ScalarType &ty_nonzero, const c10::optional<Tensor> &t) {
+  if (t)
+    promote_arg(ty_scalar, ty_zero, ty_nonzero, *t);
+}
+
 void promote_arg(ScalarType &ty_scalar, ScalarType &ty_zero,
                  ScalarType &ty_nonzero, const TensorList &list) {
   for (auto &elem : list) {

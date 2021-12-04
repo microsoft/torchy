@@ -585,7 +585,7 @@ optional<IntArrayRef> strides_of(const Tensor &t) {
   return t.strides();
 }
 
-bool empty_opt_tensor(const optional<Tensor> &t) {
+bool empty_opt_tensor(const c10::optional<Tensor> &t) {
   return !t;
 }
 

@@ -18,25 +18,13 @@ dtype_exceptions = {
 shape_exceptions = {
   'arange.start_out'  : 'ARANGE',
   'arange.start_step' : 'ARANGE',
-  'argmax'            : 'ARGMAX',
-  'argmax.out'        : 'ARGMAX',
-  'argmin'            : 'ARGMAX',
-  'argmin.out'        : 'ARGMAX',
   'conv2d'            : 'CONV2D',
   'embedding'         : 'EMBEDDING',
-  'flatten.using_ints': 'FLATTEN',
   'max_pool2d'        : 'CONV2D',
-  'mean.dim'          : 'REDUCE',
-  'permute'           : 'PERMUTE',
-  'select.int'        : 'SELECT',
   'slice.Tensor'      : 'SLICE',
   'stack'             : 'STACK',
   'stack.out'         : 'STACK',
-  'transpose.int'     : 'TRANSPOSE',
   'transpose_'        : '',
-  'unfold'            : 'UNFOLD',
-  'unsqueeze'         : 'UNSQUEEZE',
-  'unsqueeze_'        : 'UNSQUEEZE',
 }
 
 def get_dtype_infer_fn(fn):
@@ -266,18 +254,21 @@ def move_if_needed(str, arg):
 def is_shape_arg(arg):
   type = arg.type.cpp_type()
   dispatch_types = [
+    'bool',
+    'int64_t',
     'at::IntArrayRef',
+    'c10::optional<int64_t>',
   ]
   return 'Tensor' in type or type in dispatch_types
 
 def mk_shape_infer(shape, all_args):
   args = [arg for arg in all_args if is_shape_arg(arg)]
 
-  if shape == 'ALL <>':
+  if shape == 'ALL []':
     return 'IntArrayRef()'
-  if shape == 'ALL <0>':
+  if shape == 'ALL [0]':
     return 'IntArrayRef(0)'
-  if shape == 'ALL <1>':
+  if shape == 'ALL [1]':
     return 'IntArrayRef(1)'
   if shape == 'EQ_FIRST':
     return args[0].expr
@@ -286,7 +277,8 @@ def mk_shape_infer(shape, all_args):
   if shape == 'EQ_THIRD':
     return args[2].expr
   if shape == 'STD_PROMOTE':
-    return f'shape_std_promote({", ".join([arg.expr for arg in args])})'
+    args = [arg.expr for arg in all_args if 'Tensor' in arg.type.cpp_type() or 'at::IntArrayRef' in arg.type.cpp_type()]
+    return f'shape_std_promote({", ".join(args)})'
   if shape == 'PROMOTE_1_2':
     return f'shape_std_promote({args[0].expr}, {args[1].expr})'
   if shape == 'PROMOTE_1_2_3':
@@ -318,7 +310,7 @@ def mk_shape_infer(shape, all_args):
   if shape == 'RESHAPE':
     return f'shape_reshape({args[0].expr}, {args[1].expr})'
   if shape == 'SELECT':
-    return f'shape_select({args[0].expr}, {all_args[1].expr})'
+    return f'shape_select({args[0].expr}, {args[1].expr})'
   if shape == 'UNSQUEEZE':
     return f'shape_unsqueeze({args[0].expr}, {all_args[1].expr})'
   if shape == 'FLATTEN':
@@ -332,7 +324,7 @@ def mk_shape_infer(shape, all_args):
   if shape == 'STACK':
     return f'shape_stack({args[0].expr}, {all_args[1].expr})'
   if shape == 'ARGMAX':
-    return f'shape_argmax({args[0].expr}, {all_args[1].expr}, {all_args[2].expr})'
+    return f'shape_argmax({args[0].expr}, {args[1].expr}, {args[2].expr})'
   if shape == 'CONV2D':
     off = 0 if args[2].type.cpp_type() == 'at::IntArrayRef' else 1
     return f'shape_conv2d({args[0].expr}, {args[1].expr}, {args[2+off].expr}, {args[3+off].expr}, {args[4+off].expr})'
@@ -341,7 +333,7 @@ def mk_shape_infer(shape, all_args):
   if shape == 'TRANSPOSE2D':
     return f'shape_transpose2d({args[0].expr})'
   if shape == 'REDUCE':
-    return f'shape_reduce({args[0].expr}, {args[1].expr}, {all_args[2].expr})'
+    return f'shape_reduce({args[0].expr}, {args[1].expr}, {args[2].expr})'
   if shape == 'PERMUTE':
     return f'shape_permute({args[0].expr}, {args[1].expr})'
   if shape == 'UNFOLD':

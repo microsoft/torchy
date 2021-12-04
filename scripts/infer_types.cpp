@@ -327,6 +327,18 @@ struct C {
   }
 
   template <typename... Tail>
+  void call(function<Tensor(bool, Tail...)> fn) {
+    auto n = num_samples;
+    for (bool v : {false, true}) {
+      call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+        return fn(v, args...);
+      }});
+      if (num_samples > n)
+        break;
+    }
+  }
+
+  template <typename... Tail>
   void call(function<Tensor(IntArrayRef, Tail...)> fn) {
     call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
       return fn({}, args...);

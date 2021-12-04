@@ -15,7 +15,7 @@ std::vector<int64_t> shape_std_promote(IntArrayRef a, IntArrayRef b) {
   auto promoted = ge.vec();
   unsigned j = lt.size()-1;
   for (int i = ge.size()-1; i >= 0; --i) {
-    if (lt[j] > ge[i])
+    if ((lt[j] > ge[i] && ge[i] != 0) || lt[j] == 0)
       promoted[i] = lt[j];
 
     if (j-- == 0)
@@ -110,8 +110,8 @@ shape_transpose(IntArrayRef s, int64_t dim1, int64_t dim2) {
     dim1 += res.size();
   if (dim2 < 0)
     dim2 += res.size();
-  assert((unsigned)dim1 < res.size() && (unsigned)dim2 < res.size());
-  swap(res[dim1], res[dim2]);
+  if ((size_t)dim1 < res.size() && (size_t)dim2 < res.size())
+    swap(res[dim1], res[dim2]);
   return res;
 }
 
@@ -148,8 +148,8 @@ std::vector<int64_t> shape_select(IntArrayRef s, int64_t dim) {
   auto res = s.vec();
   if (dim < 0)
     dim += res.size();
-  assert((unsigned)dim < res.size());
-  res.erase(res.begin() + dim);
+  if ((size_t)dim < res.size())
+    res.erase(res.begin() + dim);
   return res;
 }
 
@@ -157,8 +157,8 @@ std::vector<int64_t> shape_unsqueeze(IntArrayRef s, int64_t dim) {
   auto res = s.vec();
   if (dim < 0)
     dim += res.size() + 1;
-  assert((unsigned)dim <= res.size());
-  res.insert(res.begin() + dim, 1);
+  if ((size_t)dim <= res.size())
+    res.insert(res.begin() + dim, 1);
   return res;
 }
 
@@ -197,7 +197,6 @@ std::vector<int64_t> shape_arange_vec(const at::Scalar &start,
 
 std::vector<int64_t> shape_embedding(IntArrayRef w, IntArrayRef idxs) {
   auto res = idxs.vec();
-  assert(w.size() == 2);
   res.push_back(w.back());
   return res;
 }
@@ -209,6 +208,8 @@ std::vector<int64_t> shape_slice(IntArrayRef s, int64_t dim,
   auto res = s.vec();
   if (dim < 0)
     dim += s.size();
+  if ((size_t)dim >= res.size())
+    return res;
 
   auto limit = s[dim];
   int64_t start = start_opt.value_or(0);
@@ -240,10 +241,12 @@ shape_argmax(IntArrayRef s, c10::optional<int64_t> opt_dim, bool keepdim) {
   if (dim < 0)
     dim += s.size();
 
-  if (keepdim)
-    res[dim] = 1;
-  else
-    res.erase(res.begin() + dim);
+  if ((size_t)dim < res.size()) {
+    if (keepdim)
+      res[dim] = 1;
+    else
+      res.erase(res.begin() + dim);
+  }
   return res;
 }
 
@@ -265,6 +268,9 @@ std::vector<int64_t> shape_pool2d(IntArrayRef in, IntArrayRef shape) {
 
 std::vector<int64_t>
 shape_reduce(IntArrayRef s, IntArrayRef dims0, bool keepdim) {
+  if (dims0.empty())
+    return std::vector<int64_t>(keepdim ? s.size() : 0, 1);
+
   auto dims = dims0.vec();
   for (auto &dim : dims) {
     if (dim < 0)
@@ -275,10 +281,12 @@ shape_reduce(IntArrayRef s, IntArrayRef dims0, bool keepdim) {
   auto res = s.vec();
   unsigned i = 0;
   for (auto dim : dims) {
-    if (keepdim)
-      res[dim] = 1;
-    else
-      res.erase(res.begin() + dim - i++);
+    if ((size_t)dim < s.size()) {
+      if (keepdim)
+        res[dim] = 1;
+      else
+        res.erase(res.begin() + dim - i++);
+    }
   }
   return res;
 }
@@ -288,7 +296,8 @@ std::vector<int64_t> shape_permute(IntArrayRef s, IntArrayRef dims) {
   for (auto dim : dims) {
     if (dim < 0)
       dim += s.size();
-    res.emplace_back(s[dim]);
+    if ((size_t)dim < s.size())
+      res.emplace_back(s[dim]);
   }
   return res;
 }
@@ -299,6 +308,7 @@ std::vector<int64_t> shape_unfold(IntArrayRef s, int64_t dim, int64_t size,
   res.emplace_back(size);
   if (dim < 0)
     dim += s.size();
-  res[dim] = (res[dim] - size) / step + 1;
+  if ((size_t)dim < s.size() && step != 0)
+    res[dim] = (s[dim] - size) / step + 1;
   return res;
 }

@@ -44,8 +44,9 @@ void init_shapes() {
     assert(shape.empty());
   }
 
-  // add one more shape for layout tests
+  // more shapes for layout tests
   test_shapes.push_back({-1});
+  test_shapes.push_back({2, 0, 1});
 }
 
 Tensor new_tensor(unsigned shape, ScalarType ty) {
@@ -58,13 +59,31 @@ Tensor new_tensor(unsigned shape, ScalarType ty) {
 #include "../shape_inference.h"
 
 // uint8_t - idx in test_shapes
-// bool - empty optional
-using TrailElem = variant<uint8_t, bool>;
+// void* - empty optional
+using TrailElem = variant<uint8_t, void*, bool, int64_t>;
 
 #define GET_SHAPE(v) \
   auto idx_##v = get_if<uint8_t>(&v); \
   if (!idx_##v) return {}; \
   const auto &shape_##v = test_shapes[*idx_##v];
+
+#define GET_BOOL(v) \
+  auto val_ref_##v = get_if<bool>(&v); \
+  if (!val_ref_##v) return {}; \
+  bool bool_##v = *val_ref_##v;
+
+#define GET_INT(v) \
+  auto val_ref_##v = get_if<int64_t>(&v); \
+  if (!val_ref_##v) return {}; \
+  int64_t int_##v = *val_ref_##v;
+
+#define GET_OPT_INT(v) \
+  c10::optional<int64_t> int_##v; \
+  if (!get_if<void*>(&v)) { \
+    auto val_ref_##v = get_if<int64_t>(&v); \
+    if (!val_ref_##v) return {}; \
+    int_##v = *val_ref_##v; \
+  }
 
 std::optional<Shape> shape_std_promote(TrailElem a, TrailElem b, TrailElem c) {
   GET_SHAPE(a);
@@ -101,13 +120,62 @@ std::optional<Shape> drop1(TrailElem a) {
 
 std::optional<Shape> drop2(TrailElem a) {
   GET_SHAPE(a);
-  if (shape_a.size() < 1)
+  if (shape_a.size() < 2)
     return shape_a;
 
   auto res = shape_a;
   res.pop_back();
   res.pop_back();
   return res;
+}
+
+std::optional<Shape> shape_argmax(TrailElem a, TrailElem b, TrailElem c) {
+  GET_SHAPE(a);
+  GET_OPT_INT(b);
+  GET_BOOL(c);
+  return shape_argmax(shape_a, int_b, bool_c);
+}
+
+std::optional<Shape> shape_unsqueeze(TrailElem a, TrailElem b) {
+  GET_SHAPE(a);
+  GET_INT(b);
+  return shape_unsqueeze(shape_a, int_b);
+}
+
+std::optional<Shape> shape_unfold(TrailElem a, TrailElem b, TrailElem c,
+                                  TrailElem d) {
+  GET_SHAPE(a);
+  GET_INT(b);
+  GET_INT(c);
+  GET_INT(d);
+  return shape_unfold(shape_a, int_b, int_c, int_d);
+}
+
+std::optional<Shape> shape_reduce(TrailElem a, TrailElem b, TrailElem c) {
+  GET_SHAPE(a);
+  GET_SHAPE(b);
+  GET_BOOL(c);
+  return shape_reduce(shape_a, shape_b, bool_c);
+}
+
+std::optional<Shape> shape_flatten(TrailElem a, TrailElem b, TrailElem c) {
+  GET_SHAPE(a);
+  GET_INT(b);
+  GET_INT(c);
+  return shape_flatten(shape_a, int_b, int_c);
+}
+
+std::optional<Shape> shape_select(TrailElem a, TrailElem b) {
+  GET_SHAPE(a);
+  GET_INT(b);
+  return shape_select(shape_a, int_b);
+}
+
+std::optional<Shape> shape_transpose(TrailElem a, TrailElem b, TrailElem c) {
+  GET_SHAPE(a);
+  GET_INT(b);
+  GET_INT(c);
+  return shape_transpose(shape_a, int_b, int_c);
 }
 
 std::optional<Shape> get_shape(TrailElem a) {
@@ -139,6 +207,7 @@ DECL_BINARY(shape_mul_last, true)
 DECL_BINARY(shape_join, true)
 DECL_BINARY(shape_reshape, true)
 DECL_BINARY(shape_pool2d, shape_a.size() >= 2)
+DECL_BINARY(shape_permute, true)
 
 bool print_all = false;
 char *call_only = nullptr;
@@ -146,7 +215,7 @@ vector<TrailElem> type_trail;
 
 std::optional<Shape> all_shape;
 
-array<tuple<const char*, unsigned, function<std::optional<Shape>()>>, 20>
+array<tuple<const char*, unsigned, function<std::optional<Shape>()>>, 28>
 is_shape_fn = {
   make_tuple("ALL", 1, [&]() { return all_shape; }),
   make_tuple("EQ_FIRST", 1, [&]() { return get_shape(type_trail[0]); }),
@@ -168,6 +237,14 @@ is_shape_fn = {
   make_tuple("RESHAPE", 2, [&]() { return shape_reshape(type_trail[0], type_trail[1]); }),
   make_tuple("POOL2D", 2, [&]() { return shape_pool2d(type_trail[0], type_trail[1]); }),
   make_tuple("TRANSPOSE2D", 1, [&]() { return shape_transpose2d(type_trail[0]); }),
+  make_tuple("ARGMAX", 3, [&]() { return shape_argmax(type_trail[0], type_trail[1], type_trail[2]); }),
+  make_tuple("UNSQUEEZE", 2, [&]() { return shape_unsqueeze(type_trail[0], type_trail[1]); }),
+  make_tuple("UNFOLD", 4, [&]() { return shape_unfold(type_trail[0], type_trail[1], type_trail[2], type_trail[3]); }),
+  make_tuple("PERMUTE", 2, [&]() { return shape_permute(type_trail[0], type_trail[1]); }),
+  make_tuple("REDUCE", 3, [&]() { return shape_reduce(type_trail[0], type_trail[1], type_trail[2]); }),
+  make_tuple("FLATTEN", 3, [&]() { return shape_flatten(type_trail[0], type_trail[1], type_trail[2]); }),
+  make_tuple("SELECT", 2, [&]() { return shape_select(type_trail[0], type_trail[1]); }),
+  make_tuple("TRANSPOSE", 3, [&]() { return shape_transpose(type_trail[0], type_trail[1], type_trail[2]); }),
 };
 
 array<bool, is_shape_fn.size()> is_shape_flags;
@@ -181,13 +258,17 @@ void print(ShapeRef output) {
     first = false;
     if (auto *idx = get_if<uint8_t>(&input)) {
       cout << ShapeRef(test_shapes[*idx]);
-    } else if (get_if<bool>(&input)) {
+    } else if (auto *v = get_if<int64_t>(&input)) {
+      cout << *v;
+    } else if (auto *v = get_if<bool>(&input)) {
+      cout << *v;
+    } else if (get_if<void*>(&input)) {
       cout << "(null)";
     } else {
       assert(0);
     }
   }
-  cout << " -> " << output;
+  cout << " -> " << output << endl;
 }
 
 
@@ -266,7 +347,7 @@ struct C {
       }});
 
     // and call without a value
-    type_trail.emplace_back(false);
+    type_trail.emplace_back(nullptr);
     call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
       c10::optional<T> opt;
       return fn(opt, forward<Tail>(args)...);
@@ -283,11 +364,25 @@ struct C {
       }});
 
     // and call without a value
-    type_trail.emplace_back(false);
+    type_trail.emplace_back(nullptr);
     call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
       return fn(c10::nullopt, forward<Tail>(args)...);
     }});
     type_trail.pop_back();
+  }
+
+  template <typename... Tail>
+  void call(function<Tensor(c10::optional<at::ScalarType>, Tail...)> fn) {
+    // call with a value
+    call(function<Tensor(at::ScalarType, Tail...)>{
+      [=](at::ScalarType val, Tail... args) -> Tensor {
+        return fn(val, args...);
+      }});
+
+    // and call without a value
+    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+      return fn(c10::nullopt, forward<Tail>(args)...);
+    }});
   }
 
   template <typename... Tail>
@@ -345,11 +440,23 @@ struct C {
 
   template <typename... Tail>
   void call(function<Tensor(int64_t, Tail...)> fn) {
-    // TODO
-    for (int64_t v : {1}) {
+    for (int64_t v : {0, 1}) {
+      type_trail.emplace_back(v);
       call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
         return fn(v, args...);
       }});
+      type_trail.pop_back();
+    }
+  }
+
+  template <typename... Tail>
+  void call(function<Tensor(bool, Tail...)> fn) {
+    for (bool v : {false, true}) {
+      type_trail.emplace_back(v);
+      call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+        return fn(v, args...);
+      }});
+      type_trail.pop_back();
     }
   }
 
