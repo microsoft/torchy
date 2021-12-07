@@ -1,6 +1,11 @@
 // Copyright (c) 2021-present The Torchy Authors.
 // Distributed under the MIT license that can be found in the LICENSE file.
 
+using IntArrayRef = at::IntArrayRef;
+using namespace std;
+
+namespace {
+
 std::vector<int64_t> shape_std_promote(IntArrayRef a, IntArrayRef b) {
   if (a == b)
     return a.vec();
@@ -228,6 +233,21 @@ std::vector<int64_t> shape_stack(IntArrayRef s, unsigned n, int64_t dim) {
   return res;
 }
 
+std::vector<int64_t> shape_cat(const vector<IntArrayRef> &shapes, int64_t dim) {
+  if (shapes.empty())
+    return {};
+
+  auto res = shapes[0].vec();
+  if (dim < 0)
+    dim += res.size();
+
+  res[dim] = 0;
+  for (auto sh : shapes) {
+    res[dim] += sh[dim];
+  }
+  return res;
+}
+
 std::vector<int64_t>
 shape_argmax(IntArrayRef s, c10::optional<int64_t> opt_dim, bool keepdim) {
   if (!opt_dim) {
@@ -311,4 +331,18 @@ std::vector<int64_t> shape_unfold(IntArrayRef s, int64_t dim, int64_t size,
   if ((size_t)dim < s.size() && step != 0)
     res[dim] = (s[dim] - size) / step + 1;
   return res;
+}
+
+std::vector<int64_t> shape_narrow(IntArrayRef s, int64_t dim, int64_t start,
+                                  int64_t length) {
+
+  auto res = s.vec();
+  if (dim < 0)
+    dim += s.size();
+  if ((size_t)dim < s.size()) {
+    res[dim] = length;
+  }
+  return res;
+}
+
 }

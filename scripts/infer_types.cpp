@@ -345,6 +345,14 @@ struct C {
     }});
   }
 
+
+  template <typename... Tail>
+  void call(function<Tensor(c10::optional<at::MemoryFormat>, Tail...)> fn) {
+    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+      return fn(c10::nullopt, args...);
+    }});
+  }
+
   template <typename T>
   void analyze(function<T> fn) {
     if (call_only && strcmp(name, call_only))

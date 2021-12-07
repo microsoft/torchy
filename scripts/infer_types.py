@@ -32,6 +32,7 @@ def mk_arg(arg, tensors):
     'at::ScalarType' : False,
     'at::IntArrayRef' : False,
     'c10::optional<int64_t>' : False,
+    'c10::optional<at::MemoryFormat>' : False,
     'c10::optional<at::Scalar>' : True,
     'c10::optional<at::ScalarType>' : False,
   }
@@ -87,16 +88,21 @@ for fn in native_functions.native_functions:
 
 
 all_functions = sorted(all_functions, key=lambda p : -p[1])
+timeout = 60  # minutes
 
 fd = open('build.ninja', 'w')
 print(f'''
 rule type
-  command = bash -c "./infer_types $in > $out 2> /dev/null || true"
+  command = bash -c "timeout -s9 {timeout}m ./infer_types $in > $out 2> /dev/null || true"
   description = type $in
 
 rule shape
-  command = bash -c "./infer_shapes $in > $out 2> /dev/null || true"
+  command = bash -c "timeout -s9 {timeout}m ./infer_shapes $in > $out 2> /dev/null || true"
   description = shape $in
+
+rule strides
+  command = bash -c "timeout -s9 {timeout}m ./infer_strides $in > $out 2> /dev/null || true"
+  description = strides $in
 
 rule merge
   command = bash -c "cat $in | sort > $out"
@@ -104,9 +110,11 @@ rule merge
 
 build types.txt: merge {" ".join(f'types/{fn}.txt' for fn,sz in all_functions)}
 build shapes.txt: merge {" ".join(f'shapes/{fn}.txt' for fn,sz in all_functions)}
+build strides.txt: merge {" ".join(f'strides/{fn}.txt' for fn,sz in all_functions)}
 ''', file=fd)
 
 for fn,sz in all_functions:
   print(f'build types/{fn}.txt: type {fn}', file=fd)
   print(f'build shapes/{fn}.txt: shape {fn}', file=fd)
+  print(f'build strides/{fn}.txt: strides {fn}', file=fd)
   print(f'build {fn}: phony', file=fd)

@@ -10,6 +10,7 @@ EOF;
 
 process('types.txt', 'TYPES', 'type_inference', 'EQ_FIRST');
 process('shapes.txt', 'SHAPES', 'shape_inference', null);
+process('strides.txt', 'STRIDES', 'strides_inference', null);
 
 
 function process($file, $title, $var, $default) {

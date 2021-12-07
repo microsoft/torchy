@@ -18,13 +18,20 @@ dtype_exceptions = {
 shape_exceptions = {
   'arange.start_out'  : 'ARANGE',
   'arange.start_step' : 'ARANGE',
+  'cat'               : 'CAT',
   'conv2d'            : 'CONV2D',
   'embedding'         : 'EMBEDDING',
   'max_pool2d'        : 'CONV2D',
+  'mkldnn_convolution': 'CONV2D2',
   'slice.Tensor'      : 'SLICE',
   'stack'             : 'STACK',
   'stack.out'         : 'STACK',
   'transpose_'        : '',
+}
+
+strides_exceptions = {
+  'clone': 'CLONE',
+  'embedding': 'CONTIGUOUS',
 }
 
 def get_dtype_infer_fn(fn):
@@ -37,7 +44,7 @@ def get_shape_infer_fn(fn):
 
 def get_strides_infer_fn(fn):
   name = str(fn.func.name)
-  return strides_inference.get(name)
+  return strides_exceptions.get(name, strides_inference.get(name))
 
 
 @with_native_function
@@ -258,6 +265,7 @@ def is_shape_arg(arg):
     'int64_t',
     'at::IntArrayRef',
     'c10::optional<int64_t>',
+    'c10::optional<at::MemoryFormat>',
   ]
   return 'Tensor' in type or type in dispatch_types
 
@@ -323,11 +331,15 @@ def mk_shape_infer(shape, all_args):
     return f'shape_slice({args[0].expr}, {all_args[1].expr}, {all_args[2].expr}, {all_args[3].expr}, {all_args[4].expr})'
   if shape == 'STACK':
     return f'shape_stack({args[0].expr}, {all_args[1].expr})'
+  if shape == 'CAT':
+    return f'shape_cat({args[0].expr}, {args[1].expr})'
   if shape == 'ARGMAX':
     return f'shape_argmax({args[0].expr}, {args[1].expr}, {args[2].expr})'
   if shape == 'CONV2D':
     off = 0 if args[2].type.cpp_type() == 'at::IntArrayRef' else 1
     return f'shape_conv2d({args[0].expr}, {args[1].expr}, {args[2+off].expr}, {args[3+off].expr}, {args[4+off].expr})'
+  if shape == 'CONV2D2':
+    return f'shape_conv2d({args[0].expr}, {args[1].expr}, {args[4].expr}, {args[3].expr}, {args[5].expr})'
   if shape == 'POOL2D':
     return f'shape_pool2d({args[0].expr}, {args[1].expr})'
   if shape == 'TRANSPOSE2D':
@@ -338,6 +350,8 @@ def mk_shape_infer(shape, all_args):
     return f'shape_permute({args[0].expr}, {args[1].expr})'
   if shape == 'UNFOLD':
     return f'shape_unfold({args[0].expr}, {all_args[1].expr}, {all_args[2].expr}, {all_args[3].expr})'
+  if shape == 'NARROW':
+    return f'shape_narrow({args[0].expr}, {args[1].expr}, {args[2].expr}, {args[3].expr})'
 
   print('mk_shape_infer', shape)
   return 'nullopt'
@@ -347,18 +361,31 @@ def mk_shape_infer(shape, all_args):
 def mk_strides_infer(fn, all_args, ret):
   args = [arg for arg in all_args if is_shape_arg(arg)]
 
+  if fn == 'ALL []':
+    return 'IntArrayRef()'
+  if fn == 'ALL [0]':
+    return 'IntArrayRef(0)'
   if fn == 'EQ_FIRST':
     return args[0].expr
+  if fn == 'EQ_SECOND':
+    return args[1].expr
   if fn == 'CONTIGUOUS':
     return f'strides_contiguous({ret})'
   if fn == 'STD_PROMOTE':
-    return f'strides_std_promote({", ".join([arg.expr for arg in args])})'
+    args = [arg.expr for arg in all_args if 'Tensor' in arg.type.cpp_type() or 'at::IntArrayRef' in arg.type.cpp_type()]
+    return f'strides_std_promote({ret}, {", ".join(args)})'
   if fn == 'VIEW':
-    return f'strides_view({args[0].expr}, {ret}, {args[1].expr})'
+    return f'strides_view({args[0].expr}, {ret})'
   if fn == 'TRANSPOSE':
     return f'strides_transpose({args[0].expr})'
   if fn == 'CLONE':
-    return f'strides_clone({args[0].expr}, {all_args[1].expr})'
+    return f'strides_clone({args[0].expr}, {args[1].expr})'
+  if fn == 'CLONE1':
+    return f'strides_clone({args[0].expr})'
+  if fn == 'CLONE2':
+    return f'strides_clone2({args[0].expr}, {args[2].expr}, {args[3].expr})'
+  if fn == 'CLONE_BOOL':
+    return f'strides_clone_bool({args[0].expr}, {args[1].expr})'
   if fn == 'PERMUTE':
     return f'strides_permute({args[0].expr}, {args[1].expr})'
 

@@ -12,59 +12,70 @@
 #include <iostream>
 #include <variant>
 #include "../shape_inference.h"
+#include "../strides_inference.h"
 
 using namespace at;
 using namespace c10;
 using namespace std;
 
 namespace {
-array<unsigned char, 3> dim_sz = { 1, 2, 7 };
-constexpr unsigned max_dim = 3;
 
 using Shape = vector<int64_t>;
+using Strides = vector<int64_t>;
+using ShapeStrides = pair<Shape, Strides>;
 using ShapeRef = IntArrayRef;
-vector<Shape> test_shapes;
+using StridesRef = IntArrayRef;
 
-void fill_vector(Shape &shape, unsigned dims, unsigned i) {
-  if (i == dims) {
-    test_shapes.push_back(shape);
-    return;
-  }
-
-  for (auto n : dim_sz) {
-    shape.push_back(n);
-    fill_vector(shape, dims, i+1);
-    shape.pop_back();
-  }
-}
+vector<ShapeStrides> test_shapes;
 
 void init_shapes() {
-  Shape shape;
-  for (unsigned dim = 0; dim <= max_dim; ++dim) {
-    fill_vector(shape, dim, 0);
-    assert(shape.empty());
-  }
+  test_shapes.emplace_back(Shape({1, 2}), Strides({2, 1}));
+  test_shapes.emplace_back(Shape({1, 2}), Strides({1, 2}));
+  test_shapes.emplace_back(Shape({1, 2}), Strides({1, 1}));
+  test_shapes.emplace_back(Shape({2, 1}), Strides({1, 2}));
+  test_shapes.emplace_back(Shape({2, 3, 4}), Strides({12, 4, 1}));
+  test_shapes.emplace_back(Shape({2, 3, 4}), Strides({12, 1, 4}));
+  test_shapes.emplace_back(Shape({2, 3, 4}), Strides({1, 4, 12}));
+  test_shapes.emplace_back(Shape({2, 3, 4}), Strides({4, 1, 12}));
+  test_shapes.emplace_back(Shape({2, 3, 4}), Strides({1, 12, 4}));
+  test_shapes.emplace_back(Shape({2, 3, 4}), Strides({4, 12, 1}));
+  test_shapes.emplace_back(Shape({2, 3, 4}), Strides({1, 1, 1}));
+  test_shapes.emplace_back(Shape({2, 3, 4}), Strides({1, 2, 3}));
+  test_shapes.emplace_back(Shape({2, 3, 4}), Strides({18, 1, 1}));
+  test_shapes.emplace_back(Shape({2, 3, 4}), Strides({1, 16, 1}));
 
-  // more shapes for layout tests
-  test_shapes.push_back({-1});
-  test_shapes.push_back({2, 0, 1});
+  // for layout tests
+  test_shapes.emplace_back(Shape({-1}), Strides({1}));
+  test_shapes.emplace_back(Shape({1, 0}), Strides({1, 0}));
+  test_shapes.emplace_back(Shape({1, 2, 0}), Strides({2, 1, 0}));
 }
 
-Tensor new_tensor(unsigned shape, ScalarType ty) {
-  IntArrayRef ref(test_shapes[shape]);
-  auto t = native::empty_cpu(ref, ty);
-  native::ones_out(ref, t);
+Tensor new_tensor(unsigned idx, ScalarType ty) {
+  auto &[shape, strides] = test_shapes[idx];
+  auto t = native::empty_strided_cpu(shape, strides, ty);
+  native::ones_out(shape, t);
   return t;
 }
 
 // uint8_t - idx in test_shapes
 // void* - empty optional
-using TrailElem = variant<uint8_t, void*, bool, int64_t>;
+using TrailElem = variant<uint8_t, void*, bool, int64_t, at::MemoryFormat>;
 
 #define GET_SHAPE(v) \
   auto idx_##v = get_if<uint8_t>(&v); \
   if (!idx_##v) return {}; \
-  const auto &shape_##v = test_shapes[*idx_##v];
+  const auto &shape_##v = test_shapes[*idx_##v].first;
+
+#define GET_STRIDES(v) \
+  auto idx_##v = get_if<uint8_t>(&v); \
+  if (!idx_##v) return {}; \
+  const auto &strides_##v = test_shapes[*idx_##v].second;
+
+#define GET_SHAPES_STRIDES(v) \
+  auto idx_##v = get_if<uint8_t>(&v); \
+  if (!idx_##v) return {}; \
+  const auto &shape_##v = test_shapes[*idx_##v].first; \
+  const auto &strides_##v = test_shapes[*idx_##v].second;
 
 #define GET_BOOL(v) \
   auto val_ref_##v = get_if<bool>(&v); \
@@ -84,192 +95,126 @@ using TrailElem = variant<uint8_t, void*, bool, int64_t>;
     int_##v = *val_ref_##v; \
   }
 
-std::optional<Shape> shape_std_promote(TrailElem a, TrailElem b, TrailElem c) {
-  GET_SHAPE(a);
-  GET_SHAPE(b);
-  GET_SHAPE(c);
-  return shape_std_promote(shape_std_promote(shape_a, shape_b), shape_c);
-}
+#define GET_OPT_MEMFORMAT(v) \
+  c10::optional<at::MemoryFormat> memformat_##v; \
+  if (!get_if<void*>(&v)) { \
+    auto val_ref_##v = get_if<at::MemoryFormat>(&v); \
+    if (!val_ref_##v) return {}; \
+    memformat_##v = *val_ref_##v; \
+  }
 
-std::optional<Shape> shape_std_promote(const vector<TrailElem> &shapes) {
-  std::optional<Shape> shape;
-  for (auto elem : shapes) {
+#define GET_OPT_MEMFORMAT_OPT(v) \
+  c10::optional<at::MemoryFormat> memformat_##v; \
+  if (v && !get_if<void*>(&*v)) { \
+    auto val_ref_##v = get_if<at::MemoryFormat>(&*v); \
+    if (!val_ref_##v) return {}; \
+    memformat_##v = *val_ref_##v; \
+  }
+
+c10::optional<Strides> strides_std_promote(const vector<TrailElem> &ops,
+                                           ShapeRef out) {
+  Strides ret;
+  std::vector<std::pair<IntArrayRef, IntArrayRef>> ops_data;
+  for (auto elem : ops) {
     if (auto *idx = get_if<uint8_t>(&elem)) {
-      auto &sh = test_shapes[*idx];
-      shape = shape ? shape_std_promote(*shape, sh) : sh;
+      auto &[shape, strides] = test_shapes[*idx];
+      if (shape.size() > out.size())
+        return {};
+      ops_data.emplace_back(shape, strides);
     }
   }
-  return shape;
+  return strides_std_promote(out, ops_data);
 }
 
-std::optional<Shape> pick_1st(TrailElem a) {
-  GET_SHAPE(a);
-  return shape_a.empty() ? Shape() : Shape({ shape_a[0] });
+c10::optional<Strides> strides_contiguous(ShapeRef shape, TrailElem in) {
+  GET_STRIDES(in);
+  return strides_contiguous(shape, strides_in);
 }
 
-std::optional<Shape> drop1(TrailElem a) {
-  GET_SHAPE(a);
-  if (shape_a.size() < 1)
-    return shape_a;
-
-  auto res = shape_a;
-  res.pop_back();
-  return res;
-}
-
-std::optional<Shape> drop2(TrailElem a) {
-  GET_SHAPE(a);
-  if (shape_a.size() < 2)
-    return shape_a;
-
-  auto res = shape_a;
-  res.pop_back();
-  res.pop_back();
-  return res;
-}
-
-std::optional<Shape> shape_argmax(TrailElem a, TrailElem b, TrailElem c) {
-  GET_SHAPE(a);
-  GET_OPT_INT(b);
-  GET_BOOL(c);
-  return shape_argmax(shape_a, int_b, bool_c);
-}
-
-std::optional<Shape> shape_unsqueeze(TrailElem a, TrailElem b) {
-  GET_SHAPE(a);
-  GET_INT(b);
-  return shape_unsqueeze(shape_a, int_b);
-}
-
-std::optional<Shape> shape_unfold(TrailElem a, TrailElem b, TrailElem c,
-                                  TrailElem d) {
-  GET_SHAPE(a);
-  GET_INT(b);
-  GET_INT(c);
-  GET_INT(d);
-  return shape_unfold(shape_a, int_b, int_c, int_d);
-}
-
-std::optional<Shape> shape_reduce(TrailElem a, TrailElem b, TrailElem c) {
-  GET_SHAPE(a);
+c10::optional<Strides> strides_permute(TrailElem a, TrailElem b) {
+  GET_STRIDES(a);
   GET_SHAPE(b);
-  GET_BOOL(c);
-  return shape_reduce(shape_a, shape_b, bool_c);
+  return shape_permute(strides_a, shape_b);
 }
 
-std::optional<Shape> shape_flatten(TrailElem a, TrailElem b, TrailElem c) {
-  GET_SHAPE(a);
-  GET_INT(b);
-  GET_INT(c);
-  return shape_flatten(shape_a, int_b, int_c);
+c10::optional<Strides> strides_view(TrailElem a, ShapeRef out) {
+  GET_SHAPES_STRIDES(a);
+  return strides_view(shape_a, strides_a, out);
 }
 
-std::optional<Shape> shape_select(TrailElem a, TrailElem b) {
-  GET_SHAPE(a);
-  GET_INT(b);
-  return shape_select(shape_a, int_b);
+c10::optional<Strides> strides_clone(TrailElem a,
+                                     c10::optional<TrailElem> b = {}) {
+  GET_SHAPES_STRIDES(a);
+  GET_OPT_MEMFORMAT_OPT(b);
+  return strides_clone(shape_a, strides_a, memformat_b, b.has_value());
 }
 
-std::optional<Shape> shape_transpose(TrailElem a, TrailElem b, TrailElem c) {
-  GET_SHAPE(a);
-  GET_INT(b);
-  GET_INT(c);
-  return shape_transpose(shape_a, int_b, int_c);
+c10::optional<Strides> strides_clone2(TrailElem a, TrailElem b, TrailElem c) {
+  GET_SHAPES_STRIDES(a);
+  GET_BOOL(b);
+  GET_OPT_MEMFORMAT(c)
+  return strides_clone2(shape_a, strides_a, memformat_c, bool_b);
 }
 
-std::optional<Shape> shape_narrow(TrailElem a, TrailElem b, TrailElem c,
-                                  TrailElem d) {
-  GET_SHAPE(a);
-  GET_INT(b);
-  GET_INT(c);
-  GET_INT(d);
-  return shape_narrow(shape_a, int_b, int_c, int_d);
+c10::optional<Strides> strides_clone_bool(TrailElem a, TrailElem b) {
+  GET_SHAPES_STRIDES(a);
+  GET_BOOL(b);
+  return strides_clone_bool(shape_a, strides_a, bool_b);
 }
 
-std::optional<Shape> get_shape(TrailElem a) {
-  GET_SHAPE(a)
-  return shape_a;
+c10::optional<Strides> get_strides(TrailElem a) {
+  GET_STRIDES(a);
+  return strides_a;
 }
 
 #define DECL_UNARY(name) \
-std::optional<Shape> name(TrailElem a) { \
-  GET_SHAPE(a); \
-  return name(shape_a); \
+c10::optional<Strides> name(TrailElem a) { \
+  GET_STRIDES(a); \
+  return name(strides_a); \
 }
 
-#define DECL_BINARY(name, cond) \
-std::optional<Shape> name(TrailElem a, TrailElem b) { \
-  GET_SHAPE(a); \
-  GET_SHAPE(b); \
-  if (!(cond)) return {}; \
-  return name(shape_a, shape_b); \
-}
-
-DECL_UNARY(shape_pad1)
-DECL_UNARY(shape_transpose2d)
-DECL_BINARY(shape_std_promote, true)
-DECL_BINARY(shape_mul, !shape_a.empty() && !shape_b.empty())
-DECL_BINARY(shape_mult, !shape_a.empty() && !shape_b.empty())
-DECL_BINARY(shape_matmul, !shape_a.empty() && !shape_b.empty())
-DECL_BINARY(shape_mul_last, true)
-DECL_BINARY(shape_join, true)
-DECL_BINARY(shape_reshape, true)
-DECL_BINARY(shape_pool2d, shape_a.size() >= 2)
-DECL_BINARY(shape_permute, true)
+DECL_UNARY(strides_transpose);
 
 bool print_all = false;
 char *call_only = nullptr;
 vector<TrailElem> type_trail;
 
-std::optional<Shape> all_shape;
+c10::optional<Strides> all_strides;
 
-array<tuple<const char*, unsigned, function<std::optional<Shape>()>>, 29>
-is_shape_fn = {
-  make_tuple("ALL", 1, [&]() { return all_shape; }),
-  make_tuple("EQ_FIRST", 1, [&]() { return get_shape(type_trail[0]); }),
-  make_tuple("EQ_SECOND", 2, [&]() { return get_shape(type_trail[1]); }),
-  make_tuple("EQ_THIRD", 3, [&]() { return get_shape(type_trail[2]); }),
-  make_tuple("STD_PROMOTE", 1, [&]() { return shape_std_promote(type_trail); }),
-  make_tuple("PROMOTE_1_2", 2, [&]() { return shape_std_promote(type_trail[0], type_trail[1]); }),
-  make_tuple("PROMOTE_1_2_3", 3, [&]() { return shape_std_promote(type_trail[0], type_trail[1], type_trail[2]); }),
-  make_tuple("PICK_1ST_2ND", 2, [&]() { return pick_1st(type_trail[1]); }),
-  make_tuple("MUL_1ST_2ND", 2, [&]() { return shape_mul(type_trail[0], type_trail[1]); }),
-  make_tuple("MULT_1ST_2ND", 2, [&]() { return shape_mult(type_trail[0], type_trail[1]); }),
-  make_tuple("MATMUL_1ST_2ND", 2, [&]() { return shape_matmul(type_trail[0], type_trail[1]); }),
-  make_tuple("MATMUL_2ND_3RD", 3, [&]() { return shape_matmul(type_trail[1], type_trail[2]); }),
-  make_tuple("MULLAST_1ST_2ND", 2, [&]() { return shape_mul_last(type_trail[0], type_trail[1]); }),
-  make_tuple("JOIN_2_3", 3, [&]() { return shape_join(type_trail[1], type_trail[2]); }),
-  make_tuple("PAD1", 1, [&]() { return shape_pad1(type_trail[0]); }),
-  make_tuple("DROP1", 1, [&]() { return drop1(type_trail[0]); }),
-  make_tuple("DROP2", 1, [&]() { return drop2(type_trail[0]); }),
-  make_tuple("RESHAPE", 2, [&]() { return shape_reshape(type_trail[0], type_trail[1]); }),
-  make_tuple("POOL2D", 2, [&]() { return shape_pool2d(type_trail[0], type_trail[1]); }),
-  make_tuple("TRANSPOSE2D", 1, [&]() { return shape_transpose2d(type_trail[0]); }),
-  make_tuple("ARGMAX", 3, [&]() { return shape_argmax(type_trail[0], type_trail[1], type_trail[2]); }),
-  make_tuple("UNSQUEEZE", 2, [&]() { return shape_unsqueeze(type_trail[0], type_trail[1]); }),
-  make_tuple("UNFOLD", 4, [&]() { return shape_unfold(type_trail[0], type_trail[1], type_trail[2], type_trail[3]); }),
-  make_tuple("PERMUTE", 2, [&]() { return shape_permute(type_trail[0], type_trail[1]); }),
-  make_tuple("REDUCE", 3, [&]() { return shape_reduce(type_trail[0], type_trail[1], type_trail[2]); }),
-  make_tuple("FLATTEN", 3, [&]() { return shape_flatten(type_trail[0], type_trail[1], type_trail[2]); }),
-  make_tuple("SELECT", 2, [&]() { return shape_select(type_trail[0], type_trail[1]); }),
-  make_tuple("TRANSPOSE", 3, [&]() { return shape_transpose(type_trail[0], type_trail[1], type_trail[2]); }),
-  make_tuple("NARROW", 4, [&]() { return shape_narrow(type_trail[0], type_trail[1], type_trail[2], type_trail[3]); }),
+array<tuple<const char*, unsigned,
+            function<c10::optional<Strides>(ShapeRef)>>, 13> is_strides_fn = {
+  make_tuple("ALL", 0, [&](ShapeRef out) { return all_strides; }),
+  make_tuple("EQ_FIRST", 1, [&](ShapeRef out) { return get_strides(type_trail[0]); }),
+  make_tuple("EQ_SECOND", 2, [&](ShapeRef out) { return get_strides(type_trail[1]); }),
+  make_tuple("EQ_THIRD", 3, [&](ShapeRef out) { return get_strides(type_trail[2]); }),
+  make_tuple("STD_PROMOTE", 1, [&](ShapeRef out) { return strides_std_promote(type_trail, out); }),
+  make_tuple("CONTIGUOUS", 1, [&](ShapeRef out) { return strides_contiguous(out, type_trail[0]); }),
+  make_tuple("TRANSPOSE", 1, [&](ShapeRef out) { return strides_transpose(type_trail[0]); }),
+  make_tuple("PERMUTE", 2, [&](ShapeRef out) { return strides_permute(type_trail[0], type_trail[1]); }),
+  make_tuple("VIEW", 1, [&](ShapeRef out) { return strides_view(type_trail[0], out); }),
+  make_tuple("CLONE", 2, [&](ShapeRef out) { return strides_clone(type_trail[0], type_trail[1]); }),
+  make_tuple("CLONE1", 1, [&](ShapeRef out) { return strides_clone(type_trail[0]); }),
+  make_tuple("CLONE2", 4, [&](ShapeRef out) { return strides_clone2(type_trail[0], type_trail[2], type_trail[3]); }),
+  make_tuple("CLONE_BOOL", 2, [&](ShapeRef out) { return strides_clone_bool(type_trail[0], type_trail[1]); }),
 };
 
-array<bool, is_shape_fn.size()> is_shape_flags;
+array<bool, is_strides_fn.size()> is_strides_flags;
 unsigned num_samples = 0;
 
-void print(ShapeRef output) {
+void print(ShapeRef shape, StridesRef strides) {
   bool first = true;
   for (auto input : type_trail) {
     if (!first)
       cout << ", ";
     first = false;
     if (auto *idx = get_if<uint8_t>(&input)) {
-      cout << ShapeRef(test_shapes[*idx]);
+      auto &[shape, strides] = test_shapes[*idx];
+      cout << ShapeRef(shape) << " / " << StridesRef(strides);
     } else if (auto *v = get_if<int64_t>(&input)) {
       cout << *v;
     } else if (auto *v = get_if<bool>(&input)) {
+      cout << *v;
+    } else if (auto *v = get_if<at::MemoryFormat>(&input)) {
       cout << *v;
     } else if (get_if<void*>(&input)) {
       cout << "(null)";
@@ -277,31 +222,31 @@ void print(ShapeRef output) {
       assert(0);
     }
   }
-  cout << " -> " << output << endl;
+  cout << " -> " << shape << " / " << strides << endl;
 }
 
 
-void infer(ShapeRef output) {
+void infer(ShapeRef shape, StridesRef strides) {
   ++num_samples;
 
-  if (!all_shape)
-    all_shape = output.vec();
+  if (!all_strides)
+    all_strides = strides.vec();
 
   auto num_args = type_trail.size();
 
-  for (unsigned i = 0; i < is_shape_fn.size(); ++i) {
-    auto &f = is_shape_flags[i];
+  for (unsigned i = 0; i < is_strides_fn.size(); ++i) {
+    auto &f = is_strides_flags[i];
     if (!f)
       continue;
 
-    bool n_args = num_args >= get<1>(is_shape_fn[i]);
-    auto fn_out = n_args ? get<2>(is_shape_fn[i])() : std::nullopt;
-    f = n_args && fn_out && output == *fn_out;
+    bool n_args = num_args >= get<1>(is_strides_fn[i]);
+    auto fn_out = n_args ? get<2>(is_strides_fn[i])(shape) : c10::nullopt;
+    f = n_args && fn_out && strides == *fn_out;
 
     if (print_all && !f) {
-      cout << "FAILED: " << get<0>(is_shape_fn[i]);
+      cout << "FAILED: " << get<0>(is_strides_fn[i]);
       if (n_args && fn_out) {
-        cout << " / EXPECTING: " << ShapeRef(*fn_out);
+        cout << " / EXPECTING: " << StridesRef(*fn_out);
       }
       cout << '\n';
     }
@@ -315,10 +260,11 @@ struct C {
     try {
       auto tensor = fn();
       auto shape = tensor.sizes();
+      auto strides = tensor.strides();
 
       if (print_all)
-        print(shape);
-      infer(shape);
+        print(shape, strides);
+      infer(shape, strides);
 #if 0
     } catch (const c10::Error &) {
       cout << "Exception!\n";
@@ -474,7 +420,7 @@ struct C {
     for (uint8_t shape = 0; shape < test_shapes.size(); ++shape) {
       type_trail.emplace_back(shape);
       call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
-        return fn(test_shapes[shape], args...);
+        return fn(test_shapes[shape].first, args...);
       }});
       type_trail.pop_back();
     }
@@ -489,9 +435,13 @@ struct C {
 
   template <typename... Tail>
   void call(function<Tensor(c10::optional<at::MemoryFormat>, Tail...)> fn) {
-    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
-      return fn(c10::nullopt, args...);
-    }});
+    for (auto v : {at::MemoryFormat::Preserve, at::MemoryFormat::Contiguous}) {
+      type_trail.emplace_back(v);
+      call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+        return fn(v, args...);
+      }});
+      type_trail.pop_back();
+    }
   }
 
   template <typename T>
@@ -499,10 +449,10 @@ struct C {
     if (call_only && strcmp(name, call_only))
       return;
 
-    for (auto &f : is_shape_flags) {
+    for (auto &f : is_strides_flags) {
       f = true;
     }
-    all_shape.reset();
+    all_strides.reset();
 
     call(move(fn));
 
@@ -512,13 +462,13 @@ struct C {
       cout << ": NO_SAMPLES\n";
       return;
     }
-    if (is_shape_flags[0]) {
-      cout << ": ALL " << ShapeRef(*all_shape) << '\n';
+    if (is_strides_flags[0]) {
+      cout << ": ALL " << ShapeRef(*all_strides) << '\n';
       return;
     }
-    for (unsigned i = 1; i < is_shape_flags.size(); ++i) {
-      if (is_shape_flags[i]) {
-        cout << ": " << get<0>(is_shape_fn[i]) << '\n';
+    for (unsigned i = 1; i < is_strides_flags.size(); ++i) {
+      if (is_strides_flags[i]) {
+        cout << ": " << get<0>(is_strides_fn[i]) << '\n';
         return;
       }
     }

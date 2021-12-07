@@ -10,4 +10,5 @@ infer_shapes
 infer_types
 scripts/call_pytorch_fns.h
 shapes.txt
+strides.txt
 types.txt

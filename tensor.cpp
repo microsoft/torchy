@@ -5,9 +5,10 @@
 #include "dispatch.h"
 #include "trace.h"
 #include <ATen/RedispatchFunctions.h>
-#include <ATen/TensorUtils.h>
 #include <torch/library.h>
 #include <cassert>
+#include "shape_inference.h"
+#include "strides_inference.h"
 
 #ifdef C10_DISABLE_TENSORIMPL_EXTENSIBILITY
 # error Cannot disable C10_DISABLE_TENSORIMPL_EXTENSIBILITY
@@ -585,6 +586,10 @@ optional<IntArrayRef> strides_of(const Tensor &t) {
   return t.strides();
 }
 
+optional<IntArrayRef> strides_of(const optional<Tensor> &t) {
+  return strides_of(*t);
+}
+
 bool empty_opt_tensor(const c10::optional<Tensor> &t) {
   return !t;
 }
@@ -595,8 +600,6 @@ bool empty_opt_tensor(const T&) {
 }
 
 static std::vector<int64_t> tmp_shape;
-
-#include "shape_inference.h"
 
 #define GET_SHAPE(v) \
   auto shape_##v = shape_of(v); \
@@ -751,6 +754,17 @@ optional<IntArrayRef> shape_stack(TensorList lst, int64_t dim) {
   return tmp_shape = shape_stack(*shape, lst.size(), dim);
 }
 
+optional<IntArrayRef> shape_cat(TensorList lst, int64_t dim) {
+  vector<IntArrayRef> shapes;
+  for (auto &t : lst) {
+    auto opt = shape_of(t);
+    if (!opt)
+      return {};
+    shapes.emplace_back(*opt);
+  }
+  return tmp_shape = shape_cat(shapes, dim);
+}
+
 optional<IntArrayRef>
 shape_argmax(const Tensor &t, optional<int64_t> dim, bool keepdim) {
   GET_SHAPE(t);
@@ -797,6 +811,12 @@ optional<IntArrayRef> shape_unfold(const Tensor &t, int64_t dim, int64_t size,
   return tmp_shape = shape_unfold(*shape_t, dim, size, step);
 }
 
+optional<IntArrayRef> shape_narrow(const Tensor &t, int64_t dim, int64_t start,
+                                   int64_t length) {
+  GET_SHAPE(t);
+  return tmp_shape = shape_narrow(*shape_t, dim, start, length);
+}
+
 bool eq_shapes(optional<IntArrayRef> s1, optional<IntArrayRef> s2) {
   return s1 && s2 && *s1 == *s2;
 }
@@ -813,52 +833,85 @@ bool eq_shapes(const Tensor &t1, optional<IntArrayRef> s2) {
   auto strides_##v = strides_of(v); \
   if (!strides_##v) return {}
 
+#define RETURN_OPT(v) \
+  auto opt = v; \
+  if (opt) \
+    return tmp_shape = move(*opt); \
+  return {};
+
 optional<IntArrayRef> strides_contiguous(const Tensor &t) {
   GET_SHAPE(t);
-  return tmp_shape = at::detail::defaultStrides(*shape_t);
+  GET_STRIDES(t);
+  return tmp_shape = strides_contiguous(*shape_t, *strides_t);
 }
 
-optional<IntArrayRef> strides_std_promote(const Tensor &a, const Tensor &b) {
+bool strides_std_promote_(vector<pair<IntArrayRef, IntArrayRef>> &data) {
+  return true;
+}
+
+template <typename... Tail>
+bool strides_std_promote_(vector<pair<IntArrayRef, IntArrayRef>> &data,
+                          const TensorList &lst, Tail&&... tail) {
+  for (auto &t : lst) {
+    GET_SHAPE(t);
+    GET_STRIDES(t);
+    data.emplace_back(*shape_t, *strides_t);
+  }
+  return strides_std_promote_(data, forward<Tail>(tail)...);
+}
+
+template <typename A, typename... Tail>
+bool strides_std_promote_(vector<pair<IntArrayRef, IntArrayRef>> &data,
+                          const A &a, Tail&&... tail) {
+  if (empty_opt_tensor(a))
+    return strides_std_promote_(data, forward<Tail>(tail)...);
+
   GET_SHAPE(a);
-  GET_SHAPE(b);
   GET_STRIDES(a);
-  GET_STRIDES(b);
-
-  // TODO: other cases
-  if (shape_a == shape_b && strides_a == strides_b)
-    return strides_a;
-  return {};
+  data.emplace_back(*shape_a, *strides_a);
+  return strides_std_promote_(data, forward<Tail>(tail)...);
 }
 
-optional<IntArrayRef> strides_view(const Tensor &oldt, const Tensor &newt,
-                                   IntArrayRef size) {
+template <typename... Tail>
+optional<IntArrayRef> strides_std_promote(const Tensor &out, Tail&&... tail) {
+  GET_SHAPE(out);
+  vector<pair<IntArrayRef, IntArrayRef>> ops_data;
+  if (!strides_std_promote_(ops_data, forward<Tail>(tail)...))
+    return {};
+  return tmp_shape = strides_std_promote(*shape_out, ops_data);
+}
+
+optional<IntArrayRef> strides_view(const Tensor &oldt, const Tensor &newt) {
   GET_SHAPE(oldt);
   GET_STRIDES(oldt);
   GET_SHAPE(newt);
-  auto opt = at::detail::computeStride(*shape_oldt, *strides_oldt, *shape_newt);
-  if (opt)
-    return tmp_shape = *move(opt);
-  return {};
+  RETURN_OPT(strides_view(*shape_oldt, *strides_oldt, *shape_newt));
 }
 
 optional<IntArrayRef> strides_transpose(const Tensor &t) {
   GET_SHAPE(t);
-  tmp_shape = shape_t->vec();
-  reverse(tmp_shape.begin(), tmp_shape.end());
-  return tmp_shape;
+  return tmp_shape = strides_transpose(*shape_t);
 }
 
 optional<IntArrayRef> strides_clone(const Tensor &t,
-                                    optional<at::MemoryFormat> format0) {
-  auto format = format0.value_or(at::MemoryFormat::Preserve);
-  switch (format) {
-  case at::MemoryFormat::Preserve:
-    return strides_of(t);
-  case at::MemoryFormat::Contiguous:
-    return strides_contiguous(t);
-  default: // TODO
-    return {};
-  }
+                                    optional<at::MemoryFormat> format = {}) {
+  GET_SHAPE(t);
+  GET_STRIDES(t);
+  RETURN_OPT(strides_clone(*shape_t, *strides_t, format,
+                           format.has_value()));
+}
+
+optional<IntArrayRef> strides_clone2(const Tensor &t, bool copy,
+                                     optional<at::MemoryFormat> format) {
+  GET_SHAPE(t);
+  GET_STRIDES(t);
+  RETURN_OPT(strides_clone2(*shape_t, *strides_t, format, copy));
+}
+
+optional<IntArrayRef> strides_clone_bool(const Tensor &t, bool copy) {
+  GET_SHAPE(t);
+  GET_STRIDES(t);
+  RETURN_OPT(strides_clone_bool(*shape_t, *strides_t, copy));
 }
 
 optional<IntArrayRef> strides_permute(const Tensor &t, IntArrayRef dims) {
