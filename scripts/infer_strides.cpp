@@ -43,6 +43,9 @@ void init_shapes() {
   test_shapes.emplace_back(Shape({2, 3, 4}), Strides({1, 2, 3}));
   test_shapes.emplace_back(Shape({2, 3, 4}), Strides({18, 1, 1}));
   test_shapes.emplace_back(Shape({2, 3, 4}), Strides({1, 16, 1}));
+  test_shapes.emplace_back(Shape({1, 1, 2}), Strides({1, 1, 3}));
+  test_shapes.emplace_back(Shape({1, 9, 3 ,2}), Strides({1, 2, 7, 5}));
+  test_shapes.emplace_back(Shape({1, 9, 3, 2}), Strides({54, 6, 2, 5}));
 
   // for layout tests
   test_shapes.emplace_back(Shape({-1}), Strides({1}));
@@ -95,6 +98,11 @@ using TrailElem = variant<uint8_t, void*, bool, int64_t, at::MemoryFormat>;
     int_##v = *val_ref_##v; \
   }
 
+#define GET_MEMFORMAT(v) \
+  auto val_ref_##v = get_if<at::MemoryFormat>(&v); \
+  if (!val_ref_##v) return {}; \
+  at::MemoryFormat memformat_##v = *val_ref_##v;
+
 #define GET_OPT_MEMFORMAT(v) \
   c10::optional<at::MemoryFormat> memformat_##v; \
   if (!get_if<void*>(&v)) { \
@@ -126,9 +134,8 @@ c10::optional<Strides> strides_std_promote(const vector<TrailElem> &ops,
   return strides_std_promote(out, ops_data);
 }
 
-c10::optional<Strides> strides_contiguous(ShapeRef shape, TrailElem in) {
-  GET_STRIDES(in);
-  return strides_contiguous(shape, strides_in);
+c10::optional<Strides> strides_contiguous_out(ShapeRef shape) {
+  return strides_contiguous(shape);
 }
 
 c10::optional<Strides> strides_permute(TrailElem a, TrailElem b) {
@@ -162,6 +169,45 @@ c10::optional<Strides> strides_clone_bool(TrailElem a, TrailElem b) {
   return strides_clone_bool(shape_a, strides_a, bool_b);
 }
 
+c10::optional<Strides>
+strides_transpose(TrailElem a, TrailElem b, TrailElem c) {
+  GET_STRIDES(a);
+  GET_INT(b);
+  GET_INT(c);
+  return shape_transpose(strides_a, int_b, int_c);
+}
+
+c10::optional<Strides> strides_expand(TrailElem a, TrailElem b) {
+  GET_SHAPES_STRIDES(a);
+  GET_SHAPE(b);
+  return strides_expand(shape_a, strides_a, shape_b);
+}
+
+c10::optional<Strides> strides_slice(TrailElem a, TrailElem b, TrailElem c,
+                                     TrailElem d, TrailElem e) {
+  GET_STRIDES(a);
+  GET_INT(b);
+  GET_INT(e);
+  return strides_slice(strides_a, int_b, int_e);
+}
+
+c10::optional<Strides> strides_flatten(TrailElem a, IntArrayRef out) {
+  GET_SHAPES_STRIDES(a);
+  return strides_flatten(shape_a, strides_a, out);
+}
+
+c10::optional<Strides> strides_select(TrailElem a, TrailElem b) {
+  GET_STRIDES(a);
+  GET_INT(b);
+  return shape_select(strides_a, int_b);
+}
+
+c10::optional<Strides> strides_unsqueeze(TrailElem a, TrailElem b) {
+  GET_SHAPES_STRIDES(a);
+  GET_INT(b);
+  return strides_unsqueeze(shape_a, strides_a, int_b);
+}
+
 c10::optional<Strides> get_strides(TrailElem a) {
   GET_STRIDES(a);
   return strides_a;
@@ -173,7 +219,7 @@ c10::optional<Strides> name(TrailElem a) { \
   return name(strides_a); \
 }
 
-DECL_UNARY(strides_transpose);
+DECL_UNARY(strides_transpose2d);
 
 bool print_all = false;
 char *call_only = nullptr;
@@ -182,20 +228,27 @@ vector<TrailElem> type_trail;
 c10::optional<Strides> all_strides;
 
 array<tuple<const char*, unsigned,
-            function<c10::optional<Strides>(ShapeRef)>>, 13> is_strides_fn = {
+            function<c10::optional<Strides>(ShapeRef)>>, 20> is_strides_fn = {
   make_tuple("ALL", 0, [&](ShapeRef out) { return all_strides; }),
   make_tuple("EQ_FIRST", 1, [&](ShapeRef out) { return get_strides(type_trail[0]); }),
   make_tuple("EQ_SECOND", 2, [&](ShapeRef out) { return get_strides(type_trail[1]); }),
   make_tuple("EQ_THIRD", 3, [&](ShapeRef out) { return get_strides(type_trail[2]); }),
+  make_tuple("CONTIGUOUS", 0, [&](ShapeRef out) { return strides_contiguous_out(out); }),
   make_tuple("STD_PROMOTE", 1, [&](ShapeRef out) { return strides_std_promote(type_trail, out); }),
-  make_tuple("CONTIGUOUS", 1, [&](ShapeRef out) { return strides_contiguous(out, type_trail[0]); }),
-  make_tuple("TRANSPOSE", 1, [&](ShapeRef out) { return strides_transpose(type_trail[0]); }),
+  make_tuple("TRANSPOSE2D", 1, [&](ShapeRef out) { return strides_transpose2d(type_trail[0]); }),
+  make_tuple("TRANSPOSE", 3, [&](ShapeRef out) { return strides_transpose(type_trail[0], type_trail[1], type_trail[2]); }),
   make_tuple("PERMUTE", 2, [&](ShapeRef out) { return strides_permute(type_trail[0], type_trail[1]); }),
   make_tuple("VIEW", 1, [&](ShapeRef out) { return strides_view(type_trail[0], out); }),
   make_tuple("CLONE", 2, [&](ShapeRef out) { return strides_clone(type_trail[0], type_trail[1]); }),
   make_tuple("CLONE1", 1, [&](ShapeRef out) { return strides_clone(type_trail[0]); }),
   make_tuple("CLONE2", 4, [&](ShapeRef out) { return strides_clone2(type_trail[0], type_trail[2], type_trail[3]); }),
+  make_tuple("CLONE3", 3, [&](ShapeRef out) { return strides_clone2(type_trail[0], true, type_trail[2]); }),
   make_tuple("CLONE_BOOL", 2, [&](ShapeRef out) { return strides_clone_bool(type_trail[0], type_trail[1]); }),
+  make_tuple("EXPAND", 2, [&](ShapeRef out) { return strides_expand(type_trail[0], type_trail[1]); }),
+  make_tuple("SLICE", 5, [&](ShapeRef out) { return strides_slice(type_trail[0], type_trail[1], type_trail[2], type_trail[3], type_trail[4]); }),
+  make_tuple("FLATTEN", 3, [&](ShapeRef out) { return strides_flatten(type_trail[0], out); }),
+  make_tuple("SELECT", 2, [&](ShapeRef out) { return strides_select(type_trail[0], type_trail[1]); }),
+  make_tuple("UNSQUEEZE", 2, [&](ShapeRef out) { return strides_unsqueeze(type_trail[0], type_trail[1]); }),
 };
 
 array<bool, is_strides_fn.size()> is_strides_flags;
@@ -395,7 +448,7 @@ struct C {
 
   template <typename... Tail>
   void call(function<Tensor(int64_t, Tail...)> fn) {
-    for (int64_t v : {0, 1}) {
+    for (int64_t v : {0, 1, 2}) {
       type_trail.emplace_back(v);
       call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
         return fn(v, args...);
@@ -434,7 +487,7 @@ struct C {
   }
 
   template <typename... Tail>
-  void call(function<Tensor(c10::optional<at::MemoryFormat>, Tail...)> fn) {
+  void call(function<Tensor(at::MemoryFormat, Tail...)> fn) {
     for (auto v : {at::MemoryFormat::Preserve, at::MemoryFormat::Contiguous}) {
       type_trail.emplace_back(v);
       call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {

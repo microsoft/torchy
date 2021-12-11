@@ -19,19 +19,13 @@ compute_strides_it(IntArrayRef shape_out, const ShapeStridesVec &ops) {
   for (auto op : ops) {
     auto &shape = op.first;
     auto &strides = op.second;
-    ret.emplace_back();
+    ret.emplace_back(ndim, 0);
     auto &new_strides = ret.back();
     auto offset = ndim - shape.size();
-    if (offset > 0)
-        new_strides.resize(ndim, 0);
-    else
-        new_strides.resize(ndim);
+
     for (const auto i : c10::irange(shape.size())) {
-      if (shape[i] == 1 && shape_out[offset + i] !=1) {
-        new_strides[offset + i] = 0;
-      } else {
+      if (shape[i] != 1 || shape_out[offset + i] == 1)
         new_strides[offset + i] = strides[i];
-      }
     }
   }
   return ret;
@@ -127,14 +121,24 @@ std::vector<int64_t> strides_contiguous(IntArrayRef shape) {
   return ret;
 }
 
+bool all_shapes_eq(const ShapeStridesVec &ops) {
+  for (auto &op : ops) {
+    if (op.first != ops[0].first)
+      return false;
+  }
+  return true;
+}
+
 std::vector<int64_t>
 strides_std_promote(IntArrayRef shape_out, const ShapeStridesVec &ops) {
-  bool all_contiguous = true;
-  for (auto op : ops) {
-    all_contiguous &= at::geometry_is_contiguous(op.first, op.second);
+  if (all_shapes_eq(ops)) {
+    bool all_contiguous = true;
+    for (auto op : ops) {
+      all_contiguous &= at::geometry_is_contiguous(op.first, op.second);
+    }
+    if (all_contiguous)
+      return strides_contiguous(shape_out);
   }
-  if (all_contiguous)
-    return strides_contiguous(shape_out);
 
   auto op_strides = compute_strides_it(shape_out, ops);
   auto perm = reorder_dimensions_it(op_strides, shape_out, ops);
@@ -163,7 +167,7 @@ std::vector<int64_t> strides_contiguous(IntArrayRef shape,
   return strides_contiguous(shape);
 }
 
-std::vector<int64_t> strides_transpose(IntArrayRef shape) {
+std::vector<int64_t> strides_transpose2d(IntArrayRef shape) {
   auto ret = shape.vec();
   reverse(ret.begin(), ret.end());
   return ret;
@@ -218,7 +222,7 @@ strides_clone(IntArrayRef shape, IntArrayRef strides,
              ? strides.vec()
              : at::infer_dense_strides(shape, strides);
   case at::MemoryFormat::Contiguous:
-    return strides_contiguous(shape, strides);
+    return strides_contiguous(shape);
   default: // TODO
     return {};
   }
@@ -227,11 +231,17 @@ strides_clone(IntArrayRef shape, IntArrayRef strides,
 c10::optional<std::vector<int64_t>>
 strides_clone2(IntArrayRef shape, IntArrayRef strides,
                c10::optional<at::MemoryFormat> format0, bool copy) {
-  auto format = format0.value_or(at::MemoryFormat::Preserve);
-  if (copy)
-    return strides_contiguous(shape, strides,
-                              format == at::MemoryFormat::Preserve);
-  return strides.vec();
+  if (!copy)
+    return strides.vec();
+
+  switch (format0.value_or(at::MemoryFormat::Preserve)) {
+  case at::MemoryFormat::Preserve:
+    return strides_contiguous(shape, strides, true);
+  case at::MemoryFormat::Contiguous:
+    return strides_contiguous(shape);
+  default: // TODO
+    return {};
+  }
 }
 
 c10::optional<std::vector<int64_t>>
@@ -239,6 +249,64 @@ strides_clone_bool(IntArrayRef shape, IntArrayRef strides, bool copy) {
   if (copy)
     return strides_clone(shape, strides, {}, true);
   return strides.vec();
+}
+
+std::vector<int64_t>
+strides_expand(IntArrayRef shape, IntArrayRef strides, IntArrayRef tgt) {
+  auto src_sz = shape.size();
+  auto tgt_sz = tgt.size();
+  std::vector<int64_t> ret(tgt_sz, 0);
+
+  if (tgt_sz < src_sz)
+    return {};
+
+  auto expanded = [&](size_t i) {
+    return shape[src_sz-i] != tgt[tgt_sz-i] && tgt[tgt_sz-i] != -1;
+  };
+
+  for (auto i = src_sz; i > 0; --i) {
+    ret[tgt_sz-i] = expanded(i) ? 0 : strides[src_sz-i];
+  }
+
+  if (!expanded(src_sz)) {
+    for (auto i = src_sz+1; i <= tgt_sz; ++i) {
+      if (tgt[tgt_sz-i] != 1)
+        break;
+      ret[tgt_sz-i] = shape[0] * strides[0];
+    }
+  }
+  return ret;
+}
+
+std::vector<int64_t> strides_slice(IntArrayRef strides, int64_t dim,
+                                   int64_t step) {
+  auto ret = strides.vec();
+  ret[dim] *= step;
+  return ret;
+}
+
+std::vector<int64_t>
+strides_flatten(IntArrayRef shape, IntArrayRef strides, IntArrayRef shape_out) {
+  if (shape == shape_out)
+    return strides.vec();
+
+  if (shape.empty())
+    return { 1 };
+
+  if (auto op = at::detail::computeStride(shape, strides, shape_out))
+    return *op;
+  return strides_contiguous(shape_out);
+}
+
+std::vector<int64_t>
+strides_unsqueeze(IntArrayRef shape, IntArrayRef strides, int64_t dim) {
+  auto res = strides.vec();
+  if (dim < 0)
+    dim += res.size() + 1;
+  auto val = (size_t)dim < res.size() ? shape[dim] * strides[dim] : 1;
+  if ((size_t)dim <= res.size())
+    res.insert(res.begin() + dim, val);
+  return res;
 }
 
 }

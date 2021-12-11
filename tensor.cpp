@@ -320,11 +320,8 @@ public:
   }
 
   bool is_contiguous(at::MemoryFormat memory_format) const override {
-    if (!has_strides_data || !has_shape_data) {
-      if (false && trace_idx != -1u && !trace.is_flushing())
-        cerr << "BAD ISCONTIGUOUS FOR " << trace.getOps()[trace_idx].id << endl;
+    if (!has_strides_data || !has_shape_data)
       ensure_materialized(STATS(FlushReason::IS_CONTIGUOUS));
-    }
     return TensorImpl::is_contiguous(memory_format);
   }
 
@@ -519,10 +516,6 @@ namespace {
 
 #include "type_inference.h"
 
-ScalarType optional_type(const c10::optional<Tensor> &t) {
-  return t ? t->scalar_type() : ScalarType::Undefined;
-}
-
 #define PASS(t) \
   t.scalar_type(), [&]() { return t.dim() == 0; }
 
@@ -531,9 +524,6 @@ ScalarType optional_type(const c10::optional<Tensor> &t) {
 
 #define PASST(t) \
   t.scalar_type(), false, [&]() { return t.dim() == 0; }
-
-#define PASS_OPT(t) \
-  optional_type(t), [&]() { return t && t->dim() == 0; }
 
 ScalarType to_float2(const Tensor &t1, const Tensor &t2) {
   return to_float2(PASST(t1), PASST(t2));
@@ -549,11 +539,6 @@ ScalarType to_float2(const Tensor &t, const Scalar &s) {
 
 ScalarType to_float3(const Tensor &t1, const Tensor &t2, const Tensor &t3) {
   return to_float3(PASS(t1), PASS(t2), PASS(t3));
-}
-
-ScalarType to_float4(const Tensor &t1, const Tensor &t2, const Tensor &t3,
-                     const c10::optional<Tensor> &t4) {
-  return to_float4(PASS(t1), PASS(t2), PASS(t3), PASS_OPT(t4));
 }
 
 ScalarType to_real2(const Tensor &t1, const Tensor &t2) {
@@ -709,6 +694,10 @@ optional<IntArrayRef> shape_transpose2d(const Tensor &t) {
 }
 
 optional<IntArrayRef> shape_reshape(const Tensor &t, IntArrayRef to) {
+  // fast path
+  if (find(to.begin(), to.end(), -1) == to.end())
+    return to;
+
   GET_SHAPE(t);
   return tmp_shape = shape_reshape(*shape_t, to);
 }
@@ -841,8 +830,7 @@ bool eq_shapes(const Tensor &t1, optional<IntArrayRef> s2) {
 
 optional<IntArrayRef> strides_contiguous(const Tensor &t) {
   GET_SHAPE(t);
-  GET_STRIDES(t);
-  return tmp_shape = strides_contiguous(*shape_t, *strides_t);
+  return tmp_shape = strides_contiguous(*shape_t);
 }
 
 bool strides_std_promote_(vector<pair<IntArrayRef, IntArrayRef>> &data) {
@@ -888,9 +876,15 @@ optional<IntArrayRef> strides_view(const Tensor &oldt, const Tensor &newt) {
   RETURN_OPT(strides_view(*shape_oldt, *strides_oldt, *shape_newt));
 }
 
-optional<IntArrayRef> strides_transpose(const Tensor &t) {
-  GET_SHAPE(t);
-  return tmp_shape = strides_transpose(*shape_t);
+optional<IntArrayRef> strides_transpose2d(const Tensor &t) {
+  GET_STRIDES(t);
+  return tmp_shape = strides_transpose2d(*strides_t);
+}
+
+optional<IntArrayRef> strides_transpose(const Tensor &t, int64_t dim1,
+                                        int64_t dim2) {
+  GET_STRIDES(t);
+  return tmp_shape = shape_transpose(*strides_t, dim1, dim2);
 }
 
 optional<IntArrayRef> strides_clone(const Tensor &t,
@@ -901,10 +895,12 @@ optional<IntArrayRef> strides_clone(const Tensor &t,
                            format.has_value()));
 }
 
-optional<IntArrayRef> strides_clone2(const Tensor &t, bool copy,
+optional<IntArrayRef> strides_clone2(const Tensor &t,
+                                     optional<ScalarType> dtype, bool copy,
                                      optional<at::MemoryFormat> format) {
   GET_SHAPE(t);
   GET_STRIDES(t);
+  copy |= dtype && *dtype != t.dtype();
   RETURN_OPT(strides_clone2(*shape_t, *strides_t, format, copy));
 }
 
@@ -917,6 +913,41 @@ optional<IntArrayRef> strides_clone_bool(const Tensor &t, bool copy) {
 optional<IntArrayRef> strides_permute(const Tensor &t, IntArrayRef dims) {
   GET_STRIDES(t);
   return tmp_shape = shape_permute(*strides_t, dims);
+}
+
+optional<IntArrayRef> strides_expand(const Tensor &t, IntArrayRef size) {
+  GET_SHAPE(t);
+  GET_STRIDES(t);
+  return tmp_shape = strides_expand(*shape_t, *strides_t, size);
+}
+
+optional<IntArrayRef> strides_expand(const Tensor &t, const Tensor &other) {
+  GET_SHAPE(other);
+  return strides_expand(t, *shape_other);
+}
+
+optional<IntArrayRef> strides_slice(const Tensor &t, int64_t dim,
+                                    int64_t step) {
+  GET_STRIDES(t);
+  return tmp_shape = strides_slice(*strides_t, dim, step);
+}
+
+optional<IntArrayRef> strides_flatten(const Tensor &t, const Tensor &out) {
+  GET_SHAPE(t);
+  GET_STRIDES(t);
+  GET_SHAPE(out);
+  return tmp_shape = strides_flatten(*shape_t, *strides_t, *shape_out);
+}
+
+optional<IntArrayRef> strides_select(const Tensor &t, int64_t dim) {
+  GET_STRIDES(t);
+  return tmp_shape = shape_select(*strides_t, dim);
+}
+
+optional<IntArrayRef> strides_unsqueeze(const Tensor &t, int64_t dim) {
+  GET_SHAPE(t);
+  GET_STRIDES(t);
+  return tmp_shape = strides_unsqueeze(*shape_t, *strides_t, dim);
 }
 
 Tensor register_new_tensor(DispatchKeySet ks, TorchOp op,

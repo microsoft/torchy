@@ -23,15 +23,18 @@ shape_exceptions = {
   'embedding'         : 'EMBEDDING',
   'max_pool2d'        : 'CONV2D',
   'mkldnn_convolution': 'CONV2D2',
-  'slice.Tensor'      : 'SLICE',
   'stack'             : 'STACK',
   'stack.out'         : 'STACK',
   'transpose_'        : '',
 }
 
 strides_exceptions = {
-  'clone': 'CLONE',
-  'embedding': 'CONTIGUOUS',
+  '_s_where'          : 'CONTIGUOUS',
+  'clone'             : 'CLONE',
+  'conv2d'            : 'CONTIGUOUS',
+  'embedding'         : 'CONTIGUOUS',
+  'max_pool2d'        : 'CONTIGUOUS',
+  'mkldnn_convolution': 'CONTIGUOUS',
 }
 
 def get_dtype_infer_fn(fn):
@@ -154,8 +157,6 @@ def mk_dtype_infer(type, all_args):
     return f'to_float2({args[0].expr}, {args[1].expr})'
   if type == 'TO_FLOAT3':
     return f'to_float3({args[0].expr}, {args[1].expr}, {args[2].expr})'
-  if type == 'TO_FLOAT4':
-    return f'to_float4({args[0].expr}, {args[1].expr}, {args[2].expr}, {args[3].expr})'
   if type == 'TO_QINT':
     return f'toQIntType({args[0].expr}.scalar_type())'
   if type == 'TO_REAL2':
@@ -376,18 +377,33 @@ def mk_strides_infer(fn, all_args, ret):
     return f'strides_std_promote({ret}, {", ".join(args)})'
   if fn == 'VIEW':
     return f'strides_view({args[0].expr}, {ret})'
+  if fn == 'TRANSPOSE2D':
+    return f'strides_transpose2d({args[0].expr})'
   if fn == 'TRANSPOSE':
-    return f'strides_transpose({args[0].expr})'
+    return f'strides_transpose({args[0].expr}, {args[1].expr}, {args[2].expr})'
   if fn == 'CLONE':
     return f'strides_clone({args[0].expr}, {args[1].expr})'
   if fn == 'CLONE1':
     return f'strides_clone({args[0].expr})'
   if fn == 'CLONE2':
-    return f'strides_clone2({args[0].expr}, {args[2].expr}, {args[3].expr})'
+    dtype = all_args[1].expr if 'ScalarType' in all_args[1].type.cpp_type() else all_args[2].expr
+    return f'strides_clone2({args[0].expr}, {dtype}, {args[2].expr}, {args[3].expr})'
+  if fn == 'CLONE3':
+    return f'strides_clone2({args[0].expr}, kFloat, true, {args[2].expr})'
   if fn == 'CLONE_BOOL':
     return f'strides_clone_bool({args[0].expr}, {args[1].expr})'
   if fn == 'PERMUTE':
     return f'strides_permute({args[0].expr}, {args[1].expr})'
+  if fn == 'EXPAND':
+    return f'strides_expand({args[0].expr}, {args[1].expr})'
+  if fn == 'SLICE':
+    return f'strides_slice({args[0].expr}, {args[1].expr}, {args[4].expr})'
+  if fn == 'FLATTEN':
+    return f'strides_flatten({args[0].expr}, {ret})'
+  if fn == 'SELECT':
+    return f'strides_select({args[0].expr}, {args[1].expr})'
+  if fn == 'UNSQUEEZE':
+    return f'strides_unsqueeze({args[0].expr}, {args[1].expr})'
 
   print('mk_strides_infer', fn)
   return 'nullopt'

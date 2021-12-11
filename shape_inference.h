@@ -221,7 +221,7 @@ std::vector<int64_t> shape_slice(IntArrayRef s, int64_t dim,
   int64_t end   = min(end_opt.value_or(limit), limit);
   if (start < 0)
     start += limit;
-  res[dim] = (end - start + step - 1) / step;
+  res[dim] = end >= start ? ((end - start + step - 1) / step) : 0;
   return res;
 }
 

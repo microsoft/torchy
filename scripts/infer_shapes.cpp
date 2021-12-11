@@ -186,6 +186,16 @@ std::optional<Shape> shape_narrow(TrailElem a, TrailElem b, TrailElem c,
   return shape_narrow(shape_a, int_b, int_c, int_d);
 }
 
+std::optional<Shape> shape_slice(TrailElem a, TrailElem b, TrailElem c,
+                                 TrailElem d, TrailElem e) {
+  GET_SHAPE(a);
+  GET_INT(b);
+  GET_OPT_INT(c);
+  GET_OPT_INT(d);
+  GET_INT(e)
+  return shape_slice(shape_a, int_b, int_c, int_d, int_e);
+}
+
 std::optional<Shape> get_shape(TrailElem a) {
   GET_SHAPE(a)
   return shape_a;
@@ -223,7 +233,7 @@ vector<TrailElem> type_trail;
 
 std::optional<Shape> all_shape;
 
-array<tuple<const char*, unsigned, function<std::optional<Shape>()>>, 29>
+array<tuple<const char*, unsigned, function<std::optional<Shape>()>>, 30>
 is_shape_fn = {
   make_tuple("ALL", 1, [&]() { return all_shape; }),
   make_tuple("EQ_FIRST", 1, [&]() { return get_shape(type_trail[0]); }),
@@ -254,6 +264,7 @@ is_shape_fn = {
   make_tuple("SELECT", 2, [&]() { return shape_select(type_trail[0], type_trail[1]); }),
   make_tuple("TRANSPOSE", 3, [&]() { return shape_transpose(type_trail[0], type_trail[1], type_trail[2]); }),
   make_tuple("NARROW", 4, [&]() { return shape_narrow(type_trail[0], type_trail[1], type_trail[2], type_trail[3]); }),
+  make_tuple("SLICE", 5, [&]() { return shape_slice(type_trail[0], type_trail[1], type_trail[2], type_trail[3], type_trail[4]); }),
 };
 
 array<bool, is_shape_fn.size()> is_shape_flags;
@@ -491,6 +502,13 @@ struct C {
   void call(function<Tensor(c10::optional<at::MemoryFormat>, Tail...)> fn) {
     call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
       return fn(c10::nullopt, args...);
+    }});
+  }
+
+  template <typename... Tail>
+  void call(function<Tensor(at::MemoryFormat, Tail...)> fn) {
+    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+      return fn({}, args...);
     }});
   }
 

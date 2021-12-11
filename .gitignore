@@ -5,7 +5,7 @@ output
 dist
 torchy.egg-info
 build.ninja
-.ninja_log
+.ninja_*
 infer_shapes
 infer_types
 scripts/call_pytorch_fns.h

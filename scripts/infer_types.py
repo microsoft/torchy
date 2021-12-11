@@ -15,7 +15,7 @@ native_functions = parse_native_yaml(yaml_path)
 
 def get(tensors, type):
   # try to reuse a tensor to avoid exponential explosion
-  if len(tensors) >= 4:
+  if len(tensors) >= 5:
     for ty, t in tensors:
       if ty == type:
         return t
@@ -28,6 +28,7 @@ def mk_arg(arg, tensors):
   dispatch_types = {
     'bool' : False,
     'int64_t' : False,
+    'at::MemoryFormat' : False,
     'at::Scalar' : True,
     'at::ScalarType' : False,
     'at::IntArrayRef' : False,

@@ -313,18 +313,6 @@ ScalarType to_float3(ScalarType ty1, const function<bool()> &zerodim1,
                        ty3, false, zerodim3);
 }
 
-ScalarType to_float4(ScalarType ty1, const function<bool()> &zerodim1,
-                     ScalarType ty2, const function<bool()> &zerodim2,
-                     ScalarType ty3, const function<bool()> &zerodim3,
-                     ScalarType ty4, const function<bool()> &zerodim4) {
-  if (ty4 != ScalarType::Undefined)
-    return
-      promoteTypes(promote_buggy(ty3, false, zerodim3, ty4, false, zerodim4),
-                   kLong);
-
-  return promote_buggy(to_float(ty2), false, zerodim2, ty3, false, zerodim3);
-}
-
 ScalarType to_real_float(ScalarType ty) {
   if (isFloatingType(ty))
     return ty;

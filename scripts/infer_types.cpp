@@ -98,7 +98,7 @@ ScalarType optional_or_default(ScalarType ty) {
 
 std::optional<ScalarType> all_type;
 
-array<tuple<const char*, unsigned, function<ScalarType()>>, 30> is_type_fn = {
+array<tuple<const char*, unsigned, function<ScalarType()>>, 29> is_type_fn = {
   make_tuple("ALL", 1, [&]() { return *all_type; }),
   make_tuple("EQ_FIRST", 1, [&]() { return type_trail[0].ty; }),
   make_tuple("EQ_SECOND", 2, [&]() { return type_trail[1].ty; }),
@@ -112,7 +112,6 @@ array<tuple<const char*, unsigned, function<ScalarType()>>, 30> is_type_fn = {
   make_tuple("TO_FLOAT", 1, [&]() { return to_float(type_trail[0].ty); }),
   make_tuple("TO_FLOAT2", 2, [&]() { return to_float2(PASSF(type_trail[0]), PASSF(type_trail[1])); }),
   make_tuple("TO_FLOAT3", 3, [&]() { return to_float3(PASS(type_trail[0]), PASS(type_trail[1]), PASS(type_trail[2])); }),
-  make_tuple("TO_FLOAT4", 4, [&]() { return to_float4(PASS(type_trail[0]), PASS(type_trail[1]), PASS(type_trail[2]), PASS(type_trail[3])); }),
   make_tuple("TO_DOUBLE2", 2, [&]() { return to_double2(type_trail[0].ty, type_trail[1].ty); }),
   make_tuple("TO_FLOAT_DOUBLE", 2, [&]() { return to_float_double(type_trail[1].ty); }),
   make_tuple("TO_REAL_FLOAT", 1, [&]() { return to_real_float(type_trail[0].ty); }),
@@ -350,6 +349,13 @@ struct C {
   void call(function<Tensor(c10::optional<at::MemoryFormat>, Tail...)> fn) {
     call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
       return fn(c10::nullopt, args...);
+    }});
+  }
+
+  template <typename... Tail>
+  void call(function<Tensor(at::MemoryFormat, Tail...)> fn) {
+    call(function<Tensor(Tail...)>{[=](Tail... args) -> Tensor {
+      return fn({}, args...);
     }});
   }
 
